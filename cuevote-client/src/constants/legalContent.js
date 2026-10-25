@@ -154,7 +154,7 @@ const enContent = {
 		attributions: {
 			intro: "CueVote runs on components from the wider open-source ecosystem. Every component is used under a permissive license (MIT, ISC, BSD-2-Clause, BSD-3-Clause, or Apache-2.0). The complete, machine-generated list — with versions, license texts, copyright holders, and upstream sources — is maintained in the NOTICES file in our repository.",
 			noticesLinkLabel: "View full third-party notices",
-			noticesUrl: "https://github.com/loewenmaehne/cuevote/blob/main/NOTICES.md",
+			noticesUrl: "https://github.com/zienert/cuevote/blob/main/NOTICES.md",
 			highlights: {
 				title: "Notable components",
 				frontend: {
@@ -332,7 +332,7 @@ const nlContent = {
 		attributions: {
 			intro: "CueVote draait op componenten uit het bredere open-source-ecosysteem. Elke component wordt gebruikt onder een permissieve licentie (MIT, ISC, BSD-2-Clause, BSD-3-Clause of Apache-2.0). De volledige, automatisch gegenereerde lijst — met versies, licentieteksten, auteursrechthouders en bron-URLs — wordt bijgehouden in het NOTICES-bestand in onze repository.",
 			noticesLinkLabel: "Volledige attributies bekijken",
-			noticesUrl: "https://github.com/loewenmaehne/cuevote/blob/main/NOTICES.md",
+			noticesUrl: "https://github.com/zienert/cuevote/blob/main/NOTICES.md",
 			highlights: {
 				title: "Belangrijke componenten",
 				frontend: {

@@ -60,7 +60,7 @@ const server = http.createServer((req, res) => {
             'Expires: ' + expires + '\n' +
             'Preferred-Languages: en\n' +
             'Canonical: https://cuevote.com/.well-known/security.txt\n' +
-            'Policy: https://github.com/loewenmaehne/cuevote/blob/main/SECURITY.md\n';
+            'Policy: https://github.com/zienert/cuevote/blob/main/SECURITY.md\n';
         res.writeHead(200, {
             'Content-Type': 'text/plain; charset=utf-8',
             'Content-Length': Buffer.byteLength(body),

@@ -31,7 +31,7 @@ If using `/var/www`, use `sudo` to clone and then fix permissions:
 
 ```bash
 # Clone directly to /var/www/cuevote
-sudo git clone https://github.com/loewenmaehne/cuevote.git /var/www/cuevote
+sudo git clone https://github.com/zienert/cuevote.git /var/www/cuevote
 
 # Fix permissions so you own it
 sudo chown -R $USER:$USER /var/www/cuevote
