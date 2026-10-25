@@ -13,7 +13,7 @@ export const MobileBlockPage = () => {
 	const isTvDevice = deviceDetection.isTV();
 	const { t } = Language.useLanguage();
 
-	const apkUrl = "https://github.com/loewenmaehne/cuevote/releases/latest/download/app-release.apk";
+	const apkUrl = "https://github.com/zienert/cuevote/releases/latest/download/app-release.apk";
 
 	return (
 		<div className="flex flex-col min-h-[100dvh] bg-[#050505] items-center justify-center p-[clamp(0.9rem,4.5vw,1.5rem)] text-center relative overflow-hidden select-none font-sans">

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Download, Check, X, Video, Headphones, Crown, ThumbsUp, Globe, Smartphone, ChevronUp } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 
-const APK_URL = "https://github.com/loewenmaehne/cuevote/releases/latest/download/app-release.apk";
+const APK_URL = "https://github.com/zienert/cuevote/releases/latest/download/app-release.apk";
 
 // Shared grid template so the comparison header and rows align their ✓/✗ columns
 // exactly; the two mark columns scale fluidly so labels keep room on tiny screens.
