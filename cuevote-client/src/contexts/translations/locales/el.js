@@ -156,7 +156,7 @@ export default {
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
 		"backToRadio": "Back to Radio",
-		"retry": "Επαναпроσπάθεια σύνδεσης",
+		"retry": "Επαναπροσπάθεια σύνδεσης",
 		"switching": "Αλλαγή Καναλιού...",
 		"channelNotFound": "Το κανάλι δεν υπάρχει",
 		"notFoundMessage": "Το κανάλι που ψάχνετε ({roomId}) δεν βρέθηκε.",
