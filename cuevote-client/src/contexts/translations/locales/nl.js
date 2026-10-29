@@ -103,16 +103,16 @@ export default {
 		"allowSuggestions": "Suggesties Toestaan",
 		"manualReview": "Handmatige Beoordeling",
 		"approveKnown": "Bekende goedkeuren",
-		"approveKnownTooltip": "Keur automatisch videos goed die eerder zijn goedgekeurd",
+		"approveKnownTooltip": "Keur automatisch video's goed die eerder zijn goedgekeurd",
 		"musicOnly": "Alleen Muziek",
 		"maxLength": "Max Lengte",
 		"noLimit": "Geen Limiet",
 		"mins": "Min",
 		"maxQueueSize": "Max Wachtrij Grootte",
-		"videos": "Videos",
+		"videos": "Video's",
 		"preventRepetition": "Herhaling Voorkomen",
 		"smartQueue": "Slimme Wachtrij",
-		"smartQueueTooltip": "Vervang laaggewaardeerde videos wanneer vol",
+		"smartQueueTooltip": "Vervang laaggewaardeerde video's wanneer vol",
 		"autoRefill": "Auto-DJ",
 		"autoRefillTooltip": "Houdt je kanaal live — speelt automatisch gemixte tracks uit je bibliotheek wanneer de wachtrij leeg is.",
 		"venueMode": "Party Modus",
@@ -123,7 +123,7 @@ export default {
 		"ownerBypassRules": "Eigenaar Negeert Regels",
 		"ownerBypassRulesTooltip": "Negeer filters/limieten",
 		"ownerBypassQueue": "Eigenaar Negeert Wachtrij",
-		"ownerBypassQueueTooltip": "Eigenaarvideos spelen volgende (Hoogste Prioriteit)",
+		"ownerBypassQueueTooltip": "Eigenaarvideo's spelen volgende (Hoogste Prioriteit)",
 		"popups": "Popups",
 		"deleteChannel": "Kanaal Verwijderen",
 		"deleteChannelWarning": "Deze actie is permanent en kan niet ongedaan worden gemaakt.",
@@ -147,15 +147,15 @@ export default {
 		"adding": "Toevoegen...",
 		"added": "Toegevoegd",
 		"error": "Voer een YouTube-link of titel in.",
-		"loginRequired": "Log in om videos voor te stellen.",
-		"loadSimilar": "Vergelijkbare videos laden",
+		"loginRequired": "Log in om video's voor te stellen.",
+		"loadSimilar": "Vergelijkbare video's laden",
 		"similarTo": "Vergelijkbaar met"
 	},
 	"suggestions": {
-		"title": "Gerelateerde Videos",
-		"modalTitle": "Gerelateerde Videos",
+		"title": "Gerelateerde Video's",
+		"modalTitle": "Gerelateerde Video's",
 		"basedOn": "Gebaseerd op:",
-		"loading": "Zoeken naar vergelijkbare videos...",
+		"loading": "Zoeken naar vergelijkbare video's...",
 		"empty": "Geen suggesties gevonden."
 	},
 	"app": {
@@ -201,17 +201,17 @@ export default {
 		"searchPlaceholder": "Zoek in bibliotheek...",
 		"videos": {
 			"one": "{count} video",
-			"other": "{count} videos"
+			"other": "{count} video's"
 		},
 		"inLibrary": "in bibliotheek",
-		"info1": "Deze bibliotheek toont unieke videos gespeeld in de laatste <strong>28 dagen</strong>.",
-		"info2": "Oudere videos worden verborgen voor metadata-versheid, maar worden <strong>nooit verwijderd</strong>. De <strong>Automatisch Aanvullen</strong> functie onthoudt je volledige geschiedenis en zet oudere videos automatisch terug in de wachtrij (en deze lijst) wanneer nodig!",
-		"empty": "Geen videos gevonden"
+		"info1": "Deze bibliotheek toont unieke video's gespeeld in de laatste <strong>28 dagen</strong>.",
+		"info2": "Oudere video's worden verborgen voor metadata-versheid, maar worden <strong>nooit verwijderd</strong>. De <strong>Automatisch Aanvullen</strong> functie onthoudt je volledige geschiedenis en zet oudere video's automatisch terug in de wachtrij (en deze lijst) wanneer nodig!",
+		"empty": "Geen video's gevonden"
 	},
 	"pending": {
 		"title": "In afwachting",
 		"pendingReview": "Beoordelen",
-		"bannedVideos": "Verboden Videos",
+		"bannedVideos": "Verboden Video's",
 		"empty": "Geen verzoeken",
 		"emptySubtitle": "Nieuwe suggesties verschijnen hier.",
 		"suggestedBy": "Voorgesteld door",
@@ -239,12 +239,12 @@ export default {
 		"skippedRestricted": "'{title}' overgeslagen (Niet beschikbaar)",
 		"skippedIPBlocked": "'{title}' overgeslagen — YouTube beperkt dit netwerk",
 		"backToNow": "Terug naar Nu",
-		"addVideos": "Voeg videos toe om af te spelen"
+		"addVideos": "Voeg video's toe om af te spelen"
 	},
 	"mobile": {
 		"tagline": "De Democratische Jukebox",
 		"tvDescription": "Maak van dit scherm de ultieme Jukebox. Laat je gasten stemmen op de muziek.",
-		"mobileDescription": "Stem op videos, bouw samen de playlist en laat de beste muziek winnen.",
+		"mobileDescription": "Stem op video's, bouw samen de playlist en laat de beste muziek winnen.",
 		"tvFeatureTitle": "Bioscoopmodus",
 		"mobileFeatureTitle": "Host de Party",
 		"tvFeatureBody": "Installeer de TV App voor de perfecte gedeelde ervaring met Always-On scherm.",

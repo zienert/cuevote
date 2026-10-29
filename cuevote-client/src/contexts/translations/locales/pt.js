@@ -199,7 +199,7 @@ export default {
 		},
 		"inLibrary": "na biblioteca",
 		"info1": "Esta biblioteca exibe vídeos únicas tocadas nos últimos <strong>28 dias</strong>.",
-		"info2": "Vídeos mais antigas são ocultadas para garantir a atualização dos metadados, mas <strong>nunca são excluídas</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigas de volta para a fila (e para esta lista) quando necessário!",
+		"info2": "Vídeos mais antigos são ocultados para garantir a atualização dos metadados, mas <strong>nunca são excluídos</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigos de volta para a fila (e para esta lista) quando necessário!",
 		"empty": "Nenhuma vídeo encontrada"
 	},
 	"pending": {
