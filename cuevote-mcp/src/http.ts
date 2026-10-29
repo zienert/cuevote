@@ -102,10 +102,21 @@ app.post("/oauth/finalize", express.json(), (req: Request, res: Response) => {
     });
     return void res.status(401).json({ error: "unauthorized" });
   }
-  const body = (req.body ?? {}) as { handle?: string; userId?: string };
+  const body = (req.body ?? {}) as {
+    handle?: string;
+    userId?: string;
+    shownClient?: unknown;
+    shownHost?: unknown;
+  };
   if (!body.handle || !body.userId) return void res.status(400).json({ error: "missing handle or userId" });
+  // What the consent page displayed. Missing values count as empty, so a page
+  // that sends none can only approve a client without name and host.
+  const shown = {
+    client: typeof body.shownClient === "string" ? body.shownClient : "",
+    host: typeof body.shownHost === "string" ? body.shownHost : "",
+  };
   try {
-    res.json({ redirectTo: finalizeAuthorization(String(body.handle), String(body.userId)) });
+    res.json({ redirectTo: finalizeAuthorization(String(body.handle), String(body.userId), shown) });
   } catch (e) {
     res.status(400).json({ error: e instanceof Error ? e.message : "finalize_failed" });
   }

@@ -131,6 +131,17 @@ function createCode(p: Omit<AuthCode, "expiresAt">): string {
   return code;
 }
 
+// The host the consent page shows as the place the code is sent. authorize()
+// puts it in the consent URL and finalizeAuthorization() compares the value the
+// page echoes back, so both derive it here.
+function redirectHostHint(redirectUri: string): string {
+  try {
+    return new URL(redirectUri).host;
+  } catch {
+    return ""; // non-URL redirect (e.g. custom scheme): no host to show
+  }
+}
+
 export const provider: OAuthServerProvider = {
   get clientsStore() {
     return clientsStore;
@@ -188,12 +199,11 @@ export const provider: OAuthServerProvider = {
     // Display hints so the consent screen can name what is being authorized
     // (defends against consent phishing / confused-deputy). The redirect host is
     // the meaningful trust signal — the user should refuse an unfamiliar host.
+    // The page echoes both back on approval, and finalizeAuthorization() refuses
+    // values that differ from this authorization.
     if (client.client_name) c.searchParams.set("client", client.client_name);
-    try {
-      c.searchParams.set("redirect", new URL(params.redirectUri).host);
-    } catch {
-      /* non-URL redirect (e.g. custom scheme) — omit host hint */
-    }
+    const redirectHost = redirectHostHint(params.redirectUri);
+    if (redirectHost) c.searchParams.set("redirect", redirectHost);
     // The attempt, not just the outcome: a consent screen the user refuses
     // leaves no other trace, and a burst of these against many users is exactly
     // what a phishing run looks like.
@@ -266,9 +276,15 @@ export const provider: OAuthServerProvider = {
 
 /**
  * Finalize a pending authorization after the web app has logged the user in
- * with Google. Returns the redirect URL (with code + state) for the browser.
+ * with Google. `shown` is the client name and redirect host the consent page
+ * displayed when the user approved; it must match this authorization. Returns
+ * the redirect URL (with code + state) for the browser.
  */
-export function finalizeAuthorization(handle: string, userId: string): string {
+export function finalizeAuthorization(
+  handle: string,
+  userId: string,
+  shown: { client: string; host: string },
+): string {
   sweep();
   const p = pending.get(handle);
   if (!p) {
@@ -276,6 +292,22 @@ export function finalizeAuthorization(handle: string, userId: string): string {
     throw new Error("invalid_or_expired_handle");
   }
   pending.delete(handle);
+  // The page only displays what its URL says. The approval counts only for the
+  // client and host this authorization really carries; anything else spends the
+  // handle without a code.
+  const clientName = clients.get(p.clientId)?.client_name ?? "";
+  const redirectHost = redirectHostHint(p.redirectUri);
+  if (shown.client !== clientName || shown.host !== redirectHost) {
+    audit("oauth_consent_failed", {
+      userId,
+      clientId: p.clientId,
+      reason: "display_mismatch",
+      shownClient: shown.client,
+      shownHost: shown.host,
+      redirectUri: p.redirectUri,
+    });
+    throw new Error("display_mismatch");
+  }
   const code = createCode({
     clientId: p.clientId,
     userId,
