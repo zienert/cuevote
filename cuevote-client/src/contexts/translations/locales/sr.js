@@ -4,10 +4,10 @@
 // their own — see ../index.js.
 export default {
 	"errors": {
-		"loginRequired": "Овај канал захтева пријављен налог.",
-		"accountRequired": "Пријавите се да бисте то урадили.",
-		"sessionNotReady": "Ваша сесија још није спремна. Освежите страницу.",
-		"guestLimit": "Превише нових гостију на овој мрежи. Пријавите се да наставите."
+		"loginRequired": "Ovaj kanal zahteva prijavljen nalog.",
+		"accountRequired": "Prijavite se da biste to uradili.",
+		"sessionNotReady": "Vaša sesija još nije spremna. Osvežite stranicu.",
+		"guestLimit": "Previše novih gostiju na ovoj mreži. Prijavite se da nastavite."
 	},
 	"connectAi": {
 		"willSendTo": "Odobrenje će biti poslato na",
@@ -60,10 +60,10 @@ export default {
 		"deleteAccountToConfirm": "za potvrdu",
 		"delete": "Obriši",
 		"terms": "Uslovi i Pravno",
-		"videoLanguage": "Језик видеа",
-		"international": "Међународно",
-		"startWithCaptions": "Покрени са титловима",
-		"searchCountries": "Претражи земље..."
+		"videoLanguage": "Jezik videa",
+		"international": "Međunarodno",
+		"startWithCaptions": "Pokreni sa titlovima",
+		"searchCountries": "Pretraži zemlje..."
 	},
 	"player": {
 		"errorGeneric": "Došlo je do greške pri reprodukovanju ovog videa.",
@@ -130,15 +130,15 @@ export default {
 		"leave": "Napusti",
 		"copyUrl": "Kopiraj URL",
 		"close": "Zatvori",
-		"back": "Назад",
-		"suggestions": "Предлози",
-		"queuePlayback": "Ред и репродукција",
-		"features": "Опције",
-		"captionsTooltip": "Прикажи титлове подразумевано свим корисницима када учитају плејер.",
-		"ownerTools": "Алати власника",
-		"changeLanguage": "Промени језик",
-		"requireLogin": "Потребна пријава",
-		"requireLoginTooltip": "Гости морају да се пријаве да би гласали и предлагали. Искључено: свако у каналу може да учествује."
+		"back": "Nazad",
+		"suggestions": "Predlozi",
+		"queuePlayback": "Red i reprodukcija",
+		"features": "Opcije",
+		"captionsTooltip": "Prikaži titlove podrazumevano svim korisnicima kada učitaju plejer.",
+		"ownerTools": "Alati vlasnika",
+		"changeLanguage": "Promeni jezik",
+		"requireLogin": "Potrebna prijava",
+		"requireLoginTooltip": "Gosti moraju da se prijave da bi glasali i predlagali. Isključeno: svako u kanalu može da učestvuje."
 	},
 	"suggest": {
 		"placeholder": "Upišite naslov...",
@@ -147,9 +147,9 @@ export default {
 		"adding": "Dodavanje...",
 		"added": "Dodato",
 		"error": "Molimo unesite YouTube link ili naslov.",
-		"loginRequired": "Молимо пријавите се да предложите видео.",
-		"loadSimilar": "Учитај сличне видео снимке",
-		"similarTo": "Слично:"
+		"loginRequired": "Molimo prijavite se da predložite video.",
+		"loadSimilar": "Učitaj slične video snimke",
+		"similarTo": "Slično:"
 	},
 	"app": {
 		"noInternet": "Nema internet veze",
@@ -167,16 +167,16 @@ export default {
 		"unlock": "Otključaj",
 		"listenMusic": "Slušaj muziku",
 		"unmuteAndPlay": "Zvuk & Pusti",
-		"retrying": "Покушавам поново...",
-		"reconnecting": "Поновно повезивање",
-		"attempt": "Покушај",
-		"connecting": "Повезивање са сервером...",
-		"connectionIssue": "Проблем са везом",
-		"takingTooLong": "Траје дуже него обично...",
-		"checkConnection": "Молимо проверите интернет везу.",
-		"networkThrottle": "YouTube је блокирао IP ове мреже. Репродукција је паузирана. Покушајте да се пребаците на мобилну приступну тачку.",
-		"retryPlayback": "Покушај поново",
-		"tapToUnmute": "Додирните за укључивање звука"
+		"retrying": "Pokušavam ponovo...",
+		"reconnecting": "Ponovno povezivanje",
+		"attempt": "Pokušaj",
+		"connecting": "Povezivanje sa serverom...",
+		"connectionIssue": "Problem sa vezom",
+		"takingTooLong": "Traje duže nego obično...",
+		"checkConnection": "Molimo proverite internet vezu.",
+		"networkThrottle": "YouTube je blokirao IP ove mreže. Reprodukcija je pauzirana. Pokušajte da se prebacite na mobilnu pristupnu tačku.",
+		"retryPlayback": "Pokušaj ponovo",
+		"tapToUnmute": "Dodirnite za uključivanje zvuka"
 	},
 	"track": {
 		"playing": "Svira",
@@ -187,8 +187,8 @@ export default {
 		"confirmDelete": "Potvrdi",
 		"delete": "Obriši",
 		"watch": "Gledaj na YouTube-u",
-		"recommend": "Преузми предлоге",
-		"guest": "Гост"
+		"recommend": "Preuzmi predloge",
+		"guest": "Gost"
 	},
 	"library": {
 		"searchPlaceholder": "Traži u biblioteci...",
@@ -216,9 +216,9 @@ export default {
 		"decline": "Odbij",
 		"accept": "Prihvati",
 		"pendingCount": {
-			"one": "{count} на чекању",
-			"few": "{count} на чекању",
-			"other": "{count} на чекању"
+			"one": "{count} na čekanju",
+			"few": "{count} na čekanju",
+			"other": "{count} na čekanju"
 		}
 	},
 	"playlist": {
@@ -234,7 +234,7 @@ export default {
 		"skippedIPBlocked": "'{title}' preskočeno — YouTube ograničava ovu mrežu",
 		"backToNow": "Nazad na Trenutno",
 		"addVideos": "Dodaj video za početak",
-		"channelSuffix": "Канал"
+		"channelSuffix": "Kanal"
 	},
 	"mobile": {
 		"tagline": "Demokratski Džuboks",
@@ -261,25 +261,25 @@ export default {
 		"featHost": "Budi domaćin sopstvene zabave",
 		"continueBrowser": "Ipak nastavi u pregledaču",
 		"continueNote": "Ograničene funkcije. Aplikaciju možeš preuzeti bilo kada za potpuno iskustvo.",
-		"footerCta": "Преузми апликацију",
-		"modalTitle": "Више уз апликацију",
-		"later": "Не сада"
+		"footerCta": "Preuzmi aplikaciju",
+		"modalTitle": "Više uz aplikaciju",
+		"later": "Ne sada"
 	},
 	"suggestions": {
-		"title": "Повезани видео снимци",
-		"modalTitle": "Повезани видео снимци",
-		"basedOn": "На основу:",
-		"loading": "Тражим сличне видео снимке...",
-		"empty": "Нема пронађених предлога."
+		"title": "Povezani video snimci",
+		"modalTitle": "Povezani video snimci",
+		"basedOn": "Na osnovu:",
+		"loading": "Tražim slične video snimke...",
+		"empty": "Nema pronađenih predloga."
 	},
 	"banned": {
-		"title": "Забрањени видео снимци",
-		"empty": "Нема забрањених видео снимака",
-		"emptySubtitle": "Видео снимци забрањени из захтева појавиће се овде.",
-		"bannedOn": "Забрањено {date}",
-		"unban": "Уклони забрану"
+		"title": "Zabranjeni video snimci",
+		"empty": "Nema zabranjenih video snimaka",
+		"emptySubtitle": "Video snimci zabranjeni iz zahteva pojaviće se ovde.",
+		"bannedOn": "Zabranjeno {date}",
+		"unban": "Ukloni zabranu"
 	},
 	"attribution": {
-		"youtube": "Развијено уз YouTube"
+		"youtube": "Razvijeno uz YouTube"
 	}
 };
