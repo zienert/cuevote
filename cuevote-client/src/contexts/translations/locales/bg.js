@@ -118,7 +118,7 @@ export default {
 		"ownerBypassRules": "Собственикът прескача правила",
 		"ownerBypassRulesTooltip": "Игнорирай филтри/лимити",
 		"ownerBypassQueue": "Собственикът прескача опашка",
-		"ownerBypassQueueTooltip": "Видеоте на собственика свирят следващи (Топ приоритет)",
+		"ownerBypassQueueTooltip": "Видеата на собственика свирят следващи (Топ приоритет)",
 		"popups": "Изскачащи прозорци",
 		"deleteChannel": "Изтрий канал",
 		"deleteChannelWarning": "Това действие е постоянно.",

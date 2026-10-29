@@ -118,7 +118,7 @@ export default {
 		"ownerBypassRules": "הבעלים עוקף חוקים",
 		"ownerBypassRulesTooltip": "התעלם ממסננים/גבולות",
 		"ownerBypassQueue": "הבעלים עוקף תור",
-		"ownerBypassQueueTooltip": "סרטוןי הבעלים ינוגנו בהמשך (עדיפות עליונה)",
+		"ownerBypassQueueTooltip": "סרטוני הבעלים ינוגנו בהמשך (עדיפות עליונה)",
 		"popups": "חלוניות קופצות",
 		"deleteChannel": "מחק ערוץ",
 		"deleteChannelWarning": "פעולה זו היא קבועה.",

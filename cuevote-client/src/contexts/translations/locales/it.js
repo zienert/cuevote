@@ -103,7 +103,7 @@ export default {
 		"allowSuggestions": "Consenti Suggerimenti",
 		"manualReview": "Revisione Manuale",
 		"approveKnown": "Approva noti",
-		"approveKnownTooltip": "Approva auto video già approvate",
+		"approveKnownTooltip": "Approva auto video già approvati",
 		"musicOnly": "Solo Musica",
 		"maxLength": "Lunghezza Max",
 		"noLimit": "Nessun Limite",
@@ -239,7 +239,7 @@ export default {
 	"mobile": {
 		"tagline": "Il Jukebox Democratico",
 		"tvDescription": "Trasforma questo schermo nel Jukebox definitivo. Lascia che i tuoi ospiti votino la musica.",
-		"mobileDescription": "Vota le video, crea la playlist insieme e lascia che la musica migliore vinca.",
+		"mobileDescription": "Vota i video, crea la playlist insieme e lascia che la musica migliore vinca.",
 		"tvFeatureTitle": "Modalità Cinema",
 		"mobileFeatureTitle": "Ospita la Festa",
 		"tvFeatureBody": "Installa l'App TV per un'esperienza condivisa perfetta con schermo Always-On.",

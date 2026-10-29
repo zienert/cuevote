@@ -78,9 +78,9 @@ export default {
 	},
 	"cookie": {
 		"title": "Privacidade e Reprodução",
-		"description": "Para tocar vídeo, precisamos carregar o player do YouTube. Isso conecta aos servidores do Google.",
+		"description": "Para tocar música, precisamos carregar o player do YouTube. Isso conecta aos servidores do Google.",
 		"policy": "Ler Política de Privacidade",
-		"accept": "Aceitar e Tocar Vídeo",
+		"accept": "Aceitar e Tocar Música",
 		"youtubeConsent": "Precisamos do seu consentimento para carregar o player do YouTube. Aceite os cookies abaixo."
 	},
 	"header": {
@@ -102,9 +102,9 @@ export default {
 		"reviewRequests": "Revisar Pedidos",
 		"allowSuggestions": "Permitir Sugestões",
 		"manualReview": "Revisão Manual",
-		"approveKnown": "Aprobar conhecidas",
-		"approveKnownTooltip": "Aprobar auto vídeos já aprovadas antes",
-		"musicOnly": "Apenas Vídeo",
+		"approveKnown": "Aprovar conhecidos",
+		"approveKnownTooltip": "Aprovar auto vídeos já aprovados antes",
+		"musicOnly": "Apenas Música",
 		"maxLength": "Duração Máx",
 		"noLimit": "Sem Limite",
 		"mins": "Min",
@@ -170,7 +170,7 @@ export default {
 		"lockedMessage": "Canal protegido por senha.",
 		"incorrectPasswordOrNotFound": "Senha incorreta ou canal não encontrado.",
 		"unlock": "Desbloquear",
-		"listenMusic": "Ouvir vídeo",
+		"listenMusic": "Ouvir música",
 		"unmuteAndPlay": "Ativar Som e Tocar",
 		"reconnecting": "Reconectando",
 		"attempt": "Tentativa",
@@ -198,14 +198,14 @@ export default {
 			"other": "{count} vídeos"
 		},
 		"inLibrary": "na biblioteca",
-		"info1": "Esta biblioteca exibe vídeos únicas tocadas nos últimos <strong>28 dias</strong>.",
-		"info2": "Vídeos mais antigas são ocultadas para garantir a atualização dos metadados, mas <strong>nunca são excluídas</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigas de volta para a fila (e para esta lista) quando necessário!",
-		"empty": "Nenhuma vídeo encontrada"
+		"info1": "Esta biblioteca exibe vídeos únicos tocados nos últimos <strong>28 dias</strong>.",
+		"info2": "Vídeos mais antigos são ocultados para garantir a atualização dos metadados, mas <strong>nunca são excluídos</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigos de volta para a fila (e para esta lista) quando necessário!",
+		"empty": "Nenhum vídeo encontrado"
 	},
 	"pending": {
 		"title": "Solicitações pendentes",
 		"pendingReview": "Revisão pendente",
-		"bannedVideos": "Vídeos banidas",
+		"bannedVideos": "Vídeos banidos",
 		"empty": "Nenhuma solicitação pendente",
 		"emptySubtitle": "Novas sugestões aguardando aprovação aparecerão aqui.",
 		"suggestedBy": "Sugerido por",
@@ -238,8 +238,8 @@ export default {
 	},
 	"mobile": {
 		"tagline": "O Jukebox Democrático",
-		"tvDescription": "Transforme esta tela no Jukebox definitivo. Deixe seus convidados votarem na vídeo.",
-		"mobileDescription": "Vote em vídeos, construa a playlist juntos e deixe a melhor vídeo vencer.",
+		"tvDescription": "Transforme esta tela no Jukebox definitivo. Deixe seus convidados votarem na música.",
+		"mobileDescription": "Vote em vídeos, construa a playlist juntos e deixe a melhor música vencer.",
 		"tvFeatureTitle": "Modo Cinema",
 		"mobileFeatureTitle": "Hospedar a Festa",
 		"tvFeatureBody": "Instale o App de TV para a experiência compartilhada perfeita com tela Always-On.",

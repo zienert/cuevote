@@ -230,7 +230,7 @@ export default {
 		"skippedRestricted": "'{title}' 건너뜀 (사용 불가)",
 		"skippedIPBlocked": "'{title}' 건너뜀 — YouTube가 이 네트워크를 제한 중",
 		"backToNow": "현재로 이동",
-		"addVideos": "동영상를 추가하여 재생 시작"
+		"addVideos": "동영상을 추가하여 재생 시작"
 	},
 	"mobile": {
 		"tagline": "민주적인 주크박스",
