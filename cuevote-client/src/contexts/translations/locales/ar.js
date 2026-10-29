@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "لا يوجد اتصال بالإنترنت",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "النافذة صغيرة جدًا",
+		"windowTooSmallMessage": "يرجى تكبير النافذة لمتابعة استخدام CueVote.",
+		"backToRadio": "العودة إلى الراديو",
 		"retry": "أعد محاولة الاتصال",
 		"switching": "جارٍ تبديل القناة...",
 		"channelNotFound": "القناة غير موجودة",

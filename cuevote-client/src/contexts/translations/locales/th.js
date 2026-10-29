@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "หน้าต่างเล็กเกินไป",
+		"windowTooSmallMessage": "กรุณาขยายหน้าต่างเพื่อใช้งาน CueVote ต่อ",
+		"backToRadio": "กลับไปที่วิทยุ",
 		"retry": "ลองเชื่อมต่ออีกครั้ง",
 		"switching": "กำลังเปลี่ยนช่อง...",
 		"channelNotFound": "ไม่มีช่องนี้",

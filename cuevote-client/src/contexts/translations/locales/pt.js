@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Sem conexão com a internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Janela muito pequena",
+		"windowTooSmallMessage": "Aumente a janela para continuar usando o CueVote.",
+		"backToRadio": "Voltar ao rádio",
 		"retry": "Tentar novamente",
 		"retrying": "Tentando...",
 		"connecting": "Conectando ao servidor...",

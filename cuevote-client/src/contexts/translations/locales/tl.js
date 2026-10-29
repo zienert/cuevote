@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Walang Koneksyon sa Internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Masyadong Maliit ang Window",
+		"windowTooSmallMessage": "Mangyaring palakihin ang window upang magpatuloy sa paggamit ng CueVote.",
+		"backToRadio": "Bumalik sa Radyo",
 		"retry": "Subukan Muli ang Koneksyon",
 		"switching": "Nagpapalit ng Channel...",
 		"channelNotFound": "Wala ang channel",

@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "インターネット接続がありません",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "ウィンドウが小さすぎます",
+		"windowTooSmallMessage": "CueVote を引き続き使用するには、ウィンドウを大きくしてください。",
+		"backToRadio": "ラジオに戻る",
 		"retry": "接続を再試行",
 		"retrying": "再試行中...",
 		"connecting": "サーバーに接続中...",

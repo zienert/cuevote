@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Fără conexiune la internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Fereastra este prea mică",
+		"windowTooSmallMessage": "Te rugăm să mărești fereastra pentru a continua să folosești CueVote.",
+		"backToRadio": "Înapoi la radio",
 		"retry": "Reîncearcă conexiunea",
 		"switching": "Schimbare Canal...",
 		"channelNotFound": "Canalul nu există",

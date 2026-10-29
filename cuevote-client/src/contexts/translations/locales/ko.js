@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "인터넷에 연결되지 않음",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "창이 너무 작음",
+		"windowTooSmallMessage": "CueVote를 계속 사용하려면 창 크기를 늘려주세요.",
+		"backToRadio": "라디오로 돌아가기",
 		"retry": "연결 재시도",
 		"retrying": "재시도 중...",
 		"connecting": "서버 연결 중...",

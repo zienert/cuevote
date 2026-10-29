@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Немає підключення до інтернету",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Вікно занадто мале",
+		"windowTooSmallMessage": "Будь ласка, збільште вікно, щоб і далі користуватися CueVote.",
+		"backToRadio": "Повернутися до радіо",
 		"retry": "Повторити спробу підключення",
 		"switching": "Перемикання каналу...",
 		"channelNotFound": "Канал не існує",

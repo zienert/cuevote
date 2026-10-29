@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tiada sambungan internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Tetingkap terlalu kecil",
+		"windowTooSmallMessage": "Sila besarkan tetingkap untuk terus menggunakan CueVote.",
+		"backToRadio": "Kembali ke Radio",
 		"retry": "Cuba semula sambungan",
 		"switching": "Menukar Saluran...",
 		"channelNotFound": "Saluran tidak wujud",

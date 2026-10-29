@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internetanslutning",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Fönstret är för litet",
+		"windowTooSmallMessage": "Gör fönstret större för att fortsätta använda CueVote.",
+		"backToRadio": "Tillbaka till radion",
 		"retry": "Försök ansluta igen",
 		"switching": "Byter kanal...",
 		"channelNotFound": "Kanalen finns inte",

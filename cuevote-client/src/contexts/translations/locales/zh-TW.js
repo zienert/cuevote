@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "無網際網路連線",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "視窗過小",
+		"windowTooSmallMessage": "請將視窗調大以繼續使用 CueVote。",
+		"backToRadio": "返回電台",
 		"retry": "重試連線",
 		"retrying": "重試中...",
 		"connecting": "連線伺服器中...",

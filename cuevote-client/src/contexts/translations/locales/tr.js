@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "İnternet bağlantısı yok",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Pencere çok küçük",
+		"windowTooSmallMessage": "CueVote'u kullanmaya devam etmek için lütfen pencereyi büyütün.",
+		"backToRadio": "Radyoya Dön",
 		"retry": "Bağlantıyı tekrar dene",
 		"switching": "Kanal Değiştiriliyor...",
 		"channelNotFound": "Kanal mevcut değil",

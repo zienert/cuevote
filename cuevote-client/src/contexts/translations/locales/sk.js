@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žiadne pripojenie na internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Okno je príliš malé",
+		"windowTooSmallMessage": "Ak chcete CueVote naďalej používať, zväčšite prosím okno.",
+		"backToRadio": "Späť na rádio",
 		"retry": "Skúsiť pripojenie znova",
 		"switching": "Prepínanie Kanála...",
 		"channelNotFound": "Kanál neexistuje",

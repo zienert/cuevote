@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nincs internetkapcsolat",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Túl kicsi az ablak",
+		"windowTooSmallMessage": "Kérjük, növeld meg az ablak méretét a CueVote további használatához.",
+		"backToRadio": "Vissza a rádióhoz",
 		"retry": "Kapcsolat újrapróbálása",
 		"switching": "Csatorna Váltása...",
 		"channelNotFound": "A csatorna nem létezik",

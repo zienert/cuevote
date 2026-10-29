@@ -153,9 +153,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Không có kết nối internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Cửa sổ quá nhỏ",
+		"windowTooSmallMessage": "Vui lòng mở rộng cửa sổ để tiếp tục sử dụng CueVote.",
+		"backToRadio": "Quay lại radio",
 		"retry": "Thử lại kết nối",
 		"switching": "Đang chuyển kênh...",
 		"channelNotFound": "Kênh không tồn tại",
