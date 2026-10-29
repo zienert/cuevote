@@ -197,4 +197,24 @@ describe('Zod Schemas', () => {
       assert.ok(!schemas.SeekToPayload.safeParse(Infinity).success);
     });
   });
+
+  describe('McpAuthorizePayload', () => {
+    it('should accept a handle with the displayed client and host', () => {
+      const result = schemas.McpAuthorizePayload.safeParse({ handle: 'abc', shownClient: 'Some DJ', shownHost: 'ai.example' });
+      assert.ok(result.success);
+      assert.equal(result.data.shownHost, 'ai.example');
+    });
+
+    it('should accept a handle alone', () => {
+      assert.ok(schemas.McpAuthorizePayload.safeParse({ handle: 'abc' }).success);
+    });
+
+    it('should reject a non-string host', () => {
+      assert.ok(!schemas.McpAuthorizePayload.safeParse({ handle: 'abc', shownHost: 42 }).success);
+    });
+
+    it('should reject an overlong host', () => {
+      assert.ok(!schemas.McpAuthorizePayload.safeParse({ handle: 'abc', shownHost: 'a'.repeat(301) }).success);
+    });
+  });
 });

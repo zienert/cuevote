@@ -804,7 +804,12 @@ wss.on("connection", (ws, req) => {
                         const res = await fetch(`${mcpUrl}/oauth/finalize`, {
                             method: 'POST',
                             headers: { 'Authorization': `Bearer ${finalizeSecret}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ handle: r.data.handle, userId: ws.user.id })
+                            body: JSON.stringify({
+                                handle: r.data.handle,
+                                userId: ws.user.id,
+                                shownClient: r.data.shownClient ?? '',
+                                shownHost: r.data.shownHost ?? ''
+                            })
                         });
                         const data = await res.json().catch(() => ({}));
                         if (!res.ok || !data.redirectTo) {

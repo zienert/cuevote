@@ -102,6 +102,10 @@ const PlayPausePayload = z.boolean();
 // the browser.
 const McpAuthorizePayload = z.object({
   handle: z.string().min(1).max(200),
+  // What the consent page displayed. The MCP finalizes only if it matches the
+  // authorization behind the handle.
+  shownClient: z.string().max(1000).optional(),
+  shownHost: z.string().max(300).optional(),
 });
 
 // A returning guest presents the token it was issued earlier; a first-time
