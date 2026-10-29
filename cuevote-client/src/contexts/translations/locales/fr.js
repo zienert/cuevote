@@ -206,7 +206,7 @@ export default {
 		},
 		"inLibrary": "dans la bibliothèque",
 		"info1": "Cette bibliothèque affiche les vidéos uniques jouées au cours des <strong>28 derniers jours</strong>.",
-		"info2": "Les anciennes vidéos sont masquées pour garantir la fraîcheur des métadonnées, mais elles ne sont <strong>jamais supprimées</strong>. La fonction <strong>Remplissage Auto</strong> se souvient de tout votre historique et ramènera automatiquement les anciennes vidéos dans la file d'attente (et cette liste) si nécessaire !",
+		"info2": "Les anciennes vidéos sont masquées pour garantir la fraîcheur des métadonnées, mais elles ne sont <strong>jamais supprimées</strong>. La fonction <strong>Auto-DJ</strong> se souvient de tout votre historique et ramènera automatiquement les anciennes vidéos dans la file d'attente (et cette liste) si nécessaire !",
 		"empty": "Aucune vidéo trouvée"
 	},
 	"pending": {

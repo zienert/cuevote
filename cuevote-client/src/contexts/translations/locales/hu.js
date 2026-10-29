@@ -198,7 +198,7 @@ export default {
 		},
 		"inLibrary": "a könyvtárban",
 		"info1": "Ez a könyvtár az elmúlt <strong>28 napban</strong> lejátszott egyedi dalokat jeleníti meg.",
-		"info2": "A régebbi dalok el vannak rejtve az adatok frissessége érdekében, de <strong>soha nem törlődnek</strong>. Az <strong>Automatikus Újratöltés</strong> funkció emlékszik a teljes előzményekre, és szükség esetén automatikusan visszahozza a régebbi dalokat a sorba (és ebbe a listába)!",
+		"info2": "A régebbi dalok el vannak rejtve az adatok frissessége érdekében, de <strong>soha nem törlődnek</strong>. Az <strong>Auto-DJ</strong> funkció emlékszik a teljes előzményekre, és szükség esetén automatikusan visszahozza a régebbi dalokat a sorba (és ebbe a listába)!",
 		"empty": "Nem található dal"
 	},
 	"pending": {

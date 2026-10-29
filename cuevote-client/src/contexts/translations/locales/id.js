@@ -197,7 +197,7 @@ export default {
 		},
 		"inLibrary": "di pustaka",
 		"info1": "Pustaka ini menampilkan video unik yang diputar dalam <strong>28 hari</strong> terakhir.",
-		"info2": "Video lama disembunyikan agar data tetap segar, tapi <strong>tidak pernah dihapus</strong>. Fitur <strong>Isi Otomatis</strong> tetap mengingat seluruh riwayat Anda dan akan otomatis mengembalikan video lama saat dibutuhkan!",
+		"info2": "Video lama disembunyikan agar data tetap segar, tapi <strong>tidak pernah dihapus</strong>. Fitur <strong>Auto-DJ</strong> tetap mengingat seluruh riwayat Anda dan akan otomatis mengembalikan video lama saat dibutuhkan!",
 		"empty": "Video tidak ditemukan"
 	},
 	"pending": {

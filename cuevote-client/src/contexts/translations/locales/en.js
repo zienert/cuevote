@@ -205,7 +205,7 @@ export default {
 		},
 		"inLibrary": "in library",
 		"info1": "This library displays unique videos played in the last <strong>28 days</strong>.",
-		"info2": "Older videos are hidden to ensure metadata freshness, but they are <strong>never deleted</strong>. The <strong>Auto Refill</strong> feature still remembers your entire history and will automatically bring older videos back into the queue (and this list) when needed!",
+		"info2": "Older videos are hidden to ensure metadata freshness, but they are <strong>never deleted</strong>. The <strong>Auto-DJ</strong> feature still remembers your entire history and will automatically bring older videos back into the queue (and this list) when needed!",
 		"empty": "No videos found"
 	},
 	"pending": {

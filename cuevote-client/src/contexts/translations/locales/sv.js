@@ -198,7 +198,7 @@ export default {
 		},
 		"inLibrary": "i biblioteket",
 		"info1": "Detta bibliotek visar unika låtar som spelats de senaste <strong>28 dagarna</strong>.",
-		"info2": "Äldre låtar döljs för metadata-färskhet, men de <strong>raderas aldrig</strong>. Funktionen <strong>Autopåfyllning</strong> kommer ihåg hela din historik och hämtar automatiskt tillbaka äldre låtar till kön (och denna lista) vid behov!",
+		"info2": "Äldre låtar döljs för metadata-färskhet, men de <strong>raderas aldrig</strong>. Funktionen <strong>Auto-DJ</strong> kommer ihåg hela din historik och hämtar automatiskt tillbaka äldre låtar till kön (och denna lista) vid behov!",
 		"empty": "Inga låtar hittades"
 	},
 	"pending": {

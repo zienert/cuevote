@@ -198,7 +198,7 @@ export default {
 		},
 		"inLibrary": "nasa library",
 		"info1": "Ipinapakita ng library na ito ang mga natatanging kanta na pinatugtog sa nakaraang <strong>28 araw</strong>.",
-		"info2": "Ang mga lumang kanta ay nakatago para sa pagiging bago ng metadata, ngunit <strong>hindi kailanman tatanggalin</strong>. Ang tampok na <strong>Auto Refill</strong> ay naaalala pa rin ang iyong buong kasaysayan at awtomatikong ibabalik ang mga lumang kanta sa pila (at sa listahang ito) kapag kailangan!",
+		"info2": "Ang mga lumang kanta ay nakatago para sa pagiging bago ng metadata, ngunit <strong>hindi kailanman tatanggalin</strong>. Ang tampok na <strong>Auto-DJ</strong> ay naaalala pa rin ang iyong buong kasaysayan at awtomatikong ibabalik ang mga lumang kanta sa pila (at sa listahang ito) kapag kailangan!",
 		"empty": "Walang kanta na nahanap"
 	},
 	"pending": {

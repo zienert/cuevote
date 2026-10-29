@@ -200,7 +200,7 @@ export default {
 		},
 		"inLibrary": "v knižnici",
 		"info1": "Táto knižnica zobrazuje unikátne skladby prehrané za posledných <strong>28 dní</strong>.",
-		"info2": "Staršie skladby sú skryté pre čerstvosť metadát, ale <strong>nikdy nie sú zmazané</strong>. Funkcia <strong>Automatické Doplnenie</strong> si pamätá celú vašu históriu a automaticky vráti staršie skladby do fronty (a tohto zoznamu), keď je potrebné!",
+		"info2": "Staršie skladby sú skryté pre čerstvosť metadát, ale <strong>nikdy nie sú zmazané</strong>. Funkcia <strong>Auto-DJ</strong> si pamätá celú vašu históriu a automaticky vráti staršie skladby do fronty (a tohto zoznamu), keď je potrebné!",
 		"empty": "Neboli nájdené žiadne skladby"
 	},
 	"pending": {

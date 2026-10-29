@@ -200,7 +200,7 @@ export default {
 		},
 		"inLibrary": "w bibliotece",
 		"info1": "Ta biblioteka wyświetla unikalne utwory odtwarzane w ciągu ostatnich <strong>28 dni</strong>.",
-		"info2": "Starsze utwory są ukrywane dla świeżości metadanych, ale <strong>nigdy nie są usuwane</strong>. Funkcja <strong>automatycznego uzupełniania</strong> wciąż pamięta całą historię i automatycznie przywróci starsze utwory do kolejki (i tej listy) w razie potrzeby!",
+		"info2": "Starsze utwory są ukrywane dla świeżości metadanych, ale <strong>nigdy nie są usuwane</strong>. Funkcja <strong>Auto-DJ</strong> wciąż pamięta całą historię i automatycznie przywróci starsze utwory do kolejki (i tej listy) w razie potrzeby!",
 		"empty": "Nie znaleziono utworów"
 	},
 	"pending": {

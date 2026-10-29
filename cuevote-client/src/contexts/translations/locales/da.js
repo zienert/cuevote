@@ -198,7 +198,7 @@ export default {
 		},
 		"inLibrary": "i bibliotek",
 		"info1": "Dette bibliotek viser unikke sange spillet i de sidste <strong>28 dage</strong>.",
-		"info2": "Ældre sange skjules for at holde metadata friske, men de <strong>slettes aldrig</strong>. Funktionen <strong>Autooppfyldning</strong> husker stadig hele din historik og vil automatisk bringe ældre sange tilbage i køen (og denne liste) når det er nødvendigt!",
+		"info2": "Ældre sange skjules for at holde metadata friske, men de <strong>slettes aldrig</strong>. Funktionen <strong>Auto-DJ</strong> husker stadig hele din historik og vil automatisk bringe ældre sange tilbage i køen (og denne liste) når det er nødvendigt!",
 		"empty": "Ingen sange fundet"
 	},
 	"pending": {

@@ -199,7 +199,7 @@ export default {
 		},
 		"inLibrary": "în bibliotecă",
 		"info1": "Această bibliotecă afișează videoclipurile unice redate în ultimele <strong>28 de zile</strong>.",
-		"info2": "Videoclipurile mai vechi sunt ascunse pentru prospețimea datelor, dar <strong>nu sunt șterse niciodată</strong>. Funcția <strong>Reumplere Automată</strong> ține minte întregul istoric și va aduce automat videoclipurile vechi înapoi în coadă (și în această listă) când este nevoie!",
+		"info2": "Videoclipurile mai vechi sunt ascunse pentru prospețimea datelor, dar <strong>nu sunt șterse niciodată</strong>. Funcția <strong>Auto-DJ</strong> ține minte întregul istoric și va aduce automat videoclipurile vechi înapoi în coadă (și în această listă) când este nevoie!",
 		"empty": "Nu s-au găsit videoclipuri"
 	},
 	"pending": {

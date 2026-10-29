@@ -197,7 +197,7 @@ export default {
 		},
 		"inLibrary": "在库中",
 		"info1": "此库显示过去 <strong>28 天</strong> 内播放的唯一视频。",
-		"info2": "为了保持元数据新鲜度，较旧的视频会被隐藏，但<strong>绝不会被删除</strong>。<strong>自动填充</strong>功能仍会记住您的完整历史记录，并在需要时自动将旧视频带回队列（及此列表）！",
+		"info2": "为了保持元数据新鲜度，较旧的视频会被隐藏，但<strong>绝不会被删除</strong>。<strong>Auto-DJ</strong> 功能仍会记住您的完整历史记录，并在需要时自动将旧视频带回队列（及此列表）！",
 		"empty": "未找到视频"
 	},
 	"pending": {

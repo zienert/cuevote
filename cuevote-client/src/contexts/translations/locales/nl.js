@@ -205,7 +205,7 @@ export default {
 		},
 		"inLibrary": "in bibliotheek",
 		"info1": "Deze bibliotheek toont unieke videos gespeeld in de laatste <strong>28 dagen</strong>.",
-		"info2": "Oudere videos worden verborgen voor metadata-versheid, maar worden <strong>nooit verwijderd</strong>. De <strong>Automatisch Aanvullen</strong> functie onthoudt je volledige geschiedenis en zet oudere videos automatisch terug in de wachtrij (en deze lijst) wanneer nodig!",
+		"info2": "Oudere videos worden verborgen voor metadata-versheid, maar worden <strong>nooit verwijderd</strong>. De <strong>Auto-DJ</strong>-functie onthoudt je volledige geschiedenis en zet oudere videos automatisch terug in de wachtrij (en deze lijst) wanneer nodig!",
 		"empty": "Geen videos gevonden"
 	},
 	"pending": {

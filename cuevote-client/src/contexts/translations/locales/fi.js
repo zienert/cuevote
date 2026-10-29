@@ -198,7 +198,7 @@ export default {
 		},
 		"inLibrary": "kirjastossa",
 		"info1": "Tämä kirjasto näyttää viimeisen <strong>28 päivän</strong> aikana soitetut ainutlaatuiset kappaleet.",
-		"info2": "Vanhemmat kappaleet piilotetaan tietojen tuoreuden vuoksi, mutta niitä <strong>ei koskaan poisteta</strong>. <strong>Automaattitäyttö</strong> muistaa koko historiasi ja palauttaa vanhemmat kappaleet automaattisesti jonoon (ja tähän listaan) tarvittaessa!",
+		"info2": "Vanhemmat kappaleet piilotetaan tietojen tuoreuden vuoksi, mutta niitä <strong>ei koskaan poisteta</strong>. <strong>Auto-DJ</strong> muistaa koko historiasi ja palauttaa vanhemmat kappaleet automaattisesti jonoon (ja tähän listaan) tarvittaessa!",
 		"empty": "Kappaleita ei löytynyt"
 	},
 	"pending": {
