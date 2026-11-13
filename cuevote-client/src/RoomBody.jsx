@@ -1879,7 +1879,9 @@ function RoomBody() {
                   CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
                 ) : (
                   <>
-                    <div style={{ display: (currentTrack || previewTrack) ? 'block' : 'none', width: '100%', height: '100%' }}>
+                    {/* The Apple player stays visible in an empty channel: its sign-in
+                        has to be reachable before the first song is queued. */}
+                    <div style={{ display: (currentTrack || previewTrack || isAppleRoom) ? 'block' : 'none', width: '100%', height: '100%' }}>
                       <PlayerErrorBoundary>
                         {isAppleRoom ? (
                           <AppleMusicHostPlayer apple={apple} currentTrack={currentTrack} />
@@ -1901,7 +1903,7 @@ function RoomBody() {
                         )}
                       </PlayerErrorBoundary>
                     </div>
-                    {!(currentTrack || previewTrack) && <div className="flex h-full w-full items-center justify-center text-neutral-500 bg-neutral-900">{t('playlist.queueEmpty')}</div>}
+                    {!(currentTrack || previewTrack || isAppleRoom) && <div className="flex h-full w-full items-center justify-center text-neutral-500 bg-neutral-900">{t('playlist.queueEmpty')}</div>}
                   </>
                 )}
               </div>
