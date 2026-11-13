@@ -1570,7 +1570,7 @@ class Room {
         const code = typeof errorCode === 'string' && errorCode ? errorCode : 'UNKNOWN_ERROR';
         if (APPLE_ITEM_ERRORS.has(code)) {
             logger.info(`[PlaybackError] Apple item ${videoId} cannot be played (${code}). Skipping.`);
-            this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable' } });
+            this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable', title: this.state.currentTrack.title || null } });
             // It never played here: keep it out of history and the library, or
             // the Auto-DJ queues it straight back (13.11.2026).
             const history = this.state.history.filter(t => t.videoId !== videoId);
@@ -1667,7 +1667,9 @@ class Room {
         // now would skip a track that never failed.
         if (!this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
 
-        this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: reason } });
+        // The title travels along: by the time clients show the notice, the
+        // next track may already be current.
+        this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: reason, title: this.state.currentTrack.title || null } });
 
         if (isGenuinelyUnavailable) {
             logger.info(`[PlaybackError] Video ${videoId} genuinely unavailable (${reason}). Skipping with history.`);
