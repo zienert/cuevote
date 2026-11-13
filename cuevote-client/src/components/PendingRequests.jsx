@@ -6,8 +6,11 @@ import { Check, X, Clock, ArrowLeft, Ban, Headphones } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 import { suggesterLabel } from "../utils/participation";
+import { isAppleKey } from "../utils/trackKeys";
 
 const buildThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+// Apple Music artwork may only appear next to playback, not in the review list.
+const artworkFor = (track) => (isAppleKey(track.videoId) ? null : (track.thumbnail ?? buildThumbnailUrl(track.videoId)));
 
 // Single export with inline components so bundler cannot reorder and cause TDZ.
 export const PendingRequestsExports = {
@@ -32,15 +35,19 @@ export const PendingRequestsExports = {
 			<div className="max-h-60 overflow-y-auto custom-scrollbar">
 				{requests.map((track) => (
 					<div key={track.id} className="p-3 pr-4 border-b border-neutral-800 hover:bg-neutral-800/30 transition-colors flex gap-3 items-start">
-						<img
-							src={track.thumbnail ?? buildThumbnailUrl(track.videoId)}
-							alt={track.title}
-							className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
-							onError={(e) => {
-								const fallback = buildThumbnailUrl(track.videoId);
-								if (e.target.src !== fallback) e.target.src = fallback;
-							}}
-						/>
+						{artworkFor(track) ? (
+							<img
+								src={artworkFor(track)}
+								alt={track.title}
+								className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
+								onError={(e) => {
+									const fallback = buildThumbnailUrl(track.videoId);
+									if (e.target.src !== fallback) e.target.src = fallback;
+								}}
+							/>
+						) : (
+							<div className="w-10 h-10 sm:w-12 sm:h-12 rounded bg-neutral-800 flex-shrink-0" aria-hidden="true" />
+						)}
 
 						<div className="flex-1 min-w-0">
 							<p className="text-sm font-medium text-white line-clamp-2 leading-tight" title={track.title}>{track.title}</p>
@@ -129,15 +136,19 @@ export const PendingRequestsExports = {
 						{requests.map((track) => (
 							<div key={track.id} className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 sm:p-4 flex items-start justify-between gap-3 sm:gap-4 hover:border-neutral-700 transition-colors">
 								<div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-									<img
-										src={track.thumbnail ?? buildThumbnailUrl(track.videoId)}
-										alt={track.title}
-										className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
-										onError={(e) => {
-											const fallback = buildThumbnailUrl(track.videoId);
-											if (e.target.src !== fallback) e.target.src = fallback;
-										}}
-									/>
+									{artworkFor(track) ? (
+										<img
+											src={artworkFor(track)}
+											alt={track.title}
+											className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
+											onError={(e) => {
+												const fallback = buildThumbnailUrl(track.videoId);
+												if (e.target.src !== fallback) e.target.src = fallback;
+											}}
+										/>
+									) : (
+										<div className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg bg-neutral-800 flex-shrink-0" aria-hidden="true" />
+									)}
 
 									<div className="flex-1 min-w-0">
 										<h3 className="text-sm sm:text-lg font-bold text-white line-clamp-2 leading-tight" title={track.title}>{track.title}</h3>
