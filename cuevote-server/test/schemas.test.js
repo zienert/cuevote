@@ -59,6 +59,12 @@ describe('Zod Schemas', () => {
       const result = schemas.CreateRoomPayload.safeParse({});
       assert.ok(!result.success);
     });
+
+    it('should accept the two providers and nothing else', () => {
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'A', provider: 'apple' }).success);
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'Y', provider: 'youtube' }).success);
+      assert.ok(!schemas.CreateRoomPayload.safeParse({ name: 'S', provider: 'spotify' }).success);
+    });
   });
 
   describe('VotePayload', () => {

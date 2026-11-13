@@ -100,6 +100,19 @@ describe('Room', () => {
       assert.equal(unknown.state.provider, 'youtube');
       unknown.destroy();
     });
+
+    it('should never show or store what an Apple room is playing in the lobby', () => {
+      db.createRoom({
+        id: 'provider-am-lobby', name: 'AM Lobby', description: '', owner_id: 'owner-1',
+        color: 'red', is_public: 1, password: null, provider: 'apple',
+      });
+      const room = new Room('provider-am-lobby', 'AM Lobby', null, { owner_id: 'owner-1', provider: 'apple' });
+      room.state.currentTrack = { videoId: 'am:video:1258705880', title: 'New Rules', artist: 'Dua Lipa', thumbnail: 'https://example.com/a.jpg' };
+      assert.equal(room.getSummary().currentTrack, null);
+      room.persistLobbyPreview();
+      assert.equal(db.getRoom('provider-am-lobby').lobby_preview, null);
+      room.destroy();
+    });
   });
 
   describe('Client Management', () => {

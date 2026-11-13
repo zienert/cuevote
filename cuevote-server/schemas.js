@@ -34,6 +34,7 @@ const CreateRoomPayload = z.object({
   password: z.string().max(PASSWORD_MAX).optional(),
   captionsEnabled: z.boolean().optional(),
   languageFlag: z.string().max(50).optional(),
+  provider: z.enum(['youtube', 'apple']).optional(),
 });
 
 const ListRoomsPayload = z.object({

@@ -236,7 +236,8 @@ class Room {
     }
 
     getSummary() {
-        const track = this.state.currentTrack;
+        // No lobby preview for Apple rooms, see persistLobbyPreview().
+        const track = this.metadata.provider === 'apple' ? null : this.state.currentTrack;
         return {
             id: this.id,
             name: this.name,
@@ -426,7 +427,9 @@ class Room {
     }
 
     persistLobbyPreview() {
-        const track = this.state.currentTrack;
+        // Apple Music artwork and titles may only appear next to playback, so an
+        // Apple room's lobby card never shows what is playing.
+        const track = this.metadata.provider === 'apple' ? null : this.state.currentTrack;
         const newKey = track ? `${track.thumbnail}\0${track.title}\0${track.artist}` : '';
         if (newKey === this._lastLobbyPreviewKey) return;
         this._lastLobbyPreviewKey = newKey;
