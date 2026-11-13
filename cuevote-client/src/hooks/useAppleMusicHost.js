@@ -148,24 +148,33 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	}, [music, currentKeyRef, currentEntryRef, sendRef]);
 
 	// Tell the server the host's country: guests' suggestions are looked up there.
-	// Right after signing in MusicKit still reports its default storefront (us)
-	// and learns the account's own a moment later (13.11.2026), so every change
-	// is passed on, not only the first value.
+	// MusicKit's storefrontId starts as its default (us) and learns the
+	// account's own only later; on 13.11.2026 suggestions were resolved in the
+	// US catalog meanwhile and could not be played in NL. So the account is
+	// asked directly, and only its answer is passed on.
 	useEffect(() => {
 		if (!music || status !== 'ready') return undefined;
-		const report = () => {
-			const storefront = String(music.storefrontId || '').toLowerCase();
-			if (/^[a-z]{2}$/.test(storefront) && storefrontSentRef.current !== storefront) {
-				storefrontSentRef.current = storefront;
-				sendRef.current({ type: 'APPLE_STOREFRONT', payload: storefront });
+		let cancelled = false;
+		const report = async () => {
+			if (!music.isAuthorized) return;
+			let storefront = '';
+			try {
+				const response = await music.api.music('/v1/me/storefront');
+				storefront = String(response?.data?.data?.[0]?.id || '').toLowerCase();
+			} catch {
+				return; // asked again on the next change
 			}
+			if (cancelled || !/^[a-z]{2}$/.test(storefront) || storefrontSentRef.current === storefront) return;
+			storefrontSentRef.current = storefront;
+			sendRef.current({ type: 'APPLE_STOREFRONT', payload: storefront });
 		};
 		report();
-		music.addEventListener('storefrontIdentifierDidChange', report);
 		music.addEventListener('storefrontCountryCodeDidChange', report);
+		music.addEventListener('authorizationStatusDidChange', report);
 		return () => {
-			music.removeEventListener('storefrontIdentifierDidChange', report);
+			cancelled = true;
 			music.removeEventListener('storefrontCountryCodeDidChange', report);
+			music.removeEventListener('authorizationStatusDidChange', report);
 		};
 	}, [music, status, sendRef]);
 
