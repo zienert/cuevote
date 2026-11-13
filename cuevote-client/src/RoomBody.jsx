@@ -1569,7 +1569,7 @@ function RoomBody() {
   return (
     <ConsentContext.Provider value={roomConsent}>
     <div
-      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-[100dvh] h-screen overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-[100dvh] h-screen overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
+      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
       style={isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined}
     >
       {ipBlockDetected && !throttleDismissed && (
