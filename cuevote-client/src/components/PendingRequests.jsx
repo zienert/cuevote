@@ -62,13 +62,15 @@ export const PendingRequestsExports = {
 						</div>
 
 						<div className="flex gap-2 justify-center flex-shrink-0 pl-2 pt-1">
-							<button
-								onClick={() => onPreview && onPreview(track)}
-								className="p-1.5 rounded-full bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
-								title={t('pending.preview')}
-							>
-								<Headphones size={16} />
-							</button>
+							{onPreview && (
+								<button
+									onClick={() => onPreview(track)}
+									className="p-1.5 rounded-full bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
+									title={t('pending.preview')}
+								>
+									<Headphones size={16} />
+								</button>
+							)}
 							<button
 								onClick={() => onBan(track.id)}
 								className="p-1.5 rounded-full bg-neutral-800 text-neutral-400 hover:bg-red-900 hover:text-red-400 transition-colors"
@@ -161,13 +163,15 @@ export const PendingRequestsExports = {
 								</div>
 
 								<div className="flex items-center gap-2 flex-shrink-0 sm:pl-4 pt-1 sm:pt-0">
-									<button
-										onClick={() => onPreview && onPreview(track)}
-										className="p-2 sm:px-4 sm:py-2 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors font-medium flex items-center gap-2"
-										title={t('pending.preview')}
-									>
-										<Headphones size={18} /> <span className="hidden sm:inline">{t('pending.preview')}</span>
-									</button>
+									{onPreview && (
+										<button
+											onClick={() => onPreview(track)}
+											className="p-2 sm:px-4 sm:py-2 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors font-medium flex items-center gap-2"
+											title={t('pending.preview')}
+										>
+											<Headphones size={18} /> <span className="hidden sm:inline">{t('pending.preview')}</span>
+										</button>
+									)}
 									<button
 										onClick={() => onBan(track.id)}
 										className="p-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-800 text-neutral-400 hover:bg-red-900/30 hover:text-red-400 transition-colors font-medium flex items-center gap-2"
