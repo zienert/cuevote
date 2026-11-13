@@ -320,8 +320,10 @@ suggest through the server, which searches Apple's catalog in the host's
 country. Without the setup below the lobby offers no Apple Music option, and
 existing Apple Music channels refuse suggestions.
 
-1. Copy the MusicKit key (`AuthKey_<KEY_ID>.p8`, Media Services) to
-   `/etc/cuevote/`, owned by the server user, `chmod 600`.
+1. Copy the MusicKit key (`AuthKey_<KEY_ID>.p8`, Media Services) outside the
+   repo, owned by the server user, `chmod 600`: `/etc/cuevote/` where you have
+   root, otherwise the server user's `~/.config/cuevote/` (directory
+   `chmod 700`).
 2. Set `APPLE_MUSIC_TEAM_ID`, `APPLE_MUSIC_KEY_ID` and
    `APPLE_MUSIC_PRIVATE_KEY_PATH` (section 3). `ALLOWED_ORIGINS` must list
    both apex and `www`: browser tokens are only valid on those origins.
@@ -330,9 +332,9 @@ existing Apple Music channels refuse suggestions.
 
 ```nginx
     # Apple Music developer token (MusicKit on the Web). Exact match, so
-    # nothing else under /api/ reaches Node.
+    # nothing else under /api/ reaches Node. 127.0.0.1: Node listens on IPv4.
     location = /api/apple-music/developer-token {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://127.0.0.1:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
@@ -342,7 +344,9 @@ existing Apple Music channels refuse suggestions.
 5. Restart the server and check:
    `curl -sI https://your-domain.com/api/apple-music/developer-token` answers
    `200` with `application/json` (`404` means the `APPLE_MUSIC_*` values are
-   not all set), and the lobby shows "Music source" when creating a channel.
+   not all set; `text/html` means nginx answers with the app because the
+   location from step 3 is missing), and the lobby shows "Music source" when
+   creating a channel.
 
 The CSP lists the Apple hosts even while Apple Music is off; nothing loads
 from them then.
