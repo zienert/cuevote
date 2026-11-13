@@ -21,7 +21,9 @@ import {
 } from '../utils/musicKit';
 
 const LAB_VERSION = 'cuevote-apple-music-lab/1';
-const DEFAULT_QUERY = 'Billie Eilish';
+// Apple's catalog search returns few music videos per term; this one yields the
+// three the auto-advance test needs ("Billie Eilish" returned only one).
+const DEFAULT_QUERY = 'Dua Lipa';
 const SAMPLE_MS = 500;
 const LOG_LIMIT = 300;
 // The auto-advance test counts a video as started once it has played this long.
