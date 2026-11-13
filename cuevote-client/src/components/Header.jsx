@@ -202,6 +202,13 @@ export function Header({
           <button onClick={onLibrary} className={pillClass(mode === "library")}>
             <Library size={15} /><span>{t('header.library')}</span>
           </button>
+          {/* Desktop guests in the playlist view (venue mode, every Apple
+              room) suggest from here; touch devices have their own button. */}
+          {includeSuggest && (
+            <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest)} ${suggestDisabled ? "opacity-40" : ""}`}>
+              <Send size={15} /><span>{t('header.suggest')}</span>
+            </button>
+          )}
         </>
       );
     }
