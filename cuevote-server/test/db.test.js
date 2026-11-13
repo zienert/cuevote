@@ -127,6 +127,13 @@ describe('Database Module', () => {
       assert.equal(apple.provider, 'apple');
     });
 
+    it('should tell the provider of a room before anyone joins', () => {
+      assert.equal(db.getRoomProvider('test-room-1'), 'youtube');
+      assert.equal(db.getRoomProvider('test-room-apple'), 'apple');
+      assert.equal(db.getRoomProvider('TEST-ROOM-APPLE'), 'apple');
+      assert.equal(db.getRoomProvider('no-such-room'), null);
+    });
+
     it('should refuse an unknown provider', () => {
       assert.throws(() => db.createRoom({
         id: 'test-room-bad-provider',

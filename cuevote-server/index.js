@@ -677,6 +677,21 @@ wss.on("connection", (ws, req) => {
                     }
                     return;
                 }
+                case "ROOM_PROVIDER": {
+                    // Before joining, the welcome screen asks for the consent the
+                    // channel needs: YouTube or Apple Music.
+                    const providerResult = schemas.RoomProviderPayload.safeParse(parsedMessage.payload);
+                    if (!providerResult.success) return;
+                    const { roomId } = providerResult.data;
+                    let provider = null;
+                    try {
+                        provider = db.getRoomProvider(roomId);
+                    } catch (e) {
+                        logger.error(`ROOM_PROVIDER lookup failed: ${e && e.message}`);
+                    }
+                    ws.send(JSON.stringify({ type: "ROOM_PROVIDER", payload: { roomId, provider } }));
+                    return;
+                }
                 case "LIST_ROOMS": {
                     const listResult = schemas.ListRoomsPayload.safeParse(parsedMessage.payload);
                     const listPayload = listResult.success ? (listResult.data || {}) : {};

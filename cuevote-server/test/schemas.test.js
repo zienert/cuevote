@@ -39,6 +39,15 @@ describe('Zod Schemas', () => {
     });
   });
 
+  describe('RoomProviderPayload', () => {
+    it('should take a room id and nothing else of note', () => {
+      assert.ok(schemas.RoomProviderPayload.safeParse({ roomId: 'apple-test-e6b64131f81d9fff' }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse({ roomId: '' }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse({ roomId: 'x'.repeat(201) }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse(undefined).success);
+    });
+  });
+
   describe('CreateRoomPayload', () => {
     it('should accept valid room creation', () => {
       const result = schemas.CreateRoomPayload.safeParse({

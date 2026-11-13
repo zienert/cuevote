@@ -26,6 +26,11 @@ const JoinRoomPayload = z.object({
   password: z.string().max(PASSWORD_MAX).optional(),
 });
 
+// Asked before joining: which consent the welcome screen needs.
+const RoomProviderPayload = z.object({
+  roomId: z.string().min(1).max(200),
+});
+
 const CreateRoomPayload = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
@@ -134,6 +139,7 @@ module.exports = {
   ResumeSessionPayload,
   LogoutPayload,
   JoinRoomPayload,
+  RoomProviderPayload,
   CreateRoomPayload,
   ListRoomsPayload,
   SuggestSongPayload,

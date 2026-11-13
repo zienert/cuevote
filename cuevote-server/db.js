@@ -194,6 +194,12 @@ module.exports = {
   },
   deleteRoom: (id) => db.prepare('DELETE FROM rooms WHERE id = ?').run(id),
   getRoom: (id) => db.prepare('SELECT * FROM rooms WHERE id = ?').get(id),
+  // 'youtube' | 'apple', or null for no such room. Same id spellings as JOIN_ROOM.
+  getRoomProvider: (id) => {
+    const select = db.prepare('SELECT provider FROM rooms WHERE id = ?');
+    const row = select.get(id) || select.get(id.toLowerCase()) || select.get(id.toUpperCase());
+    return row ? (row.provider || 'youtube') : null;
+  },
   listPublicRooms: (limit = 50, offset = 0) => {
     const activeDays = parseInt(process.env.ACTIVE_CHANNEL_DAYS || '60', 10);
     const threshold = Math.floor(Date.now() / 1000) - (activeDays * 24 * 60 * 60);
