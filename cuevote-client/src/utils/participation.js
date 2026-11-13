@@ -23,6 +23,12 @@ export function participationErrorKey(code) {
 		case 'ACCOUNT_REQUIRED': return 'errors.accountRequired';
 		case 'NO_IDENTITY': return 'errors.sessionNotReady';
 		case 'GUEST_LIMIT': return 'errors.guestLimit';
+		case 'APPLE_MUSIC_UNAVAILABLE': return 'errors.appleMusicUnavailable';
+		case 'APPLE_MUSIC_NOT_CONNECTED': return 'errors.appleMusicNotConnected';
+		case 'APPLE_MUSIC_ROOM': return 'errors.appleMusicRoom';
+		case 'APPLE_MUSIC_NOT_FOUND': return 'errors.appleMusicNotFound';
+		case 'APPLE_MUSIC_NOT_IN_STOREFRONT': return 'errors.appleMusicNotInStorefront';
+		case 'APPLE_MUSIC_CATALOG_ERROR': return 'errors.appleMusicCatalogError';
 		default: return null;
 	}
 }

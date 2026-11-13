@@ -9,6 +9,9 @@ import { Language } from './contexts/LanguageContext';
 import { Header } from "./components/Header";
 import { SuggestSongForm } from "./components/SuggestSongForm";
 import { Player } from "./components/Player";
+import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
+import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
+import { parseTrackKey } from "./utils/trackKeys";
 import { Queue } from "./components/Queue";
 import { Suggestions } from "./components/Suggestions";
 import { PlaylistView } from "./components/PlaylistView";
@@ -177,8 +180,12 @@ function RoomBody() {
     autoRefill = false,
     bannedVideos = [], // Added this
     captionsEnabled = false,
-    requireLogin = false
+    requireLogin = false,
+    provider = 'youtube'
   } = serverState || {};
+  // Apple Music rooms play only on the owner's device (MusicKit needs the
+  // host's own subscription); everyone else gets the playlist view.
+  const isAppleRoom = provider === 'apple';
 
   // Calculate set of ALL videoIds currently in the queue or playing for suggestion "Added" check
   const queueVideoIds = useMemo(() => {
@@ -210,11 +217,20 @@ function RoomBody() {
   // regardless of room settings. Distinct from the owner-configured
   // playlistViewMode below (e.g. desktop, where playback works fine).
   const isForcedVenueMode = deviceDetection.isMobileWebBrowser();
-  const isVenueMode = (playlistViewMode && !isOwner && !deviceDetection.isTV()) || isForcedVenueMode;
+  const isVenueMode = (playlistViewMode && !isOwner && !deviceDetection.isTV()) || isForcedVenueMode
+    || (isAppleRoom && !isOwner);
   // Prelisten streams audio through the YT player. Disable it ONLY in forced
   // Venue Mode (mobile browser + app not running) — unreliable there and outside
   // the browser feature set we advertise. Configured venue mode keeps prelisten.
-  const prelistenEnabled = allowPrelisten && !isForcedVenueMode;
+  // Apple rooms have no YouTube player to prelisten with.
+  const prelistenEnabled = allowPrelisten && !isForcedVenueMode && !isAppleRoom;
+  const apple = useAppleMusicHost({
+    enabled: isAppleRoom && !!isOwner && hasConsent && !isForcedVenueMode,
+    currentTrack,
+    isPlaying,
+    progressRef,
+    sendMessage,
+  });
   // Android web guests can sideload the native app; offer it via a footer + a
   // pre-download comparison. iOS cannot sideload, so it never sees this.
   const showAppFooter = deviceDetection.isAndroid() && !deviceDetection.isNativeApp();
@@ -453,7 +469,11 @@ function RoomBody() {
         if (lastMessage.message === "Added") return; // Suppress redundant "Success" popup for video additions
         setToast({ message: lastMessage.payload || "Success", type: "success" });
       }
-      else if (lastMessage.type === 'error') setToast({ message: lastMessage.message, type: "error" });
+      // A coded error was already shown translated by the effect above; showing
+      // the server's English text here would overwrite it in the same render.
+      else if (lastMessage.type === 'error' && !participationErrorKey(lastMessage.code)) {
+        setToast({ message: lastMessage.message, type: "error" });
+      }
     }
   }, [lastMessage, showSuggestRef]);
 
@@ -870,6 +890,9 @@ function RoomBody() {
   const playerContainerRef = useCallback(node => {
     if (!hasConsent) return;
     if (node !== null) {
+      // Never a YouTube player in an Apple Music room: it would try to load
+      // Apple track keys as YouTube ids and report the failures.
+      if (isAppleRoom) return;
       initializePlayer(node);
     } else {
       playerInitIdRef.current++;
@@ -886,7 +909,7 @@ function RoomBody() {
         stallRetriesRef.current = 0;
       }
     }
-  }, [initializePlayer, hasConsent]);
+  }, [initializePlayer, hasConsent, isAppleRoom]);
 
   // Main playback logic. The player starts muted by default (isMuted=true),
   // which lets the browser allow muted autoplay even before any user
@@ -1153,6 +1176,20 @@ function RoomBody() {
     return () => clearInterval(interval);
   }, [isPlayerReady, progressRef]);
 
+  // The same progress bar for the host's Apple Music player.
+  const appleStatus = apple.status;
+  const getAppleDuration = apple.getDuration;
+  useEffect(() => {
+    if (appleStatus !== 'ready') return;
+    const update = () => {
+      const duration = getAppleDuration() || currentTrackRef.current?.duration || 0;
+      setProgress(duration > 0 ? Math.min(100, (progressRef.current / duration) * 100) : 0);
+    };
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [appleStatus, getAppleDuration, progressRef]);
+
   // Event Handlers
 
   const handlePlayPause = () => {
@@ -1230,6 +1267,13 @@ function RoomBody() {
   }, [user, requireLogin, sendMessage, t]);
 
   const handleLibraryAdd = useCallback((videoId) => {
+    // Re-suggest by link, which the server resolves without a search. Apple
+    // links carry a storefront in the path; the server uses the host's.
+    const key = parseTrackKey(videoId);
+    if (key?.provider === 'apple') {
+      const type = key.kind === 'musicVideo' ? 'music-video' : 'song';
+      return handleSongSuggested(`https://music.apple.com/us/${type}/${key.id}`);
+    }
     return handleSongSuggested(`https://www.youtube.com/watch?v=${videoId}`);
   }, [handleSongSuggested]);
 
@@ -1314,6 +1358,14 @@ function RoomBody() {
   };
 
   const handleSeek = (percentage) => {
+    if (isAppleRoom) {
+      const duration = apple.getDuration() || currentTrack?.duration || 0;
+      if (!isOwner || !duration) return;
+      const seconds = (percentage / 100) * duration;
+      sendMessage({ type: "SEEK_TO", payload: seconds });
+      apple.seek(seconds);
+      return;
+    }
     if (!playerRef.current) return;
     const duration = playerRef.current.getDuration();
     if (!duration) return;
@@ -1540,6 +1592,7 @@ function RoomBody() {
       {!isCinemaMode && (
         <div className="sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out">
           <Header
+            showYouTubeAttribution={!isAppleRoom}
             onGoHome={() => navigate("/")}
             onShowSuggest={setShowSuggest}
             user={user}
@@ -1614,14 +1667,14 @@ function RoomBody() {
               <SuggestSongForm
                 onSongSuggested={handleSongSuggested}
                 onShowSuggest={setShowSuggest}
-                serverError={lastError}
+                serverError={participationErrorKey(lastErrorCode) ? t(participationErrorKey(lastErrorCode)) : lastError}
                 serverMessage={lastMessage}
                 isOwner={isOwner && ownerBypass}
                 suggestionsEnabled={suggestionsEnabled}
                 suggestionMode={suggestionMode}
                 isConnected={isConnected}
                 currentTrack={currentTrack}
-                onRecommend={handleFetchSuggestions}
+                onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
                 suggestions={manualSuggestions}
                 isFetchingSuggestions={isFetchingSuggestions}
                 queueVideoIds={queueVideoIds}
@@ -1639,7 +1692,7 @@ function RoomBody() {
             onApprove={handleApproveSuggestion}
             onReject={handleRejectSuggestion}
             onBan={handleBanSuggestion}
-            onPreview={handlePreviewTrack}
+            onPreview={isAppleRoom ? undefined : handlePreviewTrack}
             onClose={() => handleUpdateSettings({ ownerPopups: false })}
           />
         ) : null;
@@ -1654,7 +1707,7 @@ function RoomBody() {
             onReject={handleRejectSuggestion}
             onBan={handleBanSuggestion}
             onManageBanned={() => setShowBannedPage(true)}
-            onPreview={handlePreviewTrack}
+            onPreview={isAppleRoom ? undefined : handlePreviewTrack}
             onClose={() => setShowPendingPage(false)}
           />
         ) : null;
@@ -1681,7 +1734,7 @@ function RoomBody() {
                     playerContainerRef={playerContainerRef}
                   />
                 )
-              ) : (CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>)}
+              ) : (CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent player={isAppleRoom ? 'apple' : 'youtube'} /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>)}
             </PlayerErrorBoundary>
           </div>
         </div>
@@ -1737,7 +1790,7 @@ function RoomBody() {
               votesEnabled={serverState?.votesEnabled ?? true}
               onPreview={prelistenEnabled ? handlePreviewTrack : null}
               onDelete={isOwner ? handleDeleteSong : null}
-              onRecommend={handleFetchSuggestions} // Passed handler
+              onRecommend={isAppleRoom ? undefined : handleFetchSuggestions} // Passed handler
               onAdd={handleLibraryAdd}
               // Suggestions Props
               activeSuggestionId={activeSuggestionId}
@@ -1767,12 +1820,14 @@ function RoomBody() {
             {!showPendingPage && !showBannedPage && (
               <div className="absolute inset-0">
                 {!hasConsent ? (
-                  CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
+                  CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent player={isAppleRoom ? 'apple' : 'youtube'} /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
                 ) : (
                   <>
                     <div style={{ display: (currentTrack || previewTrack) ? 'block' : 'none', width: '100%', height: '100%' }}>
                       <PlayerErrorBoundary>
-                        {playbackError ? (
+                        {isAppleRoom ? (
+                          <AppleMusicHostPlayer apple={apple} currentTrack={currentTrack} />
+                        ) : playbackError ? (
                           <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900 text-center p-6 space-y-4">
                             <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400">
                               <AlertTriangle size={24} />
@@ -1813,7 +1868,7 @@ function RoomBody() {
             onPreview={prelistenEnabled ? handlePreviewTrack : null}
             votesEnabled={serverState?.votesEnabled ?? true}
             onDelete={isOwner ? handleDeleteSong : null}
-            onRecommend={handleFetchSuggestions}
+            onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
             onAdd={handleLibraryAdd}
             activeSuggestionId={activeSuggestionId}
             suggestions={manualSuggestions}

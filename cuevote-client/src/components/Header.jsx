@@ -38,6 +38,8 @@ export function Header({
   ownerBypass,
   playlistViewMode,
   onFullscreenOverlay,
+  // An Apple Music room plays nothing from YouTube, so it carries no YouTube attribution.
+  showYouTubeAttribution = true,
 }) {
   const headerRef = React.useRef(null);
   const [showExitConfirm, setShowExitConfirm] = React.useState(false);
@@ -330,7 +332,7 @@ export function Header({
             {suggestButton}
           </div>
         )}
-        <YouTubeBrandSubtitle className="flex-shrink-0 whitespace-nowrap" />
+        {showYouTubeAttribution && <YouTubeBrandSubtitle className="flex-shrink-0 whitespace-nowrap" />}
       </div>
 
       {/* Mobile (< md): grid layout with two left-column rows + a tall
@@ -342,7 +344,7 @@ export function Header({
           {wordmark}
           {backButton}
           {userIdentity}
-          <YouTubeBrandSubtitle className="leading-tight text-center" />
+          {showYouTubeAttribution && <YouTubeBrandSubtitle className="leading-tight text-center" />}
         </div>
         <div className="row-span-2 flex items-stretch">
           {suggestButtonTall}
@@ -590,5 +592,6 @@ Header.propTypes = {
   suggestionsEnabled: PropTypes.bool,
   ownerBypass: PropTypes.bool,
   playlistViewMode: PropTypes.bool,
+  showYouTubeAttribution: PropTypes.bool,
   onFullscreenOverlay: PropTypes.func,
 };

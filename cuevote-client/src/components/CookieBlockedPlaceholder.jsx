@@ -5,7 +5,9 @@ import { Cookie } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 import { Consent } from '../contexts/ConsentContext';
 
-export function CookieBlockedPlaceholder() {
+// `player` names whose player needs the consent: YouTube's IFrame player, or
+// Apple's MusicKit in an Apple Music room.
+export function CookieBlockedPlaceholder({ player = 'youtube' }) {
 	const { t } = Language.useLanguage();
 	const { giveConsent } = Consent.useConsent();
 
@@ -25,7 +27,7 @@ export function CookieBlockedPlaceholder() {
 						<div className="text-neutral-400 text-sm leading-relaxed max-w-xs mx-auto">
 							<p>{t('cookie.description')}</p>
 							<p className="mt-2 text-xs text-neutral-500">
-								{t('cookie.youtubeConsent')}
+								{player === 'apple' ? t('appleMusic.consent') : t('cookie.youtubeConsent')}
 								<br />
 								<a href="/legal" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 underline underline-offset-2 mt-1 inline-block">
 									{t('cookie.policy')}
