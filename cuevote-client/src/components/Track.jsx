@@ -43,13 +43,11 @@ export function Track({
   const { t } = Language.useLanguage();
   const { hasConsent, hasAppleConsent } = Consent.useConsent();
 
-  // Apple Music artwork may only appear next to playback: the current track
-  // and the queue, never history or the library. Apple items have no YouTube
-  // thumbnail or watch page to fall back to.
+  // Apple Music artwork may appear with playback or playlists (current track,
+  // queue, history, library), never on its own like in the lobby. Apple items
+  // have no YouTube thumbnail or watch page to fall back to.
   const isApple = isAppleKey(track.videoId);
-  const thumbnailSrc = (isApple && readOnly && !isActive)
-    ? null
-    : (track.thumbnail ?? (isApple ? null : buildThumbnailUrl(track.videoId)));
+  const thumbnailSrc = track.thumbnail ?? (isApple ? null : buildThumbnailUrl(track.videoId));
 
   return (
     <div

@@ -9,8 +9,15 @@ import { suggesterLabel } from "../utils/participation";
 import { isAppleKey } from "../utils/trackKeys";
 
 const buildThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-// Apple Music artwork may only appear next to playback, not in the review list.
-const artworkFor = (track) => (isAppleKey(track.videoId) ? null : (track.thumbnail ?? buildThumbnailUrl(track.videoId)));
+// Apple Music artwork may appear with playback or playlists, and reviewing what
+// enters the queue is managing the playlist. Apple items have no YouTube
+// thumbnail to fall back to.
+const artworkFor = (track) => track.thumbnail ?? (isAppleKey(track.videoId) ? null : buildThumbnailUrl(track.videoId));
+const fallBackToYouTube = (event, track) => {
+	if (isAppleKey(track.videoId)) return;
+	const fallback = buildThumbnailUrl(track.videoId);
+	if (event.target.src !== fallback) event.target.src = fallback;
+};
 
 // Single export with inline components so bundler cannot reorder and cause TDZ.
 export const PendingRequestsExports = {
@@ -40,10 +47,7 @@ export const PendingRequestsExports = {
 								src={artworkFor(track)}
 								alt={track.title}
 								className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
-								onError={(e) => {
-									const fallback = buildThumbnailUrl(track.videoId);
-									if (e.target.src !== fallback) e.target.src = fallback;
-								}}
+								onError={(e) => fallBackToYouTube(e, track)}
 							/>
 						) : (
 							<div className="w-10 h-10 sm:w-12 sm:h-12 rounded bg-neutral-800 flex-shrink-0" aria-hidden="true" />
@@ -141,10 +145,7 @@ export const PendingRequestsExports = {
 											src={artworkFor(track)}
 											alt={track.title}
 											className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
-											onError={(e) => {
-												const fallback = buildThumbnailUrl(track.videoId);
-												if (e.target.src !== fallback) e.target.src = fallback;
-											}}
+											onError={(e) => fallBackToYouTube(e, track)}
 										/>
 									) : (
 										<div className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg bg-neutral-800 flex-shrink-0" aria-hidden="true" />
