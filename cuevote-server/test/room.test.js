@@ -84,6 +84,22 @@ describe('Room', () => {
       assert.equal(room.metadata.language_flag, 'en');
       room.destroy();
     });
+
+    it('should carry the room provider into state and summary', () => {
+      const youtube = new Room('provider-yt', 'YT', null, { owner_id: 'owner-1' });
+      assert.equal(youtube.state.provider, 'youtube');
+      assert.equal(youtube.getSummary().provider, 'youtube');
+      youtube.destroy();
+
+      const apple = new Room('provider-am', 'AM', null, { owner_id: 'owner-1', provider: 'apple' });
+      assert.equal(apple.state.provider, 'apple');
+      assert.equal(apple.getSummary().provider, 'apple');
+      apple.destroy();
+
+      const unknown = new Room('provider-x', 'X', null, { owner_id: 'owner-1', provider: 'spotify' });
+      assert.equal(unknown.state.provider, 'youtube');
+      unknown.destroy();
+    });
   });
 
   describe('Client Management', () => {

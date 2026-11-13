@@ -112,6 +112,35 @@ describe('Database Module', () => {
       assert.equal(room.owner_id, 'test-user-1');
     });
 
+    it('should make rooms YouTube rooms unless told otherwise', () => {
+      assert.equal(db.getRoom('test-room-1').provider, 'youtube');
+      const apple = db.createRoom({
+        id: 'test-room-apple',
+        name: 'Apple Room',
+        description: '',
+        owner_id: 'test-user-1',
+        color: 'red',
+        is_public: 1,
+        password: null,
+        provider: 'apple',
+      });
+      assert.equal(apple.provider, 'apple');
+    });
+
+    it('should refuse an unknown provider', () => {
+      assert.throws(() => db.createRoom({
+        id: 'test-room-bad-provider',
+        name: 'Bad Provider',
+        description: '',
+        owner_id: 'test-user-1',
+        color: 'red',
+        is_public: 1,
+        password: null,
+        provider: 'spotify',
+      }), /CHECK constraint failed/);
+      assert.equal(db.getRoom('test-room-bad-provider'), undefined);
+    });
+
     it('should list public rooms', () => {
             const rooms = db.listPublicRooms();
       assert.ok(Array.isArray(rooms));

@@ -88,7 +88,9 @@ class Room {
             password: metadata.password || null,
             captions_enabled: metadata.captions_enabled !== undefined ? metadata.captions_enabled : 0,
             language_flag: metadata.language_flag || 'international',
-            require_login: metadata.require_login !== undefined ? metadata.require_login : 0
+            require_login: metadata.require_login !== undefined ? metadata.require_login : 0,
+            // Fixed at creation: an Apple Music room never takes YouTube tracks.
+            provider: metadata.provider === 'apple' ? 'apple' : 'youtube'
         };
         this.clients = new Set();
         this.knownVideos = new Set(); // Stores videoIds of approved videos
@@ -108,6 +110,7 @@ class Room {
             progress: 0,
             activeChannel: name,
             ownerId: metadata.owner_id,
+            provider: this.metadata.provider,
             suggestionsEnabled: true,
             musicOnly: false, // Default false
             maxDuration: 600, // Default 10 minutes
@@ -246,7 +249,8 @@ class Room {
                 artist: track.artist,
             } : null,
             isActive: true,
-            language_flag: this.metadata.language_flag
+            language_flag: this.metadata.language_flag,
+            provider: this.metadata.provider
         };
     }
 

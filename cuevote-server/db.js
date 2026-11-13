@@ -182,11 +182,12 @@ module.exports = {
   // Room Management
   createRoom: (room) => {
     const stmt = db.prepare(`
-        INSERT INTO rooms (id, name, description, owner_id, color, is_public, password, captions_enabled, language_flag)
-        VALUES (@id, @name, @description, @owner_id, @color, @is_public, @password, @captions_enabled, @language_flag)
+        INSERT INTO rooms (id, name, description, owner_id, color, is_public, password, captions_enabled, language_flag, provider)
+        VALUES (@id, @name, @description, @owner_id, @color, @is_public, @password, @captions_enabled, @language_flag, @provider)
     `);
     if (room.captions_enabled === undefined) room.captions_enabled = 0;
     if (room.language_flag === undefined) room.language_flag = 'international';
+    if (room.provider === undefined) room.provider = 'youtube';
 
     stmt.run(room);
     return db.prepare('SELECT * FROM rooms WHERE id = ?').get(room.id);
