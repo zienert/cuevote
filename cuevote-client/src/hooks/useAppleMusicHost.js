@@ -148,13 +148,25 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	}, [music, currentKeyRef, currentEntryRef, sendRef]);
 
 	// Tell the server the host's country: guests' suggestions are looked up there.
+	// Right after signing in MusicKit still reports its default storefront (us)
+	// and learns the account's own a moment later (13.11.2026), so every change
+	// is passed on, not only the first value.
 	useEffect(() => {
-		if (!music || status !== 'ready') return;
-		const storefront = String(music.storefrontId || '').toLowerCase();
-		if (/^[a-z]{2}$/.test(storefront) && storefrontSentRef.current !== storefront) {
-			storefrontSentRef.current = storefront;
-			sendRef.current({ type: 'APPLE_STOREFRONT', payload: storefront });
-		}
+		if (!music || status !== 'ready') return undefined;
+		const report = () => {
+			const storefront = String(music.storefrontId || '').toLowerCase();
+			if (/^[a-z]{2}$/.test(storefront) && storefrontSentRef.current !== storefront) {
+				storefrontSentRef.current = storefront;
+				sendRef.current({ type: 'APPLE_STOREFRONT', payload: storefront });
+			}
+		};
+		report();
+		music.addEventListener('storefrontIdentifierDidChange', report);
+		music.addEventListener('storefrontCountryCodeDidChange', report);
+		return () => {
+			music.removeEventListener('storefrontIdentifierDidChange', report);
+			music.removeEventListener('storefrontCountryCodeDidChange', report);
+		};
 	}, [music, status, sendRef]);
 
 	const play = useCallback(async () => {
