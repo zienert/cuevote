@@ -40,6 +40,9 @@ export function Header({
   onFullscreenOverlay,
   // An Apple Music room plays nothing from YouTube, so it carries no YouTube attribution.
   showYouTubeAttribution = true,
+  // On phones in the playlist view the bar sits at the bottom of the screen:
+  // it then keeps clear of the home indicator instead of the status bar.
+  atBottom = false,
 }) {
   const headerRef = React.useRef(null);
   const [showExitConfirm, setShowExitConfirm] = React.useState(false);
@@ -318,7 +321,7 @@ export function Header({
   return (
     <header
       ref={headerRef}
-      className="px-2 py-1.5 md:px-3 md:py-2 w-full safe-pt"
+      className={`px-2 py-1.5 md:px-3 md:py-2 w-full ${atBottom ? "safe-pb" : "safe-pt"}`}
     >
       {/* Desktop / tablet-landscape (≥ md): single-row layout */}
       <div className="hidden md:flex items-center w-full gap-2">
@@ -601,4 +604,5 @@ Header.propTypes = {
   playlistViewMode: PropTypes.bool,
   showYouTubeAttribution: PropTypes.bool,
   onFullscreenOverlay: PropTypes.func,
+  atBottom: PropTypes.bool,
 };

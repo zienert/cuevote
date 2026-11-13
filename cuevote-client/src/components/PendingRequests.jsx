@@ -25,7 +25,11 @@ export const PendingRequestsExports = {
 		const { t } = Language.useLanguage();
 		if (!requests || requests.length === 0) return null;
 		return (
-		<div className="fixed bottom-20 sm:bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[450px] z-30 bg-neutral-900/95 backdrop-blur-md border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-5">
+		<div
+			className="fixed bottom-20 sm:bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[450px] z-30 bg-neutral-900/95 backdrop-blur-md border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-5"
+			// Clear of the room's bar when it sits at the bottom (phones).
+			style={{ marginBottom: 'var(--bottom-bar-h, 0px)' }}
+		>
 			<div className="bg-neutral-800/50 p-3 border-b border-neutral-700 flex justify-between items-center">
 				<h3 className="font-bold text-white flex items-center gap-2">
 					<Clock size={16} className="text-orange-500" />

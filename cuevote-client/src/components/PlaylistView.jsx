@@ -216,9 +216,13 @@ export function PlaylistView({
 
             {/* Back to Now Button - only in playlist tab.
                 When the Android app footer is present, bottom-20 lifts this clear of
-                AppPromoFooter (~52px tall) — keep in sync if that footer's height changes. */}
+                AppPromoFooter (~52px tall) — keep in sync if that footer's height changes.
+                The margin keeps it clear of the room's bar when that sits at the bottom. */}
             {!isLibrary && showJumpToNow && currentTrack && !disableFloatingUI && createPortal(
-                <div className={`fixed ${appFooterPresent ? 'bottom-20' : 'bottom-8'} right-8 z-[100] animate-fadeIn`}>
+                <div
+                    className={`fixed ${appFooterPresent ? 'bottom-20' : 'bottom-8'} right-8 z-[100] animate-fadeIn`}
+                    style={{ marginBottom: 'var(--bottom-bar-h, 0px)' }}
+                >
                     <button
                         onClick={() => scrollToCurrent(true)}
                         className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 hover:shadow-xl transition-all hover:-translate-y-0.5 active:translate-y-0 font-medium text-sm"
