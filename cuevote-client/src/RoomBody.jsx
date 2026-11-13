@@ -1193,6 +1193,17 @@ function RoomBody() {
     return () => clearInterval(interval);
   }, [appleStatus, getAppleDuration, progressRef]);
 
+  // The volume slider and mute button drive MusicKit in Apple rooms. Muted is
+  // only the YouTube start state (browsers allow muted autoplay); the Apple
+  // host starts with a click and sound on.
+  const setAppleVolume = apple.setVolume;
+  useEffect(() => {
+    if (isAppleRoom) setIsMuted(false);
+  }, [isAppleRoom]);
+  useEffect(() => {
+    if (isAppleRoom) setAppleVolume(isMuted ? 0 : volume / 100);
+  }, [isAppleRoom, isMuted, volume, setAppleVolume]);
+
   // Event Handlers
 
   const handlePlayPause = () => {
@@ -1242,6 +1253,11 @@ function RoomBody() {
     const newVolume = Number(e.target.value);
 
     setVolume(newVolume);
+
+    if (isAppleRoom) {
+      if (isMuted) setIsMuted(false);
+      return;
+    }
 
     if (playerRef.current) {
 

@@ -285,5 +285,13 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 
 	const getDuration = useCallback(() => (music?.currentPlaybackDuration || 0), [music]);
 
-	return { status, problem, connect, start, seek, getDuration };
+	// 0..1. A new identity once MusicKit is loaded, so callers apply it again.
+	const setVolume = useCallback((level) => {
+		if (!music) return;
+		try {
+			music.volume = Math.min(1, Math.max(0, Number(level) || 0));
+		} catch { /* not ready yet */ }
+	}, [music]);
+
+	return { status, problem, connect, start, seek, getDuration, setVolume };
 }
