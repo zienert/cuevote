@@ -942,6 +942,14 @@ describe('Room', () => {
       room.destroy();
     });
 
+    it('queues the original music video when Apple ranks a remix first', async () => {
+      useCatalog({ search: { videos: [video(1, 'Levitating (The Blessed Madonna Remix)'), video(2, 'Levitating')], songs: [] } });
+      const room = appleRoom();
+      await suggest(room, guestWs(), 'dua lipa levitating');
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+      room.destroy();
+    });
+
     it('falls back to a song when there is no music video', async () => {
       useCatalog({ search: { videos: [], songs: [song(1538003843, 'Levitating')] } });
       const room = appleRoom();

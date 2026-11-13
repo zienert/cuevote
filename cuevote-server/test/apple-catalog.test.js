@@ -4,6 +4,7 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  bestMatch,
   createAppleCatalog,
   parseAppleMusicLink,
   isStorefront,
@@ -178,6 +179,138 @@ describe('Apple Music catalog', () => {
         const catalog = createAppleCatalog({ getToken, fetchImpl: fakeFetch(() => answer) });
         await assert.rejects(catalog.search('us', 'x'), { code });
       }
+    });
+  });
+
+  // Titles as Apple's nl storefront returned them in November 2026.
+  describe('bestMatch', () => {
+    const v = (title, artist = 'Dua Lipa') => ({ videoId: `am:video:${title}`, kind: 'musicVideo', title, artist });
+    const s = (title, artist = 'Dua Lipa') => ({ videoId: `am:song:${title}`, kind: 'song', title, artist });
+    const levitating = [
+      v('Levitating (feat. Madonna and Missy Elliott) [The Blessed Madonna Remix]'),
+      v('Levitating (feat. DaBaby)'),
+      v('Levitating (Lyric Video)'),
+      v('Levitating (Live From Mexico)'),
+      v('New Rules'),
+    ];
+
+    it('prefers the original music video over remixes, lyric and live videos', () => {
+      const pick = bestMatch('Dua Lipa Levitating', { videos: levitating, songs: [s('Levitating')] });
+      assert.equal(pick.videoId, 'am:video:Levitating (feat. DaBaby)');
+
+      const antiHero = bestMatch('Anti-Hero', {
+        videos: [v('Anti-Hero (Lyric Video)', 'Taylor Swift'), v('Anti-Hero', 'Taylor Swift')],
+        songs: [s('Anti-Hero', 'Taylor Swift')],
+      });
+      assert.equal(antiHero.videoId, 'am:video:Anti-Hero');
+    });
+
+    it('gives a remix, a live or a lyric video to whoever asks for one', () => {
+      assert.match(bestMatch('levitating remix', { videos: levitating }).title, /Remix/);
+      assert.equal(bestMatch('levitating lyrics', { videos: levitating }).title, 'Levitating (Lyric Video)');
+      const atemlos = bestMatch('Atemlos live', {
+        videos: [
+          v('Atemlos durch die Nacht', 'Helene Fischer'),
+          v('Atemlos durch die Nacht (Regen-Version / Live in Berlin 2015)', 'Helene Fischer'),
+          v('Atemlos durch die Nacht (Live in München, 2022)', 'Helene Fischer'),
+        ],
+      });
+      assert.equal(atemlos.title, 'Atemlos durch die Nacht (Live in München, 2022)');
+    });
+
+    it('takes the song asked for over a music video of another one', () => {
+      const pick = bestMatch('Dua Lipa Levitating', {
+        videos: [v('New Rules'), v('One Kiss', 'Calvin Harris & Dua Lipa')],
+        songs: [s('Levitating')],
+      });
+      assert.equal(pick.videoId, 'am:song:Levitating');
+
+      const physical = bestMatch('Olivia Newton-John Physical', {
+        videos: [v('Physical')],
+        songs: [s('Physical (Remastered 2021)', 'Olivia Newton-John')],
+      });
+      assert.equal(physical.artist, 'Olivia Newton-John');
+    });
+
+    it('prefers the original artist over a cover and the song over a special edition', () => {
+      const rhapsody = bestMatch('Bohemian Rhapsody', {
+        videos: [
+          v('Bohemian Rhapsody (Live)', 'Queen'),
+          v('Bohemian Rhapsody', 'Pentatonix'),
+          v('Bohemian Rhapsody (Remastered)', 'Queen'),
+        ],
+        songs: [s('Bohemian Rhapsody', 'Queen')],
+      });
+      assert.equal(rhapsody.videoId, 'am:video:Bohemian Rhapsody (Remastered)');
+
+      const caroline = bestMatch('Sweet Caroline', {
+        videos: [
+          v('Sweet Caroline (Live At The Greek Theatre / 2012)', 'Neil Diamond'),
+          v('Sweet Caroline (Hands Washing Hands)', 'Neil Diamond'),
+        ],
+        songs: [s('Sweet Caroline', 'Neil Diamond')],
+      });
+      assert.equal(caroline.videoId, 'am:song:Sweet Caroline');
+    });
+
+    it('takes the original song over a cover video, and the most common artist as the original', () => {
+      const skandal = bestMatch('Skandal im Sperrbezirk', {
+        videos: [v('Skandal im Sperrbezirk', 'Eisbrecher')],
+        songs: [s('Skandal im Sperrbezirk', 'Spider Murphy Gang'), s('Skandal im Sperrbezirk (Remastered)', 'Spider Murphy Gang')],
+      });
+      assert.equal(skandal.artist, 'Spider Murphy Gang');
+
+      const physical = bestMatch('Physical', {
+        videos: [v('Physical'), v('Physical (Directors Cut)')],
+        songs: [s('Physical (Remastered 2021)', 'Olivia Newton-John'), s('Physical')],
+      });
+      assert.equal(physical.videoId, 'am:video:Physical');
+
+      const cordula = bestMatch('Cordula Grün', {
+        videos: [v('Cordula Grün', 'Die Draufgänger')],
+        songs: [s('Cordula Grün', 'Die Draufgänger'), s('Cordula Grün (feat. CNASM)', 'Cordula Grün')],
+      });
+      assert.equal(cordula.videoId, 'am:video:Cordula Grün');
+    });
+
+    it('treats a subtitle as part of the title unless the plain title exists too', () => {
+      const stern = bestMatch('Ein Stern', {
+        videos: [v('Ein Stern (Bassflow Remix)', 'DJ Ötzi & Nik P.'), v('Ein Stern (Ich find Schlager toll Live / 2020)', 'DJ Ötzi')],
+        songs: [
+          s('Ein Stern (Der deinen Namen trägt) [Party Mix]', 'DJ Ötzi & Nik P.'),
+          s('Ein Stern', 'Maria Levin'),
+          s('Ein Stern (der deinen Namen trägt) [Radio Mix]', 'DJ Ötzi & Nik P.'),
+        ],
+      });
+      assert.equal(stern.title, 'Ein Stern (der deinen Namen trägt) [Radio Mix]');
+    });
+
+    it('reads radio and single versions as the original and spares "Behind Blue Eyes"', () => {
+      assert.equal(bestMatch('Summer', { videos: [v('Summer (Radio Edit)', 'Calvin Harris')], songs: [s('Summer', 'Calvin Harris')] }).kind, 'musicVideo');
+      assert.equal(bestMatch('Summer', { videos: [v('Summer (Single Version)', 'Calvin Harris')], songs: [s('Summer', 'Calvin Harris')] }).kind, 'musicVideo');
+      assert.equal(bestMatch('Behind Blue Eyes', { videos: [v('Behind Blue Eyes', 'The Who')], songs: [s('Behind Blue Eyes', 'The Who')] }).kind, 'musicVideo');
+    });
+
+    it('keeps a lyric video of the right song over the song, a live one not', () => {
+      assert.equal(bestMatch('Levitating', { videos: [v('Levitating (Lyric Video)')], songs: [s('Levitating')] }).kind, 'musicVideo');
+      assert.equal(bestMatch('Levitating', { videos: [v('Levitating (Live From Mexico)')], songs: [s('Levitating')] }).kind, 'song');
+    });
+
+    it('skips live versions and interviews even when the words match nothing', () => {
+      const typo = bestMatch('Blindin Lites', {
+        videos: [v('Blinding Lights (Jimmy Kimmel Live / 2021)', 'The Weeknd'), v('Blinding Lights', 'The Weeknd')],
+        songs: [s('Blinding Lights', 'The Weeknd')],
+      });
+      assert.equal(typo.videoId, 'am:video:Blinding Lights');
+      const artistOnly = bestMatch('Miley Cyrus', {
+        videos: [v('Miley: The Zane Lowe Interview', 'Miley Cyrus & Zane Lowe'), v('Flowers', 'Miley Cyrus')],
+      });
+      assert.equal(artistOnly.title, 'Flowers');
+    });
+
+    it('returns null without results', () => {
+      assert.equal(bestMatch('anything', { videos: [], songs: [] }), null);
+      assert.equal(bestMatch('anything'), null);
     });
   });
 

@@ -102,6 +102,181 @@ function parseAppleMusicLink(input) {
     return null;
 }
 
+// Picking from a search. Apple often ranks remixes, live and lyric videos,
+// covers and other songs by the same artist before the original (Nov. 2026:
+// "Dua Lipa Levitating" gave the Blessed Madonna remix first, "Bohemian
+// Rhapsody" a live take and then a cover). Whoever types a song title wants the
+// original, ideally its music video; whoever types "remix" or "live" gets one.
+
+// Words in a title's decoration (brackets, after " - ") that mark another
+// recording or a lesser video. Plurals and spellings fold into one word (FOLD).
+const OTHER_RECORDING = new Set([
+    'remix', 'rmx', 'mix', 'live', 'acoustic', 'unplugged', 'version', 'demo',
+    'extended', 'sped', 'slowed', 'reverb', 'nightcore', 'karaoke', 'instrumental',
+    'cover', 'session', 'performance', 'mashup', 'medley', 'megamix', 'bootleg',
+    'piano', 'orchestral', 'stripped',
+]);
+const LESSER_VIDEO = new Set(['lyric', 'visualizer', 'audio', 'directors']);
+// Alone (next to neutral words) these still name the original: "(Radio Mix)",
+// "(Single Version)", "(Original Mix)".
+const ORIGINAL_WHEN_ALONE = new Set(['version', 'mix']);
+// Not music at all; these count anywhere in the title. ("Behind" and "making"
+// alone would hit "Behind Blue Eyes" and "Making Love Out of Nothing at All".)
+const NOT_MUSIC = new Set(['interview', 'trailer', 'teaser', 'documentary', 'commentary', 'reaction']);
+const NOT_MUSIC_PHRASES = [' behind the scenes ', ' making of '];
+// Decoration that leaves the original as it is: quality, labels, the usual edits.
+const NEUTRAL = new Set([
+    'official', 'oficial', 'officiel', 'officielle', 'offizielles', 'ufficiale',
+    'video', 'videoclip', 'clip', 'music', 'musikvideo', 'mv', 'hd', '4k', 'uhd',
+    'remaster', 'remastered', 'explicit', 'clean', 'uncensored',
+    'radio', 'single', 'album', 'edit', 'original', 'main', 'short', 'mono', 'stereo',
+]);
+// Decoration starting with these is a credit: (feat. X), (with X), (From "Film").
+const CREDIT = new Set(['feat', 'ft', 'featuring', 'with', 'from', 'prod', 'aus', 'uit']);
+const FOLD = Object.freeze({
+    lyrics: 'lyric', remixes: 'remix', sessions: 'session', versions: 'version',
+    visualiser: 'visualizer', akustik: 'acoustic', director: 'directors',
+});
+// Too common to tell anything about a title or an artist.
+const STOP_WORDS = new Set([
+    'the', 'and', 'a', 'an', 'of', 'in', 'at', 'on', 'feat', 'ft', 'with', 'x',
+    'und', 'der', 'die', 'das', 'dem', 'den', 'ein', 'eine', 'de', 'het', 'een',
+    'la', 'le', 'les', 'el', 'los', 'y', 'et',
+]);
+
+function words(text) {
+    return String(text || '')
+        .normalize('NFKD').replace(/\p{M}/gu, '')
+        .toLowerCase()
+        .replace(/['’`]/g, '')
+        .split(/[^\p{L}\p{N}]+/u)
+        .filter(Boolean)
+        .map(word => FOLD[word] || word);
+}
+
+function artistWords(artist) {
+    return words(artist).filter(word => !STOP_WORDS.has(word));
+}
+
+// "Levitating (feat. DaBaby) [Remix] - Live" -> base words of "Levitating",
+// decoration groups "feat. DaBaby", "Remix", "Live".
+function splitTitle(title) {
+    const groups = [];
+    const stripped = String(title || '').replace(/\(([^)]*)\)|\[([^\]]*)\]/g, (_, round, square) => {
+        groups.push(round || square || '');
+        return ' ';
+    });
+    const [head, ...tail] = stripped.split(/\s[-–—]\s/);
+    groups.push(...tail);
+    return { base: words(head), groups: groups.map(words) };
+}
+
+// What one decoration group says: nothing (credits, quality, "Radio Edit"),
+// a variant (remix, live, lyric video: penalty), or something else, such as a
+// subtitle, a TV show or a campaign. "asked" when the query names it.
+function judgeGroup(group, query) {
+    const none = { kind: 'none', penalty: 0, asked: false };
+    if (group.length === 0 || CREDIT.has(group[0])) return none;
+    const meaningful = group.filter(word => !NEUTRAL.has(word) && !STOP_WORDS.has(word) && !/^[0-9]+$/.test(word));
+    if (meaningful.every(word => ORIGINAL_WHEN_ALONE.has(word)) && meaningful.length <= 1) return none;
+    const variants = meaningful.filter(word => OTHER_RECORDING.has(word) || LESSER_VIDEO.has(word));
+    if (variants.length === 0) {
+        return { kind: 'other', penalty: 0, asked: meaningful.every(word => query.has(word)) };
+    }
+    const unasked = variants.filter(word => !query.has(word));
+    if (unasked.length === 0) return { kind: 'variant', penalty: 0, asked: true };
+    return { kind: 'variant', penalty: unasked.some(word => OTHER_RECORDING.has(word)) ? 2 : 1, asked: false };
+}
+
+function isNotMusic(titleWords, query) {
+    const joined = ` ${titleWords.join(' ')} `;
+    return titleWords.some(word => NOT_MUSIC.has(word) && !query.has(word))
+        || NOT_MUSIC_PHRASES.some(phrase => joined.includes(phrase) && !query.has(phrase.trim().split(' ')[0]));
+}
+
+function analyze(track, query) {
+    const titleWords = words(track.title);
+    const titleSet = new Set(titleWords);
+    const { base, groups } = splitTitle(track.title);
+    const artist = artistWords(track.artist);
+    const rest = [...query].filter(word => !artist.includes(word) && !STOP_WORDS.has(word));
+    const judged = groups.map(group => judgeGroup(group, query));
+    const baseSet = new Set(base);
+    return {
+        track,
+        artist,
+        // Same artist, same title: one song, whatever the decoration says.
+        song: `${artist.join(' ')}|${base.join(' ')}`,
+        // The title is in the query, or the query (without the artist) is in the title.
+        titleHit: (base.length > 0 && base.every(word => query.has(word)))
+            || (rest.length > 0 && rest.every(word => titleSet.has(word))),
+        // Words the title explains do not name the artist: "Cordula Grün" by
+        // an act called Cordula Grün is no hint for that act.
+        artistHit: artist.some(word => query.has(word) && !baseSet.has(word)),
+        plain: judged.every(j => j.kind === 'none'),
+        notMusic: isNotMusic(titleWords, query),
+        judged,
+    };
+}
+
+// Without an artist in the query: the artist with the most results for the
+// title, songs first. That is the original's far more often than a cover's.
+function originalArtist(analyzed) {
+    if (analyzed.some(c => c.artistHit)) return [];
+    const matching = analyzed.filter(c => c.titleHit);
+    const counts = new Map();
+    for (const c of matching.length > 0 ? matching : analyzed) {
+        const name = c.artist.join(' ');
+        if (name) counts.set(name, (counts.get(name) || 0) + 1);
+    }
+    let best = '';
+    let bestCount = 0;
+    for (const [name, count] of counts) {
+        if (count > bestCount) [best, bestCount] = [name, count];
+    }
+    return best ? best.split(' ') : [];
+}
+
+function score(c, original, plainSongs) {
+    let penalty = 0;
+    let asked = false;
+    if (c.notMusic) {
+        penalty = 6;
+    } else {
+        for (const j of c.judged) {
+            // A subtitle is part of the title, unless the same song also
+            // exists without it: then it is a special edition.
+            const p = j.kind === 'other' ? (!j.asked && plainSongs.has(c.song) ? 1.5 : 0) : j.penalty;
+            penalty = Math.max(penalty, p);
+            asked = asked || j.asked;
+        }
+    }
+    const originalHit = c.artist.some(word => original.includes(word));
+    return (c.titleHit ? 4 : 0) + (c.artistHit ? 2 : 0) + (originalHit ? 2 : 0)
+        + 3 - penalty + (asked ? 1 : 0) - (c.track.kind === 'song' ? 1 : 0);
+}
+
+/**
+ * The search result a guest most likely meant: the title they typed, by the
+ * artist they named (or the original artist), the original rather than a
+ * remix, live or lyric video unless they asked for one, a music video rather
+ * than the plain song. Ties keep Apple's order, music videos first. Returns
+ * null without results.
+ */
+function bestMatch(term, { videos = [], songs = [] } = {}) {
+    const query = new Set(words(term));
+    const candidates = [
+        ...songs.map((track, index) => ({ ...analyze(track, query), index, kind: 1 })),
+        ...videos.map((track, index) => ({ ...analyze(track, query), index, kind: 0 })),
+    ];
+    if (candidates.length === 0) return null;
+    const original = originalArtist(candidates);
+    const plainSongs = new Set(candidates.filter(c => c.plain).map(c => c.song));
+    for (const c of candidates) c.score = score(c, original, plainSongs);
+    candidates.sort((a, b) => (b.score - a.score) || (a.kind - b.kind) || (a.index - b.index));
+    return candidates[0].track;
+}
+
 /**
  * @param {object} options
  * @param {() => {token: string}} options.getToken  developer token for server use
@@ -181,6 +356,7 @@ function createAppleCatalog({ getToken, fetchImpl = (...args) => fetch(...args) 
 
 module.exports = {
     AppleCatalogError,
+    bestMatch,
     createAppleCatalog,
     parseAppleMusicLink,
     isStorefront,

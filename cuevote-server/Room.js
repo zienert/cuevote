@@ -8,7 +8,7 @@ const schemas = require("./schemas");
 const { sortUpcoming } = require("./queue-order");
 const guest = require("./guest");
 const { appleTrackKey } = require("./track-keys");
-const { isStorefront, parseAppleMusicLink } = require("./apple-catalog");
+const { bestMatch, isStorefront, parseAppleMusicLink } = require("./apple-catalog");
 
 // Apple Music catalog for Apple rooms; index.js sets it when MusicKit is set up
 // (Room.setAppleCatalog). Without it Apple rooms cannot resolve suggestions.
@@ -1341,8 +1341,9 @@ class Room {
     }
 
     // Finds what a suggestion in an Apple Music room means: a music.apple.com
-    // link, or a search in the host's country with music videos first. Sends
-    // the error itself and returns null when there is nothing to queue.
+    // link, or a search in the host's country that prefers the original music
+    // video (bestMatch). Sends the error itself and returns null when there is
+    // nothing to queue.
     async resolveAppleSuggestion(ws, query, canBypass) {
         const fail = (message, code) => {
             ws.send(JSON.stringify(code ? { type: "error", code, message } : { type: "error", message }));
@@ -1364,9 +1365,8 @@ class Room {
             } else if (/(?:youtube\.com|youtu\.be)\//i.test(query)) {
                 return fail("This channel plays Apple Music. Paste a music.apple.com link or search by name.", "APPLE_MUSIC_ROOM");
             } else {
-                const { videos, songs } = await appleCatalog.search(storefront, query, { limit: 5 });
-                // Music videos first: they are why Apple rooms exist.
-                found = videos[0] || songs[0] || null;
+                // Ten of each: the original is often not among Apple's first few.
+                found = bestMatch(query, await appleCatalog.search(storefront, query, { limit: 10 }));
                 if (!found) return fail("Could not find this on Apple Music.", "APPLE_MUSIC_NOT_FOUND");
             }
         } catch (e) {
