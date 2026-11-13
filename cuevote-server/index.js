@@ -145,6 +145,12 @@ async function verifyGoogleToken(token) {
 
 const Room = require('./Room');
 const schemas = require('./schemas');
+const { createAppleCatalog } = require('./apple-catalog');
+
+// Apple rooms resolve suggestions in Apple's catalog with a server-only token.
+if (appleMusicTokens.enabled) {
+    Room.setAppleCatalog(createAppleCatalog({ getToken: appleMusicTokens.getServerToken }));
+}
 
 // Room Manager
 const rooms = new Map();

@@ -7,6 +7,23 @@ const logger = require("./logger");
 const schemas = require("./schemas");
 const { sortUpcoming } = require("./queue-order");
 const guest = require("./guest");
+const { appleTrackKey } = require("./track-keys");
+const { isStorefront, parseAppleMusicLink } = require("./apple-catalog");
+
+// Apple Music catalog for Apple rooms; index.js sets it when MusicKit is set up
+// (Room.setAppleCatalog). Without it Apple rooms cannot resolve suggestions.
+let appleCatalog = null;
+
+// MusicKit errors that concern only the item being played. Every other error
+// (sign-in, subscription, DRM, another device streaming, blocked autoplay) is a
+// problem on the host's side that the next track would hit as well.
+const APPLE_ITEM_ERRORS = new Set([
+    'CONTENT_UNAVAILABLE',
+    'CONTENT_RESTRICTED',
+    'CONTENT_UNSUPPORTED',
+    'NOT_FOUND',
+    'GEO_BLOCK',
+]);
 
 // Helper to check ownership
 function isOwner(room, ws) {
@@ -90,7 +107,9 @@ class Room {
             language_flag: metadata.language_flag || 'international',
             require_login: metadata.require_login !== undefined ? metadata.require_login : 0,
             // Fixed at creation: an Apple Music room never takes YouTube tracks.
-            provider: metadata.provider === 'apple' ? 'apple' : 'youtube'
+            provider: metadata.provider === 'apple' ? 'apple' : 'youtube',
+            // Country of the host's Apple account, reported by their player.
+            apple_storefront: isStorefront(metadata.apple_storefront) ? metadata.apple_storefront : null
         };
         this.clients = new Set();
         this.knownVideos = new Set(); // Stores videoIds of approved videos
@@ -695,7 +714,47 @@ class Room {
         }
     }
 
+    setAppleStorefront(storefront) {
+        if (this.metadata.apple_storefront === storefront) return;
+        this.metadata.apple_storefront = storefront;
+        try {
+            db.updateRoomAppleStorefront(this.id, storefront);
+        } catch (e) {
+            logger.error(`[Room ${this.id}] Failed to store the Apple storefront: ${e && e.message}`);
+        }
+        logger.info(`[Room ${this.id}] Apple Music storefront: ${storefront}`);
+    }
+
+    // Same contract as checkVideoAvailability, for Apple keys: a key maps to
+    // fresh metadata, to null when it could not be checked (no catalog, no
+    // storefront yet, Apple unreachable), and is absent when Apple confirmed it
+    // cannot be played in the host's country.
+    async checkAppleAvailability(keys) {
+        const storefront = this.metadata.apple_storefront;
+        const unchecked = () => new Map(keys.map(key => [key, null]));
+        if (!appleCatalog || !storefront || keys.length === 0) return unchecked();
+        let found;
+        try {
+            found = await appleCatalog.lookup(storefront, keys);
+        } catch (e) {
+            logger.error(`[Room ${this.id}] Apple Music lookup failed: ${e && e.code} ${e && e.message}`);
+            return unchecked();
+        }
+        const result = new Map();
+        for (const key of keys) {
+            const track = found.get(key);
+            if (!track) continue;
+            const meta = { title: track.title, artist: track.artist, thumbnail: track.thumbnail, duration: track.duration };
+            result.set(key, meta);
+            try {
+                db.upsertVideo({ id: key, ...meta, category_id: null, language: null });
+            } catch (e) { /* ignore cache refresh errors */ }
+        }
+        return result;
+    }
+
     async checkVideoAvailability(videoIds) {
+        if (this.metadata.provider === 'apple') return this.checkAppleAvailability(videoIds);
         if (!this.apiKey || videoIds.length === 0) return new Map(videoIds.map(id => [id, null]));
 
         const validVideos = new Map();
@@ -798,11 +857,22 @@ class Room {
                     this.handleNextTrack();
                 }
                 break;
-            case "PLAYBACK_ERROR":
+            case "PLAYBACK_ERROR": {
+                const r = schemas.PlaybackErrorPayload.safeParse(message.payload);
+                if (!r.success) break;
                 if (isOwner(this, ws)) {
-                    await this.handlePlaybackError(ws, message.payload);
+                    await this.handlePlaybackError(ws, r.data);
                 }
                 break;
+            }
+            case "APPLE_STOREFRONT": {
+                // The host's MusicKit reports the country of their Apple account.
+                // Suggestions are looked up there, where the host can play them.
+                if (this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
+                if (!isStorefront(message.payload)) break;
+                this.setAppleStorefront(message.payload);
+                break;
+            }
             case "UPDATE_DURATION": {
                 const r = schemas.UpdateDurationPayload.safeParse(message.payload);
                 if (!r.success) break;
@@ -909,6 +979,8 @@ class Room {
 
     async handleFetchSuggestions(ws, { videoId }) {
         if (!videoId) return;
+        // "More from this artist" is a YouTube search; Apple rooms do not offer it.
+        if (this.metadata.provider === 'apple') return;
 
         // The most expensive call in the room: a cache miss is a Search at ~100
         // of the 10.000 daily quota units. Suggesting and voting were opened to
@@ -1015,7 +1087,9 @@ class Room {
         // run here: the title only exists once the video has been resolved, so
         // it happens after that step and before anything joins the queue.
 
-        let indexToRemove = -1; // Declared here to survive past video verification
+        // A low-scored track to drop when the queue is full. Kept by id, not by
+        // index: the lookup below awaits, and the queue can move meanwhile.
+        let trackToReplaceId = null;
 
         // Check Max Queue Size
         if (this.state.maxQueueSize > 0 && !canBypass && this.state.queue.length >= this.state.maxQueueSize) {
@@ -1037,8 +1111,8 @@ class Room {
                 });
 
                 if (worstTrackIndex !== -1) {
-                    // Found a bad video to replace, mark its index for potential removal later
-                    indexToRemove = worstTrackIndex;
+                    // Found a bad video to replace, mark it for removal later
+                    trackToReplaceId = this.state.queue[worstTrackIndex].id;
                 } else {
                     ws.send(JSON.stringify({ type: "error", message: `Queue is full. Max size is ${this.state.maxQueueSize}.` }));
                     return;
@@ -1056,6 +1130,13 @@ class Room {
             return;
         }
         ws.lastSuggestionTime = now;
+
+        // Apple Music rooms resolve suggestions in Apple's catalog, never on YouTube.
+        if (this.metadata.provider === 'apple') {
+            const appleTrack = await this.resolveAppleSuggestion(ws, query, canBypass);
+            if (appleTrack) this.queueSuggestion(ws, appleTrack, { canBypass, isUserOwner, trackToReplaceId });
+            return;
+        }
 
         // const { query } = payload; // Already destructured above
         const userId = ws.user.id; // Trust server-side user object
@@ -1249,8 +1330,77 @@ class Room {
             }
         }
 
+        // A video id that resolved to no metadata: no API key, a quota refusal,
+        // or a video that is gone. Reject rather than queue something unverified.
+        if (!track) {
+            ws.send(JSON.stringify({ type: "error", message: "Server could not verify video details." }));
+            return;
+        }
+
+        this.queueSuggestion(ws, track, { canBypass, isUserOwner, trackToReplaceId });
+    }
+
+    // Finds what a suggestion in an Apple Music room means: a music.apple.com
+    // link, or a search in the host's country with music videos first. Sends
+    // the error itself and returns null when there is nothing to queue.
+    async resolveAppleSuggestion(ws, query, canBypass) {
+        const fail = (message, code) => {
+            ws.send(JSON.stringify(code ? { type: "error", code, message } : { type: "error", message }));
+            return null;
+        };
+        const storefront = this.metadata.apple_storefront;
+        if (!appleCatalog) return fail("Apple Music is not available on this server.", "APPLE_MUSIC_UNAVAILABLE");
+        if (!storefront) return fail("The host has to connect Apple Music first.", "APPLE_MUSIC_NOT_CONNECTED");
+        const isBanned = (key) => this.state.bannedVideos.some(b => b.videoId === key);
+
+        let found = null;
+        try {
+            const link = parseAppleMusicLink(query);
+            if (link) {
+                const key = appleTrackKey(link.kind, link.id);
+                if (isBanned(key)) return fail("This video has been banned from this channel.");
+                found = (await appleCatalog.lookup(storefront, [key])).get(key) || null;
+                if (!found) return fail("This title is not available on Apple Music in the host's country.", "APPLE_MUSIC_NOT_IN_STOREFRONT");
+            } else if (/(?:youtube\.com|youtu\.be)\//i.test(query)) {
+                return fail("This channel plays Apple Music. Paste a music.apple.com link or search by name.", "APPLE_MUSIC_ROOM");
+            } else {
+                const { videos, songs } = await appleCatalog.search(storefront, query, { limit: 5 });
+                // Music videos first: they are why Apple rooms exist.
+                found = videos[0] || songs[0] || null;
+                if (!found) return fail("Could not find this on Apple Music.", "APPLE_MUSIC_NOT_FOUND");
+            }
+        } catch (e) {
+            logger.error(`[Room ${this.id}] Apple Music catalog: ${e && e.code} ${e && e.message}`);
+            return fail("Apple Music did not answer. Please try again.", "APPLE_MUSIC_CATALOG_ERROR");
+        }
+
+        if (isBanned(found.videoId)) return fail("This video has been banned from this channel.");
+        if (this.state.maxDuration > 0 && !canBypass && found.duration > this.state.maxDuration) {
+            const maxMinutes = Math.floor(this.state.maxDuration / 60);
+            return fail(`Video is too long. Max duration is ${maxMinutes} minutes.`);
+        }
+
+        return {
+            id: crypto.randomUUID(),
+            videoId: found.videoId,
+            title: found.title,
+            artist: found.artist,
+            thumbnail: found.thumbnail,
+            duration: found.duration,
+            score: 0,
+            voters: {},
+            suggestedBy: ws.user.id,
+            suggestedByUsername: ws.user.name,
+            suggestedByIsGuest: !!ws.user.isGuest,
+            suggestedByGuestTag: ws.user.guestTag,
+        };
+    }
+
+    // What every suggestion goes through once it is resolved, whatever the
+    // provider: the duplicate check, smart replacement, manual review, the queue.
+    queueSuggestion(ws, track, { canBypass, isUserOwner, trackToReplaceId }) {
         // Duplicate Title Check (After we have track details)
-        if (track && track.title && this.state.duplicateCooldown > 0 && !canBypass) {
+        if (track.title && this.state.duplicateCooldown > 0 && !canBypass) {
             const cooldown = this.state.duplicateCooldown;
             const titleToCheck = track.title.toLowerCase().trim();
 
@@ -1275,60 +1425,50 @@ class Room {
             }
         }
 
-        // A video id that resolved to no metadata: no API key, a quota refusal,
-        // or a video that is gone. Reject rather than queue something unverified.
-        if (!track && videoId) {
-            ws.send(JSON.stringify({ type: "error", message: "Server could not verify video details." }));
-            return;
+        // Apply Smart Replacement if needed. Never index 0, the track playing now.
+        if (trackToReplaceId) {
+            const replaceIndex = this.state.queue.findIndex((t, i) => i > 0 && t.id === trackToReplaceId);
+            if (replaceIndex > 0) {
+                this.state.queue.splice(replaceIndex, 1);
+            }
         }
 
-        if (track) {
-            // Apply Smart Replacement if needed
-            if (indexToRemove !== -1) {
-                // Ensure index is still valid (it should be, synchronous flow)
-                if (indexToRemove < this.state.queue.length) {
-                    this.state.queue.splice(indexToRemove, 1);
-                }
-            }
-
-            // Manual Review Check
-            if (this.state.suggestionMode === 'manual' && !canBypass) {
-                // Check if video is known and auto-approve is enabled
-                const isKnown = this.knownVideos.has(track.videoId);
-                if (this.state.autoApproveKnown && isKnown) {
-                    // Auto-approve: Skip adding to pending, proceed to queue
-                    logger.info(`[Auto-Approve] Video ${track.title} (${track.videoId}) is known. Bypassing review.`);
-                    // Fallthrough to add to queue and send success at the end
-                } else {
-                    const newPending = [...(this.state.pendingSuggestions || []), track];
-                    this.updateState({ pendingSuggestions: newPending });
-                    ws.send(JSON.stringify({ type: "info", message: "Submitted" }));
-                    return;
-                }
-            }
-
-            // Priority Check
-            if (this.state.ownerQueueBypass && isUserOwner) {
-                track.isOwnerPriority = true;
-            }
-
-            const newQueue = [...this.state.queue, track];
-            const newState = { queue: newQueue };
-            if (newQueue.length === 1) {
-                newState.currentTrack = { ...newQueue[0], startedAt: Date.now() };
-                newQueue[0] = newState.currentTrack;
-                newState.isPlaying = true;
-                newState.progress = 0;
+        // Manual Review Check
+        if (this.state.suggestionMode === 'manual' && !canBypass) {
+            // Check if video is known and auto-approve is enabled
+            const isKnown = this.knownVideos.has(track.videoId);
+            if (this.state.autoApproveKnown && isKnown) {
+                // Auto-approve: Skip adding to pending, proceed to queue
+                logger.info(`[Auto-Approve] Video ${track.title} (${track.videoId}) is known. Bypassing review.`);
+                // Fallthrough to add to queue and send success at the end
             } else {
-                // Re-order: the track just added may be a priority pick.
-                newState.queue = sortUpcoming(newQueue);
+                const newPending = [...(this.state.pendingSuggestions || []), track];
+                this.updateState({ pendingSuggestions: newPending });
+                ws.send(JSON.stringify({ type: "info", message: "Submitted" }));
+                return;
             }
-            this.updateState(newState);
-
-            // Send Success Message (For all successful queue additions: Owner Bypass, Auto-Approve, or Auto-Mode)
-            ws.send(JSON.stringify({ type: "success", message: "Added" }));
         }
 
+        // Priority Check
+        if (this.state.ownerQueueBypass && isUserOwner) {
+            track.isOwnerPriority = true;
+        }
+
+        const newQueue = [...this.state.queue, track];
+        const newState = { queue: newQueue };
+        if (newQueue.length === 1) {
+            newState.currentTrack = { ...newQueue[0], startedAt: Date.now() };
+            newQueue[0] = newState.currentTrack;
+            newState.isPlaying = true;
+            newState.progress = 0;
+        } else {
+            // Re-order: the track just added may be a priority pick.
+            newState.queue = sortUpcoming(newQueue);
+        }
+        this.updateState(newState);
+
+        // Send Success Message (For all successful queue additions: Owner Bypass, Auto-Approve, or Auto-Mode)
+        ws.send(JSON.stringify({ type: "success", message: "Added" }));
     }
 
     handleVote(ws, { trackId, voteType }) {
@@ -1419,7 +1559,33 @@ class Room {
         }
     }
 
-    async handlePlaybackError(ws, { videoId, errorCode: _errorCode }) {
+    // Apple playback fails on the host's side far more often than per item:
+    // sign-in, subscription, DRM, another device streaming on the account. The
+    // next track would fail the same way, so the room pauses and tells the host,
+    // and skips only when this one item cannot be played.
+    handleApplePlaybackError({ videoId, errorCode }) {
+        if (!this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
+        const code = typeof errorCode === 'string' && errorCode ? errorCode : 'UNKNOWN_ERROR';
+        if (APPLE_ITEM_ERRORS.has(code)) {
+            logger.info(`[PlaybackError] Apple item ${videoId} cannot be played (${code}). Skipping.`);
+            this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable' } });
+            this.handleNextTrack();
+            return;
+        }
+        logger.warn(`[PlaybackError] Apple playback stopped on the host's side (${code}). Pausing.`);
+        this.updateState({ isPlaying: false });
+        for (const client of this.clients) {
+            if (isOwner(this, client) && client.readyState === 1) {
+                client.send(JSON.stringify({ type: "APPLE_PLAYBACK_PROBLEM", payload: { code } }));
+            }
+        }
+    }
+
+    async handlePlaybackError(ws, { videoId, errorCode }) {
+        if (this.metadata.provider === 'apple') {
+            this.handleApplePlaybackError({ videoId, errorCode });
+            return;
+        }
         if (!videoId || !this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
 
         const now = Date.now();
@@ -1875,5 +2041,8 @@ class Room {
         try { db.saveRoomState(this.id, this.state); } catch (e) { /* ignore */ }
     }
 }
+
+// index.js hands over the Apple Music catalog when MusicKit is configured.
+Room.setAppleCatalog = (catalog) => { appleCatalog = catalog || null; };
 
 module.exports = Room;
