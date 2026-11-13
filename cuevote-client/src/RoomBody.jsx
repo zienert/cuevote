@@ -238,9 +238,10 @@ function RoomBody() {
   // Prelisten streams audio through the YT player. Disable it ONLY in forced
   // Venue Mode (mobile browser + app not running) — unreliable there and outside
   // the browser feature set we advertise. Configured venue mode keeps prelisten.
-  // In Apple rooms guests prelisten with Apple's previews through MusicKit; the
-  // owner cannot, MusicKit on their device already plays the room.
-  const prelistenEnabled = allowPrelisten && !isForcedVenueMode && !(isAppleRoom && isOwner);
+  // In Apple rooms guests prelisten with Apple's previews through MusicKit, on
+  // phones too: Apple allows previews in any browser. The owner cannot,
+  // MusicKit on their device already plays the room.
+  const prelistenEnabled = allowPrelisten && (isAppleRoom ? !isOwner : !isForcedVenueMode);
   const apple = useAppleMusicHost({
     enabled: isAppleRoom && !!isOwner && !isForcedVenueMode,
     currentTrack,
@@ -250,7 +251,10 @@ function RoomBody() {
   });
   // Android web guests can sideload the native app; offer it via a footer + a
   // pre-download comparison. iOS cannot sideload, so it never sees this.
-  const showAppFooter = deviceDetection.isAndroid() && !deviceDetection.isNativeApp();
+  // Its comparison (video, prelisten, hosting only in the app) describes YouTube
+  // channels; in an Apple channel guests prelisten in the browser and the app
+  // adds nothing, so the footer stays off there.
+  const showAppFooter = deviceDetection.isAndroid() && !deviceDetection.isNativeApp() && !isAppleRoom;
   // TV always defaults to Fullscreen (CinemaMode), unless manually exited
   const isAnyPlaylistView = isVenueMode || localPlaylistView;
 
