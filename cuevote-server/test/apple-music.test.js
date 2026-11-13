@@ -274,5 +274,17 @@ describe('Apple Music developer tokens', () => {
             const { token } = JSON.parse(res.body);
             assert.deepEqual(decode(token).claims.origin, ['https://cuevote.com', 'https://www.cuevote.com']);
         });
+
+        it('signs server tokens without the origin claim', () => {
+            const withOrigins = appleMusic.setup({ env: env(), allowedOrigins: ['https://cuevote.com'], logger: fakeLogger() });
+            const serverToken = withOrigins.getServerToken().token;
+            assert.equal(decode(serverToken).claims.origin, undefined);
+            assert.notEqual(serverToken, withOrigins.getDeveloperToken().token);
+
+            const withoutOrigins = appleMusic.setup({ env: env(), logger: fakeLogger() });
+            assert.equal(withoutOrigins.getServerToken, withoutOrigins.getDeveloperToken);
+
+            assert.equal(appleMusic.setup({ env: {}, logger: fakeLogger() }).getServerToken, null);
+        });
     });
 });
