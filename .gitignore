@@ -56,3 +56,6 @@ certs/
 *.pem
 *.key
 *.crt
+
+# Apple MusicKit private keys (AuthKey_*.p8, must never be committed)
+*.p8

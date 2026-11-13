@@ -103,6 +103,17 @@ ACTIVE_CHANNEL_DAYS=60
 # MCP_SESSION_TTL=3600
 # CUEVOTE_OAUTH_FINALIZE_SECRET=generate_a_long_random_secret  # = MCP value; enables the consent bridge
 # MCP_INTERNAL_URL=http://127.0.0.1:8082                       # where the remote DJ MCP listens
+#
+# Apple Music (MusicKit on the Web). Off unless all three are set; while off,
+# /api/apple-music/developer-token answers 404. Team ID (Membership) and Key ID
+# (Keys) are the 10-character values from developer.apple.com. The key needs
+# Media Services (MusicKit) enabled, can be downloaded only once, and belongs
+# outside the repo, readable only by the server user (chmod 600). Tokens are
+# signed for 24 hours and limited to ALLOWED_ORIGINS. See "Apple Music
+# (optional)" in section 5.
+# APPLE_MUSIC_TEAM_ID=ABCDE12345
+# APPLE_MUSIC_KEY_ID=FGHIJ67890
+# APPLE_MUSIC_PRIVATE_KEY_PATH=/etc/cuevote/AuthKey_FGHIJ67890.p8
 ```
 
 > **MCP ops server (optional):** rather than setting `ADMIN_TOKEN` by hand, run
@@ -291,6 +302,26 @@ sudo ln -s /etc/nginx/sites-available/cuevote /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
+
+### Apple Music (optional)
+
+Production needs nothing here yet: the only page that uses Apple Music is the
+dev-only lab at `/__apple-music-lab`, which talks to a local server through the
+Vite dev proxy. Once a production page plays Apple Music, set `APPLE_MUSIC_*`
+(section 3) and forward the developer-token endpoint to Node inside the
+`server` block, next to `/health`:
+
+```nginx
+    # Apple Music developer token (MusicKit on the Web). Exact match, so
+    # nothing else under /api/ reaches Node.
+    location = /api/apple-music/developer-token {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+```
+
+That page will also need the CSP above widened to Apple's MusicKit hosts.
 
 ## 6. SSL Setup (Optional but Recommended)
 

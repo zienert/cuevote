@@ -26,6 +26,7 @@ const gdpr = require('./gdpr');
 const guest = require('./guest');
 const clientIp = require('./client-ip');
 const adminApi = require('./admin');
+const appleMusic = require('./apple-music');
 const backupScheduler = require('./backup_scheduler');
 backupScheduler.start();
 
@@ -43,6 +44,9 @@ function redactForLog(value) {
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
     : [];
+
+// MusicKit developer tokens; off (404) unless APPLE_MUSIC_* is configured.
+const appleMusicTokens = appleMusic.setup({ allowedOrigins: ALLOWED_ORIGINS, logger });
 
 const server = http.createServer((req, res) => {
     if (req.url === '/health' && req.method === 'GET') {
@@ -67,6 +71,10 @@ const server = http.createServer((req, res) => {
             'Cache-Control': 'public, max-age=86400',
         });
         res.end(req.method === 'HEAD' ? undefined : body);
+        return;
+    }
+    if (req.url.split('?')[0] === appleMusic.DEVELOPER_TOKEN_PATH) {
+        appleMusicTokens.handleRequest(req, res);
         return;
     }
     res.writeHead(404);
