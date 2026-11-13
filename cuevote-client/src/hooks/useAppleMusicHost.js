@@ -16,6 +16,7 @@ import { parseTrackKey } from '../utils/trackKeys';
 const DRIFT_CHECK_MS = 5000;
 const MAX_DRIFT_S = 3;
 const SIGN_IN_POLL_MS = 2000;
+const START_CHECK_MS = 3000;
 
 // MusicKit keeps the signed-in user's token here (key: music.<id>.media-user-token).
 const STORED_USER_TOKEN = /^music\.[^.]+\.media-user-token$/;
@@ -45,13 +46,18 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	const [problem, setProblem] = useState(null);
 	const [awaitingSignIn, setAwaitingSignIn] = useState(false);
 
-	const loadedKeyRef = useRef(null);
+	// What is loaded is tracked per queue entry, not per track key: the same
+	// song can come back as a new entry (Auto-DJ, a repeat request) and must
+	// then start again from the server's position.
+	const loadedEntryRef = useRef(null);
 	const durationSentForRef = useRef(null);
 	const storefrontSentRef = useRef(null);
 	const reloadedForSignInRef = useRef(false);
 
 	const currentKey = currentTrack?.videoId || null;
+	const currentEntry = currentTrack ? `${currentTrack.id || ''}|${currentKey}` : null;
 	const currentKeyRef = useLatestRef(currentKey);
+	const currentEntryRef = useLatestRef(currentEntry);
 	const isPlayingRef = useLatestRef(isPlaying);
 	const sendRef = useLatestRef(sendMessage);
 
@@ -71,6 +77,9 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 				const { token } = await fetchDeveloperToken();
 				const instance = await configureMusicKit({ developerToken: token });
 				if (cancelled) return;
+				// The server decides what plays next. MusicKit must not continue
+				// with Apple's own picks once its one-item queue has ended.
+				if (instance.autoplayEnabled) instance.autoplayEnabled = false;
 				setMusic(instance);
 				setStatus(instance.isAuthorized ? 'ready' : 'signed-out');
 			} catch (err) {
@@ -87,7 +96,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	// Leaving the room (or losing ownership) must not leave Apple Music playing.
 	useEffect(() => {
 		if (!music || enabled) return undefined;
-		loadedKeyRef.current = null;
+		loadedEntryRef.current = null;
 		try { music.stop(); } catch { /* nothing loaded */ }
 		return undefined;
 	}, [music, enabled]);
@@ -111,16 +120,16 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			if (music.playbackState !== playing) return;
 			setStatus(prev => (prev === 'needs-start' ? 'ready' : prev));
 			setProblem(null);
-			const key = currentKeyRef.current;
+			const entry = currentEntryRef.current;
 			const duration = music.currentPlaybackDuration;
-			if (key && loadedKeyRef.current === key && durationSentForRef.current !== key && duration > 0) {
-				durationSentForRef.current = key;
+			if (entry && loadedEntryRef.current === entry && durationSentForRef.current !== entry && duration > 0) {
+				durationSentForRef.current = entry;
 				sendRef.current({ type: 'UPDATE_DURATION', payload: Math.round(duration) });
 			}
 		};
 		const onError = (event) => {
 			const key = currentKeyRef.current;
-			if (!key || loadedKeyRef.current !== key) return;
+			if (!key || loadedEntryRef.current !== currentEntryRef.current) return;
 			const code = errorCodeOf(event?.error || event);
 			setProblem({ code });
 			sendRef.current({ type: 'PLAYBACK_ERROR', payload: { videoId: key, errorCode: code } });
@@ -133,7 +142,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			music.removeEventListener('playbackStateDidChange', onPlaybackState);
 			music.removeEventListener('mediaPlaybackError', onError);
 		};
-	}, [music, currentKeyRef, sendRef]);
+	}, [music, currentKeyRef, currentEntryRef, sendRef]);
 
 	// Tell the server the host's country: guests' suggestions are looked up there.
 	useEffect(() => {
@@ -156,31 +165,40 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			}
 			throw err;
 		}
-	}, [music]);
+		// After a page load Chrome refuses sound without a click, and MusicKit
+		// resolves play() all the same (13.11.2026). Check that it really plays.
+		await new Promise(resolve => setTimeout(resolve, START_CHECK_MS));
+		if (isPlayingRef.current && music.playbackState !== window.MusicKit?.PlaybackStates?.playing) {
+			setStatus('needs-start');
+		}
+	}, [music, isPlayingRef]);
 
 	// Play whatever the server says is current, from the server's position.
 	useEffect(() => {
 		if (!canPlay) return undefined;
 		const parsed = parseTrackKey(currentKey);
 		if (!parsed || parsed.provider !== 'apple') {
-			if (loadedKeyRef.current) {
-				loadedKeyRef.current = null;
+			if (loadedEntryRef.current) {
+				loadedEntryRef.current = null;
 				try { music.stop(); } catch { /* nothing loaded */ }
 			}
 			return undefined;
 		}
-		if (loadedKeyRef.current === currentKey) return undefined;
-		loadedKeyRef.current = currentKey;
+		if (loadedEntryRef.current === currentEntry) return undefined;
+		loadedEntryRef.current = currentEntry;
 		durationSentForRef.current = null;
 		let cancelled = false;
+		let finished = false;
 		(async () => {
 			try {
 				const startTime = Math.max(0, Math.floor(progressRef.current || 0));
 				await music.setQueue({ [parsed.kind]: parsed.id, startPlaying: false, startTime });
 				if (cancelled) return;
 				if (isPlayingRef.current) await play();
+				finished = true;
 			} catch (err) {
 				if (cancelled) return;
+				finished = true;
 				const code = errorCodeOf(err);
 				setProblem({ code, message: describeMusicKitError(err) });
 				sendRef.current({ type: 'PLAYBACK_ERROR', payload: { videoId: currentKey, errorCode: code } });
@@ -188,12 +206,15 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		})();
 		return () => {
 			cancelled = true;
+			// A load cut short (React's second effect run in development, a
+			// quick track change) has to be redone, not skipped as loaded.
+			if (!finished && loadedEntryRef.current === currentEntry) loadedEntryRef.current = null;
 		};
-	}, [canPlay, currentKey, music, play, progressRef, isPlayingRef, sendRef]);
+	}, [canPlay, currentKey, currentEntry, music, play, progressRef, isPlayingRef, sendRef]);
 
 	// Follow the server's play/pause.
 	useEffect(() => {
-		if (!canPlay || !loadedKeyRef.current) return;
+		if (!canPlay || !loadedEntryRef.current) return;
 		const playing = window.MusicKit?.PlaybackStates?.playing;
 		if (isPlaying) {
 			if (music.playbackState !== playing) play().catch(() => { /* reported by the error event */ });
@@ -206,7 +227,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	useEffect(() => {
 		if (!canPlay) return undefined;
 		const timer = setInterval(() => {
-			if (!isPlayingRef.current || !loadedKeyRef.current) return;
+			if (!isPlayingRef.current || !loadedEntryRef.current) return;
 			if (music.playbackState !== window.MusicKit?.PlaybackStates?.playing) return;
 			const expected = progressRef.current || 0;
 			const duration = music.currentPlaybackDuration || 0;
@@ -250,7 +271,9 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 
 	// The host's tap, when the browser refused to start playback on its own.
 	const start = useCallback(() => {
-		play().then(() => setStatus('ready')).catch((err) => {
+		// play() puts the button back if this attempt does not start either.
+		setStatus('ready');
+		play().catch((err) => {
 			setProblem({ code: errorCodeOf(err), message: describeMusicKitError(err) });
 		});
 	}, [play]);
