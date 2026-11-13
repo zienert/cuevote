@@ -223,6 +223,9 @@ module.exports = {
   updateRoomActivity: (id) => {
     db.prepare('UPDATE rooms SET last_active_at = unixepoch() WHERE id = ?').run(id);
   },
+  updateRoomAppleStorefront: (id, storefront) => {
+    db.prepare('UPDATE rooms SET apple_storefront = ? WHERE id = ?').run(storefront, id);
+  },
   updateLobbyPreview: (roomId, preview) => {
     const json = preview ? JSON.stringify(preview) : null;
     db.prepare('UPDATE rooms SET lobby_preview = ? WHERE id = ?').run(json, roomId);
