@@ -93,8 +93,6 @@ export default {
 		"welcome": "Dobro došli na {brand}",
 		"youtubeTitle": "Omogući zvuk i video",
 		"youtubeBody": "Da bismo puštali muziku sa YouTube-a i da biste učestvovali u plejlisti, moramo da koristimo kolačiće.",
-		"appleTitle": "Apple Music kanal",
-		"appleBody": "Ovaj kanal pušta Apple Music. Omoti i, za domaćina, Apple Music plejer učitavaju se sa Apple-ovih servera. Za to nam je potrebna vaša saglasnost.",
 		"accept": "Omogući i pridruži se žurci",
 		"agree": "Pridruživanjem prihvatate našu {policy}.",
 		"policy": "Politiku privatnosti",
@@ -307,7 +305,8 @@ export default {
 		"problemSubscription": "Za reprodukciju je potrebna aktivna pretplata na Apple Music.",
 		"problemOtherDevice": "Vaš Apple nalog pušta muziku na drugom uređaju.",
 		"problemGeneric": "Apple Music je zaustavio reprodukciju ({code}). Pritisnite Play da biste pokušali ponovo.",
-		"consent": "Potrebna nam je vaša saglasnost za učitavanje Apple-ovog MusicKit plejera. Ovo se povezuje sa Apple-ovim serverima."
+		"contentNotice": "Omoti i pregledi u ovom kanalu stižu od Apple-a. Pri njihovom učitavanju Apple vidi vašu IP adresu.",
+		"contentAccept": "Uključi"
 	},
 	"attribution": {
 		"youtube": "Развијено уз YouTube"

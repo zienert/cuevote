@@ -93,8 +93,6 @@ export default {
 		"welcome": "{brand}へようこそ",
 		"youtubeTitle": "オーディオとビデオを有効にする",
 		"youtubeBody": "YouTubeの音楽を再生してプレイリストに参加するには、Cookieを使用する必要があります。",
-		"appleTitle": "Apple Musicチャンネル",
-		"appleBody": "このチャンネルではApple Musicを再生します。カバーアートと、ホストの場合はApple Musicプレーヤーが、Appleのサーバーから読み込まれます。そのためにお客様の同意が必要です。",
 		"accept": "有効にしてパーティーに参加",
 		"agree": "参加すると、{policy}に同意したものとみなされます。",
 		"policy": "プライバシーポリシー",
@@ -303,7 +301,8 @@ export default {
 		"problemSubscription": "再生するには有効なApple Musicのサブスクリプションが必要です。",
 		"problemOtherDevice": "お使いのAppleアカウントが別のデバイスで再生中です。",
 		"problemGeneric": "Apple Musicの再生が停止しました（{code}）。再生ボタンを押してもう一度お試しください。",
-		"consent": "AppleのMusicKitプレーヤーを読み込むには、お客様の同意が必要です。これはAppleのサーバーに接続します。"
+		"contentNotice": "このチャンネルのカバーアートと試聴はAppleから読み込まれます。その際、Appleにお客様のIPアドレスが伝わります。",
+		"contentAccept": "オンにする"
 	},
 	"attribution": {
 		"youtube": "YouTube と共に開発"

@@ -12,8 +12,8 @@ const RoomBody = lazy(() => import('./RoomBody'));
 // YouTube one, as before.
 const PROVIDER_TIMEOUT_MS = 4000;
 
-// The music source of a channel, asked over the socket before joining, so the
-// welcome screen asks for the consent this channel needs. undefined until known.
+// The music source of a channel, asked over the socket before joining: only a
+// YouTube channel needs the consent screen. undefined until known.
 function useRoomProvider(roomId, needed) {
   const { sendMessage, lastMessage, isConnected } = useWebSocketContext();
   const [known, setKnown] = useState({ roomId: null, provider: undefined });
@@ -42,15 +42,15 @@ function useRoomProvider(roomId, needed) {
 
 function App() {
   const { roomId } = useParams();
-  const { hasConsent, hasAppleConsent, giveConsent, giveAppleConsent } = Consent.useConsent();
-  // With the YouTube consent the room opens at once, as before. Should it be an
-  // Apple Music channel, RoomBody asks for the Apple consent itself.
+  const { hasConsent, giveConsent } = Consent.useConsent();
+  // With the YouTube consent the room opens at once, as before. An Apple Music
+  // channel opens without a consent screen: a guest loads nothing from Apple
+  // until they turn its cover art and previews on inside the channel.
   const provider = useRoomProvider(roomId, !hasConsent);
 
   if (!hasConsent) {
     if (provider === undefined) return <JoinWelcome provider={null} />;
     if (provider !== 'apple') return <JoinWelcome provider="youtube" onAccept={giveConsent} />;
-    if (!hasAppleConsent) return <JoinWelcome provider="apple" onAccept={giveAppleConsent} />;
   }
 
   return (

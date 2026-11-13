@@ -93,8 +93,6 @@ export default {
 		"welcome": "Willkommen bei {brand}",
 		"youtubeTitle": "Audio & Video aktivieren",
 		"youtubeBody": "Um Musik von YouTube abzuspielen und bei der Playlist mitzumachen, brauchen wir Cookies.",
-		"appleTitle": "Apple-Music-Kanal",
-		"appleBody": "Dieser Kanal spielt Apple Music. Cover und, für den Host, der Apple-Music-Player werden von Apple-Servern geladen. Dafür brauchen wir deine Zustimmung.",
 		"accept": "Aktivieren & mitfeiern",
 		"agree": "Mit dem Beitritt stimmst du unserer {policy} zu.",
 		"policy": "Datenschutzerklärung",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Zum Abspielen braucht Apple Music ein aktives Abo.",
 		"problemOtherDevice": "Dein Apple-Konto spielt gerade auf einem anderen Gerät Musik ab.",
 		"problemGeneric": "Apple Music hat die Wiedergabe gestoppt ({code}). Drücke auf Play, um es erneut zu versuchen.",
-		"consent": "Wir brauchen deine Zustimmung, um den MusicKit-Player von Apple zu laden. Dies stellt eine Verbindung zu Apple-Servern her."
+		"contentNotice": "Cover und Vorschauen in diesem Kanal kommen von Apple. Beim Laden sieht Apple deine IP-Adresse.",
+		"contentAccept": "Einschalten"
 	},
 	"attribution": {
 		"youtube": "Entwickelt mit YouTube"

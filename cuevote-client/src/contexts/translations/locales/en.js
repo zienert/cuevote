@@ -93,8 +93,6 @@ export default {
 		"welcome": "Welcome to {brand}",
 		"youtubeTitle": "Enable Audio & Video",
 		"youtubeBody": "To play music from YouTube and take part in the playlist, we need to use cookies.",
-		"appleTitle": "Apple Music Channel",
-		"appleBody": "This channel plays Apple Music. Cover art and, for the host, the Apple Music player load from Apple's servers. We need your consent for that.",
 		"accept": "Enable & Join Party",
 		"agree": "By joining, you agree to our {policy}.",
 		"policy": "Privacy Policy",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Apple Music needs an active subscription to play this.",
 		"problemOtherDevice": "Your Apple account is playing on another device.",
 		"problemGeneric": "Apple Music stopped playback ({code}). Press play to try again.",
-		"consent": "We need your consent to load Apple's MusicKit player. It connects to Apple's servers."
+		"contentNotice": "Cover art and previews in this channel come from Apple. Apple sees your IP address when they load.",
+		"contentAccept": "Turn on"
 	},
 	"attribution": {
 		"youtube": "Developed with YouTube"

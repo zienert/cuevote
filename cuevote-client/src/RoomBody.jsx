@@ -5,12 +5,13 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { deviceDetection } from './utils/deviceDetection';
 import { Volume2, VolumeX, ArrowLeft, Lock, X, Maximize2, WifiOff, RefreshCw, AlertTriangle } from "lucide-react";
 import { Consent } from './contexts/ConsentContext';
+import { ConsentContext } from './contexts/ConsentContextValue.js';
 import { Language } from './contexts/LanguageContext';
 import { Header } from "./components/Header";
 import { SuggestSongForm } from "./components/SuggestSongForm";
 import { Player } from "./components/Player";
 import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
-import { JoinWelcome } from "./components/JoinWelcome";
+import { AppleContentNotice } from "./components/AppleContentNotice";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
 import { parseTrackKey } from "./utils/trackKeys";
 import { Queue } from "./components/Queue";
@@ -68,7 +69,8 @@ function RoomBody() {
   const [controlsHeight, setControlsHeight] = useState(96);
   const [showSettings, setShowSettings] = useState(false);
   // const [hasConsent, setHasConsent] = useState(() => !!localStorage.getItem("cuevote_cookie_consent"));
-  const { hasConsent, hasAppleConsent, giveAppleConsent } = Consent.useConsent();
+  const consent = Consent.useConsent();
+  const { hasConsent, hasAppleConsent, giveAppleConsent } = consent;
   const { t } = Language.useLanguage();
 
   // console.log("App Component MOUNTED, Room:", activeRoomId);
@@ -187,8 +189,6 @@ function RoomBody() {
   // Apple Music rooms play only on the owner's device (MusicKit needs the
   // host's own subscription); everyone else gets the playlist view.
   const isAppleRoom = provider === 'apple';
-  // The consent the player of this channel needs: Apple's or YouTube's.
-  const playerConsent = isAppleRoom ? hasAppleConsent : hasConsent;
 
   // Calculate set of ALL videoIds currently in the queue or playing for suggestion "Added" check
   const queueVideoIds = useMemo(() => {
@@ -214,6 +214,17 @@ function RoomBody() {
   }, [upcomingCount]);
 
   const isOwner = user && ownerId && user.id === ownerId;
+  // The owner of an Apple Music channel asked for Apple Music by creating it:
+  // MusicKit and Apple's cover art need no further consent on their side.
+  // Guests load nothing from Apple until they turn it on (AppleContentNotice).
+  const appleConsent = hasAppleConsent || (isAppleRoom && !!isOwner);
+  // The consent the player of this channel needs: Apple's or YouTube's.
+  const playerConsent = isAppleRoom ? appleConsent : hasConsent;
+  // Everything rendered below sees the Apple consent that holds in this room.
+  const roomConsent = useMemo(
+    () => ({ ...consent, hasAppleConsent: appleConsent }),
+    [consent, appleConsent]
+  );
   // TV always ignores Venue Mode (shows video).
   // FORCED Venue Mode: a mobile WEB browser (iOS or Android, NOT running in the
   // native app) can't reliably autoplay video, so we force vote/suggest-only
@@ -228,7 +239,7 @@ function RoomBody() {
   // Apple rooms have no YouTube player to prelisten with.
   const prelistenEnabled = allowPrelisten && !isForcedVenueMode && !isAppleRoom;
   const apple = useAppleMusicHost({
-    enabled: isAppleRoom && !!isOwner && hasAppleConsent && !isForcedVenueMode,
+    enabled: isAppleRoom && !!isOwner && !isForcedVenueMode,
     currentTrack,
     isPlaying,
     progressRef,
@@ -1541,13 +1552,8 @@ function RoomBody() {
 
   const showThrottleBar = networkThrottle && !ipBlockDetected && !throttleDismissed;
 
-  // Whoever came in with only the YouTube consent learns here, once the room
-  // says it plays Apple Music, what this channel loads from Apple.
-  if (isAppleRoom && !hasAppleConsent) {
-    return <JoinWelcome provider="apple" onAccept={giveAppleConsent} />;
-  }
-
   return (
+    <ConsentContext.Provider value={roomConsent}>
     <div
       className={`text-white flex flex-col ${isAnyPlaylistView ? "h-[100dvh] h-screen overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-[100dvh] h-screen overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
       style={isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined}
@@ -1759,7 +1765,7 @@ function RoomBody() {
                     playerContainerRef={playerContainerRef}
                   />
                 )
-              ) : (CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent player={isAppleRoom ? 'apple' : 'youtube'} /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>)}
+              ) : (CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>)}
             </PlayerErrorBoundary>
           </div>
         </div>
@@ -1796,6 +1802,7 @@ function RoomBody() {
         {isAnyPlaylistView ? (
           /* Venue Mode: Only Playlist View */
           <div className="w-full h-full flex flex-col overflow-hidden">
+            {isAppleRoom && !appleConsent && <AppleContentNotice onAccept={giveAppleConsent} />}
             <div className="flex-1 min-h-0 overflow-hidden">
             <PlaylistView
               history={history}
@@ -1845,7 +1852,7 @@ function RoomBody() {
             {!showPendingPage && !showBannedPage && (
               <div className="absolute inset-0">
                 {!playerConsent ? (
-                  CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent player={isAppleRoom ? 'apple' : 'youtube'} /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
+                  CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
                 ) : (
                   <>
                     <div style={{ display: (currentTrack || previewTrack) ? 'block' : 'none', width: '100%', height: '100%' }}>
@@ -2043,6 +2050,7 @@ function RoomBody() {
       )}
 
     </div>
+    </ConsentContext.Provider>
   );
 }
 export default RoomBody;

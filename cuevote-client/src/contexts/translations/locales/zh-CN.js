@@ -93,8 +93,6 @@ export default {
 		"welcome": "欢迎来到 {brand}",
 		"youtubeTitle": "启用音频和视频",
 		"youtubeBody": "要播放来自 YouTube 的音乐并参与播放列表，我们需要使用 Cookie。",
-		"appleTitle": "Apple Music 频道",
-		"appleBody": "此频道播放 Apple Music。封面图片以及（对主持人而言）Apple Music 播放器会从 Apple 的服务器加载。为此我们需要你的同意。",
 		"accept": "启用并加入派对",
 		"agree": "加入即表示你同意我们的{policy}。",
 		"policy": "隐私政策",
@@ -303,7 +301,8 @@ export default {
 		"problemSubscription": "需要有效的 Apple Music 订阅才能播放此内容。",
 		"problemOtherDevice": "你的 Apple 账号正在另一台设备上播放。",
 		"problemGeneric": "Apple Music 已停止播放（{code}）。请按播放键重试。",
-		"consent": "我们需要你的同意才能加载 Apple 的 MusicKit 播放器。它会连接到 Apple 的服务器。"
+		"contentNotice": "此频道的封面图片和试听来自 Apple。加载时，Apple 会看到你的 IP 地址。",
+		"contentAccept": "开启"
 	},
 	"attribution": {
 		"youtube": "基于 YouTube 开发"

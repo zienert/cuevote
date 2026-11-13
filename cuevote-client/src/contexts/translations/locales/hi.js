@@ -93,8 +93,6 @@ export default {
 		"welcome": "{brand} में आपका स्वागत है",
 		"youtubeTitle": "ऑडियो और वीडियो चालू करें",
 		"youtubeBody": "YouTube से संगीत चलाने और प्लेलिस्ट में भाग लेने के लिए हमें कुकीज़ का उपयोग करना होगा।",
-		"appleTitle": "Apple Music चैनल",
-		"appleBody": "यह चैनल Apple Music चलाता है। कवर आर्ट और, होस्ट के लिए, Apple Music प्लेयर Apple के सर्वर से लोड होते हैं। इसके लिए हमें आपकी सहमति चाहिए।",
 		"accept": "चालू करें और पार्टी में शामिल हों",
 		"agree": "शामिल होकर, आप हमारी {policy} से सहमत होते हैं।",
 		"policy": "गोपनीयता नीति",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "इसे चलाने के लिए Apple Music की सक्रिय सदस्यता ज़रूरी है।",
 		"problemOtherDevice": "आपका Apple खाता किसी दूसरे डिवाइस पर चल रहा है।",
 		"problemGeneric": "Apple Music ने प्लेबैक रोक दिया ({code})। फिर से प्रयास करने के लिए प्ले दबाएं।",
-		"consent": "Apple का MusicKit प्लेयर लोड करने के लिए हमें आपकी सहमति की आवश्यकता है। यह Apple के सर्वर से कनेक्ट होता है।"
+		"contentNotice": "इस चैनल के कवर आर्ट और पूर्वावलोकन Apple से आते हैं। इन्हें लोड करते समय Apple आपका IP पता देखता है।",
+		"contentAccept": "चालू करें"
 	},
 	"attribution": {
 		"youtube": "YouTube के साथ विकसित"

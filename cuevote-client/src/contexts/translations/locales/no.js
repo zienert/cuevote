@@ -93,8 +93,6 @@ export default {
 		"welcome": "Velkommen til {brand}",
 		"youtubeTitle": "Aktiver lyd og video",
 		"youtubeBody": "For å spille musikk fra YouTube og være med i spillelisten må vi bruke informasjonskapsler.",
-		"appleTitle": "Apple Music-kanal",
-		"appleBody": "Denne kanalen spiller Apple Music. Omslag og, for verten, Apple Music-spilleren lastes fra Apples servere. Til det trenger vi ditt samtykke.",
 		"accept": "Aktiver og bli med på festen",
 		"agree": "Ved å bli med godtar du våre {policy}.",
 		"policy": "personvernregler",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Apple Music krever et aktivt abonnement for å spille av dette.",
 		"problemOtherDevice": "Apple-kontoen din spiller av på en annen enhet.",
 		"problemGeneric": "Apple Music stoppet avspillingen ({code}). Trykk på spill av for å prøve igjen.",
-		"consent": "Vi trenger ditt samtykke for å laste inn Apples MusicKit-spiller. Dette kobler til Apples servere."
+		"contentNotice": "Omslag og forhåndsvisninger i denne kanalen kommer fra Apple. Når de lastes inn, ser Apple IP-adressen din.",
+		"contentAccept": "Slå på"
 	},
 	"attribution": {
 		"youtube": "Utviklet med YouTube"

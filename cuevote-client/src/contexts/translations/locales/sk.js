@@ -93,8 +93,6 @@ export default {
 		"welcome": "Vitajte v {brand}",
 		"youtubeTitle": "Povoliť zvuk a video",
 		"youtubeBody": "Aby sme mohli prehrávať hudbu z YouTube a vy ste sa mohli zapojiť do playlistu, potrebujeme používať cookies.",
-		"appleTitle": "Kanál Apple Music",
-		"appleBody": "Tento kanál prehráva Apple Music. Obaly albumov a pre hostiteľa aj prehrávač Apple Music sa načítavajú zo serverov Apple. Na to potrebujeme váš súhlas.",
 		"accept": "Povoliť a pridať sa k párty",
 		"agree": "Pripojením súhlasíte s našimi {policy}.",
 		"policy": "zásadami ochrany osobných údajov",
@@ -309,7 +307,8 @@ export default {
 		"problemSubscription": "Na prehrávanie je potrebné aktívne predplatné Apple Music.",
 		"problemOtherDevice": "Váš účet Apple práve prehráva na inom zariadení.",
 		"problemGeneric": "Prehrávanie v Apple Music sa zastavilo ({code}). Stlačte prehrať a skúste to znova.",
-		"consent": "Potrebujeme váš súhlas na načítanie prehrávača MusicKit od spoločnosti Apple. Ten sa pripája k serverom Apple."
+		"contentNotice": "Obaly albumov a náhľady v tomto kanáli pochádzajú od Apple. Pri ich načítaní Apple vidí vašu IP adresu.",
+		"contentAccept": "Zapnúť"
 	},
 	"attribution": {
 		"youtube": "Vyvinuté s YouTube"

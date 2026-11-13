@@ -93,8 +93,6 @@ export default {
 		"welcome": "{brand}에 오신 것을 환영합니다",
 		"youtubeTitle": "오디오 및 비디오 사용",
 		"youtubeBody": "YouTube에서 음악을 재생하고 플레이리스트에 참여하려면 쿠키를 사용해야 합니다.",
-		"appleTitle": "Apple Music 채널",
-		"appleBody": "이 채널은 Apple Music을 재생합니다. 커버 아트와 호스트용 Apple Music 플레이어는 Apple 서버에서 로드됩니다. 이를 위해 귀하의 동의가 필요합니다.",
 		"accept": "사용하고 파티 참여하기",
 		"agree": "참여하면 {policy}에 동의하는 것으로 간주됩니다.",
 		"policy": "개인정보 처리방침",
@@ -303,7 +301,8 @@ export default {
 		"problemSubscription": "재생하려면 활성 상태의 Apple Music 구독이 필요합니다.",
 		"problemOtherDevice": "다른 기기에서 내 Apple 계정으로 재생 중입니다.",
 		"problemGeneric": "Apple Music 재생이 중지되었습니다({code}). 재생 버튼을 눌러 다시 시도하세요.",
-		"consent": "Apple의 MusicKit 플레이어를 로드하려면 귀하의 동의가 필요합니다. 이는 Apple 서버에 연결됩니다."
+		"contentNotice": "이 채널의 커버 아트와 미리듣기는 Apple에서 제공됩니다. 로드할 때 Apple이 귀하의 IP 주소를 확인할 수 있습니다.",
+		"contentAccept": "켜기"
 	},
 	"attribution": {
 		"youtube": "YouTube로 개발됨"

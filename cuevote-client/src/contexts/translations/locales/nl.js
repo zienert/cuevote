@@ -93,8 +93,6 @@ export default {
 		"welcome": "Welkom bij {brand}",
 		"youtubeTitle": "Audio & video inschakelen",
 		"youtubeBody": "Om muziek van YouTube af te spelen en mee te doen aan de afspeellijst, hebben we cookies nodig.",
-		"appleTitle": "Apple Music-kanaal",
-		"appleBody": "Dit kanaal speelt Apple Music. Albumhoezen en, voor de host, de Apple Music-speler worden geladen van servers van Apple. Daarvoor hebben we je toestemming nodig.",
 		"accept": "Inschakelen & meedoen",
 		"agree": "Door mee te doen ga je akkoord met ons {policy}.",
 		"policy": "privacybeleid",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Apple Music heeft een actief abonnement nodig om dit af te spelen.",
 		"problemOtherDevice": "Je Apple-account speelt af op een ander apparaat.",
 		"problemGeneric": "Apple Music heeft het afspelen gestopt ({code}). Druk op afspelen om het opnieuw te proberen.",
-		"consent": "We hebben je toestemming nodig om de MusicKit-speler van Apple te laden. Dit maakt verbinding met Apple-servers."
+		"contentNotice": "Albumhoezen en voorbeelden in dit kanaal komen van Apple. Bij het laden ziet Apple je IP-adres.",
+		"contentAccept": "Aanzetten"
 	},
 	"attribution": {
 		"youtube": "Ontwikkeld met YouTube"

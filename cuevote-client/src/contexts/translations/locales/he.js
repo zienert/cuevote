@@ -93,8 +93,6 @@ export default {
 		"welcome": "ברוכים הבאים ל-{brand}",
 		"youtubeTitle": "הפעלת שמע ווידאו",
 		"youtubeBody": "כדי לנגן מוזיקה מ-YouTube ולהשתתף ברשימת ההשמעה, עלינו להשתמש בעוגיות.",
-		"appleTitle": "ערוץ Apple Music",
-		"appleBody": "הערוץ הזה מנגן Apple Music. עטיפות האלבומים, ועבור המארח גם נגן Apple Music, נטענים מהשרתים של Apple. לשם כך אנו זקוקים להסכמתך.",
 		"accept": "הפעל והצטרף למסיבה",
 		"agree": "בהצטרפותך, אתה מסכים ל{policy} שלנו.",
 		"policy": "מדיניות הפרטיות",
@@ -307,7 +305,8 @@ export default {
 		"problemSubscription": "כדי לנגן את זה צריך מינוי פעיל ל-Apple Music.",
 		"problemOtherDevice": "חשבון ה-Apple שלך מנגן כרגע במכשיר אחר.",
 		"problemGeneric": "Apple Music עצר את הניגון ({code}). יש ללחוץ על ניגון כדי לנסות שוב.",
-		"consent": "אנו זקוקים להסכמתך לטעינת נגן MusicKit של Apple. זה מתחבר לשרתים של Apple."
+		"contentNotice": "עטיפות האלבומים והתצוגות המקדימות בערוץ הזה מגיעות מ-Apple. בזמן הטעינה Apple רואה את כתובת ה-IP שלך.",
+		"contentAccept": "הפעלה"
 	},
 	"attribution": {
 		"youtube": "פותח עם YouTube"

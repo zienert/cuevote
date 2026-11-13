@@ -93,8 +93,6 @@ export default {
 		"welcome": "Üdvözöl a {brand}",
 		"youtubeTitle": "Hang és videó engedélyezése",
 		"youtubeBody": "Ahhoz, hogy zenét játszhassunk a YouTube-ról, és részt vehess a lejátszási listában, sütiket kell használnunk.",
-		"appleTitle": "Apple Music-csatorna",
-		"appleBody": "Ez a csatorna Apple Musicot játszik. A borítók és a házigazdának az Apple Music lejátszó az Apple szervereiről töltődnek be. Ehhez a hozzájárulásodra van szükségünk.",
 		"accept": "Engedélyezés és csatlakozás a bulihoz",
 		"agree": "A csatlakozással elfogadod {policy}.",
 		"policy": "adatvédelmi irányelveinket",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Ennek lejátszásához aktív Apple Music-előfizetés kell.",
 		"problemOtherDevice": "Az Apple-fiókod éppen egy másik eszközön játszik zenét.",
 		"problemGeneric": "Az Apple Music leállította a lejátszást ({code}). Az újrapróbálkozáshoz nyomd meg a lejátszás gombot.",
-		"consent": "A hozzájárulásodra van szükségünk az Apple MusicKit lejátszójának betöltéséhez. Ez csatlakozik az Apple szervereihez."
+		"contentNotice": "A csatorna borítói és előnézetei az Apple-től származnak. Betöltésükkor az Apple látja az IP-címedet.",
+		"contentAccept": "Bekapcsolás"
 	},
 	"attribution": {
 		"youtube": "YouTube-val fejlesztve"

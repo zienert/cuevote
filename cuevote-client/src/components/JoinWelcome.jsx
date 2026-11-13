@@ -4,12 +4,12 @@ import React from 'react';
 import { Loader2, Music, PlayCircle } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 
-// The first screen of a channel for someone who has not agreed yet: what the
-// channel loads from whom (YouTube, or Apple in an Apple Music channel) and the
-// button to agree and join. `provider` is null while the channel is checked.
+// The first screen of a YouTube channel for someone who has not agreed yet:
+// what the channel loads from YouTube and the button to agree and join.
+// `provider` is null while the channel is checked; an Apple Music channel then
+// opens without this screen.
 export function JoinWelcome({ provider, onAccept }) {
 	const { t } = Language.useLanguage();
-	const isApple = provider === 'apple';
 	const [welcomeBefore, welcomeAfter = ''] = t('join.welcome').split('{brand}');
 	const [agreeBefore, agreeAfter = ''] = t('join.agree').split('{policy}');
 
@@ -29,10 +29,8 @@ export function JoinWelcome({ provider, onAccept }) {
 					</div>
 					{provider ? (
 						<div className="space-y-2">
-							<h2 className="text-2xl font-bold text-white">{isApple ? t('join.appleTitle') : t('join.youtubeTitle')}</h2>
-							<p className="text-neutral-400 text-sm leading-relaxed">
-								{isApple ? t('join.appleBody') : t('join.youtubeBody')}
-							</p>
+							<h2 className="text-2xl font-bold text-white">{t('join.youtubeTitle')}</h2>
+							<p className="text-neutral-400 text-sm leading-relaxed">{t('join.youtubeBody')}</p>
 						</div>
 					) : (
 						<p className="flex items-center justify-center gap-2 text-neutral-400 text-sm" role="status">

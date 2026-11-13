@@ -93,8 +93,6 @@ export default {
 		"welcome": "Tervetuloa {brand}-palveluun",
 		"youtubeTitle": "Ota ääni ja video käyttöön",
 		"youtubeBody": "Jotta voimme soittaa musiikkia YouTubesta ja voit osallistua soittolistaan, tarvitsemme evästeitä.",
-		"appleTitle": "Apple Music -kanava",
-		"appleBody": "Tällä kanavalla soi Apple Music. Kansikuvat ja isännälle Apple Music -soitin ladataan Applen palvelimilta. Tarvitsemme siihen suostumuksesi.",
 		"accept": "Ota käyttöön ja liity juhliin",
 		"agree": "Liittymällä hyväksyt {policy}.",
 		"policy": "tietosuojakäytäntömme",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Tämän toistaminen vaatii voimassa olevan Apple Music -tilauksen.",
 		"problemOtherDevice": "Apple-tilisi toistaa musiikkia toisella laitteella.",
 		"problemGeneric": "Apple Music keskeytti toiston ({code}). Yritä uudelleen painamalla toistopainiketta.",
-		"consent": "Tarvitsemme suostumuksesi Applen MusicKit-soittimen lataamiseen. Tämä muodostaa yhteyden Applen palvelimiin."
+		"contentNotice": "Tämän kanavan kansikuvat ja esikatselut tulevat Applelta. Kun ne latautuvat, Apple näkee IP-osoitteesi.",
+		"contentAccept": "Ota käyttöön"
 	},
 	"attribution": {
 		"youtube": "Kehitetty YouTuben kanssa"

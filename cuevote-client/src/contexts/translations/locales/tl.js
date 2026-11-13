@@ -93,8 +93,6 @@ export default {
 		"welcome": "Maligayang pagdating sa {brand}",
 		"youtubeTitle": "I-enable ang Audio at Video",
 		"youtubeBody": "Para makapagpatugtog ng musika mula sa YouTube at makasali sa playlist, kailangan naming gumamit ng cookies.",
-		"appleTitle": "Apple Music Channel",
-		"appleBody": "Nagpapatugtog ng Apple Music ang channel na ito. Ang mga cover art at, para sa host, ang Apple Music player ay nilo-load mula sa mga server ng Apple. Kailangan namin ang iyong pahintulot para dito.",
 		"accept": "I-enable at Sumali sa Party",
 		"agree": "Sa pagsali, sumasang-ayon ka sa aming {policy}.",
 		"policy": "Patakaran sa Privacy",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Kailangan ng aktibong Apple Music subscription para ma-play ito.",
 		"problemOtherDevice": "Ginagamit ang Apple account mo para magpatugtog sa ibang device.",
 		"problemGeneric": "Itinigil ng Apple Music ang pagpapatugtog ({code}). Pindutin ang play para subukang muli.",
-		"consent": "Kailangan namin ang iyong pahintulot upang i-load ang MusicKit player ng Apple. Kumokonekta ito sa mga server ng Apple."
+		"contentNotice": "Galing sa Apple ang mga cover art at preview sa channel na ito. Habang nilo-load ang mga ito, nakikita ng Apple ang iyong IP address.",
+		"contentAccept": "I-on"
 	},
 	"attribution": {
 		"youtube": "Binuo gamit ang YouTube"

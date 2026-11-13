@@ -93,8 +93,6 @@ export default {
 		"welcome": "مرحبًا بك في {brand}",
 		"youtubeTitle": "تفعيل الصوت والفيديو",
 		"youtubeBody": "لتشغيل الموسيقى من YouTube والمشاركة في قائمة التشغيل، نحتاج إلى استخدام ملفات تعريف الارتباط.",
-		"appleTitle": "قناة Apple Music",
-		"appleBody": "تشغّل هذه القناة Apple Music. يتم تحميل صور الأغلفة، ومشغّل Apple Music للمضيف، من خوادم Apple. نحتاج إلى موافقتك على ذلك.",
 		"accept": "تفعيل والانضمام إلى الحفلة",
 		"agree": "بانضمامك، فإنك توافق على {policy}.",
 		"policy": "سياسة الخصوصية الخاصة بنا",
@@ -313,7 +311,8 @@ export default {
 		"problemSubscription": "يتطلب Apple Music اشتراكًا نشطًا لتشغيل هذا.",
 		"problemOtherDevice": "يتم استخدام حساب Apple الخاص بك للتشغيل على جهاز آخر.",
 		"problemGeneric": "أوقف Apple Music التشغيل ({code}). اضغط على تشغيل للمحاولة مرة أخرى.",
-		"consent": "نحتاج إلى موافقتك لتحميل مشغل MusicKit من Apple. هذا يتصل بخوادم Apple."
+		"contentNotice": "صور الأغلفة والمعاينات في هذه القناة تأتي من Apple. ترى Apple عنوان IP الخاص بك عند تحميلها.",
+		"contentAccept": "تفعيل"
 	},
 	"attribution": {
 		"youtube": "تم التطوير مع YouTube"

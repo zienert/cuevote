@@ -93,8 +93,6 @@ export default {
 		"welcome": "{brand}'a hoş geldiniz",
 		"youtubeTitle": "Ses ve videoyu etkinleştir",
 		"youtubeBody": "YouTube'dan müzik çalmak ve çalma listesine katılmak için çerez kullanmamız gerekiyor.",
-		"appleTitle": "Apple Music kanalı",
-		"appleBody": "Bu kanal Apple Music çalıyor. Kapak görselleri ve ev sahibi için Apple Music oynatıcısı Apple sunucularından yüklenir. Bunun için izninize ihtiyacımız var.",
 		"accept": "Etkinleştir ve partiye katıl",
 		"agree": "Katılarak {policy} kabul etmiş olursunuz.",
 		"policy": "Gizlilik Politikamızı",
@@ -305,7 +303,8 @@ export default {
 		"problemSubscription": "Bunu oynatmak için etkin bir Apple Music aboneliği gerekiyor.",
 		"problemOtherDevice": "Apple hesabınızla başka bir cihazda müzik çalınıyor.",
 		"problemGeneric": "Apple Music oynatmayı durdurdu ({code}). Tekrar denemek için oynat düğmesine basın.",
-		"consent": "Apple'ın MusicKit oynatıcısını yüklemek için izninize ihtiyacımız var. Bu, Apple sunucularına bağlanır."
+		"contentNotice": "Bu kanaldaki kapak görselleri ve önizlemeler Apple'dan gelir. Yüklenirken Apple IP adresinizi görür.",
+		"contentAccept": "Aç"
 	},
 	"attribution": {
 		"youtube": "YouTube ile geliştirildi"

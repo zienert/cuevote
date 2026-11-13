@@ -93,8 +93,6 @@ export default {
 		"welcome": "Selamat datang ke {brand}",
 		"youtubeTitle": "Dayakan Audio & Video",
 		"youtubeBody": "Untuk memainkan muzik dari YouTube dan menyertai senarai main, kami perlu menggunakan kuki.",
-		"appleTitle": "Saluran Apple Music",
-		"appleBody": "Saluran ini memainkan Apple Music. Kulit album dan, untuk hos, pemain Apple Music dimuatkan dari pelayan Apple. Untuk itu kami memerlukan persetujuan anda.",
 		"accept": "Dayakan & Sertai Parti",
 		"agree": "Dengan menyertai, anda bersetuju dengan {policy} kami.",
 		"policy": "Dasar Privasi",
@@ -303,7 +301,8 @@ export default {
 		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memainkan ini.",
 		"problemOtherDevice": "Akaun Apple anda sedang memainkan muzik pada peranti lain.",
 		"problemGeneric": "Apple Music menghentikan main balik ({code}). Tekan main untuk mencuba lagi.",
-		"consent": "Kami memerlukan persetujuan anda untuk memuatkan pemain MusicKit Apple. Ini bersambung ke pelayan Apple."
+		"contentNotice": "Kulit album dan pratonton dalam saluran ini datang daripada Apple. Semasa ia dimuatkan, Apple dapat melihat alamat IP anda.",
+		"contentAccept": "Hidupkan"
 	},
 	"attribution": {
 		"youtube": "Dibangunkan dengan YouTube"

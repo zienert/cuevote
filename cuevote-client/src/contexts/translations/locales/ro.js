@@ -93,8 +93,6 @@ export default {
 		"welcome": "Bine ai venit pe {brand}",
 		"youtubeTitle": "Activează audio și video",
 		"youtubeBody": "Pentru a reda muzică de pe YouTube și a participa la playlist, trebuie să folosim cookie-uri.",
-		"appleTitle": "Canal Apple Music",
-		"appleBody": "Acest canal redă Apple Music. Copertele și, pentru gazdă, playerul Apple Music se încarcă de pe serverele Apple. Pentru asta avem nevoie de consimțământul tău.",
 		"accept": "Activează și intră la petrecere",
 		"agree": "Alăturându-te, ești de acord cu {policy}.",
 		"policy": "Politica noastră de Confidențialitate",
@@ -307,7 +305,8 @@ export default {
 		"problemSubscription": "Apple Music necesită un abonament activ pentru a reda acest conținut.",
 		"problemOtherDevice": "Contul tău Apple redă muzică pe alt dispozitiv.",
 		"problemGeneric": "Apple Music a oprit redarea ({code}). Apasă pe redare pentru a încerca din nou.",
-		"consent": "Avem nevoie de consimțământul tău pentru a încărca playerul MusicKit de la Apple. Acesta se conectează la serverele Apple."
+		"contentNotice": "Copertele și previzualizările din acest canal vin de la Apple. La încărcarea lor, Apple vede adresa ta IP.",
+		"contentAccept": "Activează"
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

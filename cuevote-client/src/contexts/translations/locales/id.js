@@ -93,8 +93,6 @@ export default {
 		"welcome": "Selamat datang di {brand}",
 		"youtubeTitle": "Aktifkan Audio & Video",
 		"youtubeBody": "Untuk memutar musik dari YouTube dan ikut serta dalam playlist, kami perlu menggunakan cookie.",
-		"appleTitle": "Saluran Apple Music",
-		"appleBody": "Saluran ini memutar Apple Music. Sampul album dan, untuk host, pemutar Apple Music dimuat dari server Apple. Untuk itu kami memerlukan persetujuan Anda.",
 		"accept": "Aktifkan & Ikut Pesta",
 		"agree": "Dengan bergabung, Anda menyetujui {policy} kami.",
 		"policy": "Kebijakan Privasi",
@@ -303,7 +301,8 @@ export default {
 		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memutar ini.",
 		"problemOtherDevice": "Akun Apple Anda sedang memutar di perangkat lain.",
 		"problemGeneric": "Apple Music menghentikan pemutaran ({code}). Tekan putar untuk mencoba lagi.",
-		"consent": "Kami memerlukan persetujuan Anda untuk memuat pemutar MusicKit dari Apple. Ini terhubung ke server Apple."
+		"contentNotice": "Sampul album dan pratinjau di saluran ini berasal dari Apple. Saat dimuat, Apple dapat melihat alamat IP Anda.",
+		"contentAccept": "Aktifkan"
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

@@ -93,8 +93,6 @@ export default {
 		"welcome": "ยินดีต้อนรับสู่ {brand}",
 		"youtubeTitle": "เปิดเสียงและวิดีโอ",
 		"youtubeBody": "เพื่อเล่นเพลงจาก YouTube และร่วมสร้างเพลย์ลิสต์ เราจำเป็นต้องใช้คุกกี้",
-		"appleTitle": "ช่อง Apple Music",
-		"appleBody": "ช่องนี้เล่น Apple Music ภาพปกและเครื่องเล่น Apple Music สำหรับโฮสต์จะโหลดจากเซิร์ฟเวอร์ของ Apple เราจึงต้องการความยินยอมจากคุณ",
 		"accept": "เปิดใช้และเข้าร่วมปาร์ตี้",
 		"agree": "การเข้าร่วมถือว่าคุณยอมรับ{policy}ของเรา",
 		"policy": "นโยบายความเป็นส่วนตัว",
@@ -303,7 +301,8 @@ export default {
 		"problemSubscription": "ต้องสมัครสมาชิก Apple Music ที่ยังใช้งานอยู่จึงจะเล่นรายการนี้ได้",
 		"problemOtherDevice": "บัญชี Apple ของคุณกำลังเล่นอยู่บนอุปกรณ์อื่น",
 		"problemGeneric": "Apple Music หยุดเล่น ({code}) กดเล่นเพื่อลองอีกครั้ง",
-		"consent": "เราต้องการความยินยอมจากคุณเพื่อโหลดเครื่องเล่น MusicKit ของ Apple ซึ่งจะเชื่อมต่อกับเซิร์ฟเวอร์ของ Apple"
+		"contentNotice": "ภาพปกและตัวอย่างในช่องนี้มาจาก Apple ระหว่างโหลด Apple จะเห็นที่อยู่ IP ของคุณ",
+		"contentAccept": "เปิดใช้"
 	},
 	"attribution": {
 		"youtube": "พัฒนาด้วย YouTube"

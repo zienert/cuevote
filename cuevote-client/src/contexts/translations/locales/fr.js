@@ -93,8 +93,6 @@ export default {
 		"welcome": "Bienvenue sur {brand}",
 		"youtubeTitle": "Activer l'audio et la vidéo",
 		"youtubeBody": "Pour lire la musique depuis YouTube et participer à la playlist, nous devons utiliser des cookies.",
-		"appleTitle": "Chaîne Apple Music",
-		"appleBody": "Cette chaîne diffuse Apple Music. Les pochettes et, pour l'hôte, le lecteur Apple Music sont chargés depuis les serveurs d'Apple. Nous avons besoin de votre consentement pour cela.",
 		"accept": "Activer et rejoindre la fête",
 		"agree": "En rejoignant, vous acceptez notre {policy}.",
 		"policy": "politique de confidentialité",
@@ -307,7 +305,8 @@ export default {
 		"problemSubscription": "Apple Music nécessite un abonnement actif pour lire ce titre.",
 		"problemOtherDevice": "La lecture est en cours sur un autre appareil avec votre compte Apple.",
 		"problemGeneric": "Apple Music a arrêté la lecture ({code}). Appuyez sur Lecture pour réessayer.",
-		"consent": "Nous avons besoin de votre consentement pour charger le lecteur MusicKit d'Apple. Cela se connecte aux serveurs d'Apple."
+		"contentNotice": "Les pochettes et les aperçus de cette chaîne viennent d'Apple. Lors de leur chargement, Apple voit votre adresse IP.",
+		"contentAccept": "Activer"
 	},
 	"attribution": {
 		"youtube": "Développé avec YouTube"
