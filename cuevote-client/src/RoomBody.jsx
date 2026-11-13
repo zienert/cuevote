@@ -24,6 +24,7 @@ import { AppPromoFooter } from "./components/AppPromoFooter";
 import { SettingsView } from "./components/SettingsView";
 import { canParticipate, participationErrorKey } from "./utils/participation";
 import { useLatestRef } from "./hooks/useLatestRef";
+import { useMediaQuery } from "./hooks/useMediaQuery";
 import { BannedVideosPage } from "./components/BannedVideos"; // Added this import
 import { PlaybackControls } from "./components/PlaybackControls";
 import { Skeleton } from "./components/Skeleton";
@@ -255,9 +256,16 @@ function RoomBody() {
   // channels; in an Apple channel guests prelisten in the browser and the app
   // adds nothing, so the footer stays off there.
   const showAppFooter = deviceDetection.isAndroid() && !deviceDetection.isNativeApp() && !isAppleRoom;
-  // TV always defaults to Fullscreen (CinemaMode), unless manually exited
   const isAnyPlaylistView = isVenueMode || localPlaylistView;
+  // Phones (below md, where the header switches to its two-row layout) get the
+  // bar at the bottom of the playlist view, within reach of the thumb. The
+  // player view keeps it on top: its playback controls own the bottom edge.
+  const isNarrowScreen = useMediaQuery('(max-width: 767px)');
+  const headerAtBottom = isAnyPlaylistView && isNarrowScreen;
+  // A state, not a ref: the bar mounts only once the room has loaded.
+  const [headerBar, setHeaderBar] = useState(null);
 
+  // TV always defaults to Fullscreen (CinemaMode), unless manually exited
   const [isCinemaMode, setIsCinemaMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return deviceDetection.isTV() || ((deviceDetection.isMobile() && !deviceDetection.isTablet()) && window.matchMedia("(orientation: landscape)").matches);
@@ -269,6 +277,47 @@ function RoomBody() {
       setIsCinemaMode(false);
     }
   }, [isVenueMode]);
+
+  // Floating buttons and pop-ups keep clear of the bar while it sits at the
+  // bottom: its height is published as --bottom-bar-h (0 when hidden).
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!headerAtBottom || !headerBar) {
+      root.style.setProperty('--bottom-bar-h', '0px');
+      return undefined;
+    }
+    const publish = () => root.style.setProperty('--bottom-bar-h', `${headerBar.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(headerBar);
+    return () => {
+      observer.disconnect();
+      root.style.setProperty('--bottom-bar-h', '0px');
+    };
+  }, [headerAtBottom, headerBar]);
+
+  // The on-screen keyboard shrinks only the visual viewport (iOS Safari, and
+  // Android Chrome by default): 100dvh stays tall and a bar at the bottom would
+  // end up under the keyboard, suggest field included. While the bar sits at
+  // the bottom the room follows the visual viewport instead.
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const root = document.documentElement;
+    if (!headerAtBottom || !viewport) return undefined;
+    const follow = () => {
+      root.style.setProperty('--vv-height', `${viewport.height}px`);
+      root.style.setProperty('--vv-top', `${viewport.offsetTop}px`);
+    };
+    follow();
+    viewport.addEventListener('resize', follow);
+    viewport.addEventListener('scroll', follow);
+    return () => {
+      viewport.removeEventListener('resize', follow);
+      viewport.removeEventListener('scroll', follow);
+      root.style.removeProperty('--vv-height');
+      root.style.removeProperty('--vv-top');
+    };
+  }, [headerAtBottom]);
 
   // Pending Suggestions Handlers
   const handleApproveSuggestion = (trackId) => {
@@ -1569,8 +1618,10 @@ function RoomBody() {
   return (
     <ConsentContext.Provider value={roomConsent}>
     <div
-      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
-      style={isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined}
+      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")} ${headerAtBottom ? "safe-pt" : ""}`}
+      style={headerAtBottom
+        ? { position: 'fixed', left: 0, right: 0, top: 'var(--vv-top, 0px)', height: 'var(--vv-height, 100dvh)' }
+        : (isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined)}
     >
       {ipBlockDetected && !throttleDismissed && (
         <div className="fixed inset-0 z-[100] bg-[#050505] text-white flex items-center justify-center p-6 overflow-hidden">
@@ -1635,7 +1686,14 @@ function RoomBody() {
         </div>
       )}
       {!isCinemaMode && (
-        <div className="sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out">
+        <div
+          ref={setHeaderBar}
+          className={headerAtBottom
+            // At the bottom the suggest form opens above the bar (column
+            // reversed); a preview's own bar takes the bottom edge meanwhile.
+            ? `order-last flex flex-col-reverse z-[55] bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 ${previewTrack ? "hidden" : ""}`
+            : "sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out"}
+        >
           <Header
             showYouTubeAttribution={!isAppleRoom}
             onGoHome={() => navigate("/")}
@@ -1683,6 +1741,7 @@ function RoomBody() {
             ownerBypass={ownerBypass}
             playlistViewMode={playlistViewMode}
             onFullscreenOverlay={setHeaderOverlay}
+            atBottom={headerAtBottom}
           />
           {showThrottleBar && (
             <div className="bg-yellow-600/95 text-white text-center py-1.5 text-xs font-medium">
@@ -1708,7 +1767,7 @@ function RoomBody() {
             </div>
           )}
           {showSuggest && (
-            <div className="px-4 pb-3">
+            <div className={headerAtBottom ? "px-4 pt-3" : "px-4 pb-3"}>
               <SuggestSongForm
                 onSongSuggested={handleSongSuggested}
                 onShowSuggest={setShowSuggest}

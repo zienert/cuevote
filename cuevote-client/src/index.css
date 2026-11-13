@@ -32,6 +32,10 @@ body,
   padding-top: var(--sat);
 }
 
+.safe-pb {
+  padding-bottom: var(--sab);
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
