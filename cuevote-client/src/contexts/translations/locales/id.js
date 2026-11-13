@@ -89,6 +89,17 @@ export default {
 		"accept": "Terima & Putar Musik",
 		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini."
 	},
+	"join": {
+		"welcome": "Selamat datang di {brand}",
+		"youtubeTitle": "Aktifkan Audio & Video",
+		"youtubeBody": "Untuk memutar musik dari YouTube dan ikut serta dalam playlist, kami perlu menggunakan cookie.",
+		"appleTitle": "Saluran Apple Music",
+		"appleBody": "Saluran ini memutar Apple Music. Sampul album dan, untuk host, pemutar Apple Music dimuat dari server Apple. Untuk itu kami memerlukan persetujuan Anda.",
+		"accept": "Aktifkan & Ikut Pesta",
+		"agree": "Dengan bergabung, Anda menyetujui {policy} kami.",
+		"policy": "Kebijakan Privasi",
+		"checking": "Memeriksa saluran…"
+	},
 	"header": {
 		"profileSettings": "Profil & Pengaturan",
 		"signIn": "Masuk dengan Google",

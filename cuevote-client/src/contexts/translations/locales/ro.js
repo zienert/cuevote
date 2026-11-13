@@ -89,6 +89,17 @@ export default {
 		"accept": "Acceptă și Redă Muzica",
 		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos."
 	},
+	"join": {
+		"welcome": "Bine ai venit pe {brand}",
+		"youtubeTitle": "Activează audio și video",
+		"youtubeBody": "Pentru a reda muzică de pe YouTube și a participa la playlist, trebuie să folosim cookie-uri.",
+		"appleTitle": "Canal Apple Music",
+		"appleBody": "Acest canal redă Apple Music. Copertele și, pentru gazdă, playerul Apple Music se încarcă de pe serverele Apple. Pentru asta avem nevoie de consimțământul tău.",
+		"accept": "Activează și intră la petrecere",
+		"agree": "Alăturându-te, ești de acord cu {policy}.",
+		"policy": "Politica noastră de Confidențialitate",
+		"checking": "Se verifică canalul…"
+	},
 	"header": {
 		"profileSettings": "Profil și Setări",
 		"signIn": "Autentificare cu Google",

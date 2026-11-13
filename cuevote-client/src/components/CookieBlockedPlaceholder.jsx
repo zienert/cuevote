@@ -9,7 +9,8 @@ import { Consent } from '../contexts/ConsentContext';
 // Apple's MusicKit in an Apple Music room.
 export function CookieBlockedPlaceholder({ player = 'youtube' }) {
 	const { t } = Language.useLanguage();
-	const { giveConsent } = Consent.useConsent();
+	const { giveConsent, giveAppleConsent } = Consent.useConsent();
+	const isApple = player === 'apple';
 
 	return (
 		<div className="w-full h-full flex items-center justify-center bg-black relative overflow-hidden">
@@ -25,10 +26,9 @@ export function CookieBlockedPlaceholder({ player = 'youtube' }) {
 					<div className="space-y-3">
 						<h3 className="text-white font-bold text-xl">{t('cookie.title')}</h3>
 						<div className="text-neutral-400 text-sm leading-relaxed max-w-xs mx-auto">
-							<p>{t('cookie.description')}</p>
+							<p>{isApple ? t('appleMusic.consent') : t('cookie.description')}</p>
 							<p className="mt-2 text-xs text-neutral-500">
-								{player === 'apple' ? t('appleMusic.consent') : t('cookie.youtubeConsent')}
-								<br />
+								{!isApple && <>{t('cookie.youtubeConsent')}<br /></>}
 								<a href="/legal" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 underline underline-offset-2 mt-1 inline-block">
 									{t('cookie.policy')}
 								</a>
@@ -36,7 +36,7 @@ export function CookieBlockedPlaceholder({ player = 'youtube' }) {
 						</div>
 
 						<button
-							onClick={giveConsent}
+							onClick={isApple ? giveAppleConsent : giveConsent}
 							className="mt-4 px-8 py-3 rounded-xl bg-white text-black font-bold text-sm hover:bg-neutral-200 transition-colors shadow-lg active:scale-95 transform duration-100 flex items-center gap-2 mx-auto"
 						>
 							<Cookie size={18} className="text-orange-600" />

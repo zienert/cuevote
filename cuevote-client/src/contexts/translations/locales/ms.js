@@ -89,6 +89,17 @@ export default {
 		"accept": "Terima & Mainkan Muzik",
 		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah."
 	},
+	"join": {
+		"welcome": "Selamat datang ke {brand}",
+		"youtubeTitle": "Dayakan Audio & Video",
+		"youtubeBody": "Untuk memainkan muzik dari YouTube dan menyertai senarai main, kami perlu menggunakan kuki.",
+		"appleTitle": "Saluran Apple Music",
+		"appleBody": "Saluran ini memainkan Apple Music. Kulit album dan, untuk hos, pemain Apple Music dimuatkan dari pelayan Apple. Untuk itu kami memerlukan persetujuan anda.",
+		"accept": "Dayakan & Sertai Parti",
+		"agree": "Dengan menyertai, anda bersetuju dengan {policy} kami.",
+		"policy": "Dasar Privasi",
+		"checking": "Menyemak saluran…"
+	},
 	"header": {
 		"profileSettings": "Profil & Tetapan",
 		"signIn": "Log masuk dengan Google",

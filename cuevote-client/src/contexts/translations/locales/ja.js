@@ -89,6 +89,17 @@ export default {
 		"accept": "同意して音楽を再生",
 		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。"
 	},
+	"join": {
+		"welcome": "{brand}へようこそ",
+		"youtubeTitle": "オーディオとビデオを有効にする",
+		"youtubeBody": "YouTubeの音楽を再生してプレイリストに参加するには、Cookieを使用する必要があります。",
+		"appleTitle": "Apple Musicチャンネル",
+		"appleBody": "このチャンネルではApple Musicを再生します。カバーアートと、ホストの場合はApple Musicプレーヤーが、Appleのサーバーから読み込まれます。そのためにお客様の同意が必要です。",
+		"accept": "有効にしてパーティーに参加",
+		"agree": "参加すると、{policy}に同意したものとみなされます。",
+		"policy": "プライバシーポリシー",
+		"checking": "チャンネルを確認しています…"
+	},
 	"header": {
 		"profileSettings": "プロフィール設定",
 		"signIn": "Googleでログイン",

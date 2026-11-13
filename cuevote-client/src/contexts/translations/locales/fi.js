@@ -89,6 +89,17 @@ export default {
 		"accept": "Hyväksy & Soita musiikkia",
 		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta."
 	},
+	"join": {
+		"welcome": "Tervetuloa {brand}-palveluun",
+		"youtubeTitle": "Ota ääni ja video käyttöön",
+		"youtubeBody": "Jotta voimme soittaa musiikkia YouTubesta ja voit osallistua soittolistaan, tarvitsemme evästeitä.",
+		"appleTitle": "Apple Music -kanava",
+		"appleBody": "Tällä kanavalla soi Apple Music. Kansikuvat ja isännälle Apple Music -soitin ladataan Applen palvelimilta. Tarvitsemme siihen suostumuksesi.",
+		"accept": "Ota käyttöön ja liity juhliin",
+		"agree": "Liittymällä hyväksyt {policy}.",
+		"policy": "tietosuojakäytäntömme",
+		"checking": "Tarkistetaan kanavaa…"
+	},
 	"header": {
 		"profileSettings": "Profiili & Asetukset",
 		"signIn": "Kirjaudu Googlella",

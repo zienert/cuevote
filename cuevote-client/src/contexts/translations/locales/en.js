@@ -89,6 +89,17 @@ export default {
 		"accept": "Accept & Play Music",
 		"youtubeConsent": "We need your consent to load the YouTube Player. Please accept cookies below."
 	},
+	"join": {
+		"welcome": "Welcome to {brand}",
+		"youtubeTitle": "Enable Audio & Video",
+		"youtubeBody": "To play music from YouTube and take part in the playlist, we need to use cookies.",
+		"appleTitle": "Apple Music Channel",
+		"appleBody": "This channel plays Apple Music. Cover art and, for the host, the Apple Music player load from Apple's servers. We need your consent for that.",
+		"accept": "Enable & Join Party",
+		"agree": "By joining, you agree to our {policy}.",
+		"policy": "Privacy Policy",
+		"checking": "Checking the channel…"
+	},
 	"header": {
 		"back": "Back",
 		"suggestions": "Suggestions",

@@ -89,6 +89,17 @@ export default {
 		"accept": "Zaakceptuj i Odtwarzaj",
 		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej."
 	},
+	"join": {
+		"welcome": "Witamy w {brand}",
+		"youtubeTitle": "Włącz dźwięk i wideo",
+		"youtubeBody": "Aby odtwarzać muzykę z YouTube i współtworzyć playlistę, musimy używać plików cookie.",
+		"appleTitle": "Kanał Apple Music",
+		"appleBody": "Ten kanał odtwarza Apple Music. Okładki oraz, dla gospodarza, odtwarzacz Apple Music są ładowane z serwerów Apple. Potrzebujemy na to Twojej zgody.",
+		"accept": "Włącz i dołącz do imprezy",
+		"agree": "Dołączając, akceptujesz naszą {policy}.",
+		"policy": "Politykę Prywatności",
+		"checking": "Sprawdzanie kanału…"
+	},
 	"header": {
 		"profileSettings": "Profil i ustawienia",
 		"signIn": "Zaloguj się przez Google",

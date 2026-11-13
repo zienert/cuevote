@@ -22,8 +22,18 @@ export const Consent = {
 			setShowBanner(false);
 		};
 		const askForConsent = () => setShowBanner(true);
+		// Apple Music channels load cover art and, for the host, MusicKit from
+		// Apple. Their own consent: agreeing to YouTube and Google says nothing
+		// about Apple, and agreeing in an Apple channel nothing about YouTube.
+		const [hasAppleConsent, setHasAppleConsent] = useState(() => {
+			return localStorage.getItem("cuevote_apple_consent") === "true";
+		});
+		const giveAppleConsent = () => {
+			localStorage.setItem("cuevote_apple_consent", "true");
+			setHasAppleConsent(true);
+		};
 		return (
-			<ConsentContext.Provider value={{ hasConsent, showBanner, giveConsent, askForConsent, setShowBanner }}>
+			<ConsentContext.Provider value={{ hasConsent, showBanner, giveConsent, askForConsent, setShowBanner, hasAppleConsent, giveAppleConsent }}>
 				{children}
 			</ConsentContext.Provider>
 		);

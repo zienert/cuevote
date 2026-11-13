@@ -89,6 +89,17 @@ export default {
 		"accept": "Kabul Et & Müzik Çal",
 		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin."
 	},
+	"join": {
+		"welcome": "{brand}'a hoş geldiniz",
+		"youtubeTitle": "Ses ve videoyu etkinleştir",
+		"youtubeBody": "YouTube'dan müzik çalmak ve çalma listesine katılmak için çerez kullanmamız gerekiyor.",
+		"appleTitle": "Apple Music kanalı",
+		"appleBody": "Bu kanal Apple Music çalıyor. Kapak görselleri ve ev sahibi için Apple Music oynatıcısı Apple sunucularından yüklenir. Bunun için izninize ihtiyacımız var.",
+		"accept": "Etkinleştir ve partiye katıl",
+		"agree": "Katılarak {policy} kabul etmiş olursunuz.",
+		"policy": "Gizlilik Politikamızı",
+		"checking": "Kanal kontrol ediliyor…"
+	},
 	"header": {
 		"profileSettings": "Profil & Ayarlar",
 		"signIn": "Google ile Giriş Yap",

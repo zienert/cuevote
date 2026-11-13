@@ -89,6 +89,17 @@ export default {
 		"accept": "Accepter & Lire la musique",
 		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous."
 	},
+	"join": {
+		"welcome": "Bienvenue sur {brand}",
+		"youtubeTitle": "Activer l'audio et la vidéo",
+		"youtubeBody": "Pour lire la musique depuis YouTube et participer à la playlist, nous devons utiliser des cookies.",
+		"appleTitle": "Chaîne Apple Music",
+		"appleBody": "Cette chaîne diffuse Apple Music. Les pochettes et, pour l'hôte, le lecteur Apple Music sont chargés depuis les serveurs d'Apple. Nous avons besoin de votre consentement pour cela.",
+		"accept": "Activer et rejoindre la fête",
+		"agree": "En rejoignant, vous acceptez notre {policy}.",
+		"policy": "politique de confidentialité",
+		"checking": "Vérification de la chaîne…"
+	},
 	"header": {
 		"back": "Retour",
 		"suggestions": "Suggestions",

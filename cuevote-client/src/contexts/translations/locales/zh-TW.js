@@ -89,6 +89,17 @@ export default {
 		"accept": "接受並播放音樂",
 		"youtubeConsent": "我們需要您的同意才能加載 YouTube 播放器。請在下方接受 Cookie。"
 	},
+	"join": {
+		"welcome": "歡迎來到 {brand}",
+		"youtubeTitle": "啟用音訊和影片",
+		"youtubeBody": "要播放來自 YouTube 的音樂並參與播放清單，我們需要使用 Cookie。",
+		"appleTitle": "Apple Music 頻道",
+		"appleBody": "此頻道播放 Apple Music。封面圖片以及（對主持人而言）Apple Music 播放器會從 Apple 的伺服器載入。為此我們需要你的同意。",
+		"accept": "啟用並加入派對",
+		"agree": "加入即表示你同意我們的{policy}。",
+		"policy": "隱私政策",
+		"checking": "正在檢查頻道…"
+	},
 	"header": {
 		"profileSettings": "個人資料與設定",
 		"signIn": "透過 Google 登入",

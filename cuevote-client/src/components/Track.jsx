@@ -41,7 +41,7 @@ export function Track({
 
 
   const { t } = Language.useLanguage();
-  const { hasConsent } = Consent.useConsent(); // Get consent state
+  const { hasConsent, hasAppleConsent } = Consent.useConsent();
 
   // Apple Music artwork may only appear next to playback: the current track
   // and the queue, never history or the library. Apple items have no YouTube
@@ -76,7 +76,7 @@ export function Track({
             // Metadata still loading — cleared by the 28-day cleanup, refilled on
             // join. Don't show YouTube imagery until we have fresh metadata.
             <div className="w-16 h-16 rounded-3xl bg-neutral-700/50 animate-pulse flex-shrink-0" aria-hidden="true" />
-          ) : hasConsent && thumbnailSrc ? (
+          ) : (isApple ? hasAppleConsent : hasConsent) && thumbnailSrc ? (
             <img
               src={thumbnailSrc}
               alt={track.title}

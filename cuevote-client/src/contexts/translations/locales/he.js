@@ -89,6 +89,17 @@ export default {
 		"accept": "אשר ונגן מוזיקה",
 		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה."
 	},
+	"join": {
+		"welcome": "ברוכים הבאים ל-{brand}",
+		"youtubeTitle": "הפעלת שמע ווידאו",
+		"youtubeBody": "כדי לנגן מוזיקה מ-YouTube ולהשתתף ברשימת ההשמעה, עלינו להשתמש בעוגיות.",
+		"appleTitle": "ערוץ Apple Music",
+		"appleBody": "הערוץ הזה מנגן Apple Music. עטיפות האלבומים, ועבור המארח גם נגן Apple Music, נטענים מהשרתים של Apple. לשם כך אנו זקוקים להסכמתך.",
+		"accept": "הפעל והצטרף למסיבה",
+		"agree": "בהצטרפותך, אתה מסכים ל{policy} שלנו.",
+		"policy": "מדיניות הפרטיות",
+		"checking": "בודקים את הערוץ…"
+	},
 	"header": {
 		"profileSettings": "פרופיל והגדרות",
 		"signIn": "התחבר עם Google",

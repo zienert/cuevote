@@ -89,6 +89,17 @@ export default {
 		"accept": "接受并播放音乐",
 		"youtubeConsent": "我们需要您的同意才能加载 YouTube 播放器。请在下方接受 Cookie。"
 	},
+	"join": {
+		"welcome": "欢迎来到 {brand}",
+		"youtubeTitle": "启用音频和视频",
+		"youtubeBody": "要播放来自 YouTube 的音乐并参与播放列表，我们需要使用 Cookie。",
+		"appleTitle": "Apple Music 频道",
+		"appleBody": "此频道播放 Apple Music。封面图片以及（对主持人而言）Apple Music 播放器会从 Apple 的服务器加载。为此我们需要你的同意。",
+		"accept": "启用并加入派对",
+		"agree": "加入即表示你同意我们的{policy}。",
+		"policy": "隐私政策",
+		"checking": "正在检查频道…"
+	},
 	"header": {
 		"profileSettings": "个人资料与设置",
 		"signIn": "通过 Google 登录",

@@ -89,6 +89,17 @@ export default {
 		"accept": "Prihvati i reproduciraj",
 		"youtubeConsent": "Trebamo vaš pristanak za učitavanje YouTube playera. Prihvatite kolačiće u nastavku."
 	},
+	"join": {
+		"welcome": "Dobro došli na {brand}",
+		"youtubeTitle": "Omogući zvuk i video",
+		"youtubeBody": "Za reprodukciju glazbe s YouTubea i sudjelovanje u playlisti moramo koristiti kolačiće.",
+		"appleTitle": "Apple Music kanal",
+		"appleBody": "Ovaj kanal reproducira Apple Music. Omoti i, za domaćina, Apple Music player učitavaju se s Appleovih poslužitelja. Za to nam treba vaš pristanak.",
+		"accept": "Omogući i pridruži se zabavi",
+		"agree": "Pridruživanjem prihvaćate našu {policy}.",
+		"policy": "Politiku privatnosti",
+		"checking": "Provjera kanala…"
+	},
 	"header": {
 		"profileSettings": "Profil i Postavke",
 		"signIn": "Prijavi se putem Googlea",

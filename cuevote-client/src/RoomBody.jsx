@@ -10,6 +10,7 @@ import { Header } from "./components/Header";
 import { SuggestSongForm } from "./components/SuggestSongForm";
 import { Player } from "./components/Player";
 import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
+import { JoinWelcome } from "./components/JoinWelcome";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
 import { parseTrackKey } from "./utils/trackKeys";
 import { Queue } from "./components/Queue";
@@ -67,7 +68,7 @@ function RoomBody() {
   const [controlsHeight, setControlsHeight] = useState(96);
   const [showSettings, setShowSettings] = useState(false);
   // const [hasConsent, setHasConsent] = useState(() => !!localStorage.getItem("cuevote_cookie_consent"));
-  const { hasConsent } = Consent.useConsent();
+  const { hasConsent, hasAppleConsent, giveAppleConsent } = Consent.useConsent();
   const { t } = Language.useLanguage();
 
   // console.log("App Component MOUNTED, Room:", activeRoomId);
@@ -186,6 +187,8 @@ function RoomBody() {
   // Apple Music rooms play only on the owner's device (MusicKit needs the
   // host's own subscription); everyone else gets the playlist view.
   const isAppleRoom = provider === 'apple';
+  // The consent the player of this channel needs: Apple's or YouTube's.
+  const playerConsent = isAppleRoom ? hasAppleConsent : hasConsent;
 
   // Calculate set of ALL videoIds currently in the queue or playing for suggestion "Added" check
   const queueVideoIds = useMemo(() => {
@@ -225,7 +228,7 @@ function RoomBody() {
   // Apple rooms have no YouTube player to prelisten with.
   const prelistenEnabled = allowPrelisten && !isForcedVenueMode && !isAppleRoom;
   const apple = useAppleMusicHost({
-    enabled: isAppleRoom && !!isOwner && hasConsent && !isForcedVenueMode,
+    enabled: isAppleRoom && !!isOwner && hasAppleConsent && !isForcedVenueMode,
     currentTrack,
     isPlaying,
     progressRef,
@@ -1522,6 +1525,12 @@ function RoomBody() {
 
   const showThrottleBar = networkThrottle && !ipBlockDetected && !throttleDismissed;
 
+  // Whoever came in with only the YouTube consent learns here, once the room
+  // says it plays Apple Music, what this channel loads from Apple.
+  if (isAppleRoom && !hasAppleConsent) {
+    return <JoinWelcome provider="apple" onAccept={giveAppleConsent} />;
+  }
+
   return (
     <div
       className={`text-white flex flex-col ${isAnyPlaylistView ? "h-[100dvh] h-screen overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-[100dvh] h-screen overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
@@ -1819,7 +1828,7 @@ function RoomBody() {
           <>
             {!showPendingPage && !showBannedPage && (
               <div className="absolute inset-0">
-                {!hasConsent ? (
+                {!playerConsent ? (
                   CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent player={isAppleRoom ? 'apple' : 'youtube'} /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
                 ) : (
                   <>
@@ -1929,7 +1938,7 @@ function RoomBody() {
             </div>
           </div>
         ) : (
-          !isAnyPlaylistView && !showPendingPage && hasConsent && (
+          !isAnyPlaylistView && !showPendingPage && playerConsent && (
             <PlaybackControls
               isPlaying={(isPlaying || isLocallyPlaying) && !isLocallyPaused}
               onPlayPause={handlePlayPause}

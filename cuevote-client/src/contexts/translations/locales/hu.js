@@ -89,6 +89,17 @@ export default {
 		"accept": "Elfogadás és Zenelejátszás",
 		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább."
 	},
+	"join": {
+		"welcome": "Üdvözöl a {brand}",
+		"youtubeTitle": "Hang és videó engedélyezése",
+		"youtubeBody": "Ahhoz, hogy zenét játszhassunk a YouTube-ról, és részt vehess a lejátszási listában, sütiket kell használnunk.",
+		"appleTitle": "Apple Music-csatorna",
+		"appleBody": "Ez a csatorna Apple Musicot játszik. A borítók és a házigazdának az Apple Music lejátszó az Apple szervereiről töltődnek be. Ehhez a hozzájárulásodra van szükségünk.",
+		"accept": "Engedélyezés és csatlakozás a bulihoz",
+		"agree": "A csatlakozással elfogadod {policy}.",
+		"policy": "adatvédelmi irányelveinket",
+		"checking": "Csatorna ellenőrzése…"
+	},
 	"header": {
 		"profileSettings": "Profil és Beállítások",
 		"signIn": "Bejelentkezés Google-lel",

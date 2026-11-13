@@ -89,6 +89,17 @@ export default {
 		"accept": "수락 및 음악 재생",
 		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오."
 	},
+	"join": {
+		"welcome": "{brand}에 오신 것을 환영합니다",
+		"youtubeTitle": "오디오 및 비디오 사용",
+		"youtubeBody": "YouTube에서 음악을 재생하고 플레이리스트에 참여하려면 쿠키를 사용해야 합니다.",
+		"appleTitle": "Apple Music 채널",
+		"appleBody": "이 채널은 Apple Music을 재생합니다. 커버 아트와 호스트용 Apple Music 플레이어는 Apple 서버에서 로드됩니다. 이를 위해 귀하의 동의가 필요합니다.",
+		"accept": "사용하고 파티 참여하기",
+		"agree": "참여하면 {policy}에 동의하는 것으로 간주됩니다.",
+		"policy": "개인정보 처리방침",
+		"checking": "채널 확인 중…"
+	},
 	"header": {
 		"profileSettings": "프로필 및 설정",
 		"signIn": "Google로 로그인",

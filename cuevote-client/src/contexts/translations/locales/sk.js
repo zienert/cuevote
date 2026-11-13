@@ -89,6 +89,17 @@ export default {
 		"accept": "Prijať a prehrať hudbu",
 		"youtubeConsent": "Potrebujeme váš súhlas na načítanie prehrávača YouTube. Prijmite súbory cookie nižšie."
 	},
+	"join": {
+		"welcome": "Vitajte v {brand}",
+		"youtubeTitle": "Povoliť zvuk a video",
+		"youtubeBody": "Aby sme mohli prehrávať hudbu z YouTube a vy ste sa mohli zapojiť do playlistu, potrebujeme používať cookies.",
+		"appleTitle": "Kanál Apple Music",
+		"appleBody": "Tento kanál prehráva Apple Music. Obaly albumov a pre hostiteľa aj prehrávač Apple Music sa načítavajú zo serverov Apple. Na to potrebujeme váš súhlas.",
+		"accept": "Povoliť a pridať sa k párty",
+		"agree": "Pripojením súhlasíte s našimi {policy}.",
+		"policy": "zásadami ochrany osobných údajov",
+		"checking": "Kontrola kanála…"
+	},
 	"header": {
 		"profileSettings": "Profil a Nastavenia",
 		"signIn": "Prihlásiť cez Google",

@@ -89,6 +89,17 @@ export default {
 		"accept": "Godta & Spill musikk",
 		"youtubeConsent": "Vi trenger ditt samtykke for å laste inn YouTube-spilleren. Godta informasjonskapsler nedenfor."
 	},
+	"join": {
+		"welcome": "Velkommen til {brand}",
+		"youtubeTitle": "Aktiver lyd og video",
+		"youtubeBody": "For å spille musikk fra YouTube og være med i spillelisten må vi bruke informasjonskapsler.",
+		"appleTitle": "Apple Music-kanal",
+		"appleBody": "Denne kanalen spiller Apple Music. Omslag og, for verten, Apple Music-spilleren lastes fra Apples servere. Til det trenger vi ditt samtykke.",
+		"accept": "Aktiver og bli med på festen",
+		"agree": "Ved å bli med godtar du våre {policy}.",
+		"policy": "personvernregler",
+		"checking": "Sjekker kanalen…"
+	},
 	"header": {
 		"profileSettings": "Profil og innstillinger",
 		"signIn": "Logg inn med Google",

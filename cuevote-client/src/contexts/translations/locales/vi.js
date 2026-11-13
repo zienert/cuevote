@@ -89,6 +89,17 @@ export default {
 		"accept": "Chấp nhận & Phát nhạc",
 		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới."
 	},
+	"join": {
+		"welcome": "Chào mừng đến với {brand}",
+		"youtubeTitle": "Bật âm thanh & video",
+		"youtubeBody": "Để phát nhạc từ YouTube và tham gia danh sách phát, chúng tôi cần sử dụng cookie.",
+		"appleTitle": "Kênh Apple Music",
+		"appleBody": "Kênh này phát Apple Music. Ảnh bìa và, đối với chủ phòng, trình phát Apple Music được tải từ máy chủ của Apple. Vì vậy chúng tôi cần sự đồng ý của bạn.",
+		"accept": "Bật & tham gia bữa tiệc",
+		"agree": "Khi tham gia, bạn đồng ý với {policy} của chúng tôi.",
+		"policy": "Chính sách bảo mật",
+		"checking": "Đang kiểm tra kênh…"
+	},
 	"header": {
 		"profileSettings": "Hồ sơ & Cài đặt",
 		"signIn": "Đăng nhập với Google",

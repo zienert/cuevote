@@ -89,6 +89,17 @@ export default {
 		"accept": "Accepteren & Muziek luisteren",
 		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies."
 	},
+	"join": {
+		"welcome": "Welkom bij {brand}",
+		"youtubeTitle": "Audio & video inschakelen",
+		"youtubeBody": "Om muziek van YouTube af te spelen en mee te doen aan de afspeellijst, hebben we cookies nodig.",
+		"appleTitle": "Apple Music-kanaal",
+		"appleBody": "Dit kanaal speelt Apple Music. Albumhoezen en, voor de host, de Apple Music-speler worden geladen van servers van Apple. Daarvoor hebben we je toestemming nodig.",
+		"accept": "Inschakelen & meedoen",
+		"agree": "Door mee te doen ga je akkoord met ons {policy}.",
+		"policy": "privacybeleid",
+		"checking": "Kanaal wordt gecontroleerd…"
+	},
 	"header": {
 		"back": "Terug",
 		"suggestions": "Suggesties",
