@@ -55,6 +55,8 @@ export function AppleMusicHostPlayer({ apple, currentTrack }) {
 				{t('appleMusic.start')}
 			</button>
 		);
+	} else if (!currentTrack) {
+		overlay = <p className="text-neutral-500">{t('playlist.queueEmpty')}</p>;
 	}
 
 	return (
