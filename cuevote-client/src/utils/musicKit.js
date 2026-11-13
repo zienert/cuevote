@@ -83,7 +83,10 @@ export function configureMusicKit({ developerToken, appName = 'CueVote', build }
 	if (instancePromise) return instancePromise;
 	instancePromise = (async () => {
 		const MusicKit = await loadMusicKit();
-		await MusicKit.configure({ developerToken, app: { name: appName, build } });
+		// MusicKit would otherwise put its own modal over the page on every
+		// playback error (on the host's party screen, too). The players here
+		// handle errors themselves.
+		await MusicKit.configure({ developerToken, app: { name: appName, build }, suppressErrorDialog: true });
 		return MusicKit.getInstance();
 	})();
 	instancePromise.catch(() => {
