@@ -50,6 +50,11 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	// song can come back as a new entry (Auto-DJ, a repeat request) and must
 	// then start again from the server's position.
 	const loadedEntryRef = useRef(null);
+	// The entry MusicKit has actually queued: set only once setQueue succeeded.
+	const readyEntryRef = useRef(null);
+	// Entries reloaded once because MusicKit played another item under them.
+	const mismatchReloadedRef = useRef(null);
+	const [reloadTick, setReloadTick] = useState(0);
 	const durationSentForRef = useRef(null);
 	const storefrontSentRef = useRef(null);
 	const reloadedForSignInRef = useRef(false);
@@ -204,25 +209,33 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		if (!parsed || parsed.provider !== 'apple') {
 			if (loadedEntryRef.current) {
 				loadedEntryRef.current = null;
+				readyEntryRef.current = null;
 				try { music.stop(); } catch { /* nothing loaded */ }
 			}
 			return undefined;
 		}
 		if (loadedEntryRef.current === currentEntry) return undefined;
 		loadedEntryRef.current = currentEntry;
+		readyEntryRef.current = null;
 		durationSentForRef.current = null;
 		let cancelled = false;
 		let finished = false;
 		(async () => {
 			try {
+				// Whatever played before must not go on under the new title, not
+				// even when the new item cannot be loaded (13.11.2026).
+				await Promise.resolve(music.stop()).catch(() => { /* nothing playing */ });
+				if (cancelled) return;
 				const startTime = Math.max(0, Math.floor(progressRef.current || 0));
 				await music.setQueue({ [parsed.kind]: parsed.id, startPlaying: false, startTime });
 				if (cancelled) return;
+				readyEntryRef.current = currentEntry;
 				if (isPlayingRef.current) await play();
 				finished = true;
 			} catch (err) {
 				if (cancelled) return;
 				finished = true;
+				try { music.stop(); } catch { /* nothing playing */ }
 				const code = errorCodeOf(err);
 				setProblem({ code, message: describeMusicKitError(err) });
 				sendRef.current({ type: 'PLAYBACK_ERROR', payload: { videoId: currentKey, errorCode: code } });
@@ -234,25 +247,39 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			// quick track change) has to be redone, not skipped as loaded.
 			if (!finished && loadedEntryRef.current === currentEntry) loadedEntryRef.current = null;
 		};
-	}, [canPlay, currentKey, currentEntry, music, play, progressRef, isPlayingRef, sendRef]);
+	}, [canPlay, currentKey, currentEntry, music, play, progressRef, isPlayingRef, sendRef, reloadTick]);
 
-	// Follow the server's play/pause.
+	// Follow the server's play/pause, for the item the server says is current.
 	useEffect(() => {
-		if (!canPlay || !loadedEntryRef.current) return;
+		if (!canPlay || !readyEntryRef.current || readyEntryRef.current !== currentEntryRef.current) return;
 		const playing = window.MusicKit?.PlaybackStates?.playing;
 		if (isPlaying) {
 			if (music.playbackState !== playing) play().catch(() => { /* reported by the error event */ });
 		} else {
 			try { music.pause(); } catch { /* nothing loaded */ }
 		}
-	}, [canPlay, isPlaying, music, play]);
+	}, [canPlay, isPlaying, music, play, currentEntryRef]);
 
-	// Keep within a few seconds of the server's position.
+	// Keep within a few seconds of the server's position, and on the server's
+	// item: should MusicKit ever play something else under this title, it is
+	// stopped and the right item loaded again (once per entry).
 	useEffect(() => {
 		if (!canPlay) return undefined;
 		const timer = setInterval(() => {
-			if (!isPlayingRef.current || !loadedEntryRef.current) return;
+			const entry = currentEntryRef.current;
+			if (!entry || readyEntryRef.current !== entry) return;
 			if (music.playbackState !== window.MusicKit?.PlaybackStates?.playing) return;
+			const expectedId = parseTrackKey(currentKeyRef.current)?.id;
+			const playingId = music.nowPlayingItem?.id;
+			if (expectedId && playingId && String(playingId) !== String(expectedId) && mismatchReloadedRef.current !== entry) {
+				mismatchReloadedRef.current = entry;
+				loadedEntryRef.current = null;
+				readyEntryRef.current = null;
+				try { music.stop(); } catch { /* nothing playing */ }
+				setReloadTick(tick => tick + 1);
+				return;
+			}
+			if (!isPlayingRef.current) return;
 			const expected = progressRef.current || 0;
 			const duration = music.currentPlaybackDuration || 0;
 			if (duration && expected > duration - 2) return;
@@ -261,7 +288,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			}
 		}, DRIFT_CHECK_MS);
 		return () => clearInterval(timer);
-	}, [canPlay, music, progressRef, isPlayingRef]);
+	}, [canPlay, music, progressRef, isPlayingRef, currentEntryRef, currentKeyRef]);
 
 	// Sign-in opens Apple's window. Its answer does not always reach this page
 	// (Chrome, 13.11.2026), although MusicKit has stored the user token: then a
