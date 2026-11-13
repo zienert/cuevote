@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Bu kanal oturum açmış bir hesap gerektirir.",
 		"accountRequired": "Bunu yapmak için lütfen giriş yapın.",
 		"sessionNotReady": "Oturumunuz henüz hazır değil. Lütfen sayfayı yenileyin.",
-		"guestLimit": "Bu ağda çok fazla yeni misafir var. Devam etmek için giriş yapın."
+		"guestLimit": "Bu ağda çok fazla yeni misafir var. Devam etmek için giriş yapın.",
+		"appleMusicUnavailable": "Apple Music bu sunucuda kullanılamıyor.",
+		"appleMusicNotConnected": "Ev sahibinin önce Apple Music'i bağlaması gerekiyor.",
+		"appleMusicRoom": "Bu kanalda Apple Music çalıyor. Bir music.apple.com bağlantısı yapıştırın veya adıyla arayın.",
+		"appleMusicNotFound": "Apple Music'te bulunamadı.",
+		"appleMusicNotInStorefront": "Bu parça, ev sahibinin ülkesinde Apple Music'te mevcut değil.",
+		"appleMusicCatalogError": "Apple Music yanıt vermedi. Lütfen tekrar deneyin."
 	},
 	"connectAi": {
 		"willSendTo": "Onay şu adrese gönderilecek",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Gizlilik Politikamızı okuyun",
 		"accept": "Kabul Et & Müzik Çal",
 		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin."
+	},
+	"join": {
+		"welcome": "{brand}'a hoş geldiniz",
+		"youtubeTitle": "Ses ve videoyu etkinleştir",
+		"youtubeBody": "YouTube'dan müzik çalmak ve çalma listesine katılmak için çerez kullanmamız gerekiyor.",
+		"accept": "Etkinleştir ve partiye katıl",
+		"agree": "Katılarak {policy} kabul etmiş olursunuz.",
+		"policy": "Gizlilik Politikamızı",
+		"checking": "Kanal kontrol ediliyor…"
 	},
 	"header": {
 		"profileSettings": "Profil & Ayarlar",
@@ -276,6 +291,21 @@ export default {
 		"emptySubtitle": "İsteklerden yasaklanan videolar burada görünecek.",
 		"bannedOn": "{date} tarihinde yasaklandı",
 		"unban": "Yasağı kaldır"
+	},
+	"appleMusic": {
+		"source": "Müzik kaynağı",
+		"sourceHint": "Apple Music yalnızca sizin cihazınızda çalar ve Apple Music aboneliği gerektirir.",
+		"connect": "Apple Music'i bağla",
+		"connectHint": "Apple Music aboneliğinizin bağlı olduğu Apple hesabıyla giriş yapın.",
+		"start": "Oynatmayı başlat",
+		"loading": "Apple Music yükleniyor…",
+		"loadFailed": "Apple Music yüklenemedi.",
+		"problemSubscription": "Bunu oynatmak için etkin bir Apple Music aboneliği gerekiyor.",
+		"problemOtherDevice": "Apple hesabınızla başka bir cihazda müzik çalınıyor.",
+		"problemGeneric": "Apple Music oynatmayı durdurdu ({code}). Tekrar denemek için oynat düğmesine basın.",
+		"contentNotice": "Bu kanaldaki kapak görselleri ve önizlemeler Apple'dan gelir. Yüklenirken Apple IP adresinizi görür.",
+		"contentAccept": "Aç",
+		"previewFailed": "Bu önizleme oynatılamıyor."
 	},
 	"attribution": {
 		"youtube": "YouTube ile geliştirildi"

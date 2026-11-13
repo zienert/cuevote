@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Denne kanal kræver en konto, der er logget ind.",
 		"accountRequired": "Log ind for at gøre det.",
 		"sessionNotReady": "Din session er ikke klar endnu. Genindlæs siden.",
-		"guestLimit": "For mange nye gæster på dette netværk. Log ind for at fortsætte."
+		"guestLimit": "For mange nye gæster på dette netværk. Log ind for at fortsætte.",
+		"appleMusicUnavailable": "Apple Music er ikke tilgængelig på denne server.",
+		"appleMusicNotConnected": "Værten skal først forbinde Apple Music.",
+		"appleMusicRoom": "Denne kanal spiller Apple Music. Indsæt et link fra music.apple.com eller søg efter navn.",
+		"appleMusicNotFound": "Ikke fundet på Apple Music.",
+		"appleMusicNotInStorefront": "Dette nummer er ikke tilgængeligt på Apple Music i værtens land.",
+		"appleMusicCatalogError": "Apple Music svarede ikke. Prøv igen."
 	},
 	"connectAi": {
 		"willSendTo": "Godkendelsen sendes til",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Læs vores fortrolighedspolitik",
 		"accept": "Accepter & Spil musik",
 		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor."
+	},
+	"join": {
+		"welcome": "Velkommen til {brand}",
+		"youtubeTitle": "Aktivér lyd og video",
+		"youtubeBody": "For at afspille musik fra YouTube og være med i playlisten skal vi bruge cookies.",
+		"accept": "Aktivér og deltag i festen",
+		"agree": "Ved at deltage accepterer du vores {policy}.",
+		"policy": "fortrolighedspolitik",
+		"checking": "Tjekker kanalen…"
 	},
 	"header": {
 		"profileSettings": "Profil & Indstillinger",
@@ -276,6 +291,21 @@ export default {
 		"emptySubtitle": "Videoer, der er bannet fra forespørgsler, vises her.",
 		"bannedOn": "Bannet {date}",
 		"unban": "Ophæv ban"
+	},
+	"appleMusic": {
+		"source": "Musikkilde",
+		"sourceHint": "Apple Music spiller kun på din enhed og kræver et Apple Music-abonnement.",
+		"connect": "Forbind Apple Music",
+		"connectHint": "Log ind med den Apple-konto, der har dit Apple Music-abonnement.",
+		"start": "Start afspilning",
+		"loading": "Indlæser Apple Music…",
+		"loadFailed": "Apple Music kunne ikke indlæses.",
+		"problemSubscription": "Apple Music kræver et aktivt abonnement for at afspille dette.",
+		"problemOtherDevice": "Din Apple-konto afspiller på en anden enhed.",
+		"problemGeneric": "Apple Music stoppede afspilningen ({code}). Tryk på afspil for at prøve igen.",
+		"contentNotice": "Covers og forhåndsvisninger i denne kanal kommer fra Apple. Når de indlæses, ser Apple din IP-adresse.",
+		"contentAccept": "Slå til",
+		"previewFailed": "Denne forhåndsvisning kan ikke afspilles."
 	},
 	"attribution": {
 		"youtube": "Udviklet med YouTube"

@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Овај канал захтева пријављен налог.",
 		"accountRequired": "Пријавите се да бисте то урадили.",
 		"sessionNotReady": "Ваша сесија још није спремна. Освежите страницу.",
-		"guestLimit": "Превише нових гостију на овој мрежи. Пријавите се да наставите."
+		"guestLimit": "Превише нових гостију на овој мрежи. Пријавите се да наставите.",
+		"appleMusicUnavailable": "Apple Music nije dostupan na ovom serveru.",
+		"appleMusicNotConnected": "Domaćin prvo mora da poveže Apple Music.",
+		"appleMusicRoom": "Ovaj kanal pušta Apple Music. Nalepite link sa music.apple.com ili pretražujte po nazivu.",
+		"appleMusicNotFound": "Nije pronađeno na Apple Music-u.",
+		"appleMusicNotInStorefront": "Ova pesma nije dostupna na Apple Music-u u zemlji domaćina.",
+		"appleMusicCatalogError": "Apple Music ne odgovara. Pokušajte ponovo."
 	},
 	"connectAi": {
 		"willSendTo": "Odobrenje će biti poslato na",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Pročitajte našu Politiku privatnosti",
 		"accept": "Prihvati i pusti muziku",
 		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod."
+	},
+	"join": {
+		"welcome": "Dobro došli na {brand}",
+		"youtubeTitle": "Omogući zvuk i video",
+		"youtubeBody": "Da bismo puštali muziku sa YouTube-a i da biste učestvovali u plejlisti, moramo da koristimo kolačiće.",
+		"accept": "Omogući i pridruži se žurci",
+		"agree": "Pridruživanjem prihvatate našu {policy}.",
+		"policy": "Politiku privatnosti",
+		"checking": "Provera kanala…"
 	},
 	"header": {
 		"profileSettings": "Profil i Podešavanja",
@@ -278,6 +293,21 @@ export default {
 		"emptySubtitle": "Видео снимци забрањени из захтева појавиће се овде.",
 		"bannedOn": "Забрањено {date}",
 		"unban": "Уклони забрану"
+	},
+	"appleMusic": {
+		"source": "Izvor muzike",
+		"sourceHint": "Apple Music svira samo na vašem uređaju i zahteva pretplatu na Apple Music.",
+		"connect": "Poveži Apple Music",
+		"connectHint": "Prijavite se Apple nalogom na kojem imate pretplatu na Apple Music.",
+		"start": "Pokreni reprodukciju",
+		"loading": "Apple Music se učitava…",
+		"loadFailed": "Apple Music nije moguće učitati.",
+		"problemSubscription": "Za reprodukciju je potrebna aktivna pretplata na Apple Music.",
+		"problemOtherDevice": "Vaš Apple nalog pušta muziku na drugom uređaju.",
+		"problemGeneric": "Apple Music je zaustavio reprodukciju ({code}). Pritisnite Play da biste pokušali ponovo.",
+		"contentNotice": "Omoti i pregledi u ovom kanalu stižu od Apple-a. Pri njihovom učitavanju Apple vidi vašu IP adresu.",
+		"contentAccept": "Uključi",
+		"previewFailed": "Ovaj pregled nije moguće pustiti."
 	},
 	"attribution": {
 		"youtube": "Развијено уз YouTube"

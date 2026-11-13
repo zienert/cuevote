@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Αυτό το κανάλι απαιτεί συνδεδεμένο λογαριασμό.",
 		"accountRequired": "Συνδεθείτε για να το κάνετε αυτό.",
 		"sessionNotReady": "Η συνεδρία σας δεν είναι ακόμη έτοιμη. Ανανεώστε τη σελίδα.",
-		"guestLimit": "Πάρα πολλοί νέοι επισκέπτες σε αυτό το δίκτυο. Συνδεθείτε για να συνεχίσετε."
+		"guestLimit": "Πάρα πολλοί νέοι επισκέπτες σε αυτό το δίκτυο. Συνδεθείτε για να συνεχίσετε.",
+		"appleMusicUnavailable": "Το Apple Music δεν είναι διαθέσιμο σε αυτόν τον διακομιστή.",
+		"appleMusicNotConnected": "Ο οικοδεσπότης πρέπει πρώτα να συνδέσει το Apple Music.",
+		"appleMusicRoom": "Αυτό το κανάλι παίζει Apple Music. Επικολλήστε έναν σύνδεσμο από το music.apple.com ή αναζητήστε με όνομα.",
+		"appleMusicNotFound": "Δεν βρέθηκε στο Apple Music.",
+		"appleMusicNotInStorefront": "Αυτό το κομμάτι δεν είναι διαθέσιμο στο Apple Music στη χώρα του οικοδεσπότη.",
+		"appleMusicCatalogError": "Το Apple Music δεν απάντησε. Δοκιμάστε ξανά."
 	},
 	"connectAi": {
 		"willSendTo": "Η έγκριση θα σταλεί στο",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Διαβάστε την Πολιτική Απορρήτου",
 		"accept": "Αποδοχή & Αναπαραγωγή",
 		"youtubeConsent": "Χρειαζόμαστε τη συγκατάθεσή σας για τη φόρτωση του YouTube Player. Παρακαλούμε αποδεχτείτε τα cookies παρακάτω."
+	},
+	"join": {
+		"welcome": "Καλώς ήρθατε στο {brand}",
+		"youtubeTitle": "Ενεργοποίηση ήχου και βίντεο",
+		"youtubeBody": "Για να παίζουμε μουσική από το YouTube και να συμμετέχετε στη λίστα αναπαραγωγής, χρειάζεται να χρησιμοποιούμε cookies.",
+		"accept": "Ενεργοποίηση και συμμετοχή στο πάρτι",
+		"agree": "Συμμετέχοντας, αποδέχεστε την {policy} μας.",
+		"policy": "Πολιτική Απορρήτου",
+		"checking": "Έλεγχος καναλιού…"
 	},
 	"header": {
 		"profileSettings": "Προφίλ & Ρυθμίσεις",
@@ -276,6 +291,21 @@ export default {
 		"emptySubtitle": "Τα βίντεο που έχουν αποκλειστεί από τα αιτήματα θα εμφανιστούν εδώ.",
 		"bannedOn": "Αποκλεισμένο στις {date}",
 		"unban": "Άρση αποκλεισμού"
+	},
+	"appleMusic": {
+		"source": "Πηγή μουσικής",
+		"sourceHint": "Το Apple Music παίζει μόνο στη συσκευή σας και απαιτεί συνδρομή στο Apple Music.",
+		"connect": "Σύνδεση Apple Music",
+		"connectHint": "Συνδεθείτε με τον λογαριασμό Apple που έχει τη συνδρομή σας στο Apple Music.",
+		"start": "Έναρξη αναπαραγωγής",
+		"loading": "Φόρτωση του Apple Music…",
+		"loadFailed": "Δεν ήταν δυνατή η φόρτωση του Apple Music.",
+		"problemSubscription": "Για την αναπαραγωγή απαιτείται ενεργή συνδρομή στο Apple Music.",
+		"problemOtherDevice": "Ο λογαριασμός σας Apple αναπαράγει μουσική σε άλλη συσκευή.",
+		"problemGeneric": "Το Apple Music διέκοψε την αναπαραγωγή ({code}). Πατήστε αναπαραγωγή για να δοκιμάσετε ξανά.",
+		"contentNotice": "Τα εξώφυλλα και οι προεπισκοπήσεις σε αυτό το κανάλι προέρχονται από την Apple. Κατά τη φόρτωσή τους, η Apple βλέπει τη διεύθυνση IP σας.",
+		"contentAccept": "Ενεργοποίηση",
+		"previewFailed": "Δεν είναι δυνατή η αναπαραγωγή αυτής της προεπισκόπησης."
 	},
 	"attribution": {
 		"youtube": "Αναπτύχθηκε με το YouTube"

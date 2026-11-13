@@ -9,6 +9,7 @@ import { Suggestions } from "./Suggestions";
 import { MarqueeText } from "./MarqueeText";
 import { Skeleton } from "./Skeleton";
 import { suggesterLabel } from "../utils/participation";
+import { isAppleKey } from "../utils/trackKeys";
 
 const buildWatchUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 const buildThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
@@ -40,7 +41,13 @@ export function Track({
 
 
   const { t } = Language.useLanguage();
-  const { hasConsent } = Consent.useConsent(); // Get consent state
+  const { hasConsent, hasAppleConsent } = Consent.useConsent();
+
+  // Apple Music artwork may appear with playback or playlists (current track,
+  // queue, history, library), never on its own like in the lobby. Apple items
+  // have no YouTube thumbnail or watch page to fall back to.
+  const isApple = isAppleKey(track.videoId);
+  const thumbnailSrc = track.thumbnail ?? (isApple ? null : buildThumbnailUrl(track.videoId));
 
   return (
     <div
@@ -67,13 +74,14 @@ export function Track({
             // Metadata still loading — cleared by the 28-day cleanup, refilled on
             // join. Don't show YouTube imagery until we have fresh metadata.
             <div className="w-16 h-16 rounded-3xl bg-neutral-700/50 animate-pulse flex-shrink-0" aria-hidden="true" />
-          ) : hasConsent ? (
+          ) : (isApple ? hasAppleConsent : hasConsent) && thumbnailSrc ? (
             <img
-              src={track.thumbnail ?? buildThumbnailUrl(track.videoId)}
+              src={thumbnailSrc}
               alt={track.title}
               className="w-16 h-16 rounded-3xl object-cover shadow-md flex-shrink-0"
               loading="lazy"
               onError={(e) => {
+                if (isApple) return;
                 const fallback = buildThumbnailUrl(track.videoId);
                 if (e.target.src !== fallback) e.target.src = fallback;
               }}
@@ -260,15 +268,17 @@ export function Track({
               )
             )}
           </div>
-          <a
-            href={buildWatchUrl(track.videoId)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(event) => event.stopPropagation()}
-            className="inline-flex items-center gap-2 text-orange-400 text-sm hover:text-orange-300 transition-colors"
-          >
-            {t('track.watch')}
-          </a>
+          {!isApple && (
+            <a
+              href={buildWatchUrl(track.videoId)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              className="inline-flex items-center gap-2 text-orange-400 text-sm hover:text-orange-300 transition-colors"
+            >
+              {t('track.watch')}
+            </a>
+          )}
         </div>
       )}
 

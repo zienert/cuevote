@@ -6,8 +6,18 @@ import { Check, X, Clock, ArrowLeft, Ban, Headphones } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 import { suggesterLabel } from "../utils/participation";
+import { isAppleKey } from "../utils/trackKeys";
 
 const buildThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+// Apple Music artwork may appear with playback or playlists, and reviewing what
+// enters the queue is managing the playlist. Apple items have no YouTube
+// thumbnail to fall back to.
+const artworkFor = (track) => track.thumbnail ?? (isAppleKey(track.videoId) ? null : buildThumbnailUrl(track.videoId));
+const fallBackToYouTube = (event, track) => {
+	if (isAppleKey(track.videoId)) return;
+	const fallback = buildThumbnailUrl(track.videoId);
+	if (event.target.src !== fallback) event.target.src = fallback;
+};
 
 // Single export with inline components so bundler cannot reorder and cause TDZ.
 export const PendingRequestsExports = {
@@ -32,15 +42,16 @@ export const PendingRequestsExports = {
 			<div className="max-h-60 overflow-y-auto custom-scrollbar">
 				{requests.map((track) => (
 					<div key={track.id} className="p-3 pr-4 border-b border-neutral-800 hover:bg-neutral-800/30 transition-colors flex gap-3 items-start">
-						<img
-							src={track.thumbnail ?? buildThumbnailUrl(track.videoId)}
-							alt={track.title}
-							className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
-							onError={(e) => {
-								const fallback = buildThumbnailUrl(track.videoId);
-								if (e.target.src !== fallback) e.target.src = fallback;
-							}}
-						/>
+						{artworkFor(track) ? (
+							<img
+								src={artworkFor(track)}
+								alt={track.title}
+								className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
+								onError={(e) => fallBackToYouTube(e, track)}
+							/>
+						) : (
+							<div className="w-10 h-10 sm:w-12 sm:h-12 rounded bg-neutral-800 flex-shrink-0" aria-hidden="true" />
+						)}
 
 						<div className="flex-1 min-w-0">
 							<p className="text-sm font-medium text-white line-clamp-2 leading-tight" title={track.title}>{track.title}</p>
@@ -51,13 +62,15 @@ export const PendingRequestsExports = {
 						</div>
 
 						<div className="flex gap-2 justify-center flex-shrink-0 pl-2 pt-1">
-							<button
-								onClick={() => onPreview && onPreview(track)}
-								className="p-1.5 rounded-full bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
-								title={t('pending.preview')}
-							>
-								<Headphones size={16} />
-							</button>
+							{onPreview && (
+								<button
+									onClick={() => onPreview(track)}
+									className="p-1.5 rounded-full bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
+									title={t('pending.preview')}
+								>
+									<Headphones size={16} />
+								</button>
+							)}
 							<button
 								onClick={() => onBan(track.id)}
 								className="p-1.5 rounded-full bg-neutral-800 text-neutral-400 hover:bg-red-900 hover:text-red-400 transition-colors"
@@ -129,15 +142,16 @@ export const PendingRequestsExports = {
 						{requests.map((track) => (
 							<div key={track.id} className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 sm:p-4 flex items-start justify-between gap-3 sm:gap-4 hover:border-neutral-700 transition-colors">
 								<div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-									<img
-										src={track.thumbnail ?? buildThumbnailUrl(track.videoId)}
-										alt={track.title}
-										className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
-										onError={(e) => {
-											const fallback = buildThumbnailUrl(track.videoId);
-											if (e.target.src !== fallback) e.target.src = fallback;
-										}}
-									/>
+									{artworkFor(track) ? (
+										<img
+											src={artworkFor(track)}
+											alt={track.title}
+											className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
+											onError={(e) => fallBackToYouTube(e, track)}
+										/>
+									) : (
+										<div className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg bg-neutral-800 flex-shrink-0" aria-hidden="true" />
+									)}
 
 									<div className="flex-1 min-w-0">
 										<h3 className="text-sm sm:text-lg font-bold text-white line-clamp-2 leading-tight" title={track.title}>{track.title}</h3>
@@ -149,13 +163,15 @@ export const PendingRequestsExports = {
 								</div>
 
 								<div className="flex items-center gap-2 flex-shrink-0 sm:pl-4 pt-1 sm:pt-0">
-									<button
-										onClick={() => onPreview && onPreview(track)}
-										className="p-2 sm:px-4 sm:py-2 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors font-medium flex items-center gap-2"
-										title={t('pending.preview')}
-									>
-										<Headphones size={18} /> <span className="hidden sm:inline">{t('pending.preview')}</span>
-									</button>
+									{onPreview && (
+										<button
+											onClick={() => onPreview(track)}
+											className="p-2 sm:px-4 sm:py-2 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors font-medium flex items-center gap-2"
+											title={t('pending.preview')}
+										>
+											<Headphones size={18} /> <span className="hidden sm:inline">{t('pending.preview')}</span>
+										</button>
+									)}
 									<button
 										onClick={() => onBan(track.id)}
 										className="p-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-800 text-neutral-400 hover:bg-red-900/30 hover:text-red-400 transition-colors font-medium flex items-center gap-2"

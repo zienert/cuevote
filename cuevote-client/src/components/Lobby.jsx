@@ -16,6 +16,7 @@ import { channelLanguages, getFlagEmoji } from '../constants/channelLanguages';
 
 import { LoadingScreen } from './LoadingScreen';
 import { displayName, isSignedIn } from '../utils/participation';
+import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 
 function useLocalizedCountries(uiLanguage) {
     return useMemo(() => {
@@ -126,6 +127,22 @@ export function Lobby() {
     const [languageFlag, setLanguageFlag] = useState('international');
     const [languageFlagOpen, setLanguageFlagOpen] = useState(false);
     const [createFlagSearch, setCreateFlagSearch] = useState("");
+    const [provider, setProvider] = useState('youtube');
+    const [appleMusicAvailable, setAppleMusicAvailable] = useState(false);
+
+    // Apple Music rooms exist only where the server has a MusicKit key. Its token
+    // route answers JSON then; anything else (404, an HTML fallback) means no.
+    useEffect(() => {
+        if (!isCreatingRoom || appleMusicAvailable) return undefined;
+        let cancelled = false;
+        fetch(DEVELOPER_TOKEN_URL, { method: 'HEAD', cache: 'no-store' })
+            .then((res) => {
+                const isJson = (res.headers.get('content-type') || '').includes('application/json');
+                if (!cancelled) setAppleMusicAvailable(res.ok && isJson);
+            })
+            .catch(() => { /* stays YouTube-only */ });
+        return () => { cancelled = true; };
+    }, [isCreatingRoom, appleMusicAvailable]);
 
     // Joining State (Password)
     const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -575,11 +592,13 @@ export function Lobby() {
                 color: "from-gray-700 to-black",
                 isPrivate,
                 password: isPrivate ? createPassword : null,
-                languageFlag
+                languageFlag,
+                provider: appleMusicAvailable ? provider : 'youtube'
             }
         });
         setIsCreatingRoom(false);
         setNewRoomName("");
+        setProvider('youtube');
         setIsPrivate(true);
         setCreatePassword("");
         setLanguageFlag('international');
@@ -919,6 +938,9 @@ export function Lobby() {
                                                 <Users size={14} /> <span>{channel.listeners || 0} {t('lobby.live')}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
+                                                {channel.provider === 'apple' && (
+                                                    <span className="normal-case tracking-normal rounded-full border border-neutral-700 px-2 py-0.5 text-neutral-300">Apple Music</span>
+                                                )}
                                                 <span className="text-base normal-case" title={localizedCountries.find(l => l.code === channel.language_flag)?.label || 'International'}>{getFlagEmoji(channel.language_flag)}</span>
                                                 {channel.is_protected && <Lock size={14} className="text-orange-500" />}
                                             </div>
@@ -990,6 +1012,31 @@ export function Lobby() {
                                             </span>
                                         </div>
                                     </div>
+
+                                    {appleMusicAvailable && (
+                                        <div>
+                                            <label className="block text-sm font-medium text-neutral-400 mb-1">{t('appleMusic.source')}</label>
+                                            <div className="flex gap-4">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setProvider('youtube')}
+                                                    className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${provider === 'youtube' ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
+                                                >
+                                                    YouTube
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setProvider('apple')}
+                                                    className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${provider === 'apple' ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
+                                                >
+                                                    Apple Music
+                                                </button>
+                                            </div>
+                                            {provider === 'apple' && (
+                                                <p className="mt-2 text-xs text-neutral-500">{t('appleMusic.sourceHint')}</p>
+                                            )}
+                                        </div>
+                                    )}
 
                                     <div>
                                         <label className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.privacy')}</label>

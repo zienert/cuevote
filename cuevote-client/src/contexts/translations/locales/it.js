@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Questo canale richiede un account con accesso effettuato.",
 		"accountRequired": "Accedi per farlo.",
 		"sessionNotReady": "La tua sessione non è ancora pronta. Ricarica la pagina.",
-		"guestLimit": "Troppi nuovi ospiti su questa rete. Accedi per continuare."
+		"guestLimit": "Troppi nuovi ospiti su questa rete. Accedi per continuare.",
+		"appleMusicUnavailable": "Apple Music non è disponibile su questo server.",
+		"appleMusicNotConnected": "L'host deve prima collegare Apple Music.",
+		"appleMusicRoom": "Questo canale riproduce Apple Music. Incolla un link di music.apple.com o cerca per nome.",
+		"appleMusicNotFound": "Non trovato su Apple Music.",
+		"appleMusicNotInStorefront": "Questo brano non è disponibile su Apple Music nel paese dell'host.",
+		"appleMusicCatalogError": "Apple Music non ha risposto. Riprova."
 	},
 	"connectAi": {
 		"willSendTo": "L'autorizzazione verrà inviata a",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Leggi la nostra Privacy Policy",
 		"accept": "Accetta e Riproduci Musica",
 		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto."
+	},
+	"join": {
+		"welcome": "Benvenuto su {brand}",
+		"youtubeTitle": "Attiva audio e video",
+		"youtubeBody": "Per riprodurre musica da YouTube e partecipare alla playlist, dobbiamo usare i cookie.",
+		"accept": "Attiva e unisciti alla festa",
+		"agree": "Unendoti, accetti la nostra {policy}.",
+		"policy": "Privacy Policy",
+		"checking": "Verifica del canale…"
 	},
 	"header": {
 		"back": "Indietro",
@@ -278,6 +293,21 @@ export default {
 		"emptySubtitle": "I video bloccati dalle richieste appariranno qui.",
 		"bannedOn": "Bloccato il {date}",
 		"unban": "Sblocca"
+	},
+	"appleMusic": {
+		"source": "Fonte musicale",
+		"sourceHint": "Apple Music viene riprodotto solo sul tuo dispositivo e richiede un abbonamento ad Apple Music.",
+		"connect": "Collega Apple Music",
+		"connectHint": "Accedi con l'account Apple a cui è associato il tuo abbonamento Apple Music.",
+		"start": "Avvia riproduzione",
+		"loading": "Caricamento di Apple Music…",
+		"loadFailed": "Impossibile caricare Apple Music.",
+		"problemSubscription": "Apple Music richiede un abbonamento attivo per riprodurre questo brano.",
+		"problemOtherDevice": "Il tuo account Apple sta riproducendo su un altro dispositivo.",
+		"problemGeneric": "Apple Music ha interrotto la riproduzione ({code}). Premi play per riprovare.",
+		"contentNotice": "Le copertine e le anteprime di questo canale arrivano da Apple. Durante il caricamento Apple vede il tuo indirizzo IP.",
+		"contentAccept": "Attiva",
+		"previewFailed": "Impossibile riprodurre questa anteprima."
 	},
 	"attribution": {
 		"youtube": "Sviluppato con YouTube"

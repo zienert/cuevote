@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Dit kanaal vereist een ingelogd account.",
 		"accountRequired": "Log in om dat te doen.",
 		"sessionNotReady": "Je sessie is nog niet klaar. Herlaad de pagina.",
-		"guestLimit": "Te veel nieuwe gasten op dit netwerk. Log in om door te gaan."
+		"guestLimit": "Te veel nieuwe gasten op dit netwerk. Log in om door te gaan.",
+		"appleMusicUnavailable": "Apple Music is niet beschikbaar op deze server.",
+		"appleMusicNotConnected": "De host moet eerst Apple Music verbinden.",
+		"appleMusicRoom": "Dit kanaal speelt Apple Music. Plak een link van music.apple.com of zoek op naam.",
+		"appleMusicNotFound": "Niet gevonden op Apple Music.",
+		"appleMusicNotInStorefront": "Dit nummer is niet beschikbaar op Apple Music in het land van de host.",
+		"appleMusicCatalogError": "Apple Music reageerde niet. Probeer het opnieuw."
 	},
 	"connectAi": {
 		"willSendTo": "Goedkeuring wordt gestuurd naar",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Lees ons privacybeleid",
 		"accept": "Accepteren & Muziek luisteren",
 		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies."
+	},
+	"join": {
+		"welcome": "Welkom bij {brand}",
+		"youtubeTitle": "Audio & video inschakelen",
+		"youtubeBody": "Om muziek van YouTube af te spelen en mee te doen aan de afspeellijst, hebben we cookies nodig.",
+		"accept": "Inschakelen & meedoen",
+		"agree": "Door mee te doen ga je akkoord met ons {policy}.",
+		"policy": "privacybeleid",
+		"checking": "Kanaal wordt gecontroleerd…"
 	},
 	"header": {
 		"back": "Terug",
@@ -276,6 +291,21 @@ export default {
 		"emptySubtitle": "Video's die geblokkeerd zijn voor aanvragen verschijnen hier.",
 		"bannedOn": "Geblokkeerd op {date}",
 		"unban": "Deblokkeren"
+	},
+	"appleMusic": {
+		"source": "Muziekbron",
+		"sourceHint": "Apple Music speelt alleen af op je eigen apparaat en vereist een Apple Music-abonnement.",
+		"connect": "Apple Music verbinden",
+		"connectHint": "Log in met het Apple-account van je Apple Music-abonnement.",
+		"start": "Afspelen starten",
+		"loading": "Apple Music laden…",
+		"loadFailed": "Apple Music kon niet worden geladen.",
+		"problemSubscription": "Apple Music heeft een actief abonnement nodig om dit af te spelen.",
+		"problemOtherDevice": "Je Apple-account speelt af op een ander apparaat.",
+		"problemGeneric": "Apple Music heeft het afspelen gestopt ({code}). Druk op afspelen om het opnieuw te proberen.",
+		"contentNotice": "Albumhoezen en voorbeelden in dit kanaal komen van Apple. Bij het laden ziet Apple je IP-adres.",
+		"contentAccept": "Aanzetten",
+		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld."
 	},
 	"attribution": {
 		"youtube": "Ontwikkeld met YouTube"

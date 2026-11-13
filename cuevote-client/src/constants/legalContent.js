@@ -29,18 +29,22 @@ const enContent = {
 		// or we will just use this string as the full alert content.
 		disclaimer: "Note on Language: Those terms are legally binding in their English version. Any translations provided are for convenience only. In the event of a discrepancy, the English original prevails.",
 		terms: {
-			intro: "Welcome to CueVote. These terms govern your use of our platform. By accessing CueVote, you agree to these terms and the YouTube Terms of Service.",
+			intro: "Welcome to CueVote. These terms govern your use of our platform. By accessing CueVote, you agree to these terms and the YouTube Terms of Service. Hosts of Apple Music channels also agree to Apple's Media Services Terms and Conditions.",
 			sections: [
 				{
 					title: "1. Service & Usage",
-					content: `CueVote is a social interface for consuming content via third-party APIs (primarily YouTube). We do not host, store, or distribute media files. The underlying source code is licensed under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener noreferrer">PolyForm Noncommercial License</a>.<br /><br />The standard service at <a href="https://cuevote.com" target="_blank" rel="noopener noreferrer">cuevote.com</a> is designed for personal, private use. Please note that third-party content providers have their own strict rules regarding how their media can be consumed. We do not authorize, endorse, or grant any licenses for public performance or commercial use of third-party content.`
+					content: `CueVote is a social interface for consuming content via third-party APIs (YouTube, and Apple Music in Apple Music channels). We do not host, store, or distribute media files. The underlying source code is licensed under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener noreferrer">PolyForm Noncommercial License</a>.<br /><br />The standard service at <a href="https://cuevote.com" target="_blank" rel="noopener noreferrer">cuevote.com</a> is designed for personal, private use. Please note that third-party content providers have their own strict rules regarding how their media can be consumed. We do not authorize, endorse, or grant any licenses for public performance or commercial use of third-party content.`
 				},
 				{
 					title: "2. Integration with Third-Party Platforms (YouTube)",
 					content: `By using CueVote, you explicitly agree to the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Terms of Service</a>. Please be aware that YouTube's Terms of Service generally prohibit the use of their service for public performance or commercial use without proper licensing.<br /><br />It is your sole responsibility to ensure that your specific use case complies with YouTube's TOS. CueVote merely provides the interface and assumes no liability for copyright claims, API restrictions, or legal actions resulting from how you choose to use the platform.`
 				},
 				{
-					title: "3. User Responsibilities",
+					title: "3. Apple Music Channels",
+					content: `Apple Music channels play music videos and songs from Apple Music. Music plays only on the host's device, through Apple's MusicKit and the host's own Apple Music subscription; guests suggest, vote and play short previews without an Apple account. Hosts agree to Apple's <a href="https://www.apple.com/legal/internet-services/itunes/" target="_blank" rel="noopener noreferrer">Media Services Terms and Conditions</a>, which allow Apple Music for personal, non-commercial use only and not for public performance. CueVote charges nothing for Apple Music channels and shows no advertising in them. CueVote is not affiliated with or endorsed by Apple; Apple Music is a trademark of Apple Inc.<br /><br />In Apple Music channels, Apple processes data under the <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple Privacy Policy</a>; our Privacy Policy describes what reaches Apple.`
+				},
+				{
+					title: "4. User Responsibilities",
 					list: [
 						"You must be at least 16 years of age.",
 						"You are responsible for the security of your session and account.",
@@ -48,15 +52,15 @@ const enContent = {
 					]
 				},
 				{
-					title: "4. Disclaimer & Liability",
+					title: "5. Disclaimer & Liability",
 					content: `The service is provided "as is". CueVote disclaims all warranties. To the fullest extent permitted by Dutch law, we shall not be liable for any indirect damages arising from your use of the service.`
 				},
 				{
-					title: "5. Google Privacy Policy",
+					title: "6. Google Privacy Policy",
 					content: `Since we utilize YouTube API Services, you acknowledge that by using those services, your data may be processed in accordance with the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.`,
 				},
 				{
-					title: "6. Governing Law",
+					title: "7. Governing Law",
 					content: `These terms are governed by the laws of <strong>The Netherlands</strong>. Any disputes shall be subject to the exclusive jurisdiction of the courts in Amsterdam, unless mandatory consumer protection laws dictate otherwise.`
 				}
 			]
@@ -64,7 +68,7 @@ const enContent = {
 		privacy: {
 			summary: {
 				title: "GDPR & Google Data Summary",
-				text: "We collect minimal data to make the app work and use YouTube's API for content. We don't sell your data. We respect your privacy rights under European Law (AVG/GDPR)."
+				text: "We collect minimal data to make the app work and use YouTube's API (and Apple Music in Apple Music channels) for content. We don't sell your data. We respect your privacy rights under European Law (AVG/GDPR)."
 			},
 			sections: [
 				{
@@ -83,6 +87,7 @@ const enContent = {
 						{ title: "Guest Participation", text: "You can vote and suggest songs without an account. Your browser then gets a random guest ID from our server and keeps it in local storage, so each vote counts once and stays yours after a reconnect. Others in the channel see your suggestions as “Guest” plus a four-character code derived from this ID. The ID is not linked to your name, email or Google account. If you sign in later, your guest votes and suggestions move to your account. To prevent abuse, the server counts in memory how many new guest IDs an IP address requests within 10 minutes. Retention: the ID stays in your browser until you clear the site data; on our server it is stored only with a channel's queue until the track has played or been removed, and in backups for up to 14 days. Legal basis: Contract (Art. 6.1.b GDPR); abuse prevention: Legitimate Interest (Art. 6.1.f GDPR)." },
 						{ title: "Usage Statistics", text: "We log a history of which videos were played in which rooms to improve recommendations. Votes are saved with the channel's queue so that a server restart does not lose them, and are deleted once the track has played or been removed. This data is internal to CueVote. Retention: room history is retained for the lifetime of the associated room; empty rooms are deleted automatically after 7 days. Legal basis: Legitimate Interest (Art. 6.1.f GDPR)." },
 						{ title: "YouTube API Data", text: "When you search or play songs, we send requests to YouTube's API. YouTube may collect data on your viewing behavior via their embedded player. Retention: cached video metadata (titles, thumbnails, durations) is cleared after 28 days; search and related-video caches are deleted after 28 days. Video IDs may be retained as part of room history. Legal basis: Contract/Consent (via your use of YouTube)." },
+						{ title: "Apple Music Channels", text: "In Apple Music channels our server looks suggestions up in Apple's catalog: Apple receives the search term or link and the host's country, not your IP address. As a guest you load nothing from Apple until you turn on cover art and previews in the channel. From then on your browser loads cover art and, when you play a preview, Apple's MusicKit player and the preview directly from Apple's servers, so Apple receives your IP address and browser details. The host's browser loads cover art and Apple's MusicKit player without a separate consent, since playing Apple Music is what the host chose by creating the channel: the host signs in to Apple Music on Apple's own page, Apple keeps a sign-in token in the host's browser, and Apple processes what the host plays. We store the host's Apple Music country (a two-letter code) with the channel, and track IDs, titles and cover-art links in the queue and history like any other track. Retention: the country code until the channel is deleted; cached track metadata is cleared after 28 days, as for YouTube. Legal basis: Consent (Art. 6.1.a GDPR) for loading content from Apple as a guest; Contract (Art. 6.1.b GDPR) for the host's playback and for looking up suggestions." },
 						{ title: "Server Logs & Security", text: "To ensure the stability and security of our service (e.g., defense against DDoS attacks), we process technical connection data (IP address and timestamp). This connection data is initially processed by our CDN provider (Cloudflare) at the network edge for security and routing purposes before reaching our servers. Retention: server access logs (nginx) are rotated daily by standard Debian logrotate and retained for approximately 14 days. Legal basis: Legitimate Interest (Art. 6.1.f GDPR)." },
 						{ title: "Database Backups", text: "We perform automated daily snapshots of our database to protect against data loss. Backups are stored on the same EU server as the application, and once a week an encrypted copy of the server is stored with our hosting provider in a separate EU data center (France). Backups contain all data described above (including your Google account information and room history). Retention: daily snapshots are automatically pruned after 7 days; the weekly copy is replaced every week, so data deleted on the server is gone from all backups within 14 days. Legal basis: Legitimate Interest (Art. 6.1.f GDPR)." }
 					]
@@ -92,6 +97,7 @@ const enContent = {
 					content: `We engage trusted third parties to operate our infrastructure. We ensure they are GDPR compliant.`,
 					listSimple: [
 						`<strong>Google/YouTube</strong> (Auth & Content API; Gmail inbox for emails to our domain) - USA. <br /><span class="text-sm">Emails sent to addresses on our domain are ultimately delivered to a Google (Gmail) inbox, where we read and reply to them. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.</span>`,
+						`<strong>Apple</strong> (Apple Music catalog API, MusicKit player, cover art and previews; only in Apple Music channels) - Ireland (Apple Distribution International Ltd.) and USA (Apple Inc.). <br /><span class="text-sm">Apple provides Apple Music as an independent controller. See <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple Privacy Policy</a>.</span>`,
 						`<strong>Cloudflare, Inc.</strong> (CDN, Reverse Proxy, DDoS Protection, Web Analytics, Email Routing) - USA. <br /><span class="text-sm">All traffic to cuevote.com is routed through Cloudflare's global network for security, performance, and privacy-friendly analytics. Additionally, email sent to addresses on our domain (e.g. privacy@cuevote.com) is received and forwarded by Cloudflare Email Routing to our email provider (see below); email content is processed solely for delivery purposes and not permanently stored by Cloudflare. Cloudflare is certified under the EU-US Data Privacy Framework. See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacy Policy</a>.</span>`,
 						`<strong>mailbox.org (Heinlein Hosting GmbH)</strong> (Email Provider) - Germany (EU). <br /><span class="text-sm">Email forwarded by Cloudflare Email Routing is received by our mailbox.org account, which in turn forwards it to the Google (Gmail) inbox noted above. mailbox.org processes the email content solely to receive, store, and forward your message. See <a href="https://mailbox.org/en/data-protection/" target="_blank" rel="noopener noreferrer">mailbox.org Data Protection Notice</a>.</span>`,
 						`<strong>Hosting Provider</strong> (Server Infrastructure & self-hosted SQLite database on the same server, encrypted weekly backup copy in a separate data center) - EU.`
@@ -115,7 +121,7 @@ const enContent = {
 				},
 				{
 					title: "5. Cookies",
-					content: `We use only essential local storage to maintain your session (e.g. your login token, or your guest ID if you take part without an account). Our CDN provider Cloudflare may set the essential <code>__cf_bm</code> cookie (30 minute lifetime) for bot mitigation purposes; this cookie does not store personal data and is classified as strictly necessary. We do not use third-party tracking cookies for advertising (marketing cookies) on our own domain, though third-party embeds (YouTube) may set their own cookies.`
+					content: `We use only essential local storage to maintain your session (e.g. your login token, or your guest ID if you take part without an account) and to remember your consent choices, which are kept separately for YouTube and for Apple Music channels. Our CDN provider Cloudflare may set the essential <code>__cf_bm</code> cookie (30 minute lifetime) for bot mitigation purposes; this cookie does not store personal data and is classified as strictly necessary. We do not use third-party tracking cookies for advertising (marketing cookies) on our own domain, though third-party embeds (YouTube) may set their own cookies. In Apple Music channels, Apple's MusicKit keeps the host's Apple Music sign-in token in the host's browser storage, and a player ID in the browser storage of anyone who plays a preview.`
 				},
 				{
 					title: "6. Security Measures",
@@ -185,6 +191,7 @@ const enContent = {
 					items: [
 						`YouTube Data API + IFrame Player — Google LLC (subject to the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Terms of Service</a>)`,
 						`Google OAuth 2.0 — Google LLC (subject to the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>)`,
+						`Apple Music API + MusicKit on the Web — Apple Inc. (subject to the <a href="https://www.apple.com/legal/internet-services/itunes/" target="_blank" rel="noopener noreferrer">Apple Media Services Terms and Conditions</a>)`,
 						`Cloudflare CDN, Email Routing & Bot Mitigation — Cloudflare, Inc. (subject to the <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacy Policy</a>)`
 					]
 				}
@@ -207,18 +214,22 @@ const nlContent = {
 		},
 		disclaimer: "Taalclausule: Deze voorwaarden zijn juridisch bindend in hun Engelse versie. Eventuele vertalingen zijn uitsluitend voor het gemak. In geval van een discrepantie is het Engelse origineel leidend.",
 		terms: {
-			intro: "Welkom bij CueVote. Deze voorwaarden regelen uw gebruik van ons platform. Door toegang te krijgen tot CueVote, gaat u akkoord met deze voorwaarden en de Servicevoorwaarden van YouTube.",
+			intro: "Welkom bij CueVote. Deze voorwaarden regelen uw gebruik van ons platform. Door toegang te krijgen tot CueVote, gaat u akkoord met deze voorwaarden en de Servicevoorwaarden van YouTube. Hosts van Apple Music-kanalen gaan ook akkoord met de Media Services-voorwaarden van Apple.",
 			sections: [
 				{
 					title: "1. Dienst & Gebruik",
-					content: `CueVote is een sociale interface voor het consumeren van inhoud via API's van derden (voornamelijk YouTube). Wij hosten, bewaren of distribueren geen mediabestanden. De onderliggende broncode is gelicentieerd onder de <a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener noreferrer">PolyForm Noncommercial License</a>.<br /><br />De standaarddienst op <a href="https://cuevote.com" target="_blank" rel="noopener noreferrer">cuevote.com</a> is ontworpen voor persoonlijk, privégebruik. Houd er rekening mee dat externe contentproviders hun eigen strikte regels hebben over hoe hun media geconsumeerd mag worden. Wij autoriseren, onderschrijven of verlenen geen licenties voor openbare uitvoering of commercieel gebruik van content van derden.`
+					content: `CueVote is een sociale interface voor het consumeren van inhoud via API's van derden (YouTube, en Apple Music in Apple Music-kanalen). Wij hosten, bewaren of distribueren geen mediabestanden. De onderliggende broncode is gelicentieerd onder de <a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener noreferrer">PolyForm Noncommercial License</a>.<br /><br />De standaarddienst op <a href="https://cuevote.com" target="_blank" rel="noopener noreferrer">cuevote.com</a> is ontworpen voor persoonlijk, privégebruik. Houd er rekening mee dat externe contentproviders hun eigen strikte regels hebben over hoe hun media geconsumeerd mag worden. Wij autoriseren, onderschrijven of verlenen geen licenties voor openbare uitvoering of commercieel gebruik van content van derden.`
 				},
 				{
 					title: "2. Integratie met Platforms van Derden (YouTube)",
 					content: `Door CueVote te gebruiken, gaat u uitdrukkelijk akkoord met de <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Servicevoorwaarden</a>. Houd er rekening mee dat de Servicevoorwaarden van YouTube over het algemeen het gebruik van hun dienst voor openbare uitvoering of commercieel gebruik zonder de juiste licenties verbieden.<br /><br />Het is uitsluitend uw verantwoordelijkheid om ervoor te zorgen dat uw specifieke gebruik voldoet aan de YouTube TOS. CueVote biedt slechts de interface en aanvaardt geen aansprakelijkheid voor auteursrechtclaims, API-beperkingen of juridische acties die voortvloeien uit de manier waarop u het platform gebruikt.`
 				},
 				{
-					title: "3. Verantwoordelijkheden van de Gebruiker",
+					title: "3. Apple Music-kanalen",
+					content: `Apple Music-kanalen spelen muziekvideo's en nummers van Apple Music. De muziek speelt alleen op het apparaat van de host, via MusicKit van Apple en het eigen Apple Music-abonnement van de host; gasten stellen voor, stemmen en beluisteren korte voorbeelden zonder Apple-account. Hosts gaan akkoord met de <a href="https://www.apple.com/legal/internet-services/itunes/" target="_blank" rel="noopener noreferrer">Media Services-voorwaarden</a> van Apple, die Apple Music alleen toestaan voor persoonlijk, niet-commercieel gebruik en niet voor openbare uitvoering. CueVote rekent niets voor Apple Music-kanalen en toont er geen advertenties. CueVote is niet gelieerd aan of goedgekeurd door Apple; Apple Music is een handelsmerk van Apple Inc.<br /><br />In Apple Music-kanalen verwerkt Apple gegevens volgens het <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple Privacybeleid</a>; ons Privacybeleid beschrijft wat Apple bereikt.`
+				},
+				{
+					title: "4. Verantwoordelijkheden van de Gebruiker",
 					list: [
 						"U moet ten minste 16 jaar oud zijn.",
 						"U bent verantwoordelijk voor de veiligheid van uw sessie en account.",
@@ -226,15 +237,15 @@ const nlContent = {
 					]
 				},
 				{
-					title: "4. Disclaimer & Aansprakelijkheid",
+					title: "5. Disclaimer & Aansprakelijkheid",
 					content: `De dienst wordt geleverd "zoals deze is". CueVote wijst alle garanties af. Voor zover toegestaan door de Nederlandse wet, zijn wij niet aansprakelijk voor enige indirecte schade die voortvloeit uit uw gebruik van de dienst.`
 				},
 				{
-					title: "5. Google Privacybeleid",
+					title: "6. Google Privacybeleid",
 					content: `Aangezien wij gebruikmaken van YouTube API Services, erkent u dat door het gebruik van die diensten uw gegevens kunnen worden verwerkt in overeenstemming met het <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacybeleid</a>.`
 				},
 				{
-					title: "6. Toepasselijk Recht",
+					title: "7. Toepasselijk Recht",
 					content: `Deze voorwaarden worden beheerst door de wetten van <strong>Nederland</strong>. Eventuele geschillen vallen onder de exclusieve bevoegdheid van de rechtbanken in Amsterdam, tenzij dwingende consumentenbeschermingswetten anders voorschrijven.`
 				}
 			]
@@ -242,7 +253,7 @@ const nlContent = {
 		privacy: {
 			summary: {
 				title: "AVG & Google Gegevens Samenvatting",
-				text: "Wij verzamelen minimale gegevens om de app te laten werken en gebruiken de API van YouTube voor inhoud. Wij verkopen uw gegevens niet. Wij respecteren uw privacyrechten onder de Europese wetgeving (AVG/GDPR)."
+				text: "Wij verzamelen minimale gegevens om de app te laten werken en gebruiken de API van YouTube (en Apple Music in Apple Music-kanalen) voor inhoud. Wij verkopen uw gegevens niet. Wij respecteren uw privacyrechten onder de Europese wetgeving (AVG/GDPR)."
 			},
 			sections: [
 				{
@@ -261,6 +272,7 @@ const nlContent = {
 						{ title: "Deelnemen als gast", text: "U kunt zonder account stemmen en nummers voorstellen. Uw browser krijgt dan van onze server een willekeurige gast-ID en bewaart die in de lokale opslag, zodat elke stem één keer telt en na een nieuwe verbinding van u blijft. Anderen in het kanaal zien uw voorstellen als “Gast” met een code van vier tekens die van deze ID is afgeleid. De ID is niet gekoppeld aan uw naam, e-mailadres of Google-account. Als u later inlogt, gaan uw stemmen en voorstellen als gast over naar uw account. Om misbruik te voorkomen telt de server in het werkgeheugen hoeveel nieuwe gast-ID's een IP-adres binnen 10 minuten aanvraagt. Bewaartermijn: de ID blijft in uw browser tot u de sitegegevens wist; op onze server wordt hij alleen samen met de wachtrij van een kanaal opgeslagen tot het nummer is afgespeeld of verwijderd, en in back-ups tot 14 dagen. Rechtsgrond: Overeenkomst (Art. 6.1.b AVG); misbruikpreventie: Gerechtvaardigd Belang (Art. 6.1.f AVG)." },
 						{ title: "Gebruiksstatistieken", text: "Wij loggen een geschiedenis van welke video's in welke kamers zijn afgespeeld om aanbevelingen te verbeteren. Stemmen worden samen met de wachtrij van het kanaal opgeslagen, zodat een herstart van de server ze niet verliest, en worden verwijderd zodra het nummer is afgespeeld of verwijderd. Deze gegevens zijn intern voor CueVote. Bewaartermijn: kamergeschiedenis wordt bewaard zolang de bijbehorende kamer bestaat; lege kamers worden automatisch na 7 dagen verwijderd. Rechtsgrond: Gerechtvaardigd Belang (Art. 6.1.f AVG)." },
 						{ title: "YouTube API Gegevens", text: "Wanneer u zoekt of nummers afspeelt, sturen wij verzoeken naar de API van YouTube. YouTube kan gegevens verzamelen over uw kijkgedrag via hun embedded speler. Bewaartermijn: gecachte videometadata (titels, thumbnails, duur) wordt na 28 dagen gewist; zoek- en gerelateerde-video-caches worden na 28 dagen verwijderd. Video-ID's kunnen worden bewaard als onderdeel van de kamergeschiedenis. Rechtsgrond: Overeenkomst/Toestemming (via uw gebruik van YouTube)." },
+						{ title: "Apple Music-kanalen", text: "In Apple Music-kanalen zoekt onze server voorstellen op in de catalogus van Apple: Apple ontvangt de zoekterm of link en het land van de host, niet uw IP-adres. Als gast laadt u niets van Apple totdat u in het kanaal albumhoezen en voorbeelden aanzet. Vanaf dat moment laadt uw browser albumhoezen en, wanneer u een voorbeeld afspeelt, de MusicKit-speler van Apple en het voorbeeld rechtstreeks van de servers van Apple, waardoor Apple uw IP-adres en browsergegevens ontvangt. De browser van de host laadt albumhoezen en de MusicKit-speler van Apple zonder aparte toestemming, omdat de host met het aanmaken van het kanaal voor Apple Music heeft gekozen: de host logt in bij Apple Music op een eigen pagina van Apple, Apple bewaart een inlogtoken in de browser van de host en Apple verwerkt wat de host afspeelt. Wij slaan het Apple Music-land van de host (een code van twee letters) op bij het kanaal, en track-ID's, titels en links naar albumhoezen in de wachtrij en geschiedenis zoals bij elk ander nummer. Bewaartermijn: de landcode tot het kanaal wordt verwijderd; gecachte trackmetadata wordt na 28 dagen gewist, zoals bij YouTube. Rechtsgrond: Toestemming (Art. 6.1.a AVG) voor het laden van inhoud van Apple als gast; Overeenkomst (Art. 6.1.b AVG) voor het afspelen door de host en het opzoeken van voorstellen." },
 						{ title: "Serverlogs & Beveiliging", text: "Om de stabiliteit en veiligheid van onze dienst te garanderen (bijv. verdediging tegen DDoS-aanvallen), verwerken wij technische verbindingsgegevens (IP-adres en tijdstempel). Deze verbindingsgegevens worden eerst door onze CDN-provider (Cloudflare) verwerkt aan de rand van het netwerk voor beveiligings- en routeringsdoeleinden voordat ze onze servers bereiken. Bewaartermijn: server-toegangslogs (nginx) worden dagelijks geroteerd via standaard Debian logrotate en ongeveer 14 dagen bewaard. Rechtsgrond: Gerechtvaardigd Belang (Art. 6.1.f AVG)." },
 						{ title: "Database Back-ups", text: "Wij maken dagelijks geautomatiseerde snapshots van onze database ter bescherming tegen gegevensverlies. Back-ups worden opgeslagen op dezelfde EU-server als de applicatie, en eenmaal per week wordt een versleutelde kopie van de server bij onze hostingprovider opgeslagen in een apart EU-datacenter (Frankrijk). Back-ups bevatten alle hierboven beschreven gegevens (inclusief uw Google-accountinformatie en kamergeschiedenis). Bewaartermijn: dagelijkse snapshots worden automatisch na 7 dagen verwijderd; de wekelijkse kopie wordt elke week vervangen, zodat gegevens die op de server zijn verwijderd binnen 14 dagen uit alle back-ups verdwenen zijn. Rechtsgrond: Gerechtvaardigd Belang (Art. 6.1.f AVG)." }
 					]
@@ -270,6 +282,7 @@ const nlContent = {
 					content: `Wij schakelen vertrouwde derden in om onze infrastructuur te beheren. Wij zorgen ervoor dat zij AVG-compliant zijn.`,
 					listSimple: [
 						`<strong>Google/YouTube</strong> (Auth & Content API; Gmail-postvak voor e-mail aan ons domein) - VS. <br /><span class="text-sm">E-mail die naar adressen op ons domein wordt verzonden, wordt uiteindelijk bezorgd in een Google (Gmail) postvak, waar wij deze lezen en beantwoorden. Zie <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacybeleid</a>.</span>`,
+						`<strong>Apple</strong> (Apple Music-catalogus-API, MusicKit-speler, albumhoezen en voorbeelden; alleen in Apple Music-kanalen) - Ierland (Apple Distribution International Ltd.) en VS (Apple Inc.). <br /><span class="text-sm">Apple levert Apple Music als zelfstandige verwerkingsverantwoordelijke. Zie <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple Privacybeleid</a>.</span>`,
 						`<strong>Cloudflare, Inc.</strong> (CDN, Reverse Proxy, DDoS-bescherming, Web Analytics, Email Routing) - VS. <br /><span class="text-sm">Al het verkeer naar cuevote.com wordt via het wereldwijde netwerk van Cloudflare geleid voor beveiliging, prestaties en privacyvriendelijke analyses. Daarnaast wordt e-mail die naar adressen op ons domein wordt verzonden (bijv. privacy@cuevote.com) ontvangen en door Cloudflare Email Routing doorgestuurd naar onze e-mailprovider (zie hieronder); e-mailinhoud wordt uitsluitend voor bezorgingsdoeleinden verwerkt en niet permanent door Cloudflare opgeslagen. Cloudflare is gecertificeerd onder het EU-US Data Privacy Framework. Zie <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacybeleid</a>.</span>`,
 						`<strong>mailbox.org (Heinlein Hosting GmbH)</strong> (E-mailprovider) - Duitsland (EU). <br /><span class="text-sm">E-mail die door Cloudflare Email Routing wordt doorgestuurd, wordt ontvangen door ons mailbox.org-account, dat deze op zijn beurt doorstuurt naar het hierboven genoemde Google (Gmail) postvak. mailbox.org verwerkt de e-mailinhoud uitsluitend om uw bericht te ontvangen, op te slaan en door te sturen. Zie <a href="https://mailbox.org/en/data-protection/" target="_blank" rel="noopener noreferrer">mailbox.org Gegevensbeschermingsverklaring</a>.</span>`,
 						`<strong>Hosting Provider</strong> (Server Infrastructuur & zelf-gehoste SQLite-database op dezelfde server, versleutelde wekelijkse back-upkopie in een apart datacenter) - EU.`
@@ -293,7 +306,7 @@ const nlContent = {
 				},
 				{
 					title: "5. Cookies",
-					content: `Wij gebruiken alleen essentiële lokale opslag om uw sessie te onderhouden (bijv. uw login token, of uw gast-ID als u zonder account meedoet). Onze CDN-provider Cloudflare kan het essentiële <code>__cf_bm</code> cookie (30 minuten levensduur) plaatsen voor bot-mitigatiedoeleinden; dit cookie slaat geen persoonlijke gegevens op en wordt geclassificeerd als strikt noodzakelijk. Wij gebruiken geen tracking cookies van derden voor advertenties op ons eigen domein, hoewel embeds van derden (YouTube) hun eigen cookies kunnen plaatsen.`
+					content: `Wij gebruiken alleen essentiële lokale opslag om uw sessie te onderhouden (bijv. uw login token, of uw gast-ID als u zonder account meedoet) en om uw toestemmingskeuzes te onthouden, die apart worden bewaard voor YouTube en voor Apple Music-kanalen. Onze CDN-provider Cloudflare kan het essentiële <code>__cf_bm</code> cookie (30 minuten levensduur) plaatsen voor bot-mitigatiedoeleinden; dit cookie slaat geen persoonlijke gegevens op en wordt geclassificeerd als strikt noodzakelijk. Wij gebruiken geen tracking cookies van derden voor advertenties op ons eigen domein, hoewel embeds van derden (YouTube) hun eigen cookies kunnen plaatsen. In Apple Music-kanalen bewaart MusicKit van Apple het Apple Music-inlogtoken van de host in de browseropslag van de host, en een speler-ID in de browseropslag van iedereen die een voorbeeld afspeelt.`
 				},
 				{
 					title: "6. Beveiligingsmaatregelen",
@@ -363,6 +376,7 @@ const nlContent = {
 					items: [
 						`YouTube Data API + IFrame Player — Google LLC (valt onder de <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Servicevoorwaarden</a>)`,
 						`Google OAuth 2.0 — Google LLC (valt onder het <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacybeleid</a>)`,
+						`Apple Music API + MusicKit on the Web — Apple Inc. (valt onder de <a href="https://www.apple.com/legal/internet-services/itunes/" target="_blank" rel="noopener noreferrer">Media Services-voorwaarden van Apple</a>)`,
 						`Cloudflare CDN, Email Routing & Bot Mitigation — Cloudflare, Inc. (valt onder het <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacybeleid</a>)`
 					]
 				}

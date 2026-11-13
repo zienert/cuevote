@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Ce canal nécessite un compte connecté.",
 		"accountRequired": "Connectez-vous pour faire cela.",
 		"sessionNotReady": "Votre session n'est pas encore prête. Rechargez la page.",
-		"guestLimit": "Trop de nouveaux invités sur ce réseau. Connectez-vous pour continuer."
+		"guestLimit": "Trop de nouveaux invités sur ce réseau. Connectez-vous pour continuer.",
+		"appleMusicUnavailable": "Apple Music n'est pas disponible sur ce serveur.",
+		"appleMusicNotConnected": "L'hôte doit d'abord connecter Apple Music.",
+		"appleMusicRoom": "Cette chaîne diffuse Apple Music. Collez un lien music.apple.com ou recherchez par nom.",
+		"appleMusicNotFound": "Introuvable sur Apple Music.",
+		"appleMusicNotInStorefront": "Ce titre n'est pas disponible sur Apple Music dans le pays de l'hôte.",
+		"appleMusicCatalogError": "Apple Music n'a pas répondu. Réessayez."
 	},
 	"connectAi": {
 		"willSendTo": "L'autorisation sera envoyée à",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Lire notre politique de confidentialité",
 		"accept": "Accepter & Lire la musique",
 		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous."
+	},
+	"join": {
+		"welcome": "Bienvenue sur {brand}",
+		"youtubeTitle": "Activer l'audio et la vidéo",
+		"youtubeBody": "Pour lire la musique depuis YouTube et participer à la playlist, nous devons utiliser des cookies.",
+		"accept": "Activer et rejoindre la fête",
+		"agree": "En rejoignant, vous acceptez notre {policy}.",
+		"policy": "politique de confidentialité",
+		"checking": "Vérification de la chaîne…"
 	},
 	"header": {
 		"back": "Retour",
@@ -278,6 +293,21 @@ export default {
 		"emptySubtitle": "Les vidéos bannies des requêtes apparaîtront ici.",
 		"bannedOn": "Bannie le {date}",
 		"unban": "Débannir"
+	},
+	"appleMusic": {
+		"source": "Source musicale",
+		"sourceHint": "Avec Apple Music, la lecture se fait uniquement sur votre appareil et nécessite un abonnement Apple Music.",
+		"connect": "Connecter Apple Music",
+		"connectHint": "Connectez-vous avec le compte Apple lié à votre abonnement Apple Music.",
+		"start": "Lancer la lecture",
+		"loading": "Chargement d'Apple Music…",
+		"loadFailed": "Impossible de charger Apple Music.",
+		"problemSubscription": "Apple Music nécessite un abonnement actif pour lire ce titre.",
+		"problemOtherDevice": "La lecture est en cours sur un autre appareil avec votre compte Apple.",
+		"problemGeneric": "Apple Music a arrêté la lecture ({code}). Appuyez sur Lecture pour réessayer.",
+		"contentNotice": "Les pochettes et les aperçus de cette chaîne viennent d'Apple. Lors de leur chargement, Apple voit votre adresse IP.",
+		"contentAccept": "Activer",
+		"previewFailed": "Impossible de lire cet aperçu."
 	},
 	"attribution": {
 		"youtube": "Développé avec YouTube"

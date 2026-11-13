@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "ערוץ זה מחייב חשבון מחובר.",
 		"accountRequired": "יש להתחבר כדי לעשות זאת.",
 		"sessionNotReady": "הפעלה שלך עדיין לא מוכנה. יש לרענן את הדף.",
-		"guestLimit": "יותר מדי אורחים חדשים ברשת הזו. יש להתחבר כדי להמשיך."
+		"guestLimit": "יותר מדי אורחים חדשים ברשת הזו. יש להתחבר כדי להמשיך.",
+		"appleMusicUnavailable": "Apple Music אינו זמין בשרת הזה.",
+		"appleMusicNotConnected": "על המארח לחבר קודם את Apple Music.",
+		"appleMusicRoom": "הערוץ הזה מנגן Apple Music. יש להדביק קישור מ-music.apple.com או לחפש לפי שם.",
+		"appleMusicNotFound": "לא נמצא ב-Apple Music.",
+		"appleMusicNotInStorefront": "השיר הזה אינו זמין ב-Apple Music במדינה של המארח.",
+		"appleMusicCatalogError": "Apple Music לא הגיב. יש לנסות שוב."
 	},
 	"connectAi": {
 		"willSendTo": "האישור יישלח אל",
@@ -82,6 +88,15 @@ export default {
 		"policy": "קרא את מדיניות הפרטיות שלנו",
 		"accept": "אשר ונגן מוזיקה",
 		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה."
+	},
+	"join": {
+		"welcome": "ברוכים הבאים ל-{brand}",
+		"youtubeTitle": "הפעלת שמע ווידאו",
+		"youtubeBody": "כדי לנגן מוזיקה מ-YouTube ולהשתתף ברשימת ההשמעה, עלינו להשתמש בעוגיות.",
+		"accept": "הפעל והצטרף למסיבה",
+		"agree": "בהצטרפותך, אתה מסכים ל{policy} שלנו.",
+		"policy": "מדיניות הפרטיות",
+		"checking": "בודקים את הערוץ…"
 	},
 	"header": {
 		"profileSettings": "פרופיל והגדרות",
@@ -278,6 +293,21 @@ export default {
 		"emptySubtitle": "סרטונים שנחסמו מבקשות יופיעו כאן.",
 		"bannedOn": "נחסם בתאריך {date}",
 		"unban": "בטל חסימה"
+	},
+	"appleMusic": {
+		"source": "מקור המוזיקה",
+		"sourceHint": "Apple Music מתנגן רק במכשיר שלך ודורש מינוי ל-Apple Music.",
+		"connect": "חיבור Apple Music",
+		"connectHint": "יש להתחבר עם חשבון Apple שיש בו מינוי ל-Apple Music.",
+		"start": "התחלת ניגון",
+		"loading": "Apple Music נטען…",
+		"loadFailed": "לא ניתן לטעון את Apple Music.",
+		"problemSubscription": "כדי לנגן את זה צריך מינוי פעיל ל-Apple Music.",
+		"problemOtherDevice": "חשבון ה-Apple שלך מנגן כרגע במכשיר אחר.",
+		"problemGeneric": "Apple Music עצר את הניגון ({code}). יש ללחוץ על ניגון כדי לנסות שוב.",
+		"contentNotice": "עטיפות האלבומים והתצוגות המקדימות בערוץ הזה מגיעות מ-Apple. בזמן הטעינה Apple רואה את כתובת ה-IP שלך.",
+		"contentAccept": "הפעלה",
+		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו."
 	},
 	"attribution": {
 		"youtube": "פותח עם YouTube"

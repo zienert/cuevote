@@ -1,49 +1,56 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (c) 2026 Julian Zienert
-import React, { lazy, Suspense } from "react";
-import { Music, PlayCircle } from "lucide-react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Consent } from './contexts/ConsentContext';
+import { useWebSocketContext } from './hooks/useWebSocketContext';
+import { JoinWelcome } from './components/JoinWelcome';
 
 const RoomBody = lazy(() => import('./RoomBody'));
 
+// Without an answer (an older server, a lost message) the channel counts as a
+// YouTube one, as before.
+const PROVIDER_TIMEOUT_MS = 4000;
+
+// The music source of a channel, asked over the socket before joining: only a
+// YouTube channel needs the consent screen. undefined until known.
+function useRoomProvider(roomId, needed) {
+  const { sendMessage, lastMessage, isConnected } = useWebSocketContext();
+  const [known, setKnown] = useState({ roomId: null, provider: undefined });
+
+  useEffect(() => {
+    if (!needed || !roomId || !isConnected) return;
+    sendMessage({ type: 'ROOM_PROVIDER', payload: { roomId } });
+  }, [needed, roomId, isConnected, sendMessage]);
+
+  useEffect(() => {
+    if (!needed || !roomId) return undefined;
+    const timer = setTimeout(() => {
+      setKnown(prev => (prev.roomId === roomId ? prev : { roomId, provider: 'youtube' }));
+    }, PROVIDER_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [needed, roomId]);
+
+  useEffect(() => {
+    if (lastMessage?.type === 'ROOM_PROVIDER' && lastMessage.payload?.roomId === roomId) {
+      setKnown({ roomId, provider: lastMessage.payload.provider === 'apple' ? 'apple' : 'youtube' });
+    }
+  }, [lastMessage, roomId]);
+
+  return known.roomId === roomId ? known.provider : undefined;
+}
+
 function App() {
+  const { roomId } = useParams();
   const { hasConsent, giveConsent } = Consent.useConsent();
+  // With the YouTube consent the room opens at once, as before. An Apple Music
+  // channel opens without a consent screen: a guest loads nothing from Apple
+  // until they turn its cover art and previews on inside the channel.
+  const provider = useRoomProvider(roomId, !hasConsent);
 
   if (!hasConsent) {
-    return (
-      <div className="flex flex-col h-[100dvh] bg-[#050505] items-center justify-center p-6 relative overflow-hidden select-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-[#050505] to-[#050505] pointer-events-none" />
-        <div className="relative z-10 max-w-lg text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
-          <div className="space-y-2">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">
-              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">CueVote</span>
-            </h1>
-            <p className="text-xl text-neutral-400 font-medium">The Democratic Jukebox</p>
-          </div>
-          <div className="p-8 rounded-3xl bg-neutral-900/50 border border-white/5 backdrop-blur-xl shadow-2xl space-y-6">
-            <div className="mx-auto w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
-              <Music size={32} />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-white">Enable Audio & Video</h2>
-              <p className="text-neutral-400 text-sm leading-relaxed">
-                To play music from YouTube and participate in the playlist, we need to use cookies.
-              </p>
-            </div>
-            <button
-              onClick={giveConsent}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <PlayCircle size={24} className="fill-current" />
-              Enable & Join Party
-            </button>
-            <p className="text-xs text-neutral-600">
-              By joining, you agree to our <a href="/legal" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-400">Privacy Policy</a>.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    if (provider === undefined) return <JoinWelcome provider={null} />;
+    if (provider !== 'apple') return <JoinWelcome provider="youtube" onAccept={giveConsent} />;
   }
 
   return (

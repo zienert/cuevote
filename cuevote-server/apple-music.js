@@ -170,12 +170,15 @@ function handleDeveloperTokenRequest(req, res, getDeveloperToken, logger) {
 /**
  * Reads the settings once at startup, signs a first token so a bad key shows up
  * now rather than at the first party, and logs whether Apple Music is on.
- * Returns { enabled, getDeveloperToken, handleRequest(req, res) }.
+ * Returns { enabled, getDeveloperToken, getServerToken, handleRequest(req, res) }.
+ * getServerToken signs without the origin claim: the server's own catalog
+ * requests carry no Origin header, and that token never leaves the server.
  */
 function setup({ env = process.env, allowedOrigins = [], logger, now = Date.now }) {
     const off = () => ({
         enabled: false,
         getDeveloperToken: null,
+        getServerToken: null,
         handleRequest: (req, res) => handleDeveloperTokenRequest(req, res, null, logger),
     });
 
@@ -203,11 +206,15 @@ function setup({ env = process.env, allowedOrigins = [], logger, now = Date.now 
         logger.error(`[AppleMusic] Off, the key cannot sign: ${err && err.message}`);
         return off();
     }
+    const getServerToken = origins.length
+        ? createTokenSigner({ teamId: config.teamId, keyId: config.keyId, privateKey: config.privateKey, now })
+        : getDeveloperToken;
     const scope = origins.length ? `for ${origins.join(', ')}` : 'without an origin restriction';
     logger.info(`[AppleMusic] On: developer tokens signed with key ${config.keyId} ${scope}`);
     return {
         enabled: true,
         getDeveloperToken,
+        getServerToken,
         handleRequest: (req, res) => handleDeveloperTokenRequest(req, res, getDeveloperToken, logger),
     };
 }

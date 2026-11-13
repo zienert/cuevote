@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Kanal ini memerlukan akun yang sudah masuk.",
 		"accountRequired": "Silakan masuk untuk melakukannya.",
 		"sessionNotReady": "Sesi Anda belum siap. Silakan muat ulang halaman.",
-		"guestLimit": "Terlalu banyak tamu baru di jaringan ini. Silakan masuk untuk melanjutkan."
+		"guestLimit": "Terlalu banyak tamu baru di jaringan ini. Silakan masuk untuk melanjutkan.",
+		"appleMusicUnavailable": "Apple Music tidak tersedia di server ini.",
+		"appleMusicNotConnected": "Tuan rumah harus menghubungkan Apple Music terlebih dahulu.",
+		"appleMusicRoom": "Kanal ini memutar Apple Music. Tempel link music.apple.com atau cari berdasarkan nama.",
+		"appleMusicNotFound": "Tidak ditemukan di Apple Music.",
+		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara tuan rumah.",
+		"appleMusicCatalogError": "Apple Music tidak merespons. Silakan coba lagi."
 	},
 	"connectAi": {
 		"willSendTo": "Persetujuan akan dikirim ke",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Baca Kebijakan Privasi kami",
 		"accept": "Terima & Putar Musik",
 		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini."
+	},
+	"join": {
+		"welcome": "Selamat datang di {brand}",
+		"youtubeTitle": "Aktifkan Audio & Video",
+		"youtubeBody": "Untuk memutar musik dari YouTube dan ikut serta dalam playlist, kami perlu menggunakan cookie.",
+		"accept": "Aktifkan & Ikut Pesta",
+		"agree": "Dengan bergabung, Anda menyetujui {policy} kami.",
+		"policy": "Kebijakan Privasi",
+		"checking": "Memeriksa saluran…"
 	},
 	"header": {
 		"profileSettings": "Profil & Pengaturan",
@@ -274,6 +289,21 @@ export default {
 		"emptySubtitle": "Video yang diblokir dari permintaan akan muncul di sini.",
 		"bannedOn": "Diblokir pada {date}",
 		"unban": "Buka blokir"
+	},
+	"appleMusic": {
+		"source": "Sumber musik",
+		"sourceHint": "Apple Music hanya diputar di perangkat Anda dan memerlukan langganan Apple Music.",
+		"connect": "Hubungkan Apple Music",
+		"connectHint": "Masuk dengan akun Apple yang memiliki langganan Apple Music Anda.",
+		"start": "Mulai pemutaran",
+		"loading": "Memuat Apple Music…",
+		"loadFailed": "Apple Music tidak dapat dimuat.",
+		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memutar ini.",
+		"problemOtherDevice": "Akun Apple Anda sedang memutar di perangkat lain.",
+		"problemGeneric": "Apple Music menghentikan pemutaran ({code}). Tekan putar untuk mencoba lagi.",
+		"contentNotice": "Sampul album dan pratinjau di saluran ini berasal dari Apple. Saat dimuat, Apple dapat melihat alamat IP Anda.",
+		"contentAccept": "Aktifkan",
+		"previewFailed": "Pratinjau ini tidak dapat diputar."
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

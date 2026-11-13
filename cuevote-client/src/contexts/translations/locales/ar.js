@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "تتطلب هذه القناة حسابًا مسجّل الدخول.",
 		"accountRequired": "يرجى تسجيل الدخول للقيام بذلك.",
 		"sessionNotReady": "جلستك ليست جاهزة بعد. يرجى إعادة تحميل الصفحة.",
-		"guestLimit": "عدد كبير جدًا من الضيوف الجدد على هذه الشبكة. يرجى تسجيل الدخول للمتابعة."
+		"guestLimit": "عدد كبير جدًا من الضيوف الجدد على هذه الشبكة. يرجى تسجيل الدخول للمتابعة.",
+		"appleMusicUnavailable": "Apple Music غير متاح على هذا الخادم.",
+		"appleMusicNotConnected": "يجب على المضيف ربط Apple Music أولاً.",
+		"appleMusicRoom": "تشغّل هذه القناة Apple Music. يرجى لصق رابط من music.apple.com أو البحث بالاسم.",
+		"appleMusicNotFound": "تعذّر العثور على هذا في Apple Music.",
+		"appleMusicNotInStorefront": "هذا المقطع غير متاح في Apple Music في بلد المضيف.",
+		"appleMusicCatalogError": "لم يستجب Apple Music. يرجى المحاولة مرة أخرى."
 	},
 	"connectAi": {
 		"willSendTo": "سيتم إرسال الموافقة إلى",
@@ -82,6 +88,15 @@ export default {
 		"policy": "اقرأ سياسة الخصوصية الخاصة بنا",
 		"accept": "قبول وتشغيل الموسيقى",
 		"youtubeConsent": "نحتاج إلى موافقتك لتحميل مشغل YouTube. يرجى قبول ملفات تعريف الارتباط أدناه."
+	},
+	"join": {
+		"welcome": "مرحبًا بك في {brand}",
+		"youtubeTitle": "تفعيل الصوت والفيديو",
+		"youtubeBody": "لتشغيل الموسيقى من YouTube والمشاركة في قائمة التشغيل، نحتاج إلى استخدام ملفات تعريف الارتباط.",
+		"accept": "تفعيل والانضمام إلى الحفلة",
+		"agree": "بانضمامك، فإنك توافق على {policy}.",
+		"policy": "سياسة الخصوصية الخاصة بنا",
+		"checking": "جارٍ التحقق من القناة…"
 	},
 	"header": {
 		"profileSettings": "الملف الشخصي والإعدادات",
@@ -284,6 +299,21 @@ export default {
 		"emptySubtitle": "ستظهر هنا الفيديوهات المحظورة من الطلبات.",
 		"bannedOn": "محظور في {date}",
 		"unban": "إلغاء الحظر"
+	},
+	"appleMusic": {
+		"source": "مصدر الموسيقى",
+		"sourceHint": "يعمل Apple Music على جهازك فقط ويتطلب اشتراكًا في Apple Music.",
+		"connect": "ربط Apple Music",
+		"connectHint": "سجّل الدخول بحساب Apple الذي يتضمن اشتراكك في Apple Music.",
+		"start": "بدء التشغيل",
+		"loading": "جارٍ تحميل Apple Music…",
+		"loadFailed": "تعذّر تحميل Apple Music.",
+		"problemSubscription": "يتطلب Apple Music اشتراكًا نشطًا لتشغيل هذا.",
+		"problemOtherDevice": "يتم استخدام حساب Apple الخاص بك للتشغيل على جهاز آخر.",
+		"problemGeneric": "أوقف Apple Music التشغيل ({code}). اضغط على تشغيل للمحاولة مرة أخرى.",
+		"contentNotice": "صور الأغلفة والمعاينات في هذه القناة تأتي من Apple. ترى Apple عنوان IP الخاص بك عند تحميلها.",
+		"contentAccept": "تفعيل",
+		"previewFailed": "تعذّر تشغيل هذه المعاينة."
 	},
 	"attribution": {
 		"youtube": "تم التطوير مع YouTube"

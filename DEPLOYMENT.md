@@ -109,7 +109,8 @@ ACTIVE_CHANNEL_DAYS=60
 # (Keys) are the 10-character values from developer.apple.com. The key needs
 # Media Services (MusicKit) enabled, can be downloaded only once, and belongs
 # outside the repo, readable only by the server user (chmod 600). Tokens are
-# signed for 24 hours and limited to ALLOWED_ORIGINS. See "Apple Music
+# signed for 24 hours and limited to ALLOWED_ORIGINS; the server's own catalog
+# requests (guest suggestions) sign without an origin. See "Apple Music
 # (optional)" in section 5.
 # APPLE_MUSIC_TEAM_ID=ABCDE12345
 # APPLE_MUSIC_KEY_ID=FGHIJ67890
@@ -255,7 +256,14 @@ server {
     # parties CueVote actually uses (Google OAuth, YouTube IFrame Player,
     # gstatic for the player JS). Tighten further once you can confirm
     # nothing inline survives the build.
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.youtube.com https://www.gstatic.com; frame-src https://www.youtube.com https://accounts.google.com; img-src 'self' data: https://*.ytimg.com https://*.googleusercontent.com; connect-src 'self' wss: https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
+    # Apple Music channels (section 5, "Apple Music") add: MusicKit from
+    # js-cdn.music.apple.com, the catalog API, cover art from *.mzstatic.com,
+    # streams, licences and play reports from *.itunes.apple.com, and blob:
+    # for the video element MusicKit feeds. Guests' previews play straight
+    # from audio-ssl and video-ssl.itunes.apple.com, hence that host in
+    # media-src. Checked against music videos and songs in Chrome on macOS
+    # (Nov. 2026).
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.youtube.com https://www.gstatic.com https://js-cdn.music.apple.com; frame-src https://www.youtube.com https://accounts.google.com; img-src 'self' data: https://*.ytimg.com https://*.googleusercontent.com https://*.mzstatic.com; media-src 'self' blob: https://*.itunes.apple.com; worker-src 'self' blob:; connect-src 'self' wss: https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://api.music.apple.com https://*.itunes.apple.com https://*.mzstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
     # Permissions-Policy: deny everything CueVote does not use. QR
     # scanning runs in the native Android/iOS shells, not the web client.
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()" always;
@@ -305,11 +313,20 @@ sudo systemctl restart nginx
 
 ### Apple Music (optional)
 
-Production needs nothing here yet: the only page that uses Apple Music is the
-dev-only lab at `/__apple-music-lab`, which talks to a local server through the
-Vite dev proxy. Once a production page plays Apple Music, set `APPLE_MUSIC_*`
-(section 3) and forward the developer-token endpoint to Node inside the
-`server` block, next to `/health`:
+Apple Music channels are a separate, free channel type: the host picks "Apple
+Music" when creating a channel and plays music videos and songs in their own
+browser with their own Apple Music subscription (MusicKit on the Web); guests
+suggest through the server, which searches Apple's catalog in the host's
+country. Without the setup below the lobby offers no Apple Music option, and
+existing Apple Music channels refuse suggestions.
+
+1. Copy the MusicKit key (`AuthKey_<KEY_ID>.p8`, Media Services) to
+   `/etc/cuevote/`, owned by the server user, `chmod 600`.
+2. Set `APPLE_MUSIC_TEAM_ID`, `APPLE_MUSIC_KEY_ID` and
+   `APPLE_MUSIC_PRIVATE_KEY_PATH` (section 3). `ALLOWED_ORIGINS` must list
+   both apex and `www`: browser tokens are only valid on those origins.
+3. Forward the developer-token endpoint to Node inside the `server` block,
+   next to `/health`:
 
 ```nginx
     # Apple Music developer token (MusicKit on the Web). Exact match, so
@@ -321,7 +338,14 @@ Vite dev proxy. Once a production page plays Apple Music, set `APPLE_MUSIC_*`
     }
 ```
 
-That page will also need the CSP above widened to Apple's MusicKit hosts.
+4. Keep the Apple hosts in the CSP above, then `sudo nginx -t` and reload.
+5. Restart the server and check:
+   `curl -sI https://your-domain.com/api/apple-music/developer-token` answers
+   `200` with `application/json` (`404` means the `APPLE_MUSIC_*` values are
+   not all set), and the lobby shows "Music source" when creating a channel.
+
+The CSP lists the Apple hosts even while Apple Music is off; nothing loads
+from them then.
 
 ## 6. SSL Setup (Optional but Recommended)
 

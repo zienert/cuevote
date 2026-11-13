@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "इस चैनल के लिए लॉग इन किया हुआ खाता आवश्यक है।",
 		"accountRequired": "ऐसा करने के लिए कृपया लॉग इन करें।",
 		"sessionNotReady": "आपका सत्र अभी तैयार नहीं है। कृपया पेज रीलोड करें।",
-		"guestLimit": "इस नेटवर्क पर बहुत सारे नए मेहमान हैं। जारी रखने के लिए लॉग इन करें।"
+		"guestLimit": "इस नेटवर्क पर बहुत सारे नए मेहमान हैं। जारी रखने के लिए लॉग इन करें।",
+		"appleMusicUnavailable": "इस सर्वर पर Apple Music उपलब्ध नहीं है।",
+		"appleMusicNotConnected": "होस्ट को पहले Apple Music कनेक्ट करना होगा।",
+		"appleMusicRoom": "यह चैनल Apple Music चलाता है। music.apple.com का लिंक पेस्ट करें या नाम से खोजें।",
+		"appleMusicNotFound": "यह Apple Music पर नहीं मिला।",
+		"appleMusicNotInStorefront": "यह गाना होस्ट के देश में Apple Music पर उपलब्ध नहीं है।",
+		"appleMusicCatalogError": "Apple Music ने जवाब नहीं दिया। कृपया पुनः प्रयास करें।"
 	},
 	"connectAi": {
 		"willSendTo": "अनुमति यहाँ भेजी जाएगी",
@@ -82,6 +88,15 @@ export default {
 		"policy": "हमारी गोपनीयता नीति पढ़ें",
 		"accept": "स्वीकार करें और संवीडियो चलाएं",
 		"youtubeConsent": "YouTube प्लेयर लोड करने के लिए हमें आपकी सहमति की आवश्यकता है। कृपया नीचे कुकीज़ स्वीकार करें।"
+	},
+	"join": {
+		"welcome": "{brand} में आपका स्वागत है",
+		"youtubeTitle": "ऑडियो और वीडियो चालू करें",
+		"youtubeBody": "YouTube से संगीत चलाने और प्लेलिस्ट में भाग लेने के लिए हमें कुकीज़ का उपयोग करना होगा।",
+		"accept": "चालू करें और पार्टी में शामिल हों",
+		"agree": "शामिल होकर, आप हमारी {policy} से सहमत होते हैं।",
+		"policy": "गोपनीयता नीति",
+		"checking": "चैनल की जाँच हो रही है…"
 	},
 	"header": {
 		"profileSettings": "प्रोफ़ाइल और सेटिंग्स",
@@ -276,6 +291,21 @@ export default {
 		"emptySubtitle": "अनुरोधों से प्रतिबंधित वीडियो यहां दिखाई देंगे।",
 		"bannedOn": "{date} को प्रतिबंधित",
 		"unban": "प्रतिबंध हटाएं"
+	},
+	"appleMusic": {
+		"source": "संगीत स्रोत",
+		"sourceHint": "Apple Music सिर्फ़ आपके डिवाइस पर चलता है और इसके लिए Apple Music सदस्यता ज़रूरी है।",
+		"connect": "Apple Music कनेक्ट करें",
+		"connectHint": "उस Apple खाते से साइन इन करें जिसमें आपकी Apple Music सदस्यता है।",
+		"start": "प्लेबैक शुरू करें",
+		"loading": "Apple Music लोड हो रहा है…",
+		"loadFailed": "Apple Music लोड नहीं हो सका।",
+		"problemSubscription": "इसे चलाने के लिए Apple Music की सक्रिय सदस्यता ज़रूरी है।",
+		"problemOtherDevice": "आपका Apple खाता किसी दूसरे डिवाइस पर चल रहा है।",
+		"problemGeneric": "Apple Music ने प्लेबैक रोक दिया ({code})। फिर से प्रयास करने के लिए प्ले दबाएं।",
+		"contentNotice": "इस चैनल के कवर आर्ट और पूर्वावलोकन Apple से आते हैं। इन्हें लोड करते समय Apple आपका IP पता देखता है।",
+		"contentAccept": "चालू करें",
+		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।"
 	},
 	"attribution": {
 		"youtube": "YouTube के साथ विकसित"

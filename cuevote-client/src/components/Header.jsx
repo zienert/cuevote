@@ -38,6 +38,8 @@ export function Header({
   ownerBypass,
   playlistViewMode,
   onFullscreenOverlay,
+  // An Apple Music room plays nothing from YouTube, so it carries no YouTube attribution.
+  showYouTubeAttribution = true,
 }) {
   const headerRef = React.useRef(null);
   const [showExitConfirm, setShowExitConfirm] = React.useState(false);
@@ -200,6 +202,13 @@ export function Header({
           <button onClick={onLibrary} className={pillClass(mode === "library")}>
             <Library size={15} /><span>{t('header.library')}</span>
           </button>
+          {/* Desktop guests in the playlist view (venue mode, every Apple
+              room) suggest from here; touch devices have their own button. */}
+          {includeSuggest && (
+            <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest)} ${suggestDisabled ? "opacity-40" : ""}`}>
+              <Send size={15} /><span>{t('header.suggest')}</span>
+            </button>
+          )}
         </>
       );
     }
@@ -330,7 +339,7 @@ export function Header({
             {suggestButton}
           </div>
         )}
-        <YouTubeBrandSubtitle className="flex-shrink-0 whitespace-nowrap" />
+        {showYouTubeAttribution && <YouTubeBrandSubtitle className="flex-shrink-0 whitespace-nowrap" />}
       </div>
 
       {/* Mobile (< md): grid layout with two left-column rows + a tall
@@ -342,7 +351,7 @@ export function Header({
           {wordmark}
           {backButton}
           {userIdentity}
-          <YouTubeBrandSubtitle className="leading-tight text-center" />
+          {showYouTubeAttribution && <YouTubeBrandSubtitle className="leading-tight text-center" />}
         </div>
         <div className="row-span-2 flex items-stretch">
           {suggestButtonTall}
@@ -590,5 +599,6 @@ Header.propTypes = {
   suggestionsEnabled: PropTypes.bool,
   ownerBypass: PropTypes.bool,
   playlistViewMode: PropTypes.bool,
+  showYouTubeAttribution: PropTypes.bool,
   onFullscreenOverlay: PropTypes.func,
 };

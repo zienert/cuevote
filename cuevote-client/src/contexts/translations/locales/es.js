@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Este canal requiere una cuenta con sesión iniciada.",
 		"accountRequired": "Inicia sesión para hacer eso.",
 		"sessionNotReady": "Tu sesión aún no está lista. Recarga la página.",
-		"guestLimit": "Demasiados invitados nuevos en esta red. Inicia sesión para continuar."
+		"guestLimit": "Demasiados invitados nuevos en esta red. Inicia sesión para continuar.",
+		"appleMusicUnavailable": "Apple Music no está disponible en este servidor.",
+		"appleMusicNotConnected": "El anfitrión tiene que conectar Apple Music primero.",
+		"appleMusicRoom": "Este canal reproduce Apple Music. Pega un enlace de music.apple.com o busca por nombre.",
+		"appleMusicNotFound": "No se encontró en Apple Music.",
+		"appleMusicNotInStorefront": "Este título no está disponible en Apple Music en el país del anfitrión.",
+		"appleMusicCatalogError": "Apple Music no respondió. Inténtalo de nuevo."
 	},
 	"connectAi": {
 		"willSendTo": "La autorización se enviará a",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Leer política de privacidad",
 		"accept": "Aceptar y Escuchar Vídeo",
 		"youtubeConsent": "Necesitamos tu consentimiento para cargar el reproductor de YouTube. Por favor acepta las cookies abajo."
+	},
+	"join": {
+		"welcome": "Bienvenido a {brand}",
+		"youtubeTitle": "Activar audio y vídeo",
+		"youtubeBody": "Para reproducir música de YouTube y participar en la playlist, necesitamos usar cookies.",
+		"accept": "Activar y unirse a la fiesta",
+		"agree": "Al unirte, aceptas nuestra {policy}.",
+		"policy": "política de privacidad",
+		"checking": "Comprobando el canal…"
 	},
 	"header": {
 		"back": "Atrás",
@@ -278,6 +293,21 @@ export default {
 		"emptySubtitle": "Los videos bloqueados de las solicitudes aparecerán aquí.",
 		"bannedOn": "Bloqueado el {date}",
 		"unban": "Desbloquear"
+	},
+	"appleMusic": {
+		"source": "Fuente de música",
+		"sourceHint": "Apple Music solo suena en tu dispositivo y requiere una suscripción a Apple Music.",
+		"connect": "Conectar Apple Music",
+		"connectHint": "Inicia sesión con la cuenta de Apple que tiene tu suscripción a Apple Music.",
+		"start": "Iniciar reproducción",
+		"loading": "Cargando Apple Music…",
+		"loadFailed": "No se pudo cargar Apple Music.",
+		"problemSubscription": "Apple Music necesita una suscripción activa para reproducir esto.",
+		"problemOtherDevice": "Tu cuenta de Apple está reproduciendo en otro dispositivo.",
+		"problemGeneric": "Apple Music detuvo la reproducción ({code}). Pulsa reproducir para volver a intentarlo.",
+		"contentNotice": "Las portadas y las vistas previas de este canal vienen de Apple. Al cargarlas, Apple ve tu dirección IP.",
+		"contentAccept": "Activar",
+		"previewFailed": "No se puede reproducir esta vista previa."
 	},
 	"attribution": {
 		"youtube": "Desarrollado con YouTube"

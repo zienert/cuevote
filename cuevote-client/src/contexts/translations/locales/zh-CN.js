@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "此频道需要已登录的账号。",
 		"accountRequired": "请登录后再操作。",
 		"sessionNotReady": "你的会话尚未就绪，请刷新页面。",
-		"guestLimit": "此网络上的新访客过多，请登录后继续。"
+		"guestLimit": "此网络上的新访客过多，请登录后继续。",
+		"appleMusicUnavailable": "此服务器上无法使用 Apple Music。",
+		"appleMusicNotConnected": "主持人需要先连接 Apple Music。",
+		"appleMusicRoom": "此频道播放 Apple Music。请粘贴 music.apple.com 链接，或按名称搜索。",
+		"appleMusicNotFound": "在 Apple Music 上找不到该内容。",
+		"appleMusicNotInStorefront": "此曲目在主持人所在国家/地区的 Apple Music 上不可用。",
+		"appleMusicCatalogError": "Apple Music 没有响应，请重试。"
 	},
 	"connectAi": {
 		"willSendTo": "授权将发送至",
@@ -82,6 +88,15 @@ export default {
 		"policy": "阅读我们的隐私政策",
 		"accept": "接受并播放音乐",
 		"youtubeConsent": "我们需要您的同意才能加载 YouTube 播放器。请在下方接受 Cookie。"
+	},
+	"join": {
+		"welcome": "欢迎来到 {brand}",
+		"youtubeTitle": "启用音频和视频",
+		"youtubeBody": "要播放来自 YouTube 的音乐并参与播放列表，我们需要使用 Cookie。",
+		"accept": "启用并加入派对",
+		"agree": "加入即表示你同意我们的{policy}。",
+		"policy": "隐私政策",
+		"checking": "正在检查频道…"
 	},
 	"header": {
 		"profileSettings": "个人资料与设置",
@@ -274,6 +289,21 @@ export default {
 		"emptySubtitle": "从请求中被禁用的视频将显示在这里。",
 		"bannedOn": "禁用于 {date}",
 		"unban": "解禁"
+	},
+	"appleMusic": {
+		"source": "音乐来源",
+		"sourceHint": "Apple Music 仅在你的设备上播放，并且需要 Apple Music 订阅。",
+		"connect": "连接 Apple Music",
+		"connectHint": "请使用订阅了 Apple Music 的 Apple 账号登录。",
+		"start": "开始播放",
+		"loading": "正在加载 Apple Music…",
+		"loadFailed": "无法加载 Apple Music。",
+		"problemSubscription": "需要有效的 Apple Music 订阅才能播放此内容。",
+		"problemOtherDevice": "你的 Apple 账号正在另一台设备上播放。",
+		"problemGeneric": "Apple Music 已停止播放（{code}）。请按播放键重试。",
+		"contentNotice": "此频道的封面图片和试听来自 Apple。加载时，Apple 会看到你的 IP 地址。",
+		"contentAccept": "开启",
+		"previewFailed": "无法播放此试听。"
 	},
 	"attribution": {
 		"youtube": "基于 YouTube 开发"

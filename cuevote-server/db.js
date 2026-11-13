@@ -182,17 +182,24 @@ module.exports = {
   // Room Management
   createRoom: (room) => {
     const stmt = db.prepare(`
-        INSERT INTO rooms (id, name, description, owner_id, color, is_public, password, captions_enabled, language_flag)
-        VALUES (@id, @name, @description, @owner_id, @color, @is_public, @password, @captions_enabled, @language_flag)
+        INSERT INTO rooms (id, name, description, owner_id, color, is_public, password, captions_enabled, language_flag, provider)
+        VALUES (@id, @name, @description, @owner_id, @color, @is_public, @password, @captions_enabled, @language_flag, @provider)
     `);
     if (room.captions_enabled === undefined) room.captions_enabled = 0;
     if (room.language_flag === undefined) room.language_flag = 'international';
+    if (room.provider === undefined) room.provider = 'youtube';
 
     stmt.run(room);
     return db.prepare('SELECT * FROM rooms WHERE id = ?').get(room.id);
   },
   deleteRoom: (id) => db.prepare('DELETE FROM rooms WHERE id = ?').run(id),
   getRoom: (id) => db.prepare('SELECT * FROM rooms WHERE id = ?').get(id),
+  // 'youtube' | 'apple', or null for no such room. Same id spellings as JOIN_ROOM.
+  getRoomProvider: (id) => {
+    const select = db.prepare('SELECT provider FROM rooms WHERE id = ?');
+    const row = select.get(id) || select.get(id.toLowerCase()) || select.get(id.toUpperCase());
+    return row ? (row.provider || 'youtube') : null;
+  },
   listPublicRooms: (limit = 50, offset = 0) => {
     const activeDays = parseInt(process.env.ACTIVE_CHANNEL_DAYS || '60', 10);
     const threshold = Math.floor(Date.now() / 1000) - (activeDays * 24 * 60 * 60);
@@ -221,6 +228,9 @@ module.exports = {
   },
   updateRoomActivity: (id) => {
     db.prepare('UPDATE rooms SET last_active_at = unixepoch() WHERE id = ?').run(id);
+  },
+  updateRoomAppleStorefront: (id, storefront) => {
+    db.prepare('UPDATE rooms SET apple_storefront = ? WHERE id = ?').run(storefront, id);
   },
   updateLobbyPreview: (roomId, preview) => {
     const json = preview ? JSON.stringify(preview) : null;

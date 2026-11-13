@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "このチャンネルにはログイン済みのアカウントが必要です。",
 		"accountRequired": "実行するにはログインしてください。",
 		"sessionNotReady": "セッションの準備ができていません。ページを再読み込みしてください。",
-		"guestLimit": "このネットワークからの新規ゲストが多すぎます。ログインして続けてください。"
+		"guestLimit": "このネットワークからの新規ゲストが多すぎます。ログインして続けてください。",
+		"appleMusicUnavailable": "このサーバーではApple Musicを利用できません。",
+		"appleMusicNotConnected": "主催者が先にApple Musicを接続する必要があります。",
+		"appleMusicRoom": "このチャンネルではApple Musicを再生します。music.apple.comのリンクを貼り付けるか、名前で検索してください。",
+		"appleMusicNotFound": "Apple Musicで見つかりませんでした。",
+		"appleMusicNotInStorefront": "この曲は主催者の国のApple Musicでは利用できません。",
+		"appleMusicCatalogError": "Apple Musicから応答がありませんでした。もう一度お試しください。"
 	},
 	"connectAi": {
 		"willSendTo": "承認の送信先",
@@ -82,6 +88,15 @@ export default {
 		"policy": "プライバシーポリシーを読む",
 		"accept": "同意して音楽を再生",
 		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。"
+	},
+	"join": {
+		"welcome": "{brand}へようこそ",
+		"youtubeTitle": "オーディオとビデオを有効にする",
+		"youtubeBody": "YouTubeの音楽を再生してプレイリストに参加するには、Cookieを使用する必要があります。",
+		"accept": "有効にしてパーティーに参加",
+		"agree": "参加すると、{policy}に同意したものとみなされます。",
+		"policy": "プライバシーポリシー",
+		"checking": "チャンネルを確認しています…"
 	},
 	"header": {
 		"profileSettings": "プロフィール設定",
@@ -274,6 +289,21 @@ export default {
 		"emptySubtitle": "リクエストから禁止された動画がここに表示されます。",
 		"bannedOn": "{date} に禁止",
 		"unban": "禁止解除"
+	},
+	"appleMusic": {
+		"source": "音楽ソース",
+		"sourceHint": "Apple Musicはお使いのデバイスでのみ再生され、Apple Musicのサブスクリプションが必要です。",
+		"connect": "Apple Musicを接続",
+		"connectHint": "Apple Musicのサブスクリプションに登録しているAppleアカウントでログインしてください。",
+		"start": "再生を開始",
+		"loading": "Apple Musicを読み込み中…",
+		"loadFailed": "Apple Musicを読み込めませんでした。",
+		"problemSubscription": "再生するには有効なApple Musicのサブスクリプションが必要です。",
+		"problemOtherDevice": "お使いのAppleアカウントが別のデバイスで再生中です。",
+		"problemGeneric": "Apple Musicの再生が停止しました（{code}）。再生ボタンを押してもう一度お試しください。",
+		"contentNotice": "このチャンネルのカバーアートと試聴はAppleから読み込まれます。その際、Appleにお客様のIPアドレスが伝わります。",
+		"contentAccept": "オンにする",
+		"previewFailed": "この試聴は再生できません。"
 	},
 	"attribution": {
 		"youtube": "YouTube と共に開発"

@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "此頻道需要已登入的帳號。",
 		"accountRequired": "請登入後再操作。",
 		"sessionNotReady": "你的工作階段尚未就緒，請重新整理頁面。",
-		"guestLimit": "此網路上的新訪客過多，請登入後繼續。"
+		"guestLimit": "此網路上的新訪客過多，請登入後繼續。",
+		"appleMusicUnavailable": "此伺服器上無法使用 Apple Music。",
+		"appleMusicNotConnected": "主持人需要先連接 Apple Music。",
+		"appleMusicRoom": "此頻道播放 Apple Music。請貼上 music.apple.com 連結，或依名稱搜尋。",
+		"appleMusicNotFound": "在 Apple Music 上找不到此內容。",
+		"appleMusicNotInStorefront": "此曲目在主持人所在國家/地區的 Apple Music 上無法使用。",
+		"appleMusicCatalogError": "Apple Music 沒有回應，請重試。"
 	},
 	"connectAi": {
 		"willSendTo": "授權將傳送至",
@@ -82,6 +88,15 @@ export default {
 		"policy": "閱讀我們的隱私政策",
 		"accept": "接受並播放音樂",
 		"youtubeConsent": "我們需要您的同意才能加載 YouTube 播放器。請在下方接受 Cookie。"
+	},
+	"join": {
+		"welcome": "歡迎來到 {brand}",
+		"youtubeTitle": "啟用音訊和影片",
+		"youtubeBody": "要播放來自 YouTube 的音樂並參與播放清單，我們需要使用 Cookie。",
+		"accept": "啟用並加入派對",
+		"agree": "加入即表示你同意我們的{policy}。",
+		"policy": "隱私政策",
+		"checking": "正在檢查頻道…"
 	},
 	"header": {
 		"profileSettings": "個人資料與設定",
@@ -274,6 +289,21 @@ export default {
 		"emptySubtitle": "從請求中被封鎖的影片將顯示在此處。",
 		"bannedOn": "封鎖於 {date}",
 		"unban": "解除封鎖"
+	},
+	"appleMusic": {
+		"source": "音樂來源",
+		"sourceHint": "Apple Music 僅在你的裝置上播放，並且需要 Apple Music 訂閱。",
+		"connect": "連接 Apple Music",
+		"connectHint": "請使用訂閱了 Apple Music 的 Apple 帳號登入。",
+		"start": "開始播放",
+		"loading": "正在載入 Apple Music…",
+		"loadFailed": "無法載入 Apple Music。",
+		"problemSubscription": "需要有效的 Apple Music 訂閱才能播放此內容。",
+		"problemOtherDevice": "你的 Apple 帳號正在另一部裝置上播放。",
+		"problemGeneric": "Apple Music 已停止播放（{code}）。請按播放鍵重試。",
+		"contentNotice": "此頻道的封面圖片和試聽來自 Apple。載入時，Apple 會看到你的 IP 位址。",
+		"contentAccept": "開啟",
+		"previewFailed": "無法播放此試聽。"
 	},
 	"attribution": {
 		"youtube": "基於 YouTube 開發"

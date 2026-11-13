@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Acest canal necesită un cont autentificat.",
 		"accountRequired": "Autentifică-te pentru a face asta.",
 		"sessionNotReady": "Sesiunea ta nu este încă gata. Reîncarcă pagina.",
-		"guestLimit": "Prea mulți invitați noi în această rețea. Autentifică-te pentru a continua."
+		"guestLimit": "Prea mulți invitați noi în această rețea. Autentifică-te pentru a continua.",
+		"appleMusicUnavailable": "Apple Music nu este disponibil pe acest server.",
+		"appleMusicNotConnected": "Gazda trebuie mai întâi să conecteze Apple Music.",
+		"appleMusicRoom": "Acest canal redă Apple Music. Lipește un link de pe music.apple.com sau caută după nume.",
+		"appleMusicNotFound": "Nu a fost găsit pe Apple Music.",
+		"appleMusicNotInStorefront": "Această piesă nu este disponibilă pe Apple Music în țara gazdei.",
+		"appleMusicCatalogError": "Apple Music nu a răspuns. Încearcă din nou."
 	},
 	"connectAi": {
 		"willSendTo": "Aprobarea va fi trimisă către",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Citiți Politica noastră de Confidențialitate",
 		"accept": "Acceptă și Redă Muzica",
 		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos."
+	},
+	"join": {
+		"welcome": "Bine ai venit pe {brand}",
+		"youtubeTitle": "Activează audio și video",
+		"youtubeBody": "Pentru a reda muzică de pe YouTube și a participa la playlist, trebuie să folosim cookie-uri.",
+		"accept": "Activează și intră la petrecere",
+		"agree": "Alăturându-te, ești de acord cu {policy}.",
+		"policy": "Politica noastră de Confidențialitate",
+		"checking": "Se verifică canalul…"
 	},
 	"header": {
 		"profileSettings": "Profil și Setări",
@@ -278,6 +293,21 @@ export default {
 		"emptySubtitle": "Videoclipurile interzise din solicitări vor apărea aici.",
 		"bannedOn": "Interzis pe {date}",
 		"unban": "Anulează interdicția"
+	},
+	"appleMusic": {
+		"source": "Sursa muzicii",
+		"sourceHint": "Apple Music se redă doar pe dispozitivul tău și necesită un abonament Apple Music.",
+		"connect": "Conectează Apple Music",
+		"connectHint": "Autentifică-te cu contul Apple pe care ai abonamentul Apple Music.",
+		"start": "Pornește redarea",
+		"loading": "Se încarcă Apple Music…",
+		"loadFailed": "Apple Music nu a putut fi încărcat.",
+		"problemSubscription": "Apple Music necesită un abonament activ pentru a reda acest conținut.",
+		"problemOtherDevice": "Contul tău Apple redă muzică pe alt dispozitiv.",
+		"problemGeneric": "Apple Music a oprit redarea ({code}). Apasă pe redare pentru a încerca din nou.",
+		"contentNotice": "Copertele și previzualizările din acest canal vin de la Apple. La încărcarea lor, Apple vede adresa ta IP.",
+		"contentAccept": "Activează",
+		"previewFailed": "Această previzualizare nu poate fi redată."
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

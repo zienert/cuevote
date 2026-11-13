@@ -39,6 +39,15 @@ describe('Zod Schemas', () => {
     });
   });
 
+  describe('RoomProviderPayload', () => {
+    it('should take a room id and nothing else of note', () => {
+      assert.ok(schemas.RoomProviderPayload.safeParse({ roomId: 'apple-test-e6b64131f81d9fff' }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse({ roomId: '' }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse({ roomId: 'x'.repeat(201) }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse(undefined).success);
+    });
+  });
+
   describe('CreateRoomPayload', () => {
     it('should accept valid room creation', () => {
       const result = schemas.CreateRoomPayload.safeParse({
@@ -58,6 +67,12 @@ describe('Zod Schemas', () => {
     it('should reject missing name', () => {
       const result = schemas.CreateRoomPayload.safeParse({});
       assert.ok(!result.success);
+    });
+
+    it('should accept the two providers and nothing else', () => {
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'A', provider: 'apple' }).success);
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'Y', provider: 'youtube' }).success);
+      assert.ok(!schemas.CreateRoomPayload.safeParse({ name: 'S', provider: 'spotify' }).success);
     });
   });
 

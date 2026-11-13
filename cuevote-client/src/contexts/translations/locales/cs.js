@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Tento kanál vyžaduje přihlášený účet.",
 		"accountRequired": "Pro tuto akci se prosím přihlaste.",
 		"sessionNotReady": "Vaše relace ještě není připravena. Načtěte stránku znovu.",
-		"guestLimit": "Příliš mnoho nových hostů v této síti. Pokračujte po přihlášení."
+		"guestLimit": "Příliš mnoho nových hostů v této síti. Pokračujte po přihlášení.",
+		"appleMusicUnavailable": "Apple Music není na tomto serveru k dispozici.",
+		"appleMusicNotConnected": "Hostitel musí nejdřív připojit Apple Music.",
+		"appleMusicRoom": "Tento kanál přehrává Apple Music. Vložte odkaz z music.apple.com nebo hledejte podle názvu.",
+		"appleMusicNotFound": "V Apple Music nebylo nalezeno.",
+		"appleMusicNotInStorefront": "Tato skladba není v Apple Music v zemi hostitele dostupná.",
+		"appleMusicCatalogError": "Apple Music neodpovídá. Zkuste to znovu."
 	},
 	"connectAi": {
 		"willSendTo": "Souhlas bude odeslán na",
@@ -82,6 +88,15 @@ export default {
 		"policy": "Přečtěte si naše zásady ochrany osobních údajů",
 		"accept": "Přijmout a hrát hudbu",
 		"youtubeConsent": "Potřebujeme váš souhlas s načtením přehrávače YouTube. Přijměte prosím soubory cookie níže."
+	},
+	"join": {
+		"welcome": "Vítejte v {brand}",
+		"youtubeTitle": "Povolit zvuk a video",
+		"youtubeBody": "Abychom mohli přehrávat hudbu z YouTube a vy se mohli zapojit do playlistu, potřebujeme používat cookies.",
+		"accept": "Povolit a připojit se k párty",
+		"agree": "Připojením souhlasíte s našimi {policy}.",
+		"policy": "zásadami ochrany osobních údajů",
+		"checking": "Kontrola kanálu…"
 	},
 	"header": {
 		"profileSettings": "Profil a Nastavení",
@@ -280,6 +295,21 @@ export default {
 		"emptySubtitle": "Videa zakázaná z požadavků se zobrazí zde.",
 		"bannedOn": "Zakázáno {date}",
 		"unban": "Povolit"
+	},
+	"appleMusic": {
+		"source": "Zdroj hudby",
+		"sourceHint": "Apple Music hraje jen na vašem zařízení a vyžaduje předplatné Apple Music.",
+		"connect": "Připojit Apple Music",
+		"connectHint": "Přihlaste se účtem Apple, ke kterému patří vaše předplatné Apple Music.",
+		"start": "Spustit přehrávání",
+		"loading": "Načítání Apple Music…",
+		"loadFailed": "Apple Music se nepodařilo načíst.",
+		"problemSubscription": "K přehrání je potřeba aktivní předplatné Apple Music.",
+		"problemOtherDevice": "Váš účet Apple právě přehrává na jiném zařízení.",
+		"problemGeneric": "Přehrávání v Apple Music se zastavilo ({code}). Stiskněte přehrát a zkuste to znovu.",
+		"contentNotice": "Obaly alb a náhledy v tomto kanálu pocházejí od Apple. Při jejich načtení Apple vidí vaši IP adresu.",
+		"contentAccept": "Zapnout",
+		"previewFailed": "Tento náhled nelze přehrát."
 	},
 	"attribution": {
 		"youtube": "Vyvinuto s YouTube"

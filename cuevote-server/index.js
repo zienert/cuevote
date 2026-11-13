@@ -145,6 +145,12 @@ async function verifyGoogleToken(token) {
 
 const Room = require('./Room');
 const schemas = require('./schemas');
+const { createAppleCatalog } = require('./apple-catalog');
+
+// Apple rooms resolve suggestions in Apple's catalog with a server-only token.
+if (appleMusicTokens.enabled) {
+    Room.setAppleCatalog(createAppleCatalog({ getToken: appleMusicTokens.getServerToken }));
+}
 
 // Room Manager
 const rooms = new Map();
@@ -622,7 +628,12 @@ wss.on("connection", (ws, req) => {
                         ws.send(JSON.stringify({ type: "error", message: "Invalid room data. Name is required (max 100 chars)." }));
                         return;
                     }
-                    const { name, description, color, isPrivate, password, captionsEnabled, languageFlag } = createResult.data;
+                    const { name, description, color, isPrivate, password, captionsEnabled, languageFlag, provider } = createResult.data;
+                    // An Apple room cannot play anything without developer tokens.
+                    if (provider === 'apple' && !appleMusicTokens.enabled) {
+                        ws.send(JSON.stringify({ type: "error", code: "APPLE_MUSIC_UNAVAILABLE", message: "Apple Music is not available on this server." }));
+                        return;
+                    }
 
                     let attempts = 0;
                     let success = false;
@@ -640,7 +651,8 @@ wss.on("connection", (ws, req) => {
                                 is_public: isPrivate ? 0 : 1,
                                 password: (isPrivate && password) ? bcrypt.hashSync(password, 10) : null,
                                 captions_enabled: captionsEnabled ? 1 : 0,
-                                language_flag: languageFlag || 'international'
+                                language_flag: languageFlag || 'international',
+                                provider: provider === 'apple' ? 'apple' : 'youtube'
                             };
 
                             db.createRoom(roomData);
@@ -663,6 +675,21 @@ wss.on("connection", (ws, req) => {
                     if (!success) {
                         ws.send(JSON.stringify({ type: "error", message: "Failed to generate a unique channel ID. Please try again." }));
                     }
+                    return;
+                }
+                case "ROOM_PROVIDER": {
+                    // Before joining, the welcome screen asks for the consent the
+                    // channel needs: YouTube or Apple Music.
+                    const providerResult = schemas.RoomProviderPayload.safeParse(parsedMessage.payload);
+                    if (!providerResult.success) return;
+                    const { roomId } = providerResult.data;
+                    let provider = null;
+                    try {
+                        provider = db.getRoomProvider(roomId);
+                    } catch (e) {
+                        logger.error(`ROOM_PROVIDER lookup failed: ${e && e.message}`);
+                    }
+                    ws.send(JSON.stringify({ type: "ROOM_PROVIDER", payload: { roomId, provider } }));
                     return;
                 }
                 case "LIST_ROOMS": {
@@ -733,10 +760,12 @@ wss.on("connection", (ws, req) => {
                                 description: dbr.description,
                                 color: dbr.color,
                                 listeners: 0,
-                                currentTrack: lobbyPreview,
+                                // Apple rooms never store a preview; ignore a stray one.
+                                currentTrack: dbr.provider === 'apple' ? null : lobbyPreview,
                                 is_protected: !!dbr.password,
                                 isActive: false,
-                                language_flag: dbr.language_flag || 'international'
+                                language_flag: dbr.language_flag || 'international',
+                                provider: dbr.provider || 'youtube'
                             });
                         }
                     });
