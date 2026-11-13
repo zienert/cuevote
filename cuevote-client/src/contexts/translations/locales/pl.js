@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Ten kanał wymaga zalogowanego konta.",
 		"accountRequired": "Zaloguj się, aby to zrobić.",
 		"sessionNotReady": "Twoja sesja nie jest jeszcze gotowa. Odśwież stronę.",
-		"guestLimit": "Zbyt wielu nowych gości w tej sieci. Zaloguj się, aby kontynuować."
+		"guestLimit": "Zbyt wielu nowych gości w tej sieci. Zaloguj się, aby kontynuować.",
+		"appleMusicUnavailable": "Ten serwer nie obsługuje Apple Music.",
+		"appleMusicNotConnected": "Gospodarz musi najpierw połączyć Apple Music.",
+		"appleMusicRoom": "Ten kanał odtwarza Apple Music. Wklej link z music.apple.com lub wyszukaj po nazwie.",
+		"appleMusicNotFound": "Nie znaleziono w Apple Music.",
+		"appleMusicNotInStorefront": "Ten utwór jest niedostępny w Apple Music w kraju gospodarza.",
+		"appleMusicCatalogError": "Apple Music nie odpowiada. Spróbuj ponownie."
 	},
 	"connectAi": {
 		"willSendTo": "Zgoda zostanie wysłana do",
@@ -280,6 +286,19 @@ export default {
 		"emptySubtitle": "Filmy zablokowane z żądań pojawią się tutaj.",
 		"bannedOn": "Zablokowany {date}",
 		"unban": "Odblokuj"
+	},
+	"appleMusic": {
+		"source": "Źródło muzyki",
+		"sourceHint": "Apple Music gra tylko na Twoim urządzeniu i wymaga subskrypcji Apple Music.",
+		"connect": "Połącz Apple Music",
+		"connectHint": "Zaloguj się na konto Apple, na którym masz subskrypcję Apple Music.",
+		"start": "Rozpocznij odtwarzanie",
+		"loading": "Ładowanie Apple Music…",
+		"loadFailed": "Nie udało się załadować Apple Music.",
+		"problemSubscription": "Aby to odtworzyć, Apple Music wymaga aktywnej subskrypcji.",
+		"problemOtherDevice": "Twoje konto Apple odtwarza muzykę na innym urządzeniu.",
+		"problemGeneric": "Odtwarzanie w Apple Music zostało zatrzymane ({code}). Naciśnij przycisk odtwarzania, aby spróbować ponownie.",
+		"consent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza MusicKit od Apple. Łączy się to z serwerami Apple."
 	},
 	"attribution": {
 		"youtube": "Stworzone z YouTube"

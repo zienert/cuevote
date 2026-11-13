@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Dieser Kanal erfordert ein angemeldetes Konto.",
 		"accountRequired": "Bitte melde dich an, um das zu tun.",
 		"sessionNotReady": "Deine Sitzung ist noch nicht bereit. Bitte lade die Seite neu.",
-		"guestLimit": "Zu viele neue Gäste in diesem Netzwerk. Bitte melde dich an."
+		"guestLimit": "Zu viele neue Gäste in diesem Netzwerk. Bitte melde dich an.",
+		"appleMusicUnavailable": "Apple Music ist auf diesem Server nicht verfügbar.",
+		"appleMusicNotConnected": "Der Host muss zuerst Apple Music verbinden.",
+		"appleMusicRoom": "In diesem Kanal läuft Apple Music. Füge einen Link von music.apple.com ein oder suche nach dem Namen.",
+		"appleMusicNotFound": "Das wurde auf Apple Music nicht gefunden.",
+		"appleMusicNotInStorefront": "Dieser Titel ist im Land des Hosts nicht auf Apple Music verfügbar.",
+		"appleMusicCatalogError": "Apple Music hat nicht geantwortet. Bitte versuche es erneut."
 	},
 	"connectAi": {
 		"willSendTo": "Bestätigung geht an",
@@ -276,6 +282,19 @@ export default {
 		"emptySubtitle": "Videos, die von Anfragen ausgeschlossen wurden, erscheinen hier.",
 		"bannedOn": "Gesperrt am {date}",
 		"unban": "Entsperren"
+	},
+	"appleMusic": {
+		"source": "Musikquelle",
+		"sourceHint": "Apple Music läuft nur auf deinem Gerät und braucht ein Abo.",
+		"connect": "Apple Music verbinden",
+		"connectHint": "Melde dich mit dem Apple-Konto an, mit dem du Apple Music abonniert hast.",
+		"start": "Wiedergabe starten",
+		"loading": "Apple Music wird geladen…",
+		"loadFailed": "Apple Music konnte nicht geladen werden.",
+		"problemSubscription": "Zum Abspielen braucht Apple Music ein aktives Abo.",
+		"problemOtherDevice": "Dein Apple-Konto spielt gerade auf einem anderen Gerät Musik ab.",
+		"problemGeneric": "Apple Music hat die Wiedergabe gestoppt ({code}). Drücke auf Play, um es erneut zu versuchen.",
+		"consent": "Wir brauchen deine Zustimmung, um den MusicKit-Player von Apple zu laden. Dies stellt eine Verbindung zu Apple-Servern her."
 	},
 	"attribution": {
 		"youtube": "Entwickelt mit YouTube"

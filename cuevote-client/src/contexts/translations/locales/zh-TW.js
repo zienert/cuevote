@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "此頻道需要已登入的帳號。",
 		"accountRequired": "請登入後再操作。",
 		"sessionNotReady": "你的工作階段尚未就緒，請重新整理頁面。",
-		"guestLimit": "此網路上的新訪客過多，請登入後繼續。"
+		"guestLimit": "此網路上的新訪客過多，請登入後繼續。",
+		"appleMusicUnavailable": "此伺服器上無法使用 Apple Music。",
+		"appleMusicNotConnected": "主持人需要先連接 Apple Music。",
+		"appleMusicRoom": "此頻道播放 Apple Music。請貼上 music.apple.com 連結，或依名稱搜尋。",
+		"appleMusicNotFound": "在 Apple Music 上找不到此內容。",
+		"appleMusicNotInStorefront": "此曲目在主持人所在國家/地區的 Apple Music 上無法使用。",
+		"appleMusicCatalogError": "Apple Music 沒有回應，請重試。"
 	},
 	"connectAi": {
 		"willSendTo": "授權將傳送至",
@@ -274,6 +280,19 @@ export default {
 		"emptySubtitle": "從請求中被封鎖的影片將顯示在此處。",
 		"bannedOn": "封鎖於 {date}",
 		"unban": "解除封鎖"
+	},
+	"appleMusic": {
+		"source": "音樂來源",
+		"sourceHint": "Apple Music 僅在你的裝置上播放，並且需要 Apple Music 訂閱。",
+		"connect": "連接 Apple Music",
+		"connectHint": "請使用訂閱了 Apple Music 的 Apple 帳號登入。",
+		"start": "開始播放",
+		"loading": "正在載入 Apple Music…",
+		"loadFailed": "無法載入 Apple Music。",
+		"problemSubscription": "需要有效的 Apple Music 訂閱才能播放此內容。",
+		"problemOtherDevice": "你的 Apple 帳號正在另一部裝置上播放。",
+		"problemGeneric": "Apple Music 已停止播放（{code}）。請按播放鍵重試。",
+		"consent": "我們需要你的同意才能載入 Apple 的 MusicKit 播放器。它會連線到 Apple 的伺服器。"
 	},
 	"attribution": {
 		"youtube": "基於 YouTube 開發"

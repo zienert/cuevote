@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Kanal ini memerlukan akun yang sudah masuk.",
 		"accountRequired": "Silakan masuk untuk melakukannya.",
 		"sessionNotReady": "Sesi Anda belum siap. Silakan muat ulang halaman.",
-		"guestLimit": "Terlalu banyak tamu baru di jaringan ini. Silakan masuk untuk melanjutkan."
+		"guestLimit": "Terlalu banyak tamu baru di jaringan ini. Silakan masuk untuk melanjutkan.",
+		"appleMusicUnavailable": "Apple Music tidak tersedia di server ini.",
+		"appleMusicNotConnected": "Tuan rumah harus menghubungkan Apple Music terlebih dahulu.",
+		"appleMusicRoom": "Kanal ini memutar Apple Music. Tempel link music.apple.com atau cari berdasarkan nama.",
+		"appleMusicNotFound": "Tidak ditemukan di Apple Music.",
+		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara tuan rumah.",
+		"appleMusicCatalogError": "Apple Music tidak merespons. Silakan coba lagi."
 	},
 	"connectAi": {
 		"willSendTo": "Persetujuan akan dikirim ke",
@@ -274,6 +280,19 @@ export default {
 		"emptySubtitle": "Video yang diblokir dari permintaan akan muncul di sini.",
 		"bannedOn": "Diblokir pada {date}",
 		"unban": "Buka blokir"
+	},
+	"appleMusic": {
+		"source": "Sumber musik",
+		"sourceHint": "Apple Music hanya diputar di perangkat Anda dan memerlukan langganan Apple Music.",
+		"connect": "Hubungkan Apple Music",
+		"connectHint": "Masuk dengan akun Apple yang memiliki langganan Apple Music Anda.",
+		"start": "Mulai pemutaran",
+		"loading": "Memuat Apple Music…",
+		"loadFailed": "Apple Music tidak dapat dimuat.",
+		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memutar ini.",
+		"problemOtherDevice": "Akun Apple Anda sedang memutar di perangkat lain.",
+		"problemGeneric": "Apple Music menghentikan pemutaran ({code}). Tekan putar untuk mencoba lagi.",
+		"consent": "Kami memerlukan persetujuan Anda untuk memuat pemutar MusicKit dari Apple. Ini terhubung ke server Apple."
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

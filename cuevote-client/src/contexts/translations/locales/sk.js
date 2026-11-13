@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Tento kanál vyžaduje prihlásený účet.",
 		"accountRequired": "Na túto akciu sa prosím prihláste.",
 		"sessionNotReady": "Vaša relácia ešte nie je pripravená. Načítajte stránku znova.",
-		"guestLimit": "Príliš veľa nových hostí v tejto sieti. Pokračujte po prihlásení."
+		"guestLimit": "Príliš veľa nových hostí v tejto sieti. Pokračujte po prihlásení.",
+		"appleMusicUnavailable": "Apple Music nie je na tomto serveri k dispozícii.",
+		"appleMusicNotConnected": "Hostiteľ musí najprv pripojiť Apple Music.",
+		"appleMusicRoom": "Tento kanál prehráva Apple Music. Vložte odkaz z music.apple.com alebo hľadajte podľa názvu.",
+		"appleMusicNotFound": "V Apple Music sa to nenašlo.",
+		"appleMusicNotInStorefront": "Táto skladba nie je v Apple Music v krajine hostiteľa dostupná.",
+		"appleMusicCatalogError": "Apple Music neodpovedá. Skúste to znova."
 	},
 	"connectAi": {
 		"willSendTo": "Súhlas sa odošle na",
@@ -280,6 +286,19 @@ export default {
 		"emptySubtitle": "Videá zakázané z požiadaviek sa zobrazia tu.",
 		"bannedOn": "Zakázané {date}",
 		"unban": "Povoliť"
+	},
+	"appleMusic": {
+		"source": "Zdroj hudby",
+		"sourceHint": "Apple Music hrá iba na vašom zariadení a vyžaduje predplatné Apple Music.",
+		"connect": "Pripojiť Apple Music",
+		"connectHint": "Prihláste sa účtom Apple, ku ktorému patrí vaše predplatné Apple Music.",
+		"start": "Spustiť prehrávanie",
+		"loading": "Načítava sa Apple Music…",
+		"loadFailed": "Apple Music sa nepodarilo načítať.",
+		"problemSubscription": "Na prehrávanie je potrebné aktívne predplatné Apple Music.",
+		"problemOtherDevice": "Váš účet Apple práve prehráva na inom zariadení.",
+		"problemGeneric": "Prehrávanie v Apple Music sa zastavilo ({code}). Stlačte prehrať a skúste to znova.",
+		"consent": "Potrebujeme váš súhlas na načítanie prehrávača MusicKit od spoločnosti Apple. Ten sa pripája k serverom Apple."
 	},
 	"attribution": {
 		"youtube": "Vyvinuté s YouTube"

@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Saluran ini memerlukan akaun yang telah log masuk.",
 		"accountRequired": "Sila log masuk untuk berbuat demikian.",
 		"sessionNotReady": "Sesi anda belum sedia. Sila muat semula halaman.",
-		"guestLimit": "Terlalu ramai tetamu baharu pada rangkaian ini. Sila log masuk untuk meneruskan."
+		"guestLimit": "Terlalu ramai tetamu baharu pada rangkaian ini. Sila log masuk untuk meneruskan.",
+		"appleMusicUnavailable": "Apple Music tidak tersedia pada pelayan ini.",
+		"appleMusicNotConnected": "Hos perlu menyambungkan Apple Music terlebih dahulu.",
+		"appleMusicRoom": "Saluran ini memainkan Apple Music. Tampal pautan music.apple.com atau cari mengikut nama.",
+		"appleMusicNotFound": "Tidak dijumpai di Apple Music.",
+		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara hos.",
+		"appleMusicCatalogError": "Apple Music tidak menjawab. Sila cuba lagi."
 	},
 	"connectAi": {
 		"willSendTo": "Kebenaran akan dihantar ke",
@@ -274,6 +280,19 @@ export default {
 		"emptySubtitle": "Video yang diharamkan daripada permintaan akan muncul di sini.",
 		"bannedOn": "Diharamkan pada {date}",
 		"unban": "Buka haram"
+	},
+	"appleMusic": {
+		"source": "Sumber muzik",
+		"sourceHint": "Apple Music hanya dimainkan pada peranti anda dan memerlukan langganan Apple Music.",
+		"connect": "Sambungkan Apple Music",
+		"connectHint": "Log masuk dengan akaun Apple yang mempunyai langganan Apple Music anda.",
+		"start": "Mulakan main balik",
+		"loading": "Memuatkan Apple Music…",
+		"loadFailed": "Apple Music tidak dapat dimuatkan.",
+		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memainkan ini.",
+		"problemOtherDevice": "Akaun Apple anda sedang memainkan muzik pada peranti lain.",
+		"problemGeneric": "Apple Music menghentikan main balik ({code}). Tekan main untuk mencuba lagi.",
+		"consent": "Kami memerlukan persetujuan anda untuk memuatkan pemain MusicKit Apple. Ini bersambung ke pelayan Apple."
 	},
 	"attribution": {
 		"youtube": "Dibangunkan dengan YouTube"

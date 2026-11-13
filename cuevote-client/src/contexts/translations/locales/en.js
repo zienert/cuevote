@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "This channel requires a signed-in account.",
 		"accountRequired": "Please sign in to do that.",
 		"sessionNotReady": "Your session is not ready yet. Please reload the page.",
-		"guestLimit": "Too many new guests on this network. Please sign in to continue."
+		"guestLimit": "Too many new guests on this network. Please sign in to continue.",
+		"appleMusicUnavailable": "Apple Music is not available on this server.",
+		"appleMusicNotConnected": "The host has to connect Apple Music first.",
+		"appleMusicRoom": "This channel plays Apple Music. Paste a music.apple.com link or search by name.",
+		"appleMusicNotFound": "Could not find this on Apple Music.",
+		"appleMusicNotInStorefront": "This title is not available on Apple Music in the host's country.",
+		"appleMusicCatalogError": "Apple Music did not answer. Please try again."
 	},
 	"connectAi": {
 		"willSendTo": "Approval will be sent to",
@@ -276,6 +282,19 @@ export default {
 		"footerCta": "Get the app",
 		"modalTitle": "More with the app",
 		"later": "Not now"
+	},
+	"appleMusic": {
+		"source": "Music source",
+		"sourceHint": "Apple Music plays only on your device and needs an Apple Music subscription.",
+		"connect": "Connect Apple Music",
+		"connectHint": "Sign in with the Apple account that has your Apple Music subscription.",
+		"start": "Start playback",
+		"loading": "Loading Apple Music…",
+		"loadFailed": "Apple Music could not be loaded.",
+		"problemSubscription": "Apple Music needs an active subscription to play this.",
+		"problemOtherDevice": "Your Apple account is playing on another device.",
+		"problemGeneric": "Apple Music stopped playback ({code}). Press play to try again.",
+		"consent": "We need your consent to load Apple's MusicKit player. It connects to Apple's servers."
 	},
 	"attribution": {
 		"youtube": "Developed with YouTube"

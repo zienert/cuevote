@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Kailangan ng channel na ito ng naka-log in na account.",
 		"accountRequired": "Mag-log in para gawin iyon.",
 		"sessionNotReady": "Hindi pa handa ang iyong session. I-reload ang pahina.",
-		"guestLimit": "Masyadong maraming bagong bisita sa network na ito. Mag-log in para magpatuloy."
+		"guestLimit": "Masyadong maraming bagong bisita sa network na ito. Mag-log in para magpatuloy.",
+		"appleMusicUnavailable": "Hindi available ang Apple Music sa server na ito.",
+		"appleMusicNotConnected": "Kailangan munang ikonekta ng host ang Apple Music.",
+		"appleMusicRoom": "Apple Music ang tumutugtog sa channel na ito. Mag-paste ng link mula sa music.apple.com o maghanap ayon sa pangalan.",
+		"appleMusicNotFound": "Hindi ito nahanap sa Apple Music.",
+		"appleMusicNotInStorefront": "Hindi available ang kantang ito sa Apple Music sa bansa ng host.",
+		"appleMusicCatalogError": "Hindi sumagot ang Apple Music. Pakisubukang muli."
 	},
 	"connectAi": {
 		"willSendTo": "Ipapadala ang pag-apruba sa",
@@ -276,6 +282,19 @@ export default {
 		"footerCta": "Kunin ang app",
 		"modalTitle": "Mas marami sa app",
 		"later": "Sa susunod"
+	},
+	"appleMusic": {
+		"source": "Pinagmulan ng musika",
+		"sourceHint": "Sa device mo lang tumutugtog ang Apple Music at kailangan nito ng Apple Music subscription.",
+		"connect": "Ikonekta ang Apple Music",
+		"connectHint": "Mag-sign in gamit ang Apple account na may Apple Music subscription mo.",
+		"start": "Simulan ang pagpapatugtog",
+		"loading": "Nilo-load ang Apple Music…",
+		"loadFailed": "Hindi ma-load ang Apple Music.",
+		"problemSubscription": "Kailangan ng aktibong Apple Music subscription para ma-play ito.",
+		"problemOtherDevice": "Ginagamit ang Apple account mo para magpatugtog sa ibang device.",
+		"problemGeneric": "Itinigil ng Apple Music ang pagpapatugtog ({code}). Pindutin ang play para subukang muli.",
+		"consent": "Kailangan namin ang iyong pahintulot upang i-load ang MusicKit player ng Apple. Kumokonekta ito sa mga server ng Apple."
 	},
 	"attribution": {
 		"youtube": "Binuo gamit ang YouTube"

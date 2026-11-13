@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Ehhez a csatornához bejelentkezett fiók szükséges.",
 		"accountRequired": "Jelentkezz be, hogy ezt megtedd.",
 		"sessionNotReady": "A munkameneted még nem áll készen. Töltsd újra az oldalt.",
-		"guestLimit": "Túl sok új vendég ezen a hálózaton. A folytatáshoz jelentkezz be."
+		"guestLimit": "Túl sok új vendég ezen a hálózaton. A folytatáshoz jelentkezz be.",
+		"appleMusicUnavailable": "Az Apple Music nem érhető el ezen a szerveren.",
+		"appleMusicNotConnected": "A házigazdának előbb csatlakoztatnia kell az Apple Musicot.",
+		"appleMusicRoom": "Ez a csatorna az Apple Musicot használja. Illessz be egy music.apple.com linket, vagy keress név alapján.",
+		"appleMusicNotFound": "Nem található az Apple Musicon.",
+		"appleMusicNotInStorefront": "Ez a szám a házigazda országában nem érhető el az Apple Musicon.",
+		"appleMusicCatalogError": "Az Apple Music nem válaszolt. Próbáld újra."
 	},
 	"connectAi": {
 		"willSendTo": "A jóváhagyás ide megy",
@@ -276,6 +282,19 @@ export default {
 		"emptySubtitle": "A kérésekből letiltott videók itt jelennek meg.",
 		"bannedOn": "Letiltva: {date}",
 		"unban": "Tiltás feloldása"
+	},
+	"appleMusic": {
+		"source": "Zeneforrás",
+		"sourceHint": "Az Apple Music csak a te eszközödön szól, és Apple Music-előfizetés kell hozzá.",
+		"connect": "Apple Music csatlakoztatása",
+		"connectHint": "Jelentkezz be azzal az Apple-fiókkal, amelyhez az Apple Music-előfizetésed tartozik.",
+		"start": "Lejátszás indítása",
+		"loading": "Apple Music betöltése…",
+		"loadFailed": "Nem sikerült betölteni az Apple Musicot.",
+		"problemSubscription": "Ennek lejátszásához aktív Apple Music-előfizetés kell.",
+		"problemOtherDevice": "Az Apple-fiókod éppen egy másik eszközön játszik zenét.",
+		"problemGeneric": "Az Apple Music leállította a lejátszást ({code}). Az újrapróbálkozáshoz nyomd meg a lejátszás gombot.",
+		"consent": "A hozzájárulásodra van szükségünk az Apple MusicKit lejátszójának betöltéséhez. Ez csatlakozik az Apple szervereihez."
 	},
 	"attribution": {
 		"youtube": "YouTube-val fejlesztve"

@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Този канал изисква влизане в акаунт.",
 		"accountRequired": "Влезте, за да направите това.",
 		"sessionNotReady": "Сесията ви още не е готова. Презаредете страницата.",
-		"guestLimit": "Твърде много нови гости в тази мрежа. Влезте, за да продължите."
+		"guestLimit": "Твърде много нови гости в тази мрежа. Влезте, за да продължите.",
+		"appleMusicUnavailable": "Този сървър не поддържа Apple Music.",
+		"appleMusicNotConnected": "Домакинът първо трябва да свърже Apple Music.",
+		"appleMusicRoom": "В този канал свири Apple Music. Поставете връзка от music.apple.com или търсете по име.",
+		"appleMusicNotFound": "Не е намерено в Apple Music.",
+		"appleMusicNotInStorefront": "Тази песен не е достъпна в Apple Music в страната на домакина.",
+		"appleMusicCatalogError": "Apple Music не отговаря. Опитайте отново."
 	},
 	"connectAi": {
 		"willSendTo": "Одобрението ще бъде изпратено до",
@@ -276,6 +282,19 @@ export default {
 		"emptySubtitle": "Видеа, забранени от заявки, ще се появят тук.",
 		"bannedOn": "Забранено на {date}",
 		"unban": "Отмени забраната"
+	},
+	"appleMusic": {
+		"source": "Източник на музика",
+		"sourceHint": "Apple Music свири само на вашето устройство и изисква абонамент за Apple Music.",
+		"connect": "Свържи Apple Music",
+		"connectHint": "Влезте с Apple акаунта, в който е абонаментът ви за Apple Music.",
+		"start": "Стартирай възпроизвеждането",
+		"loading": "Зареждане на Apple Music…",
+		"loadFailed": "Apple Music не можа да се зареди.",
+		"problemSubscription": "За възпроизвеждане е нужен активен абонамент за Apple Music.",
+		"problemOtherDevice": "Вашият Apple акаунт възпроизвежда на друго устройство.",
+		"problemGeneric": "Apple Music спря възпроизвеждането ({code}). Натиснете бутона за пускане, за да опитате отново.",
+		"consent": "Нуждаем се от вашето съгласие, за да заредим плейъра MusicKit на Apple. Това се свързва със сървърите на Apple."
 	},
 	"attribution": {
 		"youtube": "Създадено с YouTube"

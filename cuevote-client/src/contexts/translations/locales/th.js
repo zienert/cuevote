@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "ช่องนี้ต้องใช้บัญชีที่เข้าสู่ระบบแล้ว",
 		"accountRequired": "โปรดเข้าสู่ระบบเพื่อทำสิ่งนี้",
 		"sessionNotReady": "เซสชันของคุณยังไม่พร้อม โปรดโหลดหน้าใหม่",
-		"guestLimit": "มีแขกใหม่จากเครือข่ายนี้มากเกินไป โปรดเข้าสู่ระบบเพื่อดำเนินการต่อ"
+		"guestLimit": "มีแขกใหม่จากเครือข่ายนี้มากเกินไป โปรดเข้าสู่ระบบเพื่อดำเนินการต่อ",
+		"appleMusicUnavailable": "Apple Music ไม่พร้อมใช้งานบนเซิร์ฟเวอร์นี้",
+		"appleMusicNotConnected": "เจ้าภาพต้องเชื่อมต่อ Apple Music ก่อน",
+		"appleMusicRoom": "ช่องนี้เล่นเพลงจาก Apple Music วางลิงก์ music.apple.com หรือค้นหาด้วยชื่อ",
+		"appleMusicNotFound": "ไม่พบใน Apple Music",
+		"appleMusicNotInStorefront": "เพลงนี้ไม่พร้อมใช้งานบน Apple Music ในประเทศของเจ้าภาพ",
+		"appleMusicCatalogError": "Apple Music ไม่ตอบสนอง โปรดลองอีกครั้ง"
 	},
 	"connectAi": {
 		"willSendTo": "การอนุญาตจะถูกส่งไปที่",
@@ -274,6 +280,19 @@ export default {
 		"emptySubtitle": "วิดีโอที่ถูกแบนจากคำขอจะปรากฏที่นี่",
 		"bannedOn": "ถูกแบนเมื่อ {date}",
 		"unban": "ยกเลิกการแบน"
+	},
+	"appleMusic": {
+		"source": "แหล่งเพลง",
+		"sourceHint": "Apple Music เล่นเฉพาะบนอุปกรณ์ของคุณ และต้องสมัครสมาชิก Apple Music",
+		"connect": "เชื่อมต่อ Apple Music",
+		"connectHint": "เข้าสู่ระบบด้วยบัญชี Apple ที่สมัครสมาชิก Apple Music ไว้",
+		"start": "เริ่มเล่น",
+		"loading": "กำลังโหลด Apple Music…",
+		"loadFailed": "ไม่สามารถโหลด Apple Music ได้",
+		"problemSubscription": "ต้องสมัครสมาชิก Apple Music ที่ยังใช้งานอยู่จึงจะเล่นรายการนี้ได้",
+		"problemOtherDevice": "บัญชี Apple ของคุณกำลังเล่นอยู่บนอุปกรณ์อื่น",
+		"problemGeneric": "Apple Music หยุดเล่น ({code}) กดเล่นเพื่อลองอีกครั้ง",
+		"consent": "เราต้องการความยินยอมจากคุณเพื่อโหลดเครื่องเล่น MusicKit ของ Apple ซึ่งจะเชื่อมต่อกับเซิร์ฟเวอร์ของ Apple"
 	},
 	"attribution": {
 		"youtube": "พัฒนาด้วย YouTube"

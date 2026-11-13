@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Цей канал потребує входу в обліковий запис.",
 		"accountRequired": "Увійдіть, щоб це зробити.",
 		"sessionNotReady": "Ваш сеанс ще не готовий. Оновіть сторінку.",
-		"guestLimit": "Забагато нових гостей у цій мережі. Увійдіть, щоб продовжити."
+		"guestLimit": "Забагато нових гостей у цій мережі. Увійдіть, щоб продовжити.",
+		"appleMusicUnavailable": "Цей сервер не підтримує Apple Music.",
+		"appleMusicNotConnected": "Організатор має спершу підключити Apple Music.",
+		"appleMusicRoom": "У цьому каналі грає Apple Music. Вставте посилання з music.apple.com або знайдіть за назвою.",
+		"appleMusicNotFound": "Не знайдено в Apple Music.",
+		"appleMusicNotInStorefront": "Цей трек недоступний в Apple Music у країні організатора.",
+		"appleMusicCatalogError": "Apple Music не відповідає. Спробуйте ще раз."
 	},
 	"connectAi": {
 		"willSendTo": "Підтвердження буде надіслано на",
@@ -280,6 +286,19 @@ export default {
 		"emptySubtitle": "Відео, заблоковані із запитів, з'являться тут.",
 		"bannedOn": "Заблоковано {date}",
 		"unban": "Розблокувати"
+	},
+	"appleMusic": {
+		"source": "Джерело музики",
+		"sourceHint": "Apple Music грає лише на вашому пристрої та потребує підписки на Apple Music.",
+		"connect": "Підключити Apple Music",
+		"connectHint": "Увійдіть в обліковий запис Apple, у якому оформлено вашу підписку на Apple Music.",
+		"start": "Почати відтворення",
+		"loading": "Завантаження Apple Music…",
+		"loadFailed": "Не вдалося завантажити Apple Music.",
+		"problemSubscription": "Для відтворення потрібна активна підписка на Apple Music.",
+		"problemOtherDevice": "Ваш обліковий запис Apple зараз відтворює музику на іншому пристрої.",
+		"problemGeneric": "Відтворення в Apple Music зупинено ({code}). Натисніть «Відтворити», щоб спробувати ще раз.",
+		"consent": "Нам потрібна ваша згода для завантаження плеєра MusicKit від Apple. Він з'єднується із серверами Apple."
 	},
 	"attribution": {
 		"youtube": "Розроблено з YouTube"

@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Den här kanalen kräver ett inloggat konto.",
 		"accountRequired": "Logga in för att göra det.",
 		"sessionNotReady": "Din session är inte redo än. Ladda om sidan.",
-		"guestLimit": "För många nya gäster på det här nätverket. Logga in för att fortsätta."
+		"guestLimit": "För många nya gäster på det här nätverket. Logga in för att fortsätta.",
+		"appleMusicUnavailable": "Apple Music är inte tillgängligt på den här servern.",
+		"appleMusicNotConnected": "Värden måste först ansluta Apple Music.",
+		"appleMusicRoom": "Den här kanalen spelar Apple Music. Klistra in en länk från music.apple.com eller sök på namn.",
+		"appleMusicNotFound": "Hittades inte på Apple Music.",
+		"appleMusicNotInStorefront": "Den här låten är inte tillgänglig på Apple Music i värdens land.",
+		"appleMusicCatalogError": "Apple Music svarade inte. Försök igen."
 	},
 	"connectAi": {
 		"willSendTo": "Godkännandet skickas till",
@@ -276,6 +282,19 @@ export default {
 		"emptySubtitle": "Videor som bannats från förfrågningar visas här.",
 		"bannedOn": "Bannad {date}",
 		"unban": "Avbanna"
+	},
+	"appleMusic": {
+		"source": "Musikkälla",
+		"sourceHint": "Apple Music spelas bara upp på din enhet och kräver ett Apple Music-abonnemang.",
+		"connect": "Anslut Apple Music",
+		"connectHint": "Logga in med det Apple-konto som har ditt Apple Music-abonnemang.",
+		"start": "Starta uppspelning",
+		"loading": "Laddar Apple Music…",
+		"loadFailed": "Det gick inte att ladda Apple Music.",
+		"problemSubscription": "Apple Music kräver ett aktivt abonnemang för att spela upp det här.",
+		"problemOtherDevice": "Ditt Apple-konto spelar upp på en annan enhet.",
+		"problemGeneric": "Apple Music stoppade uppspelningen ({code}). Tryck på spela upp för att försöka igen.",
+		"consent": "Vi behöver ditt samtycke för att ladda Apples MusicKit-spelare. Detta ansluter till Apples servrar."
 	},
 	"attribution": {
 		"youtube": "Utvecklad med YouTube"

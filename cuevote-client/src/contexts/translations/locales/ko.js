@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "이 채널은 로그인한 계정이 필요합니다.",
 		"accountRequired": "이 작업을 하려면 로그인하세요.",
 		"sessionNotReady": "세션이 아직 준비되지 않았습니다. 페이지를 새로고침하세요.",
-		"guestLimit": "이 네트워크의 새 게스트가 너무 많습니다. 로그인 후 계속하세요."
+		"guestLimit": "이 네트워크의 새 게스트가 너무 많습니다. 로그인 후 계속하세요.",
+		"appleMusicUnavailable": "이 서버에서는 Apple Music을 사용할 수 없습니다.",
+		"appleMusicNotConnected": "주최자가 먼저 Apple Music을 연결해야 합니다.",
+		"appleMusicRoom": "이 채널은 Apple Music을 재생합니다. music.apple.com 링크를 붙여넣거나 이름으로 검색하세요.",
+		"appleMusicNotFound": "Apple Music에서 찾을 수 없습니다.",
+		"appleMusicNotInStorefront": "이 곡은 주최자 국가의 Apple Music에서 이용할 수 없습니다.",
+		"appleMusicCatalogError": "Apple Music이 응답하지 않았습니다. 다시 시도하세요."
 	},
 	"connectAi": {
 		"willSendTo": "승인이 전송될 주소",
@@ -274,6 +280,19 @@ export default {
 		"emptySubtitle": "요청에서 차단된 동영상이 여기에 표시됩니다.",
 		"bannedOn": "{date}에 차단",
 		"unban": "차단 해제"
+	},
+	"appleMusic": {
+		"source": "음악 소스",
+		"sourceHint": "Apple Music은 내 기기에서만 재생되며 Apple Music 구독이 필요합니다.",
+		"connect": "Apple Music 연결",
+		"connectHint": "Apple Music을 구독 중인 Apple 계정으로 로그인하세요.",
+		"start": "재생 시작",
+		"loading": "Apple Music 불러오는 중…",
+		"loadFailed": "Apple Music을 불러올 수 없습니다.",
+		"problemSubscription": "재생하려면 활성 상태의 Apple Music 구독이 필요합니다.",
+		"problemOtherDevice": "다른 기기에서 내 Apple 계정으로 재생 중입니다.",
+		"problemGeneric": "Apple Music 재생이 중지되었습니다({code}). 재생 버튼을 눌러 다시 시도하세요.",
+		"consent": "Apple의 MusicKit 플레이어를 로드하려면 귀하의 동의가 필요합니다. 이는 Apple 서버에 연결됩니다."
 	},
 	"attribution": {
 		"youtube": "YouTube로 개발됨"

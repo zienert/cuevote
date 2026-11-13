@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Tämä kanava vaatii kirjautuneen tilin.",
 		"accountRequired": "Kirjaudu sisään tehdäksesi tämän.",
 		"sessionNotReady": "Istuntosi ei ole vielä valmis. Lataa sivu uudelleen.",
-		"guestLimit": "Liian monta uutta vierasta tässä verkossa. Kirjaudu sisään jatkaaksesi."
+		"guestLimit": "Liian monta uutta vierasta tässä verkossa. Kirjaudu sisään jatkaaksesi.",
+		"appleMusicUnavailable": "Apple Music ei ole käytettävissä tällä palvelimella.",
+		"appleMusicNotConnected": "Isännän täytyy ensin yhdistää Apple Music.",
+		"appleMusicRoom": "Tällä kanavalla soi Apple Music. Liitä music.apple.com-linkki tai hae nimellä.",
+		"appleMusicNotFound": "Ei löytynyt Apple Musicista.",
+		"appleMusicNotInStorefront": "Tämä kappale ei ole saatavilla Apple Musicissa isännän maassa.",
+		"appleMusicCatalogError": "Apple Music ei vastannut. Yritä uudelleen."
 	},
 	"connectAi": {
 		"willSendTo": "Hyväksyntä lähetetään osoitteeseen",
@@ -276,6 +282,19 @@ export default {
 		"emptySubtitle": "Pyynnöistä estetyt videot näkyvät tässä.",
 		"bannedOn": "Estetty {date}",
 		"unban": "Poista esto"
+	},
+	"appleMusic": {
+		"source": "Musiikkilähde",
+		"sourceHint": "Apple Music soi vain omalla laitteellasi ja vaatii Apple Music -tilauksen.",
+		"connect": "Yhdistä Apple Music",
+		"connectHint": "Kirjaudu sisään sillä Apple-tilillä, johon Apple Music -tilauksesi kuuluu.",
+		"start": "Aloita toisto",
+		"loading": "Ladataan Apple Musicia…",
+		"loadFailed": "Apple Musicia ei voitu ladata.",
+		"problemSubscription": "Tämän toistaminen vaatii voimassa olevan Apple Music -tilauksen.",
+		"problemOtherDevice": "Apple-tilisi toistaa musiikkia toisella laitteella.",
+		"problemGeneric": "Apple Music keskeytti toiston ({code}). Yritä uudelleen painamalla toistopainiketta.",
+		"consent": "Tarvitsemme suostumuksesi Applen MusicKit-soittimen lataamiseen. Tämä muodostaa yhteyden Applen palvelimiin."
 	},
 	"attribution": {
 		"youtube": "Kehitetty YouTuben kanssa"

@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Acest canal necesită un cont autentificat.",
 		"accountRequired": "Autentifică-te pentru a face asta.",
 		"sessionNotReady": "Sesiunea ta nu este încă gata. Reîncarcă pagina.",
-		"guestLimit": "Prea mulți invitați noi în această rețea. Autentifică-te pentru a continua."
+		"guestLimit": "Prea mulți invitați noi în această rețea. Autentifică-te pentru a continua.",
+		"appleMusicUnavailable": "Apple Music nu este disponibil pe acest server.",
+		"appleMusicNotConnected": "Gazda trebuie mai întâi să conecteze Apple Music.",
+		"appleMusicRoom": "Acest canal redă Apple Music. Lipește un link de pe music.apple.com sau caută după nume.",
+		"appleMusicNotFound": "Nu a fost găsit pe Apple Music.",
+		"appleMusicNotInStorefront": "Această piesă nu este disponibilă pe Apple Music în țara gazdei.",
+		"appleMusicCatalogError": "Apple Music nu a răspuns. Încearcă din nou."
 	},
 	"connectAi": {
 		"willSendTo": "Aprobarea va fi trimisă către",
@@ -278,6 +284,19 @@ export default {
 		"emptySubtitle": "Videoclipurile interzise din solicitări vor apărea aici.",
 		"bannedOn": "Interzis pe {date}",
 		"unban": "Anulează interdicția"
+	},
+	"appleMusic": {
+		"source": "Sursa muzicii",
+		"sourceHint": "Apple Music se redă doar pe dispozitivul tău și necesită un abonament Apple Music.",
+		"connect": "Conectează Apple Music",
+		"connectHint": "Autentifică-te cu contul Apple pe care ai abonamentul Apple Music.",
+		"start": "Pornește redarea",
+		"loading": "Se încarcă Apple Music…",
+		"loadFailed": "Apple Music nu a putut fi încărcat.",
+		"problemSubscription": "Apple Music necesită un abonament activ pentru a reda acest conținut.",
+		"problemOtherDevice": "Contul tău Apple redă muzică pe alt dispozitiv.",
+		"problemGeneric": "Apple Music a oprit redarea ({code}). Apasă pe redare pentru a încerca din nou.",
+		"consent": "Avem nevoie de consimțământul tău pentru a încărca playerul MusicKit de la Apple. Acesta se conectează la serverele Apple."
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

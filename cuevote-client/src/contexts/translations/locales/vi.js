@@ -7,7 +7,13 @@ export default {
 		"loginRequired": "Kênh này yêu cầu tài khoản đã đăng nhập.",
 		"accountRequired": "Vui lòng đăng nhập để làm điều đó.",
 		"sessionNotReady": "Phiên của bạn chưa sẵn sàng. Vui lòng tải lại trang.",
-		"guestLimit": "Quá nhiều khách mới trên mạng này. Vui lòng đăng nhập để tiếp tục."
+		"guestLimit": "Quá nhiều khách mới trên mạng này. Vui lòng đăng nhập để tiếp tục.",
+		"appleMusicUnavailable": "Apple Music không khả dụng trên máy chủ này.",
+		"appleMusicNotConnected": "Người tổ chức cần kết nối Apple Music trước.",
+		"appleMusicRoom": "Kênh này phát Apple Music. Hãy dán link music.apple.com hoặc tìm theo tên.",
+		"appleMusicNotFound": "Không tìm thấy trên Apple Music.",
+		"appleMusicNotInStorefront": "Bài hát này không khả dụng trên Apple Music ở quốc gia của người tổ chức.",
+		"appleMusicCatalogError": "Apple Music không phản hồi. Vui lòng thử lại."
 	},
 	"connectAi": {
 		"willSendTo": "Phê duyệt sẽ được gửi tới",
@@ -274,6 +280,19 @@ export default {
 		"emptySubtitle": "Các video bị cấm khỏi yêu cầu sẽ xuất hiện ở đây.",
 		"bannedOn": "Bị cấm vào {date}",
 		"unban": "Bỏ cấm"
+	},
+	"appleMusic": {
+		"source": "Nguồn nhạc",
+		"sourceHint": "Apple Music chỉ phát trên thiết bị của bạn và cần gói đăng ký Apple Music.",
+		"connect": "Kết nối Apple Music",
+		"connectHint": "Đăng nhập bằng tài khoản Apple có gói đăng ký Apple Music của bạn.",
+		"start": "Bắt đầu phát",
+		"loading": "Đang tải Apple Music…",
+		"loadFailed": "Không thể tải Apple Music.",
+		"problemSubscription": "Cần gói đăng ký Apple Music còn hiệu lực để phát nội dung này.",
+		"problemOtherDevice": "Tài khoản Apple của bạn đang phát trên một thiết bị khác.",
+		"problemGeneric": "Apple Music đã dừng phát ({code}). Nhấn phát để thử lại.",
+		"consent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát MusicKit của Apple. Điều này kết nối với máy chủ của Apple."
 	},
 	"attribution": {
 		"youtube": "Phát triển với YouTube"
