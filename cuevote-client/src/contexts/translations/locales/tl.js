@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Ginagamit ang Apple account mo para magpatugtog sa ibang device.",
 		"problemGeneric": "Itinigil ng Apple Music ang pagpapatugtog ({code}). Pindutin ang play para subukang muli.",
 		"contentNotice": "Galing sa Apple ang mga cover art at preview sa channel na ito. Habang nilo-load ang mga ito, nakikita ng Apple ang iyong IP address.",
-		"contentAccept": "I-on"
+		"contentAccept": "I-on",
+		"previewFailed": "Hindi ma-play ang preview na ito."
 	},
 	"attribution": {
 		"youtube": "Binuo gamit ang YouTube"

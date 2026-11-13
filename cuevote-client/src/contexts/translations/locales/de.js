@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Dein Apple-Konto spielt gerade auf einem anderen Gerät Musik ab.",
 		"problemGeneric": "Apple Music hat die Wiedergabe gestoppt ({code}). Drücke auf Play, um es erneut zu versuchen.",
 		"contentNotice": "Cover und Vorschauen in diesem Kanal kommen von Apple. Beim Laden sieht Apple deine IP-Adresse.",
-		"contentAccept": "Einschalten"
+		"contentAccept": "Einschalten",
+		"previewFailed": "Diese Vorschau lässt sich nicht abspielen."
 	},
 	"attribution": {
 		"youtube": "Entwickelt mit YouTube"

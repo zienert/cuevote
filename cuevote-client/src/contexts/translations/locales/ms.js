@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "Akaun Apple anda sedang memainkan muzik pada peranti lain.",
 		"problemGeneric": "Apple Music menghentikan main balik ({code}). Tekan main untuk mencuba lagi.",
 		"contentNotice": "Kulit album dan pratonton dalam saluran ini datang daripada Apple. Semasa ia dimuatkan, Apple dapat melihat alamat IP anda.",
-		"contentAccept": "Hidupkan"
+		"contentAccept": "Hidupkan",
+		"previewFailed": "Pratonton ini tidak dapat dimainkan."
 	},
 	"attribution": {
 		"youtube": "Dibangunkan dengan YouTube"

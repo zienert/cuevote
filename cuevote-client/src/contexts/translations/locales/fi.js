@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Apple-tilisi toistaa musiikkia toisella laitteella.",
 		"problemGeneric": "Apple Music keskeytti toiston ({code}). Yritä uudelleen painamalla toistopainiketta.",
 		"contentNotice": "Tämän kanavan kansikuvat ja esikatselut tulevat Applelta. Kun ne latautuvat, Apple näkee IP-osoitteesi.",
-		"contentAccept": "Ota käyttöön"
+		"contentAccept": "Ota käyttöön",
+		"previewFailed": "Tätä esikatselua ei voi toistaa."
 	},
 	"attribution": {
 		"youtube": "Kehitetty YouTuben kanssa"

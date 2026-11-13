@@ -12,7 +12,9 @@ import { SuggestSongForm } from "./components/SuggestSongForm";
 import { Player } from "./components/Player";
 import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
 import { AppleContentNotice } from "./components/AppleContentNotice";
+import { ApplePreviewOverlay } from "./components/ApplePreviewOverlay";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
+import { useApplePreview } from "./hooks/useApplePreview";
 import { parseTrackKey } from "./utils/trackKeys";
 import { Queue } from "./components/Queue";
 import { Suggestions } from "./components/Suggestions";
@@ -236,8 +238,9 @@ function RoomBody() {
   // Prelisten streams audio through the YT player. Disable it ONLY in forced
   // Venue Mode (mobile browser + app not running) — unreliable there and outside
   // the browser feature set we advertise. Configured venue mode keeps prelisten.
-  // Apple rooms have no YouTube player to prelisten with.
-  const prelistenEnabled = allowPrelisten && !isForcedVenueMode && !isAppleRoom;
+  // In Apple rooms guests prelisten with Apple's previews through MusicKit; the
+  // owner cannot, MusicKit on their device already plays the room.
+  const prelistenEnabled = allowPrelisten && !isForcedVenueMode && !(isAppleRoom && isOwner);
   const apple = useAppleMusicHost({
     enabled: isAppleRoom && !!isOwner && !isForcedVenueMode,
     currentTrack,
@@ -1371,6 +1374,13 @@ function RoomBody() {
     playerRef.current?.seekTo?.(progressRef.current);
   }, [progressRef]);
 
+  // A guest's preview in an Apple room, once they have turned Apple content on.
+  const applePreview = useApplePreview({
+    track: isAppleRoom && !isOwner && appleConsent ? previewTrack : null,
+    volume: isMuted ? 0 : volume / 100,
+    onEnded: handleStopPreview,
+  });
+
   // Watch for Room Not Found Error
   useEffect(() => {
     if (lastMessage && lastMessage.type === "error" && lastMessage.code === "ROOM_NOT_FOUND") {
@@ -1836,7 +1846,17 @@ function RoomBody() {
             />
             </div>
             {showAppFooter && <AppPromoFooter />}
-            {previewTrack && (
+            {isAppleRoom ? (
+              prelistenEnabled && (
+                <ApplePreviewOverlay
+                  track={previewTrack}
+                  preview={applePreview}
+                  consent={appleConsent}
+                  onAccept={giveAppleConsent}
+                  isCinemaMode={isCinemaMode}
+                />
+              )
+            ) : previewTrack && (
               <PrelistenOverlay
                 hasConsent={hasConsent}
                 playbackError={playbackError}

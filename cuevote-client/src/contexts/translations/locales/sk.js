@@ -308,7 +308,8 @@ export default {
 		"problemOtherDevice": "Váš účet Apple práve prehráva na inom zariadení.",
 		"problemGeneric": "Prehrávanie v Apple Music sa zastavilo ({code}). Stlačte prehrať a skúste to znova.",
 		"contentNotice": "Obaly albumov a náhľady v tomto kanáli pochádzajú od Apple. Pri ich načítaní Apple vidí vašu IP adresu.",
-		"contentAccept": "Zapnúť"
+		"contentAccept": "Zapnúť",
+		"previewFailed": "Tento náhľad nie je možné prehrať."
 	},
 	"attribution": {
 		"youtube": "Vyvinuté s YouTube"

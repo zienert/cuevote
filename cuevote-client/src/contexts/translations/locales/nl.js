@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Je Apple-account speelt af op een ander apparaat.",
 		"problemGeneric": "Apple Music heeft het afspelen gestopt ({code}). Druk op afspelen om het opnieuw te proberen.",
 		"contentNotice": "Albumhoezen en voorbeelden in dit kanaal komen van Apple. Bij het laden ziet Apple je IP-adres.",
-		"contentAccept": "Aanzetten"
+		"contentAccept": "Aanzetten",
+		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld."
 	},
 	"attribution": {
 		"youtube": "Ontwikkeld met YouTube"

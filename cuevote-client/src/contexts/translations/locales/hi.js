@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "आपका Apple खाता किसी दूसरे डिवाइस पर चल रहा है।",
 		"problemGeneric": "Apple Music ने प्लेबैक रोक दिया ({code})। फिर से प्रयास करने के लिए प्ले दबाएं।",
 		"contentNotice": "इस चैनल के कवर आर्ट और पूर्वावलोकन Apple से आते हैं। इन्हें लोड करते समय Apple आपका IP पता देखता है।",
-		"contentAccept": "चालू करें"
+		"contentAccept": "चालू करें",
+		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।"
 	},
 	"attribution": {
 		"youtube": "YouTube के साथ विकसित"

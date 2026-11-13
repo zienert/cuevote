@@ -80,6 +80,9 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 				// The server decides what plays next. MusicKit must not continue
 				// with Apple's own picks once its one-item queue has ended.
 				if (instance.autoplayEnabled) instance.autoplayEnabled = false;
+				// The page may have previewed as a guest before signing in as the
+				// owner (useApplePreview): the room plays full songs.
+				if (instance.previewOnly) instance.previewOnly = false;
 				setMusic(instance);
 				setStatus(instance.isAuthorized ? 'ready' : 'signed-out');
 			} catch (err) {

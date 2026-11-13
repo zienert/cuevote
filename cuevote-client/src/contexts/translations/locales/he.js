@@ -306,7 +306,8 @@ export default {
 		"problemOtherDevice": "חשבון ה-Apple שלך מנגן כרגע במכשיר אחר.",
 		"problemGeneric": "Apple Music עצר את הניגון ({code}). יש ללחוץ על ניגון כדי לנסות שוב.",
 		"contentNotice": "עטיפות האלבומים והתצוגות המקדימות בערוץ הזה מגיעות מ-Apple. בזמן הטעינה Apple רואה את כתובת ה-IP שלך.",
-		"contentAccept": "הפעלה"
+		"contentAccept": "הפעלה",
+		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו."
 	},
 	"attribution": {
 		"youtube": "פותח עם YouTube"

@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "你的 Apple 帳號正在另一部裝置上播放。",
 		"problemGeneric": "Apple Music 已停止播放（{code}）。請按播放鍵重試。",
 		"contentNotice": "此頻道的封面圖片和試聽來自 Apple。載入時，Apple 會看到你的 IP 位址。",
-		"contentAccept": "開啟"
+		"contentAccept": "開啟",
+		"previewFailed": "無法播放此試聽。"
 	},
 	"attribution": {
 		"youtube": "基於 YouTube 開發"

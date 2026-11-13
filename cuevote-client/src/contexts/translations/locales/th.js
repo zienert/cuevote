@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "บัญชี Apple ของคุณกำลังเล่นอยู่บนอุปกรณ์อื่น",
 		"problemGeneric": "Apple Music หยุดเล่น ({code}) กดเล่นเพื่อลองอีกครั้ง",
 		"contentNotice": "ภาพปกและตัวอย่างในช่องนี้มาจาก Apple ระหว่างโหลด Apple จะเห็นที่อยู่ IP ของคุณ",
-		"contentAccept": "เปิดใช้"
+		"contentAccept": "เปิดใช้",
+		"previewFailed": "ไม่สามารถเล่นตัวอย่างนี้ได้"
 	},
 	"attribution": {
 		"youtube": "พัฒนาด้วย YouTube"

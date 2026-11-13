@@ -306,7 +306,8 @@ export default {
 		"problemOtherDevice": "La lecture est en cours sur un autre appareil avec votre compte Apple.",
 		"problemGeneric": "Apple Music a arrêté la lecture ({code}). Appuyez sur Lecture pour réessayer.",
 		"contentNotice": "Les pochettes et les aperçus de cette chaîne viennent d'Apple. Lors de leur chargement, Apple voit votre adresse IP.",
-		"contentAccept": "Activer"
+		"contentAccept": "Activer",
+		"previewFailed": "Impossible de lire cet aperçu."
 	},
 	"attribution": {
 		"youtube": "Développé avec YouTube"

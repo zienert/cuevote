@@ -308,7 +308,8 @@ export default {
 		"problemOtherDevice": "Twoje konto Apple odtwarza muzykę na innym urządzeniu.",
 		"problemGeneric": "Odtwarzanie w Apple Music zostało zatrzymane ({code}). Naciśnij przycisk odtwarzania, aby spróbować ponownie.",
 		"contentNotice": "Okładki i podglądy w tym kanale pochodzą od Apple. Podczas ich ładowania Apple widzi Twój adres IP.",
-		"contentAccept": "Włącz"
+		"contentAccept": "Włącz",
+		"previewFailed": "Nie można odtworzyć tego podglądu."
 	},
 	"attribution": {
 		"youtube": "Stworzone z YouTube"

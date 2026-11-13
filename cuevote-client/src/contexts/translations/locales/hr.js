@@ -306,7 +306,8 @@ export default {
 		"problemOtherDevice": "Vaš Apple račun reproducira glazbu na drugom uređaju.",
 		"problemGeneric": "Apple Music je zaustavio reprodukciju ({code}). Pritisnite Play za ponovni pokušaj.",
 		"contentNotice": "Omoti i pregledi u ovom kanalu dolaze od Applea. Pri njihovu učitavanju Apple vidi vašu IP adresu.",
-		"contentAccept": "Uključi"
+		"contentAccept": "Uključi",
+		"previewFailed": "Ovaj pregled nije moguće reproducirati."
 	},
 	"attribution": {
 		"youtube": "Razvijeno uz YouTube"

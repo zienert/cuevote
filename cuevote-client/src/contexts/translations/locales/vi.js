@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "Tài khoản Apple của bạn đang phát trên một thiết bị khác.",
 		"problemGeneric": "Apple Music đã dừng phát ({code}). Nhấn phát để thử lại.",
 		"contentNotice": "Ảnh bìa và bản nghe thử trong kênh này đến từ Apple. Khi tải, Apple thấy địa chỉ IP của bạn.",
-		"contentAccept": "Bật"
+		"contentAccept": "Bật",
+		"previewFailed": "Không thể phát bản nghe thử này."
 	},
 	"attribution": {
 		"youtube": "Phát triển với YouTube"

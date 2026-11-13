@@ -312,7 +312,8 @@ export default {
 		"problemOtherDevice": "يتم استخدام حساب Apple الخاص بك للتشغيل على جهاز آخر.",
 		"problemGeneric": "أوقف Apple Music التشغيل ({code}). اضغط على تشغيل للمحاولة مرة أخرى.",
 		"contentNotice": "صور الأغلفة والمعاينات في هذه القناة تأتي من Apple. ترى Apple عنوان IP الخاص بك عند تحميلها.",
-		"contentAccept": "تفعيل"
+		"contentAccept": "تفعيل",
+		"previewFailed": "تعذّر تشغيل هذه المعاينة."
 	},
 	"attribution": {
 		"youtube": "تم التطوير مع YouTube"

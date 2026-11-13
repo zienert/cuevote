@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Вашият Apple акаунт възпроизвежда на друго устройство.",
 		"problemGeneric": "Apple Music спря възпроизвеждането ({code}). Натиснете бутона за пускане, за да опитате отново.",
 		"contentNotice": "Обложките и прегледите в този канал идват от Apple. При зареждането им Apple вижда вашия IP адрес.",
-		"contentAccept": "Включване"
+		"contentAccept": "Включване",
+		"previewFailed": "Този преглед не може да бъде пуснат."
 	},
 	"attribution": {
 		"youtube": "Създадено с YouTube"

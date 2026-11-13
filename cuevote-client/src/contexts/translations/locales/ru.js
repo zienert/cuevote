@@ -308,7 +308,8 @@ export default {
 		"problemOtherDevice": "Ваш аккаунт Apple сейчас воспроизводит музыку на другом устройстве.",
 		"problemGeneric": "Воспроизведение в Apple Music остановлено ({code}). Нажмите «Воспроизвести», чтобы попробовать снова.",
 		"contentNotice": "Обложки и превью в этом канале загружаются от Apple. При загрузке Apple видит ваш IP-адрес.",
-		"contentAccept": "Включить"
+		"contentAccept": "Включить",
+		"previewFailed": "Не удалось воспроизвести это превью."
 	},
 	"attribution": {
 		"youtube": "Разработано с YouTube"

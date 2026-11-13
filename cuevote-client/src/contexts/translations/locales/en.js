@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Your Apple account is playing on another device.",
 		"problemGeneric": "Apple Music stopped playback ({code}). Press play to try again.",
 		"contentNotice": "Cover art and previews in this channel come from Apple. Apple sees your IP address when they load.",
-		"contentAccept": "Turn on"
+		"contentAccept": "Turn on",
+		"previewFailed": "This preview cannot be played."
 	},
 	"attribution": {
 		"youtube": "Developed with YouTube"

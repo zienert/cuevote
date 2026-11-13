@@ -306,7 +306,8 @@ export default {
 		"problemOtherDevice": "Contul tău Apple redă muzică pe alt dispozitiv.",
 		"problemGeneric": "Apple Music a oprit redarea ({code}). Apasă pe redare pentru a încerca din nou.",
 		"contentNotice": "Copertele și previzualizările din acest canal vin de la Apple. La încărcarea lor, Apple vede adresa ta IP.",
-		"contentAccept": "Activează"
+		"contentAccept": "Activează",
+		"previewFailed": "Această previzualizare nu poate fi redată."
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

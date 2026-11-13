@@ -306,7 +306,8 @@ export default {
 		"problemOtherDevice": "Il tuo account Apple sta riproducendo su un altro dispositivo.",
 		"problemGeneric": "Apple Music ha interrotto la riproduzione ({code}). Premi play per riprovare.",
 		"contentNotice": "Le copertine e le anteprime di questo canale arrivano da Apple. Durante il caricamento Apple vede il tuo indirizzo IP.",
-		"contentAccept": "Attiva"
+		"contentAccept": "Attiva",
+		"previewFailed": "Impossibile riprodurre questa anteprima."
 	},
 	"attribution": {
 		"youtube": "Sviluppato con YouTube"

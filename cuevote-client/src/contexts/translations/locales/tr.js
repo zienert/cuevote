@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Apple hesabınızla başka bir cihazda müzik çalınıyor.",
 		"problemGeneric": "Apple Music oynatmayı durdurdu ({code}). Tekrar denemek için oynat düğmesine basın.",
 		"contentNotice": "Bu kanaldaki kapak görselleri ve önizlemeler Apple'dan gelir. Yüklenirken Apple IP adresinizi görür.",
-		"contentAccept": "Aç"
+		"contentAccept": "Aç",
+		"previewFailed": "Bu önizleme oynatılamıyor."
 	},
 	"attribution": {
 		"youtube": "YouTube ile geliştirildi"

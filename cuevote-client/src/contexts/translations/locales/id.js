@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "Akun Apple Anda sedang memutar di perangkat lain.",
 		"problemGeneric": "Apple Music menghentikan pemutaran ({code}). Tekan putar untuk mencoba lagi.",
 		"contentNotice": "Sampul album dan pratinjau di saluran ini berasal dari Apple. Saat dimuat, Apple dapat melihat alamat IP Anda.",
-		"contentAccept": "Aktifkan"
+		"contentAccept": "Aktifkan",
+		"previewFailed": "Pratinjau ini tidak dapat diputar."
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

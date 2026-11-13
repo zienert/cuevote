@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Az Apple-fiókod éppen egy másik eszközön játszik zenét.",
 		"problemGeneric": "Az Apple Music leállította a lejátszást ({code}). Az újrapróbálkozáshoz nyomd meg a lejátszás gombot.",
 		"contentNotice": "A csatorna borítói és előnézetei az Apple-től származnak. Betöltésükkor az Apple látja az IP-címedet.",
-		"contentAccept": "Bekapcsolás"
+		"contentAccept": "Bekapcsolás",
+		"previewFailed": "Ez az előnézet nem játszható le."
 	},
 	"attribution": {
 		"youtube": "YouTube-val fejlesztve"

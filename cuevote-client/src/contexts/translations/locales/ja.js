@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "お使いのAppleアカウントが別のデバイスで再生中です。",
 		"problemGeneric": "Apple Musicの再生が停止しました（{code}）。再生ボタンを押してもう一度お試しください。",
 		"contentNotice": "このチャンネルのカバーアートと試聴はAppleから読み込まれます。その際、Appleにお客様のIPアドレスが伝わります。",
-		"contentAccept": "オンにする"
+		"contentAccept": "オンにする",
+		"previewFailed": "この試聴は再生できません。"
 	},
 	"attribution": {
 		"youtube": "YouTube と共に開発"

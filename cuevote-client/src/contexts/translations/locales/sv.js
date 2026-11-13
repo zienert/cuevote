@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Ditt Apple-konto spelar upp på en annan enhet.",
 		"problemGeneric": "Apple Music stoppade uppspelningen ({code}). Tryck på spela upp för att försöka igen.",
 		"contentNotice": "Omslag och förhandsgranskningar i den här kanalen kommer från Apple. När de laddas ser Apple din IP-adress.",
-		"contentAccept": "Slå på"
+		"contentAccept": "Slå på",
+		"previewFailed": "Den här förhandsgranskningen kan inte spelas upp."
 	},
 	"attribution": {
 		"youtube": "Utvecklad med YouTube"

@@ -306,7 +306,8 @@ export default {
 		"problemOtherDevice": "Sua conta Apple está tocando em outro dispositivo.",
 		"problemGeneric": "O Apple Music parou a reprodução ({code}). Toque em reproduzir para tentar novamente.",
 		"contentNotice": "As capas e as prévias deste canal vêm da Apple. Ao carregá-las, a Apple vê o seu endereço IP.",
-		"contentAccept": "Ativar"
+		"contentAccept": "Ativar",
+		"previewFailed": "Não é possível reproduzir esta prévia."
 	},
 	"attribution": {
 		"youtube": "Desenvolvido com YouTube"

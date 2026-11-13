@@ -304,7 +304,8 @@ export default {
 		"problemOtherDevice": "Din Apple-konto afspiller på en anden enhed.",
 		"problemGeneric": "Apple Music stoppede afspilningen ({code}). Tryk på afspil for at prøve igen.",
 		"contentNotice": "Covers og forhåndsvisninger i denne kanal kommer fra Apple. Når de indlæses, ser Apple din IP-adresse.",
-		"contentAccept": "Slå til"
+		"contentAccept": "Slå til",
+		"previewFailed": "Denne forhåndsvisning kan ikke afspilles."
 	},
 	"attribution": {
 		"youtube": "Udviklet med YouTube"

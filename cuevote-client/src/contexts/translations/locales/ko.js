@@ -302,7 +302,8 @@ export default {
 		"problemOtherDevice": "다른 기기에서 내 Apple 계정으로 재생 중입니다.",
 		"problemGeneric": "Apple Music 재생이 중지되었습니다({code}). 재생 버튼을 눌러 다시 시도하세요.",
 		"contentNotice": "이 채널의 커버 아트와 미리듣기는 Apple에서 제공됩니다. 로드할 때 Apple이 귀하의 IP 주소를 확인할 수 있습니다.",
-		"contentAccept": "켜기"
+		"contentAccept": "켜기",
+		"previewFailed": "이 미리듣기를 재생할 수 없습니다."
 	},
 	"attribution": {
 		"youtube": "YouTube로 개발됨"
