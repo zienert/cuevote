@@ -521,8 +521,16 @@ function RoomBody() {
       stuckReportedRef.current = false;
     }
 
+    // One notice per message: the next track becoming current re-runs this
+    // effect, and the notice must not repeat with that track's title.
+    if (handledVideoStatusRef.current === lastMessage) return;
+    handledVideoStatusRef.current = lastMessage;
+
     if (isOwner) {
-      const title = currentTrack?.title || 'Track';
+      // The server names the skipped track; the current one may be the next.
+      const title = lastMessage.payload?.title
+        || (currentTrack?.videoId === videoId ? currentTrack.title : null)
+        || 'Track';
       if (status === 'ip_blocked' || status === 'check_failed' || status === 'no_api_key') {
         // NETWORK_THROTTLE banner follows immediately — no toast needed to avoid duplicate messaging
       } else {
@@ -576,6 +584,7 @@ function RoomBody() {
   // at most once per "stuck episode"; the next PLAYING resets it.
   const lastSuccessfulPlayRef = useRef(Date.now());
   const stuckReportedRef = useRef(false);
+  const handledVideoStatusRef = useRef(null);
   const [ipBlockDetected, setIpBlockDetected] = useState(false);
   const [roomNotFound, setRoomNotFound] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true); // Track footer visibility

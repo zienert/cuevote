@@ -1046,5 +1046,26 @@ describe('Room', () => {
       assert.equal(room.state.currentTrack.videoId, 'am:video:2', 'malformed payloads are ignored');
       room.destroy();
     });
+
+    it('keeps an item the storefront does not offer out of history and the Auto-DJ', async () => {
+      useCatalog({ items: [video(2, 'Second')] });
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const unplayable = { ...song(693246512, 'Not in NL'), id: 'q1', score: 0, voters: {} };
+      // An earlier failure had already put it into the history the Auto-DJ draws from.
+      room.state.history = [{ ...unplayable, playedAt: Date.now() - 60000 }, { ...video(2, 'Second'), playedAt: Date.now() - 50000 }];
+      room.state.autoRefill = true;
+      room.state.currentTrack = { ...unplayable, startedAt: Date.now() };
+      room.state.queue = [room.state.currentTrack];
+      room.state.isPlaying = true;
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:song:693246512', errorCode: 'NOT_FOUND' } });
+      await new Promise(resolve => setImmediate(resolve));
+
+      assert.equal(room.state.history.some(t => t.videoId === 'am:song:693246512'), false, 'not in history');
+      assert.equal(room.state.queue.some(t => t.videoId === 'am:song:693246512'), false, 'not queued again');
+      room.destroy();
+    });
   });
 });
