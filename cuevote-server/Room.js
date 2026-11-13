@@ -1516,12 +1516,14 @@ class Room {
         }
     }
 
-    handleNextTrack() {
+    // saveToHistory: false for a track that never played (an Apple item the
+    // host's storefront does not offer): history feeds the library and Auto-DJ.
+    handleNextTrack({ saveToHistory = true } = {}) {
         const newQueue = [...this.state.queue];
 
         // Move current track to history
         let newHistory = [...this.state.history];
-        if (this.state.currentTrack) {
+        if (this.state.currentTrack && saveToHistory) {
             const trackToSave = { ...this.state.currentTrack, playedAt: Date.now() };
             newHistory.push(trackToSave);
 
@@ -1569,7 +1571,11 @@ class Room {
         if (APPLE_ITEM_ERRORS.has(code)) {
             logger.info(`[PlaybackError] Apple item ${videoId} cannot be played (${code}). Skipping.`);
             this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable' } });
-            this.handleNextTrack();
+            // It never played here: keep it out of history and the library, or
+            // the Auto-DJ queues it straight back (13.11.2026).
+            const history = this.state.history.filter(t => t.videoId !== videoId);
+            if (history.length !== this.state.history.length) this.updateState({ history });
+            this.handleNextTrack({ saveToHistory: false });
             return;
         }
         logger.warn(`[PlaybackError] Apple playback stopped on the host's side (${code}). Pausing.`);
