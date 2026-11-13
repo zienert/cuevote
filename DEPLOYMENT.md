@@ -259,9 +259,11 @@ server {
     # Apple Music channels (section 5, "Apple Music") add: MusicKit from
     # js-cdn.music.apple.com, the catalog API, cover art from *.mzstatic.com,
     # streams, licences and play reports from *.itunes.apple.com, and blob:
-    # for the video element MusicKit feeds. Checked against music videos and
-    # songs in Chrome on macOS (Nov. 2026).
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.youtube.com https://www.gstatic.com https://js-cdn.music.apple.com; frame-src https://www.youtube.com https://accounts.google.com; img-src 'self' data: https://*.ytimg.com https://*.googleusercontent.com https://*.mzstatic.com; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'self' wss: https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://api.music.apple.com https://*.itunes.apple.com https://*.mzstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
+    # for the video element MusicKit feeds. Guests' previews play straight
+    # from audio-ssl and video-ssl.itunes.apple.com, hence that host in
+    # media-src. Checked against music videos and songs in Chrome on macOS
+    # (Nov. 2026).
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.youtube.com https://www.gstatic.com https://js-cdn.music.apple.com; frame-src https://www.youtube.com https://accounts.google.com; img-src 'self' data: https://*.ytimg.com https://*.googleusercontent.com https://*.mzstatic.com; media-src 'self' blob: https://*.itunes.apple.com; worker-src 'self' blob:; connect-src 'self' wss: https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://api.music.apple.com https://*.itunes.apple.com https://*.mzstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
     # Permissions-Policy: deny everything CueVote does not use. QR
     # scanning runs in the native Android/iOS shells, not the web client.
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()" always;
