@@ -246,6 +246,13 @@ describe('Apple Music catalog', () => {
       assert.equal(bestMatch('levitating dua lipa official music video 4k', { videos: levitating }).videoId, 'am:video:Levitating (feat. DaBaby)');
     });
 
+    it('takes a song by the artist named over a song the artist is only featured on', () => {
+      const pick = bestMatch('Ed Sheeran', {
+        songs: [s('Yours Eternally (feat. Ed Sheeran & Taras Topolia)', 'U2'), s('Shape of You', 'Ed Sheeran')],
+      });
+      assert.equal(pick.artist, 'Ed Sheeran');
+    });
+
     it('forgives typos and half-typed words', () => {
       const queen = { videos: [v('Bohemian Rhapsody (Remastered)', 'Queen')], songs: [s('Bohemian Rhapsody', 'Queen')] };
       assert.equal(bestMatch('Bohemain Rapsody', queen).videoId, 'am:video:Bohemian Rhapsody (Remastered)');

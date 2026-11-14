@@ -227,6 +227,9 @@ function analyze(track, query) {
     const rest = [...query].filter(word => !artist.includes(word) && !STOP_WORDS.has(word));
     const judged = groups.map(group => judgeGroup(group, query));
     const baseSet = new Set(base);
+    // The title without its credits: "Yours Eternally (feat. Ed Sheeran)" by
+    // U2 is not a title hit for "Ed Sheeran" (Nov. 2026).
+    const ownTitle = new Set([...base, ...groups.filter(group => group.length > 0 && !CREDIT.has(group[0])).flat()]);
     return {
         track,
         artist,
@@ -234,7 +237,7 @@ function analyze(track, query) {
         song: `${artist.join(' ')}|${base.join(' ')}`,
         // The title is in the query, or the query (without the artist) is in the title.
         titleHit: (base.length > 0 && base.every(word => query.has(word)))
-            || (rest.length > 0 && rest.every(word => titleSet.has(word))),
+            || (rest.length > 0 && rest.every(word => ownTitle.has(word))),
         // Words the title explains do not name the artist: "Cordula Grün" by
         // an act called Cordula Grün is no hint for that act.
         artistHit: artist.some(word => query.has(word) && !baseSet.has(word)),
