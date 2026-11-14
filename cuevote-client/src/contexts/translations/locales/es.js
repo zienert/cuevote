@@ -190,7 +190,7 @@ export default {
 		"noInternet": "Sin conexión a internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Volver a la radio",
 		"retry": "Reintentar conexión",
 		"retrying": "Reintentando...",
 		"connecting": "Conectando al servidor...",

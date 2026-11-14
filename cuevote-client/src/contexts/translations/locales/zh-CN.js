@@ -173,7 +173,7 @@ export default {
 		"noInternet": "无网络连接",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "返回电台",
 		"retry": "重试连接",
 		"retrying": "重试中...",
 		"connecting": "连接服务器中...",

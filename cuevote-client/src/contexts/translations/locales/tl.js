@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Walang Koneksyon sa Internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Bumalik sa Radyo",
 		"retry": "Subukan Muli ang Koneksyon",
 		"switching": "Nagpapalit ng Channel...",
 		"channelNotFound": "Wala ang channel",

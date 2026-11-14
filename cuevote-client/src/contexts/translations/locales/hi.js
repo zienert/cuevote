@@ -173,7 +173,7 @@ export default {
 		"noInternet": "कोई इंटरनेट कनेक्शन नहीं",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "रेडियो पर वापस जाएँ",
 		"retry": "कनेक्शन पुनः प्रयास करें",
 		"retrying": "पुनः प्रयास कर रहा है...",
 		"connecting": "सर्वर से कनेक्ट हो रहा है...",

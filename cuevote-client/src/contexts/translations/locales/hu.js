@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Nincs internetkapcsolat",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Vissza a rádióhoz",
 		"retry": "Kapcsolat újrapróbálása",
 		"switching": "Csatorna Váltása...",
 		"channelNotFound": "A csatorna nem létezik",

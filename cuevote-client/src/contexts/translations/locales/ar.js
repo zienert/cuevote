@@ -173,7 +173,7 @@ export default {
 		"noInternet": "لا يوجد اتصال بالإنترنت",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "العودة إلى الراديو",
 		"retry": "أعد محاولة الاتصال",
 		"switching": "جارٍ تبديل القناة...",
 		"channelNotFound": "القناة غير موجودة",

@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Fără conexiune la internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Înapoi la radio",
 		"retry": "Reîncearcă conexiunea",
 		"switching": "Schimbare Canal...",
 		"channelNotFound": "Canalul nu există",

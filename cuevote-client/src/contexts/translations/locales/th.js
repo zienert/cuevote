@@ -173,7 +173,7 @@ export default {
 		"noInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "กลับไปที่วิทยุ",
 		"retry": "ลองเชื่อมต่ออีกครั้ง",
 		"switching": "กำลังเปลี่ยนช่อง...",
 		"channelNotFound": "ไม่มีช่องนี้",

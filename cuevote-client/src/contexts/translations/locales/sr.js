@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Nema internet veze",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Nazad na radio",
 		"retry": "Pokušaj ponovo povezivanje",
 		"switching": "Promena Kanala...",
 		"channelNotFound": "Kanal ne postoji",

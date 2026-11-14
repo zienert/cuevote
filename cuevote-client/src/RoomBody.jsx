@@ -2008,7 +2008,7 @@ function RoomBody() {
                   ) : (
                     <Skeleton className="h-4 w-32 max-w-full bg-green-700/60" />
                   )}
-                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold animate-pulse flex-shrink-0">PREVIEW</span>
+                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold uppercase animate-pulse flex-shrink-0">{t('track.preview')}</span>
                 </div>
                 {previewTrack.artist ? (
                   <p className="text-green-200 text-xs sm:text-sm truncate">{previewTrack.artist}</p>

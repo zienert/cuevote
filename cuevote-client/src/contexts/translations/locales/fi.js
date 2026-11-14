@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Ei internetyhteyttä",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Takaisin radioon",
 		"retry": "Yritä yhteyttä uudelleen",
 		"switching": "Vaihdetaan kanavaa...",
 		"channelNotFound": "Kanavaa ei ole",

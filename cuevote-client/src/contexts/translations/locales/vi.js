@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Không có kết nối internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Quay lại radio",
 		"retry": "Thử lại kết nối",
 		"switching": "Đang chuyển kênh...",
 		"channelNotFound": "Kênh không tồn tại",

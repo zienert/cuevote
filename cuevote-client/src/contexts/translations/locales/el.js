@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Χωρίς σύνδεση στο διαδίκτυο",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Πίσω στο ραδιόφωνο",
 		"retry": "Επαναпроσπάθεια σύνδεσης",
 		"switching": "Αλλαγή Καναλιού...",
 		"channelNotFound": "Το κανάλι δεν υπάρχει",

@@ -173,7 +173,7 @@ export default {
 		"noInternet": "インターネット接続がありません",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "ラジオに戻る",
 		"retry": "接続を再試行",
 		"retrying": "再試行中...",
 		"connecting": "サーバーに接続中...",

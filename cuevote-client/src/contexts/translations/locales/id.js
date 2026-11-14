@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Tidak ada koneksi internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Kembali ke Radio",
 		"retry": "Coba lagi koneksi",
 		"switching": "Ganti Kanal...",
 		"channelNotFound": "Kanal tidak ada",

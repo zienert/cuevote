@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Ingen internettforbindelse",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Tilbake til radioen",
 		"retry": "Prøv tilkobling på nytt",
 		"switching": "Bytter kanal...",
 		"channelNotFound": "Kanalen finnes ikke",

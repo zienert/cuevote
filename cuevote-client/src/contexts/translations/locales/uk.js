@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Немає підключення до інтернету",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Назад до радіо",
 		"retry": "Повторити спробу підключення",
 		"switching": "Перемикання каналу...",
 		"channelNotFound": "Канал не існує",

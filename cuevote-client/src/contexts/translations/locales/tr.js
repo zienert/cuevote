@@ -173,7 +173,7 @@ export default {
 		"noInternet": "İnternet bağlantısı yok",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Radyoya dön",
 		"retry": "Bağlantıyı tekrar dene",
 		"switching": "Kanal Değiştiriliyor...",
 		"channelNotFound": "Kanal mevcut değil",

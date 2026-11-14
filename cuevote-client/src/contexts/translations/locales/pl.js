@@ -173,7 +173,7 @@ export default {
 		"noInternet": "Brak połączenia z internetem",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Wróć do radia",
 		"retry": "Ponów połączenie",
 		"switching": "Przełączanie kanału...",
 		"channelNotFound": "Kanał nie istnieje",
