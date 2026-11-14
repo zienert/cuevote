@@ -221,7 +221,6 @@ function isNotMusic(titleWords, query) {
 
 function analyze(track, query) {
     const titleWords = words(track.title);
-    const titleSet = new Set(titleWords);
     const { base, groups } = splitTitle(track.title);
     const artist = artistWords(track.artist);
     const rest = [...query].filter(word => !artist.includes(word) && !STOP_WORDS.has(word));
