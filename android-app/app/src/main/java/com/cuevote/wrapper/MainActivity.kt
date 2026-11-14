@@ -30,6 +30,7 @@ import android.os.Message
 import android.app.Dialog
 import android.view.KeyEvent
 import android.view.ViewGroup
+import android.webkit.PermissionRequest
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -253,6 +254,19 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
                 transport.webView = popup
                 message.sendToTarget()
                 return true
+            }
+
+            // Apple Music's full songs are DRM-protected (Widevine); without this
+            // grant MusicKit gets no license and nothing but previews would play.
+            // Granted to CueVote's own pages only, and nothing else is.
+            override fun onPermissionRequest(request: PermissionRequest?) {
+                if (request == null) return
+                val wanted = PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID
+                if (isCueVoteUrl(request.origin) && request.resources.contains(wanted)) {
+                    request.grant(arrayOf(wanted))
+                } else {
+                    request.deny()
+                }
             }
         }
 
