@@ -886,6 +886,15 @@ export function Lobby() {
                                         )}
                                     </div>
 
+                                    {/* The source in words, set like the rest of the card: Apple
+                                        allows its badges and icon only as links to Apple Music,
+                                        and the name stays "Apple Music" in every language. */}
+                                    {channel.provider === 'apple' && (
+                                        <span className={`absolute top-3 left-4 sm:top-5 sm:left-6 z-10 text-xs font-semibold transition-colors ${actualIndex === focusedIndex ? 'text-white' : 'text-neutral-400'}`}>
+                                            Apple Music
+                                        </span>
+                                    )}
+
                                     <div className="absolute inset-0 p-4 sm:p-6 flex flex-col justify-end z-10 w-full pointer-events-none">
                                         <div className="flex items-center justify-between pointer-events-auto">
                                             <div className="flex-1 min-w-0 pr-2">
@@ -931,16 +940,15 @@ export function Lobby() {
                                             </div>
                                             <Radio className={`transition-colors flex-shrink-0 ${actualIndex === focusedIndex ? "text-white" : "text-neutral-500"}`} />
                                         </div>
-                                        <p className="text-neutral-400 text-sm line-clamp-2 mt-2 pointer-events-auto">{channel.description}</p>
+                                        {/* One line, and none on a phone, where the card has no room
+                                            for it: the name and the source label keep theirs. */}
+                                        <p className="max-sm:hidden text-neutral-400 text-sm line-clamp-1 mt-2 pointer-events-auto">{channel.description}</p>
 
-                                        <div className="flex items-center gap-2 pt-4 text-xs font-medium text-neutral-500 uppercase tracking-wider justify-between pointer-events-auto">
+                                        <div className="flex items-center gap-2 pt-3 sm:pt-4 text-xs font-medium text-neutral-500 uppercase tracking-wider justify-between pointer-events-auto">
                                             <div className="flex items-center gap-2">
                                                 <Users size={14} /> <span>{channel.listeners || 0} {t('lobby.live')}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {channel.provider === 'apple' && (
-                                                    <span className="normal-case tracking-normal rounded-full border border-neutral-700 px-2 py-0.5 text-neutral-300">Apple Music</span>
-                                                )}
                                                 <span className="text-base normal-case" title={localizedCountries.find(l => l.code === channel.language_flag)?.label || 'International'}>{getFlagEmoji(channel.language_flag)}</span>
                                                 {channel.is_protected && <Lock size={14} className="text-orange-500" />}
                                             </div>
