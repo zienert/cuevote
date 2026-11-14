@@ -88,7 +88,9 @@ export default {
 		"description": "Müzik çalmak için YouTube Oynatıcısını yüklememiz gerekiyor. Bu, Google sunucularına bağlanır.",
 		"policy": "Gizlilik Politikamızı okuyun",
 		"accept": "Kabul Et & Müzik Çal",
-		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin."
+		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin.",
+		"signInDescription": "Google ile giriş yapmak için Google girişini yüklüyoruz; bu, Google sunucularına bağlanır. Aynı onay, YouTube kanallarında YouTube oynatıcısını da yükler.",
+		"signInAccept": "Kabul et"
 	},
 	"join": {
 		"welcome": "{brand}'a hoş geldiniz",

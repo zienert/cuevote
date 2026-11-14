@@ -88,7 +88,9 @@ export default {
 		"description": "To play music, we need to load the YouTube Player. This connects to Google's servers.",
 		"policy": "Read our Privacy Policy",
 		"accept": "Accept & Play Music",
-		"youtubeConsent": "We need your consent to load the YouTube Player. Please accept cookies below."
+		"youtubeConsent": "We need your consent to load the YouTube Player. Please accept cookies below.",
+		"signInDescription": "To sign in with Google, we load Google's sign-in. This connects to Google's servers. The same consent also loads the YouTube player in YouTube channels.",
+		"signInAccept": "Accept"
 	},
 	"join": {
 		"welcome": "Welcome to {brand}",

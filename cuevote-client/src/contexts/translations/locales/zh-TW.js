@@ -88,7 +88,9 @@ export default {
 		"description": "為了播放音樂，我們需要加載 YouTube 播放器。這將連接到 Google 服務器。",
 		"policy": "閱讀我們的隱私政策",
 		"accept": "接受並播放音樂",
-		"youtubeConsent": "我們需要您的同意才能加載 YouTube 播放器。請在下方接受 Cookie。"
+		"youtubeConsent": "我們需要您的同意才能加載 YouTube 播放器。請在下方接受 Cookie。",
+		"signInDescription": "為了使用 Google 登入，我們會載入 Google 登入，這會連線到 Google 的伺服器。同一項同意也會在 YouTube 頻道中載入 YouTube 播放器。",
+		"signInAccept": "接受"
 	},
 	"join": {
 		"welcome": "歡迎來到 {brand}",

@@ -88,7 +88,9 @@ export default {
 		"description": "Para reproducir vídeo, necesitamos cargar el reproductor de YouTube. Esto conecta con los servidores de Google.",
 		"policy": "Leer política de privacidad",
 		"accept": "Aceptar y Escuchar Vídeo",
-		"youtubeConsent": "Necesitamos tu consentimiento para cargar el reproductor de YouTube. Por favor acepta las cookies abajo."
+		"youtubeConsent": "Necesitamos tu consentimiento para cargar el reproductor de YouTube. Por favor acepta las cookies abajo.",
+		"signInDescription": "Para iniciar sesión con Google, cargamos el inicio de sesión de Google, que se conecta a los servidores de Google. El mismo consentimiento también carga el reproductor de YouTube en los canales de YouTube.",
+		"signInAccept": "Aceptar"
 	},
 	"join": {
 		"welcome": "Bienvenido a {brand}",

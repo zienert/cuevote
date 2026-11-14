@@ -88,7 +88,9 @@ export default {
 		"description": "Pentru a reda muzică, trebuie să încărcăm playerul YouTube. Acesta se conectează la serverele Google.",
 		"policy": "Citiți Politica noastră de Confidențialitate",
 		"accept": "Acceptă și Redă Muzica",
-		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos."
+		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos.",
+		"signInDescription": "Pentru conectarea cu Google încărcăm autentificarea Google, care se conectează la serverele Google. Același consimțământ încarcă și playerul YouTube în canalele YouTube.",
+		"signInAccept": "Accept"
 	},
 	"join": {
 		"welcome": "Bine ai venit pe {brand}",

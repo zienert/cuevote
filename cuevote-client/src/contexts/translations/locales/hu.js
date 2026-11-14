@@ -88,7 +88,9 @@ export default {
 		"description": "A zene lejátszásához be kell töltenünk a YouTube lejátszót. Ez csatlakozik a Google szervereihez.",
 		"policy": "Olvassa el Adatvédelmi irányelveinket",
 		"accept": "Elfogadás és Zenelejátszás",
-		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább."
+		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább.",
+		"signInDescription": "A Google-bejelentkezéshez betöltjük a Google bejelentkezését, amely a Google szervereihez kapcsolódik. Ugyanez a hozzájárulás a YouTube-csatornákon a YouTube-lejátszót is betölti.",
+		"signInAccept": "Elfogadom"
 	},
 	"join": {
 		"welcome": "Üdvözöl a {brand}",

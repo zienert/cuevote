@@ -88,7 +88,9 @@ export default {
 		"description": "Untuk memainkan muzik, kami perlu memuatkan Pemain YouTube. Ini bersambung ke pelayan Google.",
 		"policy": "Baca Dasar Privasi kami",
 		"accept": "Terima & Mainkan Muzik",
-		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah."
+		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah.",
+		"signInDescription": "Untuk log masuk dengan Google, kami memuatkan log masuk Google, yang bersambung ke pelayan Google. Persetujuan yang sama juga memuatkan pemain YouTube dalam saluran YouTube.",
+		"signInAccept": "Terima"
 	},
 	"join": {
 		"welcome": "Selamat datang ke {brand}",

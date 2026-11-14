@@ -88,7 +88,9 @@ export default {
 		"description": "כדי לנגן מוזיקה, עלינו לטעון את נגן YouTube. זה מתחבר לשרתים של Google.",
 		"policy": "קרא את מדיניות הפרטיות שלנו",
 		"accept": "אשר ונגן מוזיקה",
-		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה."
+		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה.",
+		"signInDescription": "כדי להתחבר עם Google אנחנו טוענים את ההתחברות של Google, שמתחברת לשרתים של Google. אותה הסכמה טוענת גם את נגן YouTube בערוצי YouTube.",
+		"signInAccept": "אישור"
 	},
 	"join": {
 		"welcome": "ברוכים הבאים ל-{brand}",

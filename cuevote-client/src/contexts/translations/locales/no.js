@@ -88,7 +88,9 @@ export default {
 		"description": "For å spille musikk må vi laste inn YouTube-spilleren. Dette kobler til Googles servere.",
 		"policy": "Les våre personvernregler",
 		"accept": "Godta & Spill musikk",
-		"youtubeConsent": "Vi trenger ditt samtykke for å laste inn YouTube-spilleren. Godta informasjonskapsler nedenfor."
+		"youtubeConsent": "Vi trenger ditt samtykke for å laste inn YouTube-spilleren. Godta informasjonskapsler nedenfor.",
+		"signInDescription": "For å logge inn med Google laster vi inn Googles pålogging, som kobler til Googles servere. Det samme samtykket laster også inn YouTube-spilleren i YouTube-kanaler.",
+		"signInAccept": "Godta"
 	},
 	"join": {
 		"welcome": "Velkommen til {brand}",

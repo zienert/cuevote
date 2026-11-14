@@ -88,7 +88,9 @@ export default {
 		"description": "Để phát nhạc, chúng tôi cần tải trình phát YouTube. Điều này kết nối với máy chủ của Google.",
 		"policy": "Đọc Chính sách bảo mật của chúng tôi",
 		"accept": "Chấp nhận & Phát nhạc",
-		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới."
+		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới.",
+		"signInDescription": "Để đăng nhập bằng Google, chúng tôi tải trang đăng nhập của Google, vốn kết nối với máy chủ của Google. Sự đồng ý này cũng tải trình phát YouTube trong các kênh YouTube.",
+		"signInAccept": "Chấp nhận"
 	},
 	"join": {
 		"welcome": "Chào mừng đến với {brand}",

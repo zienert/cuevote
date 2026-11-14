@@ -88,7 +88,9 @@ export default {
 		"description": "Aby odtwarzać muzykę, musimy załadować odtwarzacz YouTube. Łączy się to z serwerami Google.",
 		"policy": "Przeczytaj naszą Politykę Prywatności",
 		"accept": "Zaakceptuj i Odtwarzaj",
-		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej."
+		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej.",
+		"signInDescription": "Aby zalogować się przez Google, wczytujemy logowanie Google, które łączy się z serwerami Google. Ta sama zgoda wczytuje też odtwarzacz YouTube na kanałach YouTube.",
+		"signInAccept": "Akceptuję"
 	},
 	"join": {
 		"welcome": "Witamy w {brand}",

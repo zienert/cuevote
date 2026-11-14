@@ -88,7 +88,9 @@ export default {
 		"description": "음악을 재생하려면 YouTube 플레이어를 로드해야 합니다. 이는 Google 서버에 연결됩니다.",
 		"policy": "개인정보 처리방침 읽기",
 		"accept": "수락 및 음악 재생",
-		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오."
+		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오.",
+		"signInDescription": "Google로 로그인하려면 Google 로그인을 불러옵니다. 이때 Google 서버에 연결됩니다. 같은 동의로 YouTube 채널에서는 YouTube 플레이어도 불러옵니다.",
+		"signInAccept": "동의"
 	},
 	"join": {
 		"welcome": "{brand}에 오신 것을 환영합니다",

@@ -88,7 +88,9 @@ export default {
 		"description": "音楽を再生するには、YouTubeプレーヤーを読み込む必要があります。これはGoogleのサーバーに接続します。",
 		"policy": "プライバシーポリシーを読む",
 		"accept": "同意して音楽を再生",
-		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。"
+		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。",
+		"signInDescription": "Googleでログインするために、Googleのログイン機能を読み込みます。これによりGoogleのサーバーに接続します。同じ同意により、YouTubeチャンネルではYouTubeプレーヤーも読み込まれます。",
+		"signInAccept": "同意する"
 	},
 	"join": {
 		"welcome": "{brand}へようこそ",

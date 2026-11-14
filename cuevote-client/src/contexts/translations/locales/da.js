@@ -88,7 +88,9 @@ export default {
 		"description": "For at afspille musik skal vi indlæse YouTube-afspilleren. Dette opretter forbindelse til Googles servere.",
 		"policy": "Læs vores fortrolighedspolitik",
 		"accept": "Accepter & Spil musik",
-		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor."
+		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor.",
+		"signInDescription": "For at logge ind med Google indlæser vi Googles login, som forbinder til Googles servere. Det samme samtykke indlæser også YouTube-afspilleren i YouTube-kanaler.",
+		"signInAccept": "Accepter"
 	},
 	"join": {
 		"welcome": "Velkommen til {brand}",

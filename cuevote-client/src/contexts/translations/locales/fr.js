@@ -88,7 +88,9 @@ export default {
 		"description": "Pour lire la musique, nous devons charger le lecteur YouTube. Cela se connecte aux serveurs de Google.",
 		"policy": "Lire notre politique de confidentialité",
 		"accept": "Accepter & Lire la musique",
-		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous."
+		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous.",
+		"signInDescription": "Pour vous connecter avec Google, nous chargeons la connexion Google, qui se connecte aux serveurs de Google. Le même consentement charge aussi le lecteur YouTube dans les chaînes YouTube.",
+		"signInAccept": "Accepter"
 	},
 	"join": {
 		"welcome": "Bienvenue sur {brand}",

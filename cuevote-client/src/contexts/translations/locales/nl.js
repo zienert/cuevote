@@ -88,7 +88,9 @@ export default {
 		"description": "Om muziek af te spelen, moeten we de YouTube-speler laden. Dit maakt verbinding met Google-servers.",
 		"policy": "Lees ons privacybeleid",
 		"accept": "Accepteren & Muziek luisteren",
-		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies."
+		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies.",
+		"signInDescription": "Om in te loggen met Google laden we de inlogfunctie van Google. Dit maakt verbinding met de servers van Google. Met dezelfde toestemming laden we in YouTube-kanalen ook de YouTube-speler.",
+		"signInAccept": "Accepteren"
 	},
 	"join": {
 		"welcome": "Welkom bij {brand}",

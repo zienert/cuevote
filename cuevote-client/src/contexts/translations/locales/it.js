@@ -88,7 +88,9 @@ export default {
 		"description": "Per riprodurre musica, dobbiamo caricare il player di YouTube. Questo si connette ai server di Google.",
 		"policy": "Leggi la nostra Privacy Policy",
 		"accept": "Accetta e Riproduci Musica",
-		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto."
+		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto.",
+		"signInDescription": "Per accedere con Google carichiamo l'accesso di Google, che si collega ai server di Google. Lo stesso consenso carica anche il player di YouTube nei canali YouTube.",
+		"signInAccept": "Accetta"
 	},
 	"join": {
 		"welcome": "Benvenuto su {brand}",

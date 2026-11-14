@@ -88,7 +88,9 @@ export default {
 		"description": "Za reprodukciju muzike moramo učitati YouTube plejer. Ovo se povezuje sa Google-ovim serverima.",
 		"policy": "Pročitajte našu Politiku privatnosti",
 		"accept": "Prihvati i pusti muziku",
-		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod."
+		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod.",
+		"signInDescription": "Za prijavu preko Google-a učitavamo Google prijavu, koja se povezuje sa Google serverima. Ista saglasnost u YouTube kanalima učitava i YouTube plejer.",
+		"signInAccept": "Prihvati"
 	},
 	"join": {
 		"welcome": "Dobro došli na {brand}",

@@ -88,7 +88,9 @@ export default {
 		"description": "Um Musik abzuspielen, müssen wir den YouTube-Player laden. Dies stellt eine Verbindung zu Google-Servern her.",
 		"policy": "Datenschutzerklärung lesen",
 		"accept": "Akzeptieren & Musik abspielen",
-		"youtubeConsent": "Wir benötigen Ihre Zustimmung, um den YouTube-Player zu laden. Bitte akzeptieren Sie unten Cookies."
+		"youtubeConsent": "Wir benötigen Ihre Zustimmung, um den YouTube-Player zu laden. Bitte akzeptieren Sie unten Cookies.",
+		"signInDescription": "Für die Anmeldung mit Google laden wir die Google-Anmeldung. Dabei wird eine Verbindung zu Googles Servern hergestellt. Dieselbe Zustimmung lädt in YouTube-Kanälen auch den YouTube-Player.",
+		"signInAccept": "Akzeptieren"
 	},
 	"join": {
 		"welcome": "Willkommen bei {brand}",

@@ -88,7 +88,9 @@ export default {
 		"description": "Untuk memutar musik, kami perlu memuat Pemutar YouTube. Ini terhubung ke server Google.",
 		"policy": "Baca Kebijakan Privasi kami",
 		"accept": "Terima & Putar Musik",
-		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini."
+		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini.",
+		"signInDescription": "Untuk masuk dengan Google, kami memuat login Google, yang terhubung ke server Google. Persetujuan yang sama juga memuat pemutar YouTube di saluran YouTube.",
+		"signInAccept": "Terima"
 	},
 	"join": {
 		"welcome": "Selamat datang di {brand}",

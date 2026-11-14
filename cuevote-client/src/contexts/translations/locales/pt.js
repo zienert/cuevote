@@ -88,7 +88,9 @@ export default {
 		"description": "Para tocar vídeo, precisamos carregar o player do YouTube. Isso conecta aos servidores do Google.",
 		"policy": "Ler Política de Privacidade",
 		"accept": "Aceitar e Tocar Vídeo",
-		"youtubeConsent": "Precisamos do seu consentimento para carregar o player do YouTube. Aceite os cookies abaixo."
+		"youtubeConsent": "Precisamos do seu consentimento para carregar o player do YouTube. Aceite os cookies abaixo.",
+		"signInDescription": "Para entrar com o Google, carregamos o login do Google, que se conecta aos servidores do Google. O mesmo consentimento também carrega o player do YouTube nos canais do YouTube.",
+		"signInAccept": "Aceitar"
 	},
 	"join": {
 		"welcome": "Bem-vindo ao {brand}",

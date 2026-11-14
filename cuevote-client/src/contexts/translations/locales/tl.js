@@ -88,7 +88,9 @@ export default {
 		"description": "Upang magpatugtog ng musika, kailangan naming i-load ang YouTube Player. Kumokonekta ito sa mga server ng Google.",
 		"policy": "Basahin ang aming Patakaran sa Privacy",
 		"accept": "Tanggapin at Magpatugtog ng Musika",
-		"youtubeConsent": "Kailangan namin ang iyong pahintulot upang i-load ang YouTube Player. Mangyaring tanggapin ang cookies sa ibaba."
+		"youtubeConsent": "Kailangan namin ang iyong pahintulot upang i-load ang YouTube Player. Mangyaring tanggapin ang cookies sa ibaba.",
+		"signInDescription": "Para makapag-sign in gamit ang Google, nilo-load namin ang sign-in ng Google, na kumokonekta sa mga server ng Google. Ang parehong pahintulot ay naglo-load din ng YouTube player sa mga YouTube channel.",
+		"signInAccept": "Tanggapin"
 	},
 	"join": {
 		"welcome": "Maligayang pagdating sa {brand}",

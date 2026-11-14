@@ -88,7 +88,9 @@ export default {
 		"description": "Musiikin toistamiseksi meidän on ladattava YouTube-soitin. Tämä muodostaa yhteyden Googlen palvelimiin.",
 		"policy": "Lue tietosuojakäytäntömme",
 		"accept": "Hyväksy & Soita musiikkia",
-		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta."
+		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta.",
+		"signInDescription": "Google-kirjautumista varten lataamme Googlen kirjautumisen, joka muodostaa yhteyden Googlen palvelimiin. Sama suostumus lataa YouTube-kanavilla myös YouTube-soittimen.",
+		"signInAccept": "Hyväksy"
 	},
 	"join": {
 		"welcome": "Tervetuloa {brand}-palveluun",

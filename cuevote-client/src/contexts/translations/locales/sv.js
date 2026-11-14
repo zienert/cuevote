@@ -88,7 +88,9 @@ export default {
 		"description": "För att spela musik måste vi ladda YouTube-spelaren. Detta ansluter till Googles servrar.",
 		"policy": "Läs vår integritetspolicy",
 		"accept": "Acceptera & Spela musik",
-		"youtubeConsent": "Vi behöver ditt samtycke för att ladda YouTube-spelaren. Acceptera cookies nedan."
+		"youtubeConsent": "Vi behöver ditt samtycke för att ladda YouTube-spelaren. Acceptera cookies nedan.",
+		"signInDescription": "För att logga in med Google laddar vi Googles inloggning, som ansluter till Googles servrar. Samma samtycke laddar även YouTube-spelaren i YouTube-kanaler.",
+		"signInAccept": "Godkänn"
 	},
 	"join": {
 		"welcome": "Välkommen till {brand}",

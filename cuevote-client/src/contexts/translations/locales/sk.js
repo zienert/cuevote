@@ -88,7 +88,9 @@ export default {
 		"description": "Na prehrávanie hudby musíme načítať prehrávač YouTube. Toto sa pripája k serverom Google.",
 		"policy": "Prečítajte si naše Zásady ochrany osobných údajov",
 		"accept": "Prijať a prehrať hudbu",
-		"youtubeConsent": "Potrebujeme váš súhlas na načítanie prehrávača YouTube. Prijmite súbory cookie nižšie."
+		"youtubeConsent": "Potrebujeme váš súhlas na načítanie prehrávača YouTube. Prijmite súbory cookie nižšie.",
+		"signInDescription": "Na prihlásenie cez Google načítame prihlásenie Google, ktoré sa pripája k serverom Googlu. Rovnaký súhlas načítava v kanáloch YouTube aj prehrávač YouTube.",
+		"signInAccept": "Prijať"
 	},
 	"join": {
 		"welcome": "Vitajte v {brand}",
