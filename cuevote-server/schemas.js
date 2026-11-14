@@ -98,13 +98,21 @@ const FetchSuggestionsPayload = z.object({
   videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
 });
 
-const UpdateDurationPayload = z.number().finite().positive().max(86400);
+// A bare number is what older clients send; the object names the queue entry
+// the duration belongs to, so a late report cannot land on the next track.
+const DurationSeconds = z.number().finite().positive().max(86400);
+const UpdateDurationPayload = z.union([
+  DurationSeconds,
+  z.object({ duration: DurationSeconds, trackId: z.string().min(1).max(100) }),
+]);
 
 // The host's player reports why the current track failed: a YouTube IFrame
 // error number, or a MusicKit error code in Apple rooms.
 const PlaybackErrorPayload = z.object({
   videoId: z.string().min(1).max(50),
   errorCode: z.union([z.number().int(), z.string().max(60)]).optional(),
+  // The queue entry that failed: the same song can be queued twice in a row.
+  trackId: z.string().min(1).max(100).optional(),
 });
 
 const PlayPausePayload = z.boolean();

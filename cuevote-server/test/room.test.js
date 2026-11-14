@@ -1118,5 +1118,89 @@ describe('Room', () => {
       assert.equal(room.state.progress, 100);
       room.destroy();
     });
+
+    const playing = (room, tracks) => {
+      room.state.queue = tracks.map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() };
+      room.state.queue[0] = room.state.currentTrack;
+      room.state.isPlaying = true;
+    };
+
+    it('pauses at the third item error in a row instead of skipping the whole queue', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two'), video(3, 'Three'), video(4, 'Four')]);
+
+      for (const id of [1, 2]) {
+        await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: `am:video:${id}`, errorCode: 'CONTENT_UNSUPPORTED' } });
+      }
+      assert.equal(room.state.currentTrack.videoId, 'am:video:3');
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:3', errorCode: 'CONTENT_UNSUPPORTED' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:3', 'kept');
+      assert.equal(room.state.isPlaying, false, 'paused');
+      assert.deepEqual(lastOf(owner, 'APPLE_PLAYBACK_PROBLEM').payload, { code: 'CONTENT_UNSUPPORTED' });
+      room.destroy();
+    });
+
+    it('treats a geo block as a problem on the host side', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'GEO_BLOCK' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.isPlaying, false);
+      room.destroy();
+    });
+
+    it('ignores an error or a duration reported for an earlier entry of the same song', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'Again'), video(1, 'Again'), video(2, 'Next')]);
+      room.handleNextTrack();
+      assert.equal(room.state.currentTrack.id, 'q2');
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'NOT_FOUND', trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.id, 'q2', 'not skipped');
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: { duration: 30, trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.duration, 221, 'duration untouched');
+      room.destroy();
+    });
+
+    it('keeps the catalog length over the length the player reports', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'Known'), { ...video(2, 'Unknown'), duration: null }]);
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: { duration: 30, trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.duration, 221);
+
+      room.handleNextTrack();
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: 187 });
+      assert.equal(room.state.currentTrack.duration, 187, 'fills a missing length');
+      room.destroy();
+    });
+
+    it('removes an unplayable item from the stored history as well', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const unplayable = { ...song(693246512, 'Not in NL'), playedAt: Date.now() - 60000 };
+      db.addToRoomHistory(room.id, unplayable);
+      room.state.history = [unplayable];
+      playing(room, [song(693246512, 'Not in NL'), video(2, 'Two')]);
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:song:693246512', errorCode: 'NOT_FOUND' } });
+      assert.equal(db.getRoomHistory(room.id).some(t => t.videoId === 'am:song:693246512'), false);
+      room.destroy();
+    });
+
   });
 });

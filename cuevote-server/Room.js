@@ -15,15 +15,18 @@ const { bestMatch, isStorefront, parseAppleMusicLink } = require("./apple-catalo
 let appleCatalog = null;
 
 // MusicKit errors that concern only the item being played. Every other error
-// (sign-in, subscription, DRM, another device streaming, blocked autoplay) is a
-// problem on the host's side that the next track would hit as well.
+// (sign-in, subscription, DRM, another device streaming, blocked autoplay, a
+// geo block, which comes from where the host is) is a problem on the host's
+// side that the next track would hit as well.
 const APPLE_ITEM_ERRORS = new Set([
     'CONTENT_UNAVAILABLE',
     'CONTENT_RESTRICTED',
     'CONTENT_UNSUPPORTED',
     'NOT_FOUND',
-    'GEO_BLOCK',
 ]);
+// The third item error within a minute pauses instead of skipping.
+const APPLE_ITEM_ERROR_LIMIT = 3;
+const APPLE_ITEM_ERROR_WINDOW_MS = 60 * 1000;
 
 // A seek this soon after the current track changed was aimed at the previous
 // one, whose progress bar was still on screen. Clicking the end of the bar to
@@ -713,6 +716,8 @@ class Room {
             if (invalidVideoIds.size > 0) {
                 const cleanedHistory = this.state.history.filter(t => !invalidVideoIds.has(t.videoId));
                 this.updateState({ history: cleanedHistory });
+                // From the stored library too, or they come back when the room loads again.
+                this.forgetInHistoryDb(invalidVideoIds);
                 logger.info(`[AutoRefill] Removed ${invalidVideoIds.size} invalid videos from history.`);
             }
 
@@ -915,10 +920,16 @@ class Room {
                 const r = schemas.UpdateDurationPayload.safeParse(message.payload);
                 if (!r.success) break;
                 if (isOwner(this, ws) && this.state.currentTrack) {
+                    const { duration, trackId } = typeof r.data === 'number' ? { duration: r.data } : r.data;
+                    // A late report for an entry that is no longer current.
+                    if (trackId && trackId !== this.state.currentTrack.id) break;
                     this.consecutiveIPErrors = 0;
                     this.networkThrottleUntil = 0;
+                    // Apple's catalog gives the exact length. The player's report
+                    // only fills a gap: a stale one ended the next track early.
+                    if (this.metadata.provider === 'apple' && this.state.currentTrack.duration > 0) break;
                     this.updateState({
-                        currentTrack: { ...this.state.currentTrack, duration: r.data },
+                        currentTrack: { ...this.state.currentTrack, duration },
                     });
                 }
                 break;
@@ -1604,19 +1615,30 @@ class Room {
     // sign-in, subscription, DRM, another device streaming on the account. The
     // next track would fail the same way, so the room pauses and tells the host,
     // and skips only when this one item cannot be played.
-    handleApplePlaybackError({ videoId, errorCode }) {
-        if (!this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
+    handleApplePlaybackError({ videoId, errorCode, trackId }) {
+        const current = this.state.currentTrack;
+        if (!current || current.videoId !== videoId) return;
+        // A late error for an earlier entry of the same song.
+        if (trackId && current.id !== trackId) return;
         const code = typeof errorCode === 'string' && errorCode ? errorCode : 'UNKNOWN_ERROR';
-        if (APPLE_ITEM_ERRORS.has(code)) {
+        // Item errors one after another point at the host (a browser without
+        // video support, a VPN) rather than at the songs: stop before the
+        // whole queue is thrown away.
+        const now = Date.now();
+        this.appleItemErrors = (this.appleItemErrors || []).filter(at => now - at < APPLE_ITEM_ERROR_WINDOW_MS);
+        if (APPLE_ITEM_ERRORS.has(code) && this.appleItemErrors.length < APPLE_ITEM_ERROR_LIMIT - 1) {
+            this.appleItemErrors.push(now);
             logger.info(`[PlaybackError] Apple item ${videoId} cannot be played (${code}). Skipping.`);
-            this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable', title: this.state.currentTrack.title || null } });
+            this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable', title: current.title || null } });
             // It never played here: keep it out of history and the library, or
             // the Auto-DJ queues it straight back (13.11.2026).
             const history = this.state.history.filter(t => t.videoId !== videoId);
             if (history.length !== this.state.history.length) this.updateState({ history });
+            this.forgetInHistoryDb([videoId]);
             this.handleNextTrack({ saveToHistory: false });
             return;
         }
+        this.appleItemErrors = [];
         logger.warn(`[PlaybackError] Apple playback stopped on the host's side (${code}). Pausing.`);
         this.updateState({ isPlaying: false });
         for (const client of this.clients) {
@@ -1626,9 +1648,21 @@ class Room {
         }
     }
 
-    async handlePlaybackError(ws, { videoId, errorCode }) {
+    // Removes these items from the stored library as well, which the room
+    // reads back the next time it loads.
+    forgetInHistoryDb(videoIds) {
+        for (const videoId of videoIds) {
+            try {
+                db.removeFromRoomHistory(this.id, videoId);
+            } catch (err) {
+                logger.error(`[Room ${this.id}] Failed to remove ${videoId} from the stored history: ${err && err.message}`);
+            }
+        }
+    }
+
+    async handlePlaybackError(ws, { videoId, errorCode, trackId }) {
         if (this.metadata.provider === 'apple') {
-            this.handleApplePlaybackError({ videoId, errorCode });
+            this.handleApplePlaybackError({ videoId, errorCode, trackId });
             return;
         }
         if (!videoId || !this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
