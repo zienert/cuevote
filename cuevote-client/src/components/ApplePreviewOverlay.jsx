@@ -4,19 +4,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Language } from '../contexts/LanguageContext';
 import { parseTrackKey } from '../utils/trackKeys';
+import { musicKitPlaysVideos } from '../utils/musicKit';
 import { AppleContentNotice } from './AppleContentNotice';
 
 /**
  * The window a guest previews an Apple Music item in. It stays mounted while
  * closed: MusicKit renders music videos into the element with the id
  * "apple-music-video-container", which must stay the same between previews.
- * A song shows its artwork instead, which Apple allows next to playback.
+ * A song shows its artwork instead, which Apple allows next to playback, and
+ * so does a music video where MusicKit plays its song (Android).
  * Without the guest's Apple consent it asks for it first.
  */
 export function ApplePreviewOverlay({ track, preview, consent, onAccept, isCinemaMode }) {
 	const { t } = Language.useLanguage();
 	const open = !!track;
-	const isSong = parseTrackKey(track?.videoId)?.kind === 'song';
+	const isSong = parseTrackKey(track?.videoId)?.kind === 'song' || !musicKitPlaysVideos();
 	const paddingTop = isCinemaMode ? 'pt-4' : 'pt-20';
 	const paddingBottom = isCinemaMode ? 'pb-20' : 'pb-24';
 
