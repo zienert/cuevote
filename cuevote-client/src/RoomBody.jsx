@@ -53,6 +53,10 @@ const YouTubeState = {
 // triggers — it only fires when the player genuinely never reaches PLAYING.
 const STUCK_DEADLINE_MS = 15 * 1000;
 
+// A click on the progress bar this soon after the track changed was aimed at
+// the previous track. The server ignores such seeks as well (Room.js).
+const SEEK_AFTER_CHANGE_MS = 2000;
+
 function RoomBody() {
   const [CookieBlockedPlaceholderComponent, setCookieBlockedPlaceholder] = useState(null);
   const [pendingRequestsExports, setPendingRequestsExports] = useState(null);
@@ -1406,11 +1410,18 @@ function RoomBody() {
     setRoomNotFound(false);
   }, [activeRoomId]);
 
+  const trackShownAtRef = useRef(0);
+  const currentEntryId = currentTrack?.id;
+  useEffect(() => {
+    trackShownAtRef.current = Date.now();
+  }, [currentEntryId]);
+
   const handleDeleteSong = (trackId) => {
     sendMessage({ type: "DELETE_SONG", payload: { trackId } });
   };
 
   const handleSeek = (percentage) => {
+    if (Date.now() - trackShownAtRef.current < SEEK_AFTER_CHANGE_MS) return;
     if (isAppleRoom) {
       const duration = apple.getDuration() || currentTrack?.duration || 0;
       if (!isOwner || !duration) return;
