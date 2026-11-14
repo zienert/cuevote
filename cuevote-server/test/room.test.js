@@ -1067,5 +1067,34 @@ describe('Room', () => {
       assert.equal(room.state.queue.some(t => t.videoId === 'am:song:693246512'), false, 'not queued again');
       room.destroy();
     });
+
+    it('does not let a second click on the end of the bar skip the next track too', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const first = { ...video(1, 'First'), id: 'q1', score: 0, voters: {} };
+      const second = { ...video(2, 'Second'), id: 'q2', score: 0, voters: {} };
+      room.state.currentTrack = { ...first, startedAt: Date.now() - 60000 };
+      room.state.queue = [room.state.currentTrack, second];
+      room.state.isPlaying = true;
+
+      // The first click seeks to the end, and the next tick moves on.
+      await room.handleMessage(owner, { type: 'SEEK_TO', payload: 221 });
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+
+      // The second click, a moment later, was aimed at the first track.
+      await room.handleMessage(owner, { type: 'SEEK_TO', payload: 220.8 });
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2', 'the next track keeps playing');
+      assert.ok(room.state.progress < 5, 'from its start');
+
+      // A deliberate seek on the new track still works.
+      room.currentTrackSince = Date.now() - 3000;
+      await room.handleMessage(owner, { type: 'SEEK_TO', payload: 100 });
+      assert.equal(room.state.progress, 100);
+      room.destroy();
+    });
   });
 });

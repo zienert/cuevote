@@ -25,6 +25,11 @@ const APPLE_ITEM_ERRORS = new Set([
     'GEO_BLOCK',
 ]);
 
+// A seek this soon after the current track changed was aimed at the previous
+// one, whose progress bar was still on screen. Clicking the end of the bar to
+// skip, twice in a row, used to skip the next track as well (14.11.2026).
+const SEEK_AFTER_CHANGE_MS = 2000;
+
 // Helper to check ownership
 function isOwner(room, ws) {
     if (!ws.user) return false;
@@ -436,6 +441,10 @@ class Room {
     updateState(newState) {
         const trackChanged = 'currentTrack' in newState
             && newState.currentTrack !== this.state.currentTrack;
+        // Another queue entry, not the same one with a new duration.
+        if ('currentTrack' in newState && newState.currentTrack?.id !== this.state.currentTrack?.id) {
+            this.currentTrackSince = Date.now();
+        }
         this.state = { ...this.state, ...newState };
         if (trackChanged) this.persistLobbyPreview();
         this.broadcastDelta(newState);
@@ -888,6 +897,7 @@ class Room {
             case "SEEK_TO": {
                 const r = schemas.SeekToPayload.safeParse(message.payload);
                 if (!r.success) break;
+                if (Date.now() - (this.currentTrackSince || 0) < SEEK_AFTER_CHANGE_MS) break;
                 if (isOwner(this, ws) && this.state.currentTrack) {
                     const duration = this.state.currentTrack.duration || 0;
                     const clamped = duration > 0 ? Math.min(r.data, duration) : r.data;
