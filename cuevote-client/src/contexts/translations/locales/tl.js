@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Kailangan munang ikonekta ng host ang Apple Music.",
 		"appleMusicRoom": "Apple Music ang tumutugtog sa channel na ito. Mag-paste ng link mula sa music.apple.com o maghanap ayon sa pangalan.",
 		"appleMusicNotFound": "Hindi ito nahanap sa Apple Music.",
+		"appleMusicLinkUnsupported": "Mag-paste ng link sa iisang kanta o music video, o maghanap ayon sa pangalan.",
 		"appleMusicNotInStorefront": "Hindi available ang kantang ito sa Apple Music sa bansa ng host.",
 		"appleMusicCatalogError": "Hindi sumagot ang Apple Music. Pakisubukang muli."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Upang magpatugtog ng musika, kailangan naming i-load ang YouTube Player. Kumokonekta ito sa mga server ng Google.",
 		"policy": "Basahin ang aming Patakaran sa Privacy",
 		"accept": "Tanggapin at Magpatugtog ng Musika",
-		"youtubeConsent": "Kailangan namin ang iyong pahintulot upang i-load ang YouTube Player. Mangyaring tanggapin ang cookies sa ibaba."
+		"youtubeConsent": "Kailangan namin ang iyong pahintulot upang i-load ang YouTube Player. Mangyaring tanggapin ang cookies sa ibaba.",
+		"signInDescription": "Para makapag-sign in gamit ang Google, nilo-load namin ang sign-in ng Google, na kumokonekta sa mga server ng Google. Ang parehong pahintulot ay naglo-load din ng YouTube player sa mga YouTube channel.",
+		"signInAccept": "Tanggapin"
 	},
 	"join": {
 		"welcome": "Maligayang pagdating sa {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Walang Koneksyon sa Internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Bumalik sa Radyo",
 		"retry": "Subukan Muli ang Koneksyon",
 		"switching": "Nagpapalit ng Channel...",
 		"channelNotFound": "Wala ang channel",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Pinagmulan ng musika",
-		"sourceHint": "Sa device mo lang tumutugtog ang Apple Music at kailangan nito ng Apple Music subscription.",
+		"sourceHint": "Sa computer mo tumutugtog ang Apple Music at kailangan nito ng Apple Music subscription.",
 		"connect": "Ikonekta ang Apple Music",
 		"connectHint": "Mag-sign in gamit ang Apple account na may Apple Music subscription mo.",
 		"start": "Simulan ang pagpapatugtog",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Itinigil ng Apple Music ang pagpapatugtog ({code}). Pindutin ang play para subukang muli.",
 		"contentNotice": "Galing sa Apple ang mga cover art at preview sa channel na ito. Habang nilo-load ang mga ito, nakikita ng Apple ang iyong IP address.",
 		"contentAccept": "I-on",
-		"previewFailed": "Hindi ma-play ang preview na ito."
+		"previewFailed": "Hindi ma-play ang preview na ito.",
+		"standby": "Tumutugtog ang channel na ito sa isa pang device mo.",
+		"playHere": "I-play dito",
+		"waitingForHost": "Naka-pause hanggang tumugtog muli ang host.",
+		"playsOnComputer": "Sa computer tumutugtog ang Apple Music. Buksan doon ang channel na ito at ikonekta ang Apple Music."
 	},
 	"attribution": {
 		"youtube": "Binuo gamit ang YouTube"

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Домакинът първо трябва да свърже Apple Music.",
 		"appleMusicRoom": "В този канал свири Apple Music. Поставете връзка от music.apple.com или търсете по име.",
 		"appleMusicNotFound": "Не е намерено в Apple Music.",
+		"appleMusicLinkUnsupported": "Поставете връзка към една песен или музикален клип или търсете по име.",
 		"appleMusicNotInStorefront": "Тази песен не е достъпна в Apple Music в страната на домакина.",
 		"appleMusicCatalogError": "Apple Music не отговаря. Опитайте отново."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "За да пуснем музика, трябва да заредим YouTube плейъра. Това се свързва със сървърите на Google.",
 		"policy": "Прочетете нашата Политика за поверителност",
 		"accept": "Приеми и пусни музика",
-		"youtubeConsent": "Нуждаем се от вашето съгласие, за да заредим YouTube плейъра. Моля, приемете бисквитките по-долу."
+		"youtubeConsent": "Нуждаем се от вашето съгласие, за да заредим YouTube плейъра. Моля, приемете бисквитките по-долу.",
+		"signInDescription": "За вход с Google зареждаме входа на Google, който се свързва със сървърите на Google. Същото съгласие зарежда и плейъра на YouTube в каналите с YouTube.",
+		"signInAccept": "Приемам"
 	},
 	"join": {
 		"welcome": "Добре дошли в {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Няма интернет връзка",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Обратно към радиото",
 		"retry": "Опитайте отново връзката",
 		"switching": "Смяна на канал...",
 		"channelNotFound": "Каналът не съществува",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Източник на музика",
-		"sourceHint": "Apple Music свири само на вашето устройство и изисква абонамент за Apple Music.",
+		"sourceHint": "Apple Music свири на вашия компютър и изисква абонамент за Apple Music.",
 		"connect": "Свържи Apple Music",
 		"connectHint": "Влезте с Apple акаунта, в който е абонаментът ви за Apple Music.",
 		"start": "Стартирай възпроизвеждането",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music спря възпроизвеждането ({code}). Натиснете бутона за пускане, за да опитате отново.",
 		"contentNotice": "Обложките и прегледите в този канал идват от Apple. При зареждането им Apple вижда вашия IP адрес.",
 		"contentAccept": "Включване",
-		"previewFailed": "Този преглед не може да бъде пуснат."
+		"previewFailed": "Този преглед не може да бъде пуснат.",
+		"standby": "Този канал в момента свири на друго ваше устройство.",
+		"playHere": "Пусни тук",
+		"waitingForHost": "На пауза, докато домакинът отново пусне музиката.",
+		"playsOnComputer": "Apple Music се възпроизвежда на компютър. Отворете канала там и свържете Apple Music."
 	},
 	"attribution": {
 		"youtube": "Създадено с YouTube"

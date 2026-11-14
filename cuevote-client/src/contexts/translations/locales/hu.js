@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "A házigazdának előbb csatlakoztatnia kell az Apple Musicot.",
 		"appleMusicRoom": "Ez a csatorna az Apple Musicot használja. Illessz be egy music.apple.com linket, vagy keress név alapján.",
 		"appleMusicNotFound": "Nem található az Apple Musicon.",
+		"appleMusicLinkUnsupported": "Illessz be egy linket egyetlen dalhoz vagy videoklipphez, vagy keress név alapján.",
 		"appleMusicNotInStorefront": "Ez a szám a házigazda országában nem érhető el az Apple Musicon.",
 		"appleMusicCatalogError": "Az Apple Music nem válaszolt. Próbáld újra."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "A zene lejátszásához be kell töltenünk a YouTube lejátszót. Ez csatlakozik a Google szervereihez.",
 		"policy": "Olvassa el Adatvédelmi irányelveinket",
 		"accept": "Elfogadás és Zenelejátszás",
-		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább."
+		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább.",
+		"signInDescription": "A Google-bejelentkezéshez betöltjük a Google bejelentkezését, amely a Google szervereihez kapcsolódik. Ugyanez a hozzájárulás a YouTube-csatornákon a YouTube-lejátszót is betölti.",
+		"signInAccept": "Elfogadom"
 	},
 	"join": {
 		"welcome": "Üdvözöl a {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Nincs internetkapcsolat",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Vissza a rádióhoz",
 		"retry": "Kapcsolat újrapróbálása",
 		"switching": "Csatorna Váltása...",
 		"channelNotFound": "A csatorna nem létezik",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Zeneforrás",
-		"sourceHint": "Az Apple Music csak a te eszközödön szól, és Apple Music-előfizetés kell hozzá.",
+		"sourceHint": "Az Apple Music a számítógépeden szól, és Apple Music-előfizetés kell hozzá.",
 		"connect": "Apple Music csatlakoztatása",
 		"connectHint": "Jelentkezz be azzal az Apple-fiókkal, amelyhez az Apple Music-előfizetésed tartozik.",
 		"start": "Lejátszás indítása",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Az Apple Music leállította a lejátszást ({code}). Az újrapróbálkozáshoz nyomd meg a lejátszás gombot.",
 		"contentNotice": "A csatorna borítói és előnézetei az Apple-től származnak. Betöltésükkor az Apple látja az IP-címedet.",
 		"contentAccept": "Bekapcsolás",
-		"previewFailed": "Ez az előnézet nem játszható le."
+		"previewFailed": "Ez az előnézet nem játszható le.",
+		"standby": "Ez a csatorna most egy másik eszközödön szól.",
+		"playHere": "Lejátszás itt",
+		"waitingForHost": "Szünetel, amíg a házigazda újra nem indítja a lejátszást.",
+		"playsOnComputer": "Az Apple Music számítógépen szól. Nyisd meg ott ezt a csatornát, és csatlakoztasd az Apple Musicot."
 	},
 	"attribution": {
 		"youtube": "YouTube-val fejlesztve"

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "主催者が先にApple Musicを接続する必要があります。",
 		"appleMusicRoom": "このチャンネルではApple Musicを再生します。music.apple.comのリンクを貼り付けるか、名前で検索してください。",
 		"appleMusicNotFound": "Apple Musicで見つかりませんでした。",
+		"appleMusicLinkUnsupported": "1曲またはミュージックビデオ1本へのリンクを貼り付けるか、名前で検索してください。",
 		"appleMusicNotInStorefront": "この曲は主催者の国のApple Musicでは利用できません。",
 		"appleMusicCatalogError": "Apple Musicから応答がありませんでした。もう一度お試しください。"
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "音楽を再生するには、YouTubeプレーヤーを読み込む必要があります。これはGoogleのサーバーに接続します。",
 		"policy": "プライバシーポリシーを読む",
 		"accept": "同意して音楽を再生",
-		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。"
+		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。",
+		"signInDescription": "Googleでログインするために、Googleのログイン機能を読み込みます。これによりGoogleのサーバーに接続します。同じ同意により、YouTubeチャンネルではYouTubeプレーヤーも読み込まれます。",
+		"signInAccept": "同意する"
 	},
 	"join": {
 		"welcome": "{brand}へようこそ",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "インターネット接続がありません",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "ラジオに戻る",
 		"retry": "接続を再試行",
 		"retrying": "再試行中...",
 		"connecting": "サーバーに接続中...",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "音楽ソース",
-		"sourceHint": "Apple Musicはお使いのデバイスでのみ再生され、Apple Musicのサブスクリプションが必要です。",
+		"sourceHint": "Apple Musicはお使いのコンピュータで再生され、Apple Musicのサブスクリプションが必要です。",
 		"connect": "Apple Musicを接続",
 		"connectHint": "Apple Musicのサブスクリプションに登録しているAppleアカウントでログインしてください。",
 		"start": "再生を開始",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Musicの再生が停止しました（{code}）。再生ボタンを押してもう一度お試しください。",
 		"contentNotice": "このチャンネルのカバーアートと試聴はAppleから読み込まれます。その際、Appleにお客様のIPアドレスが伝わります。",
 		"contentAccept": "オンにする",
-		"previewFailed": "この試聴は再生できません。"
+		"previewFailed": "この試聴は再生できません。",
+		"standby": "このチャンネルは現在、あなたの別のデバイスで再生中です。",
+		"playHere": "ここで再生",
+		"waitingForHost": "主催者が再生を再開するまで一時停止中です。",
+		"playsOnComputer": "Apple Musicはコンピュータで再生されます。そこでこのチャンネルを開き、Apple Musicを接続してください。"
 	},
 	"attribution": {
 		"youtube": "YouTube と共に開発"

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Hostitel musí nejdřív připojit Apple Music.",
 		"appleMusicRoom": "Tento kanál přehrává Apple Music. Vložte odkaz z music.apple.com nebo hledejte podle názvu.",
 		"appleMusicNotFound": "V Apple Music nebylo nalezeno.",
+		"appleMusicLinkUnsupported": "Vložte odkaz na jednu skladbu nebo hudební video, nebo hledejte podle názvu.",
 		"appleMusicNotInStorefront": "Tato skladba není v Apple Music v zemi hostitele dostupná.",
 		"appleMusicCatalogError": "Apple Music neodpovídá. Zkuste to znovu."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Pro přehrávání hudby musíme načíst přehrávač YouTube. To se připojuje k serverům Google.",
 		"policy": "Přečtěte si naše zásady ochrany osobních údajů",
 		"accept": "Přijmout a hrát hudbu",
-		"youtubeConsent": "Potřebujeme váš souhlas s načtením přehrávače YouTube. Přijměte prosím soubory cookie níže."
+		"youtubeConsent": "Potřebujeme váš souhlas s načtením přehrávače YouTube. Přijměte prosím soubory cookie níže.",
+		"signInDescription": "Pro přihlášení přes Google načteme přihlášení Google, které se připojuje k serverům Googlu. Stejný souhlas načítá v kanálech YouTube také přehrávač YouTube.",
+		"signInAccept": "Přijmout"
 	},
 	"join": {
 		"welcome": "Vítejte v {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Žádné připojení k internetu",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Zpět k rádiu",
 		"retry": "Zkusit připojení znovu",
 		"switching": "Přepínání Kanálu...",
 		"channelNotFound": "Kanál neexistuje",
@@ -298,7 +301,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Zdroj hudby",
-		"sourceHint": "Apple Music hraje jen na vašem zařízení a vyžaduje předplatné Apple Music.",
+		"sourceHint": "Apple Music hraje na vašem počítači a vyžaduje předplatné Apple Music.",
 		"connect": "Připojit Apple Music",
 		"connectHint": "Přihlaste se účtem Apple, ke kterému patří vaše předplatné Apple Music.",
 		"start": "Spustit přehrávání",
@@ -309,7 +312,11 @@ export default {
 		"problemGeneric": "Přehrávání v Apple Music se zastavilo ({code}). Stiskněte přehrát a zkuste to znovu.",
 		"contentNotice": "Obaly alb a náhledy v tomto kanálu pocházejí od Apple. Při jejich načtení Apple vidí vaši IP adresu.",
 		"contentAccept": "Zapnout",
-		"previewFailed": "Tento náhled nelze přehrát."
+		"previewFailed": "Tento náhled nelze přehrát.",
+		"standby": "Tento kanál se právě přehrává na jiném vašem zařízení.",
+		"playHere": "Přehrávat zde",
+		"waitingForHost": "Pozastaveno, dokud hostitel znovu nespustí přehrávání.",
+		"playsOnComputer": "Apple Music se přehrává na počítači. Otevřete tam tento kanál a připojte Apple Music."
 	},
 	"attribution": {
 		"youtube": "Vyvinuto s YouTube"

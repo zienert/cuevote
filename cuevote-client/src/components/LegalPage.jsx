@@ -54,7 +54,7 @@ export function LegalPage() {
 
     const dates = {
         terms: "November 13, 2026",
-        privacy: "November 13, 2026",
+        privacy: "November 14, 2026",
         imprint: "May 17, 2026",
         attributions: "November 13, 2026"
     };

@@ -254,6 +254,28 @@ describe('Room', () => {
       assert.ok(room.state.history.length >= 1);
       room.destroy();
     });
+
+    it('resumes a paused track where it stopped, however long the pause', async () => {
+      const room = new Room('pause-room', 'Pause', null, { owner_id: 'owner-1' });
+      const owner = mockWs({ id: 'owner-1', name: 'Owner' });
+      room.addClient(owner);
+      room.state.queue = [{ id: 'current', videoId: 'v1', title: 'Current', score: 0, voters: {}, duration: 210, artist: 'A', thumbnail: 'x' }];
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() - 60000 };
+      room.state.isPlaying = true;
+      room.tick();
+      assert.equal(room.state.progress, 60);
+
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: false });
+      assert.equal(room.state.progress, 60, 'the pause freezes the position');
+
+      // Ten minutes later, longer than the track.
+      room.state.currentTrack.startedAt -= 600000;
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: true });
+      room.tick();
+      assert.equal(room.state.currentTrack.id, 'current', 'not skipped');
+      assert.ok(room.state.progress >= 60 && room.state.progress <= 61, `goes on at 60 s, got ${room.state.progress}`);
+      room.destroy();
+    });
   });
 
   describe('Playback Error Handling', () => {
@@ -871,7 +893,7 @@ describe('Room', () => {
     const song = (id, title) => ({ ...video(id, title), videoId: `am:song:${id}`, kind: 'song' });
 
     let calls = [];
-    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false } = {}) {
+    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false, equivalents = {} } = {}) {
       calls = [];
       const outage = () => Object.assign(new Error('down'), { code: 'APPLE_CATALOG_UNREACHABLE' });
       Room.setAppleCatalog({
@@ -884,6 +906,12 @@ describe('Room', () => {
           calls.push(['lookup', storefront, keys]);
           if (fail) throw outage();
           return new Map(items.filter(t => keys.includes(t.videoId)).map(t => [t.videoId, t]));
+        },
+        // equivalents: { 'am:song:US-id': track in this storefront }
+        async equivalents(storefront, keys) {
+          calls.push(['equivalents', storefront, keys]);
+          if (fail) throw outage();
+          return new Map(keys.filter(k => equivalents[k]).map(k => [k, equivalents[k]]));
         },
       });
     }
@@ -999,6 +1027,66 @@ describe('Room', () => {
       room.destroy();
     });
 
+    it("takes the owner's country as the storefront until the player reports the account's", async () => {
+      useCatalog();
+      const room = appleRoom(null);
+      const guest = guestWs();
+      guest.country = 'de';
+      room.addClient(guest);
+      assert.equal(room.metadata.apple_storefront, null, 'a guest never sets it');
+
+      const owner = ownerWs();
+      owner.country = 'nl';
+      room.addClient(owner);
+      assert.equal(room.metadata.apple_storefront, 'nl');
+      assert.equal(room.state.appleStorefront, 'nl', 'guests get it for previews');
+
+      await room.handleMessage(owner, { type: 'APPLE_STOREFRONT', payload: 'be' });
+      assert.equal(room.state.appleStorefront, 'be');
+      room.destroy();
+    });
+
+    it('moves waiting entries to the ids of a new storefront and drops what it lacks', async () => {
+      const dutch = { ...song(1715687117, 'Sexy Bitch (feat. Akon)'), artist: 'David Guetta' };
+      useCatalog({ items: [video(1, 'Playing'), video(2, 'Everywhere')], equivalents: { 'am:song:693246512': dutch } });
+      const room = appleRoom('us');
+      room.state.queue = [video(1, 'Playing'), video(2, 'Everywhere'), song(693246512, 'Sexy Bitch'), video(3, 'US only')]
+        .map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
+      room.state.currentTrack = room.state.queue[0];
+      room.state.pendingSuggestions = [{ ...video(4, 'Also US only'), id: 'p1', score: 0, voters: {} }];
+
+      room.setAppleStorefront('nl');
+      await new Promise(resolve => setTimeout(resolve, 10));
+      assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1', 'am:video:2', 'am:song:1715687117']);
+      assert.equal(room.state.queue[2].id, 'q3', 'the same entry, votes and all');
+      assert.equal(room.state.pendingSuggestions.length, 0);
+      room.destroy();
+    });
+
+    it('refuses links it cannot play instead of searching them as text', async () => {
+      useCatalog({ search: { videos: [video(9, 'Open Your Eyes')], songs: [] } });
+      const room = appleRoom();
+      const ws = guestWs();
+      await suggest(room, ws, 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_ROOM');
+      const another = guestWs(); // past the per-socket wait between suggestions
+      await suggest(room, another, 'https://music.apple.com/nl/album/future-nostalgia/1538003494');
+      assert.equal(lastOf(another, 'error').code, 'APPLE_MUSIC_LINK_UNSUPPORTED');
+      assert.equal(room.state.queue.length, 0);
+      assert.equal(calls.some(c => c[0] === 'search'), false, 'no text search');
+      room.destroy();
+    });
+
+    it('takes a link from another country as the same recording in the host country', async () => {
+      const dutch = { ...song(1715687117, 'Sexy Bitch (feat. Akon)'), artist: 'David Guetta' };
+      useCatalog({ equivalents: { 'am:song:693246512': dutch } });
+      const room = appleRoom('nl');
+      const ws = guestWs();
+      await suggest(room, ws, 'https://music.apple.com/us/song/sexy-bitch-feat-akon/693246512');
+      assert.equal(room.state.queue[0] && room.state.queue[0].videoId, 'am:song:1715687117');
+      room.destroy();
+    });
+
     it('reports a catalog outage as an error', async () => {
       useCatalog({ fail: true });
       const room = appleRoom();
@@ -1094,6 +1182,206 @@ describe('Room', () => {
       room.currentTrackSince = Date.now() - 3000;
       await room.handleMessage(owner, { type: 'SEEK_TO', payload: 100 });
       assert.equal(room.state.progress, 100);
+      room.destroy();
+    });
+
+    // An owner socket that reports a player able to play.
+    const withPlayer = (room, ws, state = 'ready') => {
+      if (!room.clients.has(ws)) room.addClient(ws);
+      ws.applePlayerState = state;
+      room.applePlayer = { ws, state, lastSeen: Date.now() };
+      return ws;
+    };
+
+    it('lets one owner device play and puts the others on standby until they take over', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const tv = ownerWs();
+      const laptop = ownerWs();
+      room.addClient(tv);
+      room.addClient(laptop);
+
+      await room.handleMessage(tv, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      await room.handleMessage(laptop, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      assert.deepEqual(lastOf(laptop, 'APPLE_PLAYER_LEASE').payload, { active: false });
+
+      // Only the player's errors count.
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      await room.handleMessage(laptop, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'NOT_FOUND' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+
+      await room.handleMessage(laptop, { type: 'APPLE_PLAYER_CLAIM' });
+      assert.deepEqual(lastOf(laptop, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: false });
+
+      // The player closes: the device on standby takes over.
+      room.removeClient(laptop);
+      assert.equal(room.applePlayer.ws, tv);
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      room.destroy();
+    });
+
+    it('holds its position while no host player can play and goes on from there', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      room.state.currentTrack.startedAt = Date.now() - 40000;
+      room.state.queue[0] = room.state.currentTrack;
+
+      room.tick(); // no player: the grace starts, the clock still runs
+      assert.equal(room.state.waitingForHost, false);
+      room.hostMissingSince = Date.now() - 20000;
+      room.tick();
+      assert.equal(room.state.waitingForHost, true);
+      const held = room.state.progress;
+      assert.ok(held >= 40 && held <= 41, `held at ${held}`);
+
+      // Ten minutes without a host: nothing moves.
+      room.state.currentTrack.startedAt -= 600000;
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.progress, held);
+
+      await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'playing' } });
+      assert.equal(room.state.waitingForHost, false);
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1', 'not skipped');
+      assert.ok(room.state.progress >= held && room.state.progress <= held + 1, `goes on at ${held}, got ${room.state.progress}`);
+      room.destroy();
+    });
+
+    it('lets the Auto-DJ wait for the host and fill the room when the host is back', async () => {
+      useCatalog({ items: [video(1, 'Fine')] });
+      const room = appleRoom();
+      room.state.autoRefill = true;
+      room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      await room.populateQueueFromHistory();
+      assert.equal(room.state.queue.length, 0, 'nobody to hear it');
+
+      const owner = ownerWs();
+      room.addClient(owner);
+      await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
+      room.destroy();
+    });
+
+    const playing = (room, tracks) => {
+      room.state.queue = tracks.map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() };
+      room.state.queue[0] = room.state.currentTrack;
+      room.state.isPlaying = true;
+    };
+
+    it('pauses at the third item error in a row instead of skipping the whole queue', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two'), video(3, 'Three'), video(4, 'Four')]);
+
+      for (const id of [1, 2]) {
+        await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: `am:video:${id}`, errorCode: 'CONTENT_UNSUPPORTED' } });
+      }
+      assert.equal(room.state.currentTrack.videoId, 'am:video:3');
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:3', errorCode: 'CONTENT_UNSUPPORTED' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:3', 'kept');
+      assert.equal(room.state.isPlaying, false, 'paused');
+      assert.deepEqual(lastOf(owner, 'APPLE_PLAYBACK_PROBLEM').payload, { code: 'CONTENT_UNSUPPORTED' });
+      room.destroy();
+    });
+
+    it('treats a geo block as a problem on the host side', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'GEO_BLOCK' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.isPlaying, false);
+      room.destroy();
+    });
+
+    it('ignores an error or a duration reported for an earlier entry of the same song', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'Again'), video(1, 'Again'), video(2, 'Next')]);
+      room.handleNextTrack();
+      assert.equal(room.state.currentTrack.id, 'q2');
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'NOT_FOUND', trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.id, 'q2', 'not skipped');
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: { duration: 30, trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.duration, 221, 'duration untouched');
+      room.destroy();
+    });
+
+    it('keeps the catalog length over the length the player reports', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'Known'), { ...video(2, 'Unknown'), duration: null }]);
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: { duration: 30, trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.duration, 221);
+
+      room.handleNextTrack();
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: 187 });
+      assert.equal(room.state.currentTrack.duration, 187, 'fills a missing length');
+      room.destroy();
+    });
+
+    it('removes an unplayable item from the stored history as well', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const unplayable = { ...song(693246512, 'Not in NL'), playedAt: Date.now() - 60000 };
+      db.addToRoomHistory(room.id, unplayable);
+      room.state.history = [unplayable];
+      playing(room, [song(693246512, 'Not in NL'), video(2, 'Two')]);
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:song:693246512', errorCode: 'NOT_FOUND' } });
+      assert.equal(db.getRoomHistory(room.id).some(t => t.videoId === 'am:song:693246512'), false);
+      room.destroy();
+    });
+
+    it('lets the Auto-DJ pick only checked, unbanned items, and nothing without a storefront', async () => {
+      useCatalog({ items: [video(1, 'Fine'), video(2, 'Banned')] });
+      const room = appleRoom();
+      room.state.autoRefill = true;
+      room.state.history = [video(1, 'Fine'), video(2, 'Banned'), video(3, 'Gone')].map(t => ({ ...t, playedAt: Date.now() - 60000 }));
+      room.state.bannedVideos = [{ videoId: 'am:video:2', title: 'Banned' }];
+      withPlayer(room, ownerWs());
+
+      await room.populateQueueFromHistory();
+      assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1']);
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.history.some(t => t.videoId === 'am:video:3'), false, 'gone from history');
+      room.destroy();
+
+      const unconnected = appleRoom(null);
+      unconnected.state.autoRefill = true;
+      unconnected.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      await unconnected.populateQueueFromHistory();
+      assert.equal(unconnected.state.queue.length, 0);
+      unconnected.destroy();
+    });
+
+    it('starts the refill even when play was pressed while it ran', async () => {
+      useCatalog({ items: [video(1, 'Fine')] });
+      const room = appleRoom();
+      room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      withPlayer(room, ownerWs());
+      room.state.isPlaying = true; // play pressed, nothing current
+      await room.populateQueueFromHistory();
+      assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
       room.destroy();
     });
   });

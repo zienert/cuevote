@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "يجب على المضيف ربط Apple Music أولاً.",
 		"appleMusicRoom": "تشغّل هذه القناة Apple Music. يرجى لصق رابط من music.apple.com أو البحث بالاسم.",
 		"appleMusicNotFound": "تعذّر العثور على هذا في Apple Music.",
+		"appleMusicLinkUnsupported": "يرجى لصق رابط لأغنية واحدة أو فيديو موسيقي واحد، أو البحث بالاسم.",
 		"appleMusicNotInStorefront": "هذا المقطع غير متاح في Apple Music في بلد المضيف.",
 		"appleMusicCatalogError": "لم يستجب Apple Music. يرجى المحاولة مرة أخرى."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "لتشغيل الموسيقى، نحتاج إلى تحميل مشغل YouTube. هذا يتصل بخوادم Google.",
 		"policy": "اقرأ سياسة الخصوصية الخاصة بنا",
 		"accept": "قبول وتشغيل الموسيقى",
-		"youtubeConsent": "نحتاج إلى موافقتك لتحميل مشغل YouTube. يرجى قبول ملفات تعريف الارتباط أدناه."
+		"youtubeConsent": "نحتاج إلى موافقتك لتحميل مشغل YouTube. يرجى قبول ملفات تعريف الارتباط أدناه.",
+		"signInDescription": "لتسجيل الدخول باستخدام Google، نحمّل خدمة تسجيل الدخول من Google، وهي تتصل بخوادم Google. وتُحمِّل الموافقة نفسها أيضًا مشغّل YouTube في قنوات YouTube.",
+		"signInAccept": "قبول"
 	},
 	"join": {
 		"welcome": "مرحبًا بك في {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "لا يوجد اتصال بالإنترنت",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "العودة إلى الراديو",
 		"retry": "أعد محاولة الاتصال",
 		"switching": "جارٍ تبديل القناة...",
 		"channelNotFound": "القناة غير موجودة",
@@ -302,7 +305,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "مصدر الموسيقى",
-		"sourceHint": "يعمل Apple Music على جهازك فقط ويتطلب اشتراكًا في Apple Music.",
+		"sourceHint": "يعمل Apple Music على جهاز الكمبيوتر الخاص بك ويتطلب اشتراكًا في Apple Music.",
 		"connect": "ربط Apple Music",
 		"connectHint": "سجّل الدخول بحساب Apple الذي يتضمن اشتراكك في Apple Music.",
 		"start": "بدء التشغيل",
@@ -313,7 +316,11 @@ export default {
 		"problemGeneric": "أوقف Apple Music التشغيل ({code}). اضغط على تشغيل للمحاولة مرة أخرى.",
 		"contentNotice": "صور الأغلفة والمعاينات في هذه القناة تأتي من Apple. ترى Apple عنوان IP الخاص بك عند تحميلها.",
 		"contentAccept": "تفعيل",
-		"previewFailed": "تعذّر تشغيل هذه المعاينة."
+		"previewFailed": "تعذّر تشغيل هذه المعاينة.",
+		"standby": "تعمل هذه القناة الآن على جهاز آخر من أجهزتك.",
+		"playHere": "التشغيل هنا",
+		"waitingForHost": "متوقف مؤقتًا حتى يعاود المضيف التشغيل.",
+		"playsOnComputer": "يعمل Apple Music على جهاز كمبيوتر. افتح هذه القناة هناك واربط Apple Music."
 	},
 	"attribution": {
 		"youtube": "تم التطوير مع YouTube"

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Tuan rumah harus menghubungkan Apple Music terlebih dahulu.",
 		"appleMusicRoom": "Kanal ini memutar Apple Music. Tempel link music.apple.com atau cari berdasarkan nama.",
 		"appleMusicNotFound": "Tidak ditemukan di Apple Music.",
+		"appleMusicLinkUnsupported": "Tempel link ke satu lagu atau video musik, atau cari berdasarkan nama.",
 		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara tuan rumah.",
 		"appleMusicCatalogError": "Apple Music tidak merespons. Silakan coba lagi."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Untuk memutar musik, kami perlu memuat Pemutar YouTube. Ini terhubung ke server Google.",
 		"policy": "Baca Kebijakan Privasi kami",
 		"accept": "Terima & Putar Musik",
-		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini."
+		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini.",
+		"signInDescription": "Untuk masuk dengan Google, kami memuat login Google, yang terhubung ke server Google. Persetujuan yang sama juga memuat pemutar YouTube di saluran YouTube.",
+		"signInAccept": "Terima"
 	},
 	"join": {
 		"welcome": "Selamat datang di {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Tidak ada koneksi internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Kembali ke Radio",
 		"retry": "Coba lagi koneksi",
 		"switching": "Ganti Kanal...",
 		"channelNotFound": "Kanal tidak ada",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Sumber musik",
-		"sourceHint": "Apple Music hanya diputar di perangkat Anda dan memerlukan langganan Apple Music.",
+		"sourceHint": "Apple Music diputar di komputer Anda dan memerlukan langganan Apple Music.",
 		"connect": "Hubungkan Apple Music",
 		"connectHint": "Masuk dengan akun Apple yang memiliki langganan Apple Music Anda.",
 		"start": "Mulai pemutaran",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music menghentikan pemutaran ({code}). Tekan putar untuk mencoba lagi.",
 		"contentNotice": "Sampul album dan pratinjau di saluran ini berasal dari Apple. Saat dimuat, Apple dapat melihat alamat IP Anda.",
 		"contentAccept": "Aktifkan",
-		"previewFailed": "Pratinjau ini tidak dapat diputar."
+		"previewFailed": "Pratinjau ini tidak dapat diputar.",
+		"standby": "Saluran ini sedang diputar di perangkat Anda yang lain.",
+		"playHere": "Putar di sini",
+		"waitingForHost": "Dijeda sampai tuan rumah memutar lagi.",
+		"playsOnComputer": "Apple Music diputar di komputer. Buka saluran ini di sana dan hubungkan Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

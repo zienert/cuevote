@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Isännän täytyy ensin yhdistää Apple Music.",
 		"appleMusicRoom": "Tällä kanavalla soi Apple Music. Liitä music.apple.com-linkki tai hae nimellä.",
 		"appleMusicNotFound": "Ei löytynyt Apple Musicista.",
+		"appleMusicLinkUnsupported": "Liitä linkki yhteen kappaleeseen tai musiikkivideoon tai hae nimellä.",
 		"appleMusicNotInStorefront": "Tämä kappale ei ole saatavilla Apple Musicissa isännän maassa.",
 		"appleMusicCatalogError": "Apple Music ei vastannut. Yritä uudelleen."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Musiikin toistamiseksi meidän on ladattava YouTube-soitin. Tämä muodostaa yhteyden Googlen palvelimiin.",
 		"policy": "Lue tietosuojakäytäntömme",
 		"accept": "Hyväksy & Soita musiikkia",
-		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta."
+		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta.",
+		"signInDescription": "Google-kirjautumista varten lataamme Googlen kirjautumisen, joka muodostaa yhteyden Googlen palvelimiin. Sama suostumus lataa YouTube-kanavilla myös YouTube-soittimen.",
+		"signInAccept": "Hyväksy"
 	},
 	"join": {
 		"welcome": "Tervetuloa {brand}-palveluun",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Ei internetyhteyttä",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Takaisin radioon",
 		"retry": "Yritä yhteyttä uudelleen",
 		"switching": "Vaihdetaan kanavaa...",
 		"channelNotFound": "Kanavaa ei ole",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musiikkilähde",
-		"sourceHint": "Apple Music soi vain omalla laitteellasi ja vaatii Apple Music -tilauksen.",
+		"sourceHint": "Apple Music soi tietokoneellasi ja vaatii Apple Music -tilauksen.",
 		"connect": "Yhdistä Apple Music",
 		"connectHint": "Kirjaudu sisään sillä Apple-tilillä, johon Apple Music -tilauksesi kuuluu.",
 		"start": "Aloita toisto",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music keskeytti toiston ({code}). Yritä uudelleen painamalla toistopainiketta.",
 		"contentNotice": "Tämän kanavan kansikuvat ja esikatselut tulevat Applelta. Kun ne latautuvat, Apple näkee IP-osoitteesi.",
 		"contentAccept": "Ota käyttöön",
-		"previewFailed": "Tätä esikatselua ei voi toistaa."
+		"previewFailed": "Tätä esikatselua ei voi toistaa.",
+		"standby": "Tätä kanavaa toistetaan nyt toisella laitteellasi.",
+		"playHere": "Toista tässä",
+		"waitingForHost": "Tauolla, kunnes isäntä jatkaa toistoa.",
+		"playsOnComputer": "Apple Music soi tietokoneella. Avaa kanava siellä ja yhdistä Apple Music."
 	},
 	"attribution": {
 		"youtube": "Kehitetty YouTuben kanssa"

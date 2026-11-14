@@ -27,6 +27,7 @@ export function participationErrorKey(code) {
 		case 'APPLE_MUSIC_NOT_CONNECTED': return 'errors.appleMusicNotConnected';
 		case 'APPLE_MUSIC_ROOM': return 'errors.appleMusicRoom';
 		case 'APPLE_MUSIC_NOT_FOUND': return 'errors.appleMusicNotFound';
+		case 'APPLE_MUSIC_LINK_UNSUPPORTED': return 'errors.appleMusicLinkUnsupported';
 		case 'APPLE_MUSIC_NOT_IN_STOREFRONT': return 'errors.appleMusicNotInStorefront';
 		case 'APPLE_MUSIC_CATALOG_ERROR': return 'errors.appleMusicCatalogError';
 		default: return null;

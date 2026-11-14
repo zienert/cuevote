@@ -21,7 +21,12 @@ export const Consent = {
 			setHasConsent(true);
 			setShowBanner(false);
 		};
-		const askForConsent = () => setShowBanner(true);
+		// Asked for by a click (the sign-in button): shown in a room as well.
+		const [consentRequested, setConsentRequested] = useState(false);
+		const askForConsent = () => {
+			setConsentRequested(true);
+			setShowBanner(true);
+		};
 		// Apple Music channels load cover art and, for the host, MusicKit from
 		// Apple. Their own consent: agreeing to YouTube and Google says nothing
 		// about Apple, and agreeing in an Apple channel nothing about YouTube.
@@ -33,7 +38,7 @@ export const Consent = {
 			setHasAppleConsent(true);
 		};
 		return (
-			<ConsentContext.Provider value={{ hasConsent, showBanner, giveConsent, askForConsent, setShowBanner, hasAppleConsent, giveAppleConsent }}>
+			<ConsentContext.Provider value={{ hasConsent, showBanner, giveConsent, askForConsent, consentRequested, setShowBanner, hasAppleConsent, giveAppleConsent }}>
 				{children}
 			</ConsentContext.Provider>
 		);

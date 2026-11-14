@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Domaćin prvo mora da poveže Apple Music.",
 		"appleMusicRoom": "Ovaj kanal pušta Apple Music. Nalepite link sa music.apple.com ili pretražujte po nazivu.",
 		"appleMusicNotFound": "Nije pronađeno na Apple Music-u.",
+		"appleMusicLinkUnsupported": "Nalepite link do jedne pesme ili muzičkog spota ili pretražujte po nazivu.",
 		"appleMusicNotInStorefront": "Ova pesma nije dostupna na Apple Music-u u zemlji domaćina.",
 		"appleMusicCatalogError": "Apple Music ne odgovara. Pokušajte ponovo."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Za reprodukciju muzike moramo učitati YouTube plejer. Ovo se povezuje sa Google-ovim serverima.",
 		"policy": "Pročitajte našu Politiku privatnosti",
 		"accept": "Prihvati i pusti muziku",
-		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod."
+		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod.",
+		"signInDescription": "Za prijavu preko Google-a učitavamo Google prijavu, koja se povezuje sa Google serverima. Ista saglasnost u YouTube kanalima učitava i YouTube plejer.",
+		"signInAccept": "Prihvati"
 	},
 	"join": {
 		"welcome": "Dobro došli na {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Nema internet veze",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Nazad na radio",
 		"retry": "Pokušaj ponovo povezivanje",
 		"switching": "Promena Kanala...",
 		"channelNotFound": "Kanal ne postoji",
@@ -296,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Izvor muzike",
-		"sourceHint": "Apple Music svira samo na vašem uređaju i zahteva pretplatu na Apple Music.",
+		"sourceHint": "Apple Music svira na vašem računaru i zahteva pretplatu na Apple Music.",
 		"connect": "Poveži Apple Music",
 		"connectHint": "Prijavite se Apple nalogom na kojem imate pretplatu na Apple Music.",
 		"start": "Pokreni reprodukciju",
@@ -307,7 +310,11 @@ export default {
 		"problemGeneric": "Apple Music je zaustavio reprodukciju ({code}). Pritisnite Play da biste pokušali ponovo.",
 		"contentNotice": "Omoti i pregledi u ovom kanalu stižu od Apple-a. Pri njihovom učitavanju Apple vidi vašu IP adresu.",
 		"contentAccept": "Uključi",
-		"previewFailed": "Ovaj pregled nije moguće pustiti."
+		"previewFailed": "Ovaj pregled nije moguće pustiti.",
+		"standby": "Ovaj kanal se trenutno pušta na drugom vašem uređaju.",
+		"playHere": "Pusti ovde",
+		"waitingForHost": "Pauzirano dok domaćin ponovo ne pusti muziku.",
+		"playsOnComputer": "Apple Music se pušta na računaru. Otvorite ovaj kanal tamo i povežite Apple Music."
 	},
 	"attribution": {
 		"youtube": "Развијено уз YouTube"

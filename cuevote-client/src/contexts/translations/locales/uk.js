@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Організатор має спершу підключити Apple Music.",
 		"appleMusicRoom": "У цьому каналі грає Apple Music. Вставте посилання з music.apple.com або знайдіть за назвою.",
 		"appleMusicNotFound": "Не знайдено в Apple Music.",
+		"appleMusicLinkUnsupported": "Вставте посилання на одну пісню або музичний кліп чи знайдіть за назвою.",
 		"appleMusicNotInStorefront": "Цей трек недоступний в Apple Music у країні організатора.",
 		"appleMusicCatalogError": "Apple Music не відповідає. Спробуйте ще раз."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Щоб відтворити музику, нам потрібно завантажити плеєр YouTube. Це з'єднує з серверами Google.",
 		"policy": "Читайте нашу Політику конфіденційності",
 		"accept": "Прийняти і грати музику",
-		"youtubeConsent": "Нам потрібна ваша згода для завантаження плеєра YouTube. Будь ласка, прийміть файли cookie нижче."
+		"youtubeConsent": "Нам потрібна ваша згода для завантаження плеєра YouTube. Будь ласка, прийміть файли cookie нижче.",
+		"signInDescription": "Для входу через Google ми завантажуємо вхід Google, який підключається до серверів Google. Ця ж згода завантажує й плеєр YouTube у каналах YouTube.",
+		"signInAccept": "Прийняти"
 	},
 	"join": {
 		"welcome": "Ласкаво просимо до {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Немає підключення до інтернету",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Назад до радіо",
 		"retry": "Повторити спробу підключення",
 		"switching": "Перемикання каналу...",
 		"channelNotFound": "Канал не існує",
@@ -298,7 +301,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Джерело музики",
-		"sourceHint": "Apple Music грає лише на вашому пристрої та потребує підписки на Apple Music.",
+		"sourceHint": "Apple Music грає на вашому комп'ютері та потребує підписки на Apple Music.",
 		"connect": "Підключити Apple Music",
 		"connectHint": "Увійдіть в обліковий запис Apple, у якому оформлено вашу підписку на Apple Music.",
 		"start": "Почати відтворення",
@@ -309,7 +312,11 @@ export default {
 		"problemGeneric": "Відтворення в Apple Music зупинено ({code}). Натисніть «Відтворити», щоб спробувати ще раз.",
 		"contentNotice": "Обкладинки та прев'ю в цьому каналі надходять від Apple. Під час завантаження Apple бачить вашу IP-адресу.",
 		"contentAccept": "Увімкнути",
-		"previewFailed": "Не вдалося відтворити це прев'ю."
+		"previewFailed": "Не вдалося відтворити це прев'ю.",
+		"standby": "Цей канал зараз відтворюється на іншому вашому пристрої.",
+		"playHere": "Відтворювати тут",
+		"waitingForHost": "Пауза, доки організатор знову не ввімкне відтворення.",
+		"playsOnComputer": "Apple Music відтворюється на комп'ютері. Відкрийте цей канал там і підключіть Apple Music."
 	},
 	"attribution": {
 		"youtube": "Розроблено з YouTube"

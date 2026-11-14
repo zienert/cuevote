@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "主持人需要先连接 Apple Music。",
 		"appleMusicRoom": "此频道播放 Apple Music。请粘贴 music.apple.com 链接，或按名称搜索。",
 		"appleMusicNotFound": "在 Apple Music 上找不到该内容。",
+		"appleMusicLinkUnsupported": "请粘贴单首歌曲或单个音乐视频的链接，或按名称搜索。",
 		"appleMusicNotInStorefront": "此曲目在主持人所在国家/地区的 Apple Music 上不可用。",
 		"appleMusicCatalogError": "Apple Music 没有响应，请重试。"
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "为了播放音乐，我们需要加载 YouTube 播放器。这将连接到 Google 服务器。",
 		"policy": "阅读我们的隐私政策",
 		"accept": "接受并播放音乐",
-		"youtubeConsent": "我们需要您的同意才能加载 YouTube 播放器。请在下方接受 Cookie。"
+		"youtubeConsent": "我们需要您的同意才能加载 YouTube 播放器。请在下方接受 Cookie。",
+		"signInDescription": "为了使用 Google 登录，我们会加载 Google 登录，这会连接到 Google 的服务器。同一项同意也会在 YouTube 频道中加载 YouTube 播放器。",
+		"signInAccept": "接受"
 	},
 	"join": {
 		"welcome": "欢迎来到 {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "无网络连接",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "返回电台",
 		"retry": "重试连接",
 		"retrying": "重试中...",
 		"connecting": "连接服务器中...",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "音乐来源",
-		"sourceHint": "Apple Music 仅在你的设备上播放，并且需要 Apple Music 订阅。",
+		"sourceHint": "Apple Music 在你的电脑上播放，并且需要 Apple Music 订阅。",
 		"connect": "连接 Apple Music",
 		"connectHint": "请使用订阅了 Apple Music 的 Apple 账号登录。",
 		"start": "开始播放",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music 已停止播放（{code}）。请按播放键重试。",
 		"contentNotice": "此频道的封面图片和试听来自 Apple。加载时，Apple 会看到你的 IP 地址。",
 		"contentAccept": "开启",
-		"previewFailed": "无法播放此试听。"
+		"previewFailed": "无法播放此试听。",
+		"standby": "此频道正在你的另一台设备上播放。",
+		"playHere": "在此播放",
+		"waitingForHost": "已暂停，等待主持人重新播放。",
+		"playsOnComputer": "Apple Music 在电脑上播放。请在电脑上打开此频道并连接 Apple Music。"
 	},
 	"attribution": {
 		"youtube": "基于 YouTube 开发"

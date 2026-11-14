@@ -20,7 +20,22 @@ function isAutoplayRefusal(err) {
 	return code === 'NotAllowedError' || code === 'USER_INTERACTION_REQUIRED';
 }
 
-export function useApplePreview({ track, volume, onEnded }) {
+const CATALOG_TYPE = { song: 'songs', musicVideo: 'music-videos' };
+
+// Without an Apple sign-in MusicKit looks queued ids up in "us", whatever
+// storefrontId says (14.11.2026), and some ids of the host's country do not
+// exist there. So the item is fetched from the room's storefront and queued
+// as it is, which needs no further lookup.
+async function queueFromStorefront(music, kind, id, storefront) {
+	if (!storefront) return music.setQueue({ [kind]: id, startPlaying: false });
+	const response = await music.api.music(`/v1/catalog/${storefront}/${CATALOG_TYPE[kind]}/${id}`);
+	const resource = response?.data?.data?.[0];
+	if (!resource) throw Object.assign(new Error('Not in this storefront'), { errorCode: 'NOT_FOUND' });
+	return music.setQueue({ items: [resource], startPlaying: false });
+}
+
+// storefront: the room's, the country of the host's Apple account.
+export function useApplePreview({ track, volume, onEnded, storefront }) {
 	const [music, setMusic] = useState(null);
 	const [status, setStatus] = useState('idle');
 	const onEndedRef = useLatestRef(onEnded);
@@ -95,14 +110,19 @@ export function useApplePreview({ track, volume, onEnded }) {
 		(async () => {
 			try {
 				music.previewOnly = true;
-				await music.setQueue({ [kind]: id, startPlaying: false });
+				await queueFromStorefront(music, kind, id, storefront);
 				if (cancelled) return;
 				await music.play();
+				// Closed while play() was starting: nothing else stops it now.
+				if (cancelled) {
+					try { music.stop(); } catch { /* nothing loaded */ }
+					return;
+				}
 				// A browser may refuse sound without a fresh click and still
 				// resolve play(): check that the preview really plays.
 				await new Promise(resolve => setTimeout(resolve, START_CHECK_MS));
 				if (!cancelled && music.playbackState !== window.MusicKit?.PlaybackStates?.playing) {
-					setStatus(prev => (prev === 'loading' ? 'needs-start' : prev));
+					setStatus(prev => (prev === 'error' ? prev : 'needs-start'));
 				}
 			} catch (err) {
 				if (!cancelled) setStatus(isAutoplayRefusal(err) ? 'needs-start' : 'error');
@@ -111,7 +131,7 @@ export function useApplePreview({ track, volume, onEnded }) {
 		return () => {
 			cancelled = true;
 		};
-	}, [music, kind, id, key]);
+	}, [music, kind, id, key, storefront]);
 
 	// Leaving the room stops a running preview.
 	useEffect(() => () => {
@@ -125,11 +145,21 @@ export function useApplePreview({ track, volume, onEnded }) {
 		} catch { /* not ready yet */ }
 	}, [music, volume]);
 
-	// The guest's tap when the browser refused to start on its own.
+	// The guest's tap when the browser refused to start on its own, or after
+	// the phone paused the preview (screen lock). The button comes back if this
+	// does not start it either.
 	const start = useCallback(() => {
 		if (!music) return;
 		setStatus('loading');
-		Promise.resolve(music.play()).catch(() => setStatus('error'));
+		Promise.resolve(music.play())
+			.then(() => new Promise(resolve => setTimeout(resolve, START_CHECK_MS)))
+			.then(() => {
+				if (!loadingKeyRef.current) return;
+				if (music.playbackState !== window.MusicKit?.PlaybackStates?.playing) {
+					setStatus(prev => (prev === 'error' ? prev : 'needs-start'));
+				}
+			})
+			.catch(err => setStatus(isAutoplayRefusal(err) ? 'needs-start' : 'error'));
 	}, [music]);
 
 	return { status, start, kind };

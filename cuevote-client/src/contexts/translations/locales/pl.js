@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Gospodarz musi najpierw połączyć Apple Music.",
 		"appleMusicRoom": "Ten kanał odtwarza Apple Music. Wklej link z music.apple.com lub wyszukaj po nazwie.",
 		"appleMusicNotFound": "Nie znaleziono w Apple Music.",
+		"appleMusicLinkUnsupported": "Wklej link do jednego utworu lub teledysku albo wyszukaj po nazwie.",
 		"appleMusicNotInStorefront": "Ten utwór jest niedostępny w Apple Music w kraju gospodarza.",
 		"appleMusicCatalogError": "Apple Music nie odpowiada. Spróbuj ponownie."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Aby odtwarzać muzykę, musimy załadować odtwarzacz YouTube. Łączy się to z serwerami Google.",
 		"policy": "Przeczytaj naszą Politykę Prywatności",
 		"accept": "Zaakceptuj i Odtwarzaj",
-		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej."
+		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej.",
+		"signInDescription": "Aby zalogować się przez Google, wczytujemy logowanie Google, które łączy się z serwerami Google. Ta sama zgoda wczytuje też odtwarzacz YouTube na kanałach YouTube.",
+		"signInAccept": "Akceptuję"
 	},
 	"join": {
 		"welcome": "Witamy w {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Brak połączenia z internetem",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Wróć do radia",
 		"retry": "Ponów połączenie",
 		"switching": "Przełączanie kanału...",
 		"channelNotFound": "Kanał nie istnieje",
@@ -298,7 +301,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Źródło muzyki",
-		"sourceHint": "Apple Music gra tylko na Twoim urządzeniu i wymaga subskrypcji Apple Music.",
+		"sourceHint": "Apple Music gra na Twoim komputerze i wymaga subskrypcji Apple Music.",
 		"connect": "Połącz Apple Music",
 		"connectHint": "Zaloguj się na konto Apple, na którym masz subskrypcję Apple Music.",
 		"start": "Rozpocznij odtwarzanie",
@@ -309,7 +312,11 @@ export default {
 		"problemGeneric": "Odtwarzanie w Apple Music zostało zatrzymane ({code}). Naciśnij przycisk odtwarzania, aby spróbować ponownie.",
 		"contentNotice": "Okładki i podglądy w tym kanale pochodzą od Apple. Podczas ich ładowania Apple widzi Twój adres IP.",
 		"contentAccept": "Włącz",
-		"previewFailed": "Nie można odtworzyć tego podglądu."
+		"previewFailed": "Nie można odtworzyć tego podglądu.",
+		"standby": "Ten kanał jest odtwarzany na innym Twoim urządzeniu.",
+		"playHere": "Odtwarzaj tutaj",
+		"waitingForHost": "Wstrzymano, dopóki gospodarz znów nie zacznie odtwarzać.",
+		"playsOnComputer": "Apple Music odtwarza się na komputerze. Otwórz tam ten kanał i połącz Apple Music."
 	},
 	"attribution": {
 		"youtube": "Stworzone z YouTube"

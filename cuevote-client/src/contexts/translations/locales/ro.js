@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Gazda trebuie mai întâi să conecteze Apple Music.",
 		"appleMusicRoom": "Acest canal redă Apple Music. Lipește un link de pe music.apple.com sau caută după nume.",
 		"appleMusicNotFound": "Nu a fost găsit pe Apple Music.",
+		"appleMusicLinkUnsupported": "Lipește linkul unei singure melodii sau al unui videoclip muzical ori caută după nume.",
 		"appleMusicNotInStorefront": "Această piesă nu este disponibilă pe Apple Music în țara gazdei.",
 		"appleMusicCatalogError": "Apple Music nu a răspuns. Încearcă din nou."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Pentru a reda muzică, trebuie să încărcăm playerul YouTube. Acesta se conectează la serverele Google.",
 		"policy": "Citiți Politica noastră de Confidențialitate",
 		"accept": "Acceptă și Redă Muzica",
-		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos."
+		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos.",
+		"signInDescription": "Pentru conectarea cu Google încărcăm autentificarea Google, care se conectează la serverele Google. Același consimțământ încarcă și playerul YouTube în canalele YouTube.",
+		"signInAccept": "Accept"
 	},
 	"join": {
 		"welcome": "Bine ai venit pe {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Fără conexiune la internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Înapoi la radio",
 		"retry": "Reîncearcă conexiunea",
 		"switching": "Schimbare Canal...",
 		"channelNotFound": "Canalul nu există",
@@ -296,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Sursa muzicii",
-		"sourceHint": "Apple Music se redă doar pe dispozitivul tău și necesită un abonament Apple Music.",
+		"sourceHint": "Apple Music se redă pe computerul tău și necesită un abonament Apple Music.",
 		"connect": "Conectează Apple Music",
 		"connectHint": "Autentifică-te cu contul Apple pe care ai abonamentul Apple Music.",
 		"start": "Pornește redarea",
@@ -307,7 +310,11 @@ export default {
 		"problemGeneric": "Apple Music a oprit redarea ({code}). Apasă pe redare pentru a încerca din nou.",
 		"contentNotice": "Copertele și previzualizările din acest canal vin de la Apple. La încărcarea lor, Apple vede adresa ta IP.",
 		"contentAccept": "Activează",
-		"previewFailed": "Această previzualizare nu poate fi redată."
+		"previewFailed": "Această previzualizare nu poate fi redată.",
+		"standby": "Acest canal rulează acum pe un alt dispozitiv al tău.",
+		"playHere": "Redă aici",
+		"waitingForHost": "În pauză până când gazda pornește din nou redarea.",
+		"playsOnComputer": "Apple Music se redă pe un computer. Deschide canalul acolo și conectează Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

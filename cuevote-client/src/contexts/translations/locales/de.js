@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Der Host muss zuerst Apple Music verbinden.",
 		"appleMusicRoom": "In diesem Kanal läuft Apple Music. Füge einen Link von music.apple.com ein oder suche nach dem Namen.",
 		"appleMusicNotFound": "Das wurde auf Apple Music nicht gefunden.",
+		"appleMusicLinkUnsupported": "Füge einen Link zu einem einzelnen Song oder Musikvideo ein oder suche nach dem Namen.",
 		"appleMusicNotInStorefront": "Dieser Titel ist im Land des Hosts nicht auf Apple Music verfügbar.",
 		"appleMusicCatalogError": "Apple Music hat nicht geantwortet. Bitte versuche es erneut."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Um Musik abzuspielen, müssen wir den YouTube-Player laden. Dies stellt eine Verbindung zu Google-Servern her.",
 		"policy": "Datenschutzerklärung lesen",
 		"accept": "Akzeptieren & Musik abspielen",
-		"youtubeConsent": "Wir benötigen Ihre Zustimmung, um den YouTube-Player zu laden. Bitte akzeptieren Sie unten Cookies."
+		"youtubeConsent": "Wir benötigen Ihre Zustimmung, um den YouTube-Player zu laden. Bitte akzeptieren Sie unten Cookies.",
+		"signInDescription": "Für die Anmeldung mit Google laden wir die Google-Anmeldung. Dabei wird eine Verbindung zu Googles Servern hergestellt. Dieselbe Zustimmung lädt in YouTube-Kanälen auch den YouTube-Player.",
+		"signInAccept": "Akzeptieren"
 	},
 	"join": {
 		"welcome": "Willkommen bei {brand}",
@@ -187,7 +190,7 @@ export default {
 		"noInternet": "Keine Internetverbindung",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Zurück zum Radio",
 		"retry": "Verbindung wiederholen",
 		"retrying": "Wiederholen...",
 		"connecting": "Verbinde mit Server...",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musikquelle",
-		"sourceHint": "Apple Music läuft nur auf deinem Gerät und braucht ein Abo.",
+		"sourceHint": "Apple Music läuft auf deinem Computer und braucht ein Abo.",
 		"connect": "Apple Music verbinden",
 		"connectHint": "Melde dich mit dem Apple-Konto an, mit dem du Apple Music abonniert hast.",
 		"start": "Wiedergabe starten",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music hat die Wiedergabe gestoppt ({code}). Drücke auf Play, um es erneut zu versuchen.",
 		"contentNotice": "Cover und Vorschauen in diesem Kanal kommen von Apple. Beim Laden sieht Apple deine IP-Adresse.",
 		"contentAccept": "Einschalten",
-		"previewFailed": "Diese Vorschau lässt sich nicht abspielen."
+		"previewFailed": "Diese Vorschau lässt sich nicht abspielen.",
+		"standby": "Dieser Kanal läuft gerade auf einem anderen deiner Geräte.",
+		"playHere": "Hier abspielen",
+		"waitingForHost": "Pausiert, bis der Host wieder abspielt.",
+		"playsOnComputer": "Apple Music spielt am Computer. Öffne diesen Kanal dort und verbinde Apple Music."
 	},
 	"attribution": {
 		"youtube": "Entwickelt mit YouTube"

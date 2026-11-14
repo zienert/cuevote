@@ -7,7 +7,7 @@ import { Consent } from '../contexts/ConsentContext';
 import { CookieConsent } from './CookieConsent';
 
 export function ConditionalGoogleOAuthProvider({ children }) {
-	const { hasConsent, showBanner, giveConsent } = Consent.useConsent();
+	const { hasConsent, showBanner, giveConsent, consentRequested } = Consent.useConsent();
 	const location = useLocation();
 
 	// Check if we are inside a room (URLs starting with /room/)
@@ -26,8 +26,10 @@ export function ConditionalGoogleOAuthProvider({ children }) {
 					{children}
 				</>
 			)}
-			{/* Only show global banner if NOT in a room */}
-			{showBanner && !isInRoom && <CookieConsent onAccept={giveConsent} />}
+			{/* Not in a room on its own, but when asked for there: an Apple
+			    channel has no welcome screen, and signing in with Google needs
+			    this consent (the button did nothing, 14.11.2026). */}
+			{showBanner && (!isInRoom || consentRequested) && <CookieConsent onAccept={giveConsent} forSignIn={consentRequested} />}
 		</>
 	);
 }

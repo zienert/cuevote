@@ -122,6 +122,8 @@ function RoomBody() {
     reconnectAttempt,
     forceReconnect,
     progressRef,
+    progressAtRef,
+    applePlayerLease,
   } = useWebSocketContext();
 
   // Debounce the reconnecting banner — brief mobile disconnects (< 2.5 s) shouldn't flash a banner
@@ -190,7 +192,9 @@ function RoomBody() {
     bannedVideos = [], // Added this
     captionsEnabled = false,
     requireLogin = false,
-    provider = 'youtube'
+    provider = 'youtube',
+    appleStorefront = null,
+    waitingForHost = false,
   } = serverState || {};
   // Apple Music rooms play only on the owner's device (MusicKit needs the
   // host's own subscription); everyone else gets the playlist view.
@@ -246,13 +250,22 @@ function RoomBody() {
   // phones too: Apple allows previews in any browser. The owner cannot,
   // MusicKit on their device already plays the room.
   const prelistenEnabled = allowPrelisten && (isAppleRoom ? !isOwner : !isForcedVenueMode);
+  // The owner's desktop plays an Apple room; on a phone nothing plays.
+  const appleHostEnabled = isAppleRoom && !!isOwner && !isForcedVenueMode;
   const apple = useAppleMusicHost({
-    enabled: isAppleRoom && !!isOwner && !isForcedVenueMode,
+    enabled: appleHostEnabled,
     currentTrack,
     isPlaying,
     progressRef,
+    progressAtRef,
     sendMessage,
+    lease: applePlayerLease,
   });
+  // The server paused the room over a problem on the host's side.
+  const reportAppleProblem = apple.reportProblem;
+  useEffect(() => {
+    if (lastMessage?.type === "APPLE_PLAYBACK_PROBLEM") reportAppleProblem(lastMessage.payload?.code);
+  }, [lastMessage, reportAppleProblem]);
   // Android web guests can sideload the native app; offer it via a footer + a
   // pre-download comparison. iOS cannot sideload, so it never sees this.
   // Its comparison (video, prelisten, hosting only in the app) describes YouTube
@@ -1396,6 +1409,7 @@ function RoomBody() {
     track: isAppleRoom && !isOwner && appleConsent ? previewTrack : null,
     volume: isMuted ? 0 : volume / 100,
     onEnded: handleStopPreview,
+    storefront: appleStorefront,
   });
 
   // Watch for Room Not Found Error
@@ -1774,6 +1788,7 @@ function RoomBody() {
             onManageBanned={() => setShowBannedPage(true)}
             onPreview={isAppleRoom ? undefined : handlePreviewTrack}
             onClose={() => setShowPendingPage(false)}
+            showYouTubeAttribution={!isAppleRoom}
           />
         ) : null;
       })()}
@@ -1810,6 +1825,7 @@ function RoomBody() {
           bannedVideos={bannedVideos}
           onUnban={handleUnbanSong}
           onClose={() => setShowBannedPage(false)}
+          showYouTubeAttribution={!isAppleRoom}
         />
       )}
 
@@ -1833,10 +1849,31 @@ function RoomBody() {
         <div
           className={`absolute inset-0 border-4 ${previewTrack ? "border-green-500" : "border-transparent"} transition-colors duration-300 box-border pointer-events-none z-20`}
         ></div>
+        {/* The owner's Apple player stays mounted in every view and is only
+            hidden: MusicKit's video lives in its container, and a video taken
+            out of the page stops (Playlist, Library, requests; 14.11.2026). */}
+        {appleHostEnabled && (
+          <div className={!isAnyPlaylistView && !showPendingPage && !showBannedPage ? "absolute inset-0" : "hidden"}>
+            <PlayerErrorBoundary>
+              <AppleMusicHostPlayer apple={apple} currentTrack={currentTrack} />
+            </PlayerErrorBoundary>
+          </div>
+        )}
         {isAnyPlaylistView ? (
           /* Venue Mode: Only Playlist View */
           <div className="w-full h-full flex flex-col overflow-hidden">
             {isAppleRoom && !appleConsent && <AppleContentNotice onAccept={giveAppleConsent} />}
+            {/* An owner on a phone: nothing plays here, and nothing said so. */}
+            {isAppleRoom && isOwner && isForcedVenueMode && (
+              <p className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2 text-center text-xs text-neutral-300 leading-snug">
+                {t('appleMusic.playsOnComputer')}
+              </p>
+            )}
+            {isAppleRoom && waitingForHost && !(isOwner && isForcedVenueMode) && (
+              <p className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2 text-center text-xs text-amber-300 leading-snug">
+                {t('appleMusic.waitingForHost')}
+              </p>
+            )}
             <div className="flex-1 min-h-0 overflow-hidden">
             <PlaylistView
               history={history}
@@ -1891,21 +1928,17 @@ function RoomBody() {
             )}
           </div>
         ) : (
-          /* Standard Mode */
+          /* Standard Mode (an Apple room's owner gets the player mounted above) */
           <>
-            {!showPendingPage && !showBannedPage && (
+            {!showPendingPage && !showBannedPage && !isAppleRoom && (
               <div className="absolute inset-0">
                 {!playerConsent ? (
                   CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="w-full h-full flex items-center justify-center bg-black text-neutral-500">Loading…</div>
                 ) : (
                   <>
-                    {/* The Apple player stays visible in an empty channel: its sign-in
-                        has to be reachable before the first song is queued. */}
-                    <div style={{ display: (currentTrack || previewTrack || isAppleRoom) ? 'block' : 'none', width: '100%', height: '100%' }}>
+                    <div style={{ display: (currentTrack || previewTrack) ? 'block' : 'none', width: '100%', height: '100%' }}>
                       <PlayerErrorBoundary>
-                        {isAppleRoom ? (
-                          <AppleMusicHostPlayer apple={apple} currentTrack={currentTrack} />
-                        ) : playbackError ? (
+                        {playbackError ? (
                           <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900 text-center p-6 space-y-4">
                             <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400">
                               <AlertTriangle size={24} />
@@ -1923,7 +1956,7 @@ function RoomBody() {
                         )}
                       </PlayerErrorBoundary>
                     </div>
-                    {!(currentTrack || previewTrack || isAppleRoom) && <div className="flex h-full w-full items-center justify-center text-neutral-500 bg-neutral-900">{t('playlist.queueEmpty')}</div>}
+                    {!(currentTrack || previewTrack) && <div className="flex h-full w-full items-center justify-center text-neutral-500 bg-neutral-900">{t('playlist.queueEmpty')}</div>}
                   </>
                 )}
               </div>
@@ -1975,7 +2008,7 @@ function RoomBody() {
                   ) : (
                     <Skeleton className="h-4 w-32 max-w-full bg-green-700/60" />
                   )}
-                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold animate-pulse flex-shrink-0">PREVIEW</span>
+                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold uppercase animate-pulse flex-shrink-0">{t('track.preview')}</span>
                 </div>
                 {previewTrack.artist ? (
                   <p className="text-green-200 text-xs sm:text-sm truncate">{previewTrack.artist}</p>
@@ -2043,6 +2076,7 @@ function RoomBody() {
         <div className="fixed inset-0 z-[200] w-full h-screen bg-[#1a1a1a] text-white overflow-hidden">
           <SettingsView
             onClose={() => setShowSettings(false)}
+            isAppleRoom={isAppleRoom}
             pendingCount={pendingSuggestions.length}
             suggestionMode={suggestionMode}
             onManageRequests={() => {

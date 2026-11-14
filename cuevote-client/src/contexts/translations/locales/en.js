@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "The host has to connect Apple Music first.",
 		"appleMusicRoom": "This channel plays Apple Music. Paste a music.apple.com link or search by name.",
 		"appleMusicNotFound": "Could not find this on Apple Music.",
+		"appleMusicLinkUnsupported": "Paste a link to a single song or music video, or search by name.",
 		"appleMusicNotInStorefront": "This title is not available on Apple Music in the host's country.",
 		"appleMusicCatalogError": "Apple Music did not answer. Please try again."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "To play music, we need to load the YouTube Player. This connects to Google's servers.",
 		"policy": "Read our Privacy Policy",
 		"accept": "Accept & Play Music",
-		"youtubeConsent": "We need your consent to load the YouTube Player. Please accept cookies below."
+		"youtubeConsent": "We need your consent to load the YouTube Player. Please accept cookies below.",
+		"signInDescription": "To sign in with Google, we load Google's sign-in. This connects to Google's servers. The same consent also loads the YouTube player in YouTube channels.",
+		"signInAccept": "Accept"
 	},
 	"join": {
 		"welcome": "Welcome to {brand}",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Music source",
-		"sourceHint": "Apple Music plays only on your device and needs an Apple Music subscription.",
+		"sourceHint": "Apple Music plays on your computer and needs an Apple Music subscription.",
 		"connect": "Connect Apple Music",
 		"connectHint": "Sign in with the Apple account that has your Apple Music subscription.",
 		"start": "Start playback",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music stopped playback ({code}). Press play to try again.",
 		"contentNotice": "Cover art and previews in this channel come from Apple. Apple sees your IP address when they load.",
 		"contentAccept": "Turn on",
-		"previewFailed": "This preview cannot be played."
+		"previewFailed": "This preview cannot be played.",
+		"standby": "This channel is playing on another of your devices.",
+		"playHere": "Play here",
+		"waitingForHost": "Paused until the host plays again.",
+		"playsOnComputer": "Apple Music plays on a computer. Open this channel there and connect Apple Music."
 	},
 	"attribution": {
 		"youtube": "Developed with YouTube"

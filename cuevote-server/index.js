@@ -252,6 +252,12 @@ wss.on("connection", (ws, req) => {
     ipSocketCount.set(ip, ipCount + 1);
     ws.ip = ip; // marker that this socket is counted
 
+    // Country of the connection as Cloudflare sees it ("XX" unknown, "T1" Tor).
+    // Only ever a default: the storefront of the owner's own Apple room until
+    // their player reports the account's (Room.addClient).
+    const cfCountry = typeof req.headers['cf-ipcountry'] === 'string' ? req.headers['cf-ipcountry'].trim().toLowerCase() : '';
+    ws.country = /^[a-z]{2}$/.test(cfCountry) && cfCountry !== 'xx' ? cfCountry : null;
+
     // Parse Client ID
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const clientId = urlParams.get('clientId');

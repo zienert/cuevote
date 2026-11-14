@@ -25,10 +25,24 @@ export function AppleMusicHostPlayer({ apple, currentTrack }) {
 	const { t } = Language.useLanguage();
 	const parsed = parseTrackKey(currentTrack?.videoId);
 	const isSong = parsed?.provider === 'apple' && parsed.kind === 'song';
-	const { status, problem, connect, start } = apple;
+	const { status, problem, connect, start, claim } = apple;
 
 	let overlay = null;
-	if (status === 'loading' || status === 'off') {
+	if (status === 'standby') {
+		// Another owner device plays the room: Apple streams one at a time.
+		overlay = (
+			<>
+				<p className="max-w-sm text-neutral-300">{t('appleMusic.standby')}</p>
+				<button
+					type="button"
+					onClick={claim}
+					className="px-6 py-3 rounded-full bg-white text-black font-semibold hover:bg-neutral-200 transition-colors"
+				>
+					{t('appleMusic.playHere')}
+				</button>
+			</>
+		);
+	} else if (status === 'loading' || status === 'off') {
 		overlay = <p className="text-neutral-300">{t('appleMusic.loading')}</p>;
 	} else if (status === 'error') {
 		overlay = <p className="text-neutral-300">{t('appleMusic.loadFailed')}</p>;
@@ -90,6 +104,7 @@ AppleMusicHostPlayer.propTypes = {
 		problem: PropTypes.shape({ code: PropTypes.string }),
 		connect: PropTypes.func.isRequired,
 		start: PropTypes.func.isRequired,
+		claim: PropTypes.func.isRequired,
 	}).isRequired,
 	currentTrack: PropTypes.object,
 };

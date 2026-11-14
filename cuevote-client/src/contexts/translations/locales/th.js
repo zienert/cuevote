@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "เจ้าภาพต้องเชื่อมต่อ Apple Music ก่อน",
 		"appleMusicRoom": "ช่องนี้เล่นเพลงจาก Apple Music วางลิงก์ music.apple.com หรือค้นหาด้วยชื่อ",
 		"appleMusicNotFound": "ไม่พบใน Apple Music",
+		"appleMusicLinkUnsupported": "วางลิงก์ของเพลงหรือมิวสิกวิดีโอเพียงรายการเดียว หรือค้นหาด้วยชื่อ",
 		"appleMusicNotInStorefront": "เพลงนี้ไม่พร้อมใช้งานบน Apple Music ในประเทศของเจ้าภาพ",
 		"appleMusicCatalogError": "Apple Music ไม่ตอบสนอง โปรดลองอีกครั้ง"
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "เพื่อเล่นวิดีโอ เราจำเป็นต้องโหลดเครื่องเล่น YouTube ซึ่งจะเชื่อมต่อกับเซิร์ฟเวอร์ของ Google",
 		"policy": "อ่านนโยบายความเป็นส่วนตัวของเรา",
 		"accept": "ยอมรับและเล่นวิดีโอ",
-		"youtubeConsent": "เราต้องการความยินยอมจากคุณเพื่อโหลดเครื่องเล่น YouTube โปรดยอมรับคุกกี้ด้านล่าง"
+		"youtubeConsent": "เราต้องการความยินยอมจากคุณเพื่อโหลดเครื่องเล่น YouTube โปรดยอมรับคุกกี้ด้านล่าง",
+		"signInDescription": "หากต้องการเข้าสู่ระบบด้วย Google เราจะโหลดระบบเข้าสู่ระบบของ Google ซึ่งเชื่อมต่อกับเซิร์ฟเวอร์ของ Google ความยินยอมเดียวกันนี้ยังใช้โหลดเครื่องเล่น YouTube ในช่อง YouTube ด้วย",
+		"signInAccept": "ยอมรับ"
 	},
 	"join": {
 		"welcome": "ยินดีต้อนรับสู่ {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "กลับไปที่วิทยุ",
 		"retry": "ลองเชื่อมต่ออีกครั้ง",
 		"switching": "กำลังเปลี่ยนช่อง...",
 		"channelNotFound": "ไม่มีช่องนี้",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "แหล่งเพลง",
-		"sourceHint": "Apple Music เล่นเฉพาะบนอุปกรณ์ของคุณ และต้องสมัครสมาชิก Apple Music",
+		"sourceHint": "Apple Music เล่นบนคอมพิวเตอร์ของคุณ และต้องสมัครสมาชิก Apple Music",
 		"connect": "เชื่อมต่อ Apple Music",
 		"connectHint": "เข้าสู่ระบบด้วยบัญชี Apple ที่สมัครสมาชิก Apple Music ไว้",
 		"start": "เริ่มเล่น",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music หยุดเล่น ({code}) กดเล่นเพื่อลองอีกครั้ง",
 		"contentNotice": "ภาพปกและตัวอย่างในช่องนี้มาจาก Apple ระหว่างโหลด Apple จะเห็นที่อยู่ IP ของคุณ",
 		"contentAccept": "เปิดใช้",
-		"previewFailed": "ไม่สามารถเล่นตัวอย่างนี้ได้"
+		"previewFailed": "ไม่สามารถเล่นตัวอย่างนี้ได้",
+		"standby": "ช่องนี้กำลังเล่นอยู่บนอุปกรณ์อื่นของคุณ",
+		"playHere": "เล่นที่นี่",
+		"waitingForHost": "หยุดชั่วคราวจนกว่าเจ้าภาพจะเล่นอีกครั้ง",
+		"playsOnComputer": "Apple Music เล่นบนคอมพิวเตอร์ เปิดช่องนี้บนคอมพิวเตอร์แล้วเชื่อมต่อ Apple Music"
 	},
 	"attribution": {
 		"youtube": "พัฒนาด้วย YouTube"

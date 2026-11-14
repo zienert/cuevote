@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "L'host deve prima collegare Apple Music.",
 		"appleMusicRoom": "Questo canale riproduce Apple Music. Incolla un link di music.apple.com o cerca per nome.",
 		"appleMusicNotFound": "Non trovato su Apple Music.",
+		"appleMusicLinkUnsupported": "Incolla il link di un singolo brano o video musicale, oppure cerca per nome.",
 		"appleMusicNotInStorefront": "Questo brano non è disponibile su Apple Music nel paese dell'host.",
 		"appleMusicCatalogError": "Apple Music non ha risposto. Riprova."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Per riprodurre musica, dobbiamo caricare il player di YouTube. Questo si connette ai server di Google.",
 		"policy": "Leggi la nostra Privacy Policy",
 		"accept": "Accetta e Riproduci Musica",
-		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto."
+		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto.",
+		"signInDescription": "Per accedere con Google carichiamo l'accesso di Google, che si collega ai server di Google. Lo stesso consenso carica anche il player di YouTube nei canali YouTube.",
+		"signInAccept": "Accetta"
 	},
 	"join": {
 		"welcome": "Benvenuto su {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Nessuna connessione internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Torna alla radio",
 		"retry": "Riprova connessione",
 		"retrying": "Riprovo...",
 		"connecting": "Connessione al server...",
@@ -296,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Fonte musicale",
-		"sourceHint": "Apple Music viene riprodotto solo sul tuo dispositivo e richiede un abbonamento ad Apple Music.",
+		"sourceHint": "Apple Music viene riprodotto sul tuo computer e richiede un abbonamento ad Apple Music.",
 		"connect": "Collega Apple Music",
 		"connectHint": "Accedi con l'account Apple a cui è associato il tuo abbonamento Apple Music.",
 		"start": "Avvia riproduzione",
@@ -307,7 +310,11 @@ export default {
 		"problemGeneric": "Apple Music ha interrotto la riproduzione ({code}). Premi play per riprovare.",
 		"contentNotice": "Le copertine e le anteprime di questo canale arrivano da Apple. Durante il caricamento Apple vede il tuo indirizzo IP.",
 		"contentAccept": "Attiva",
-		"previewFailed": "Impossibile riprodurre questa anteprima."
+		"previewFailed": "Impossibile riprodurre questa anteprima.",
+		"standby": "Questo canale è in riproduzione su un altro dei tuoi dispositivi.",
+		"playHere": "Riproduci qui",
+		"waitingForHost": "In pausa finché l'host non riprende la riproduzione.",
+		"playsOnComputer": "Apple Music si riproduce su un computer. Apri lì questo canale e collega Apple Music."
 	},
 	"attribution": {
 		"youtube": "Sviluppato con YouTube"

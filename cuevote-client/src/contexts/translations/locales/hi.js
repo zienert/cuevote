@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "होस्ट को पहले Apple Music कनेक्ट करना होगा।",
 		"appleMusicRoom": "यह चैनल Apple Music चलाता है। music.apple.com का लिंक पेस्ट करें या नाम से खोजें।",
 		"appleMusicNotFound": "यह Apple Music पर नहीं मिला।",
+		"appleMusicLinkUnsupported": "किसी एक गाने या म्यूज़िक वीडियो का लिंक पेस्ट करें या नाम से खोजें।",
 		"appleMusicNotInStorefront": "यह गाना होस्ट के देश में Apple Music पर उपलब्ध नहीं है।",
 		"appleMusicCatalogError": "Apple Music ने जवाब नहीं दिया। कृपया पुनः प्रयास करें।"
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "संवीडियो चलाने के लिए, हमें YouTube प्लेयर लोड करना होगा। यह Google के सर्वर से कनेक्ट होता है।",
 		"policy": "हमारी गोपनीयता नीति पढ़ें",
 		"accept": "स्वीकार करें और संवीडियो चलाएं",
-		"youtubeConsent": "YouTube प्लेयर लोड करने के लिए हमें आपकी सहमति की आवश्यकता है। कृपया नीचे कुकीज़ स्वीकार करें।"
+		"youtubeConsent": "YouTube प्लेयर लोड करने के लिए हमें आपकी सहमति की आवश्यकता है। कृपया नीचे कुकीज़ स्वीकार करें।",
+		"signInDescription": "Google से साइन इन करने के लिए हम Google साइन-इन लोड करते हैं, जो Google के सर्वर से जुड़ता है। यही सहमति YouTube चैनलों में YouTube प्लेयर भी लोड करती है।",
+		"signInAccept": "स्वीकार करें"
 	},
 	"join": {
 		"welcome": "{brand} में आपका स्वागत है",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "कोई इंटरनेट कनेक्शन नहीं",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "रेडियो पर वापस जाएँ",
 		"retry": "कनेक्शन पुनः प्रयास करें",
 		"retrying": "पुनः प्रयास कर रहा है...",
 		"connecting": "सर्वर से कनेक्ट हो रहा है...",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "संगीत स्रोत",
-		"sourceHint": "Apple Music सिर्फ़ आपके डिवाइस पर चलता है और इसके लिए Apple Music सदस्यता ज़रूरी है।",
+		"sourceHint": "Apple Music आपके कंप्यूटर पर चलता है और इसके लिए Apple Music सदस्यता ज़रूरी है।",
 		"connect": "Apple Music कनेक्ट करें",
 		"connectHint": "उस Apple खाते से साइन इन करें जिसमें आपकी Apple Music सदस्यता है।",
 		"start": "प्लेबैक शुरू करें",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music ने प्लेबैक रोक दिया ({code})। फिर से प्रयास करने के लिए प्ले दबाएं।",
 		"contentNotice": "इस चैनल के कवर आर्ट और पूर्वावलोकन Apple से आते हैं। इन्हें लोड करते समय Apple आपका IP पता देखता है।",
 		"contentAccept": "चालू करें",
-		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।"
+		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।",
+		"standby": "यह चैनल अभी आपके किसी दूसरे डिवाइस पर चल रहा है।",
+		"playHere": "यहाँ चलाएँ",
+		"waitingForHost": "होस्ट के दोबारा चलाने तक रुका हुआ है।",
+		"playsOnComputer": "Apple Music कंप्यूटर पर चलता है। वहाँ यह चैनल खोलें और Apple Music कनेक्ट करें।"
 	},
 	"attribution": {
 		"youtube": "YouTube के साथ विकसित"

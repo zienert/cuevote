@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "על המארח לחבר קודם את Apple Music.",
 		"appleMusicRoom": "הערוץ הזה מנגן Apple Music. יש להדביק קישור מ-music.apple.com או לחפש לפי שם.",
 		"appleMusicNotFound": "לא נמצא ב-Apple Music.",
+		"appleMusicLinkUnsupported": "יש להדביק קישור לשיר בודד או לקליפ, או לחפש לפי שם.",
 		"appleMusicNotInStorefront": "השיר הזה אינו זמין ב-Apple Music במדינה של המארח.",
 		"appleMusicCatalogError": "Apple Music לא הגיב. יש לנסות שוב."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "כדי לנגן מוזיקה, עלינו לטעון את נגן YouTube. זה מתחבר לשרתים של Google.",
 		"policy": "קרא את מדיניות הפרטיות שלנו",
 		"accept": "אשר ונגן מוזיקה",
-		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה."
+		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה.",
+		"signInDescription": "כדי להתחבר עם Google אנחנו טוענים את ההתחברות של Google, שמתחברת לשרתים של Google. אותה הסכמה טוענת גם את נגן YouTube בערוצי YouTube.",
+		"signInAccept": "אישור"
 	},
 	"join": {
 		"welcome": "ברוכים הבאים ל-{brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "אין חיבור לאינטרנט",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "חזרה לרדיו",
 		"retry": "נסה להתחבר שוב",
 		"switching": "מחליף ערוץ...",
 		"channelNotFound": "ערוץ לא קיים",
@@ -296,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "מקור המוזיקה",
-		"sourceHint": "Apple Music מתנגן רק במכשיר שלך ודורש מינוי ל-Apple Music.",
+		"sourceHint": "Apple Music מתנגן במחשב שלך ודורש מינוי ל-Apple Music.",
 		"connect": "חיבור Apple Music",
 		"connectHint": "יש להתחבר עם חשבון Apple שיש בו מינוי ל-Apple Music.",
 		"start": "התחלת ניגון",
@@ -307,7 +310,11 @@ export default {
 		"problemGeneric": "Apple Music עצר את הניגון ({code}). יש ללחוץ על ניגון כדי לנסות שוב.",
 		"contentNotice": "עטיפות האלבומים והתצוגות המקדימות בערוץ הזה מגיעות מ-Apple. בזמן הטעינה Apple רואה את כתובת ה-IP שלך.",
 		"contentAccept": "הפעלה",
-		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו."
+		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו.",
+		"standby": "הערוץ הזה מתנגן כעת במכשיר אחר שלך.",
+		"playHere": "לנגן כאן",
+		"waitingForHost": "מושהה עד שהמארח ינגן שוב.",
+		"playsOnComputer": "Apple Music מתנגן במחשב. יש לפתוח את הערוץ שם ולחבר את Apple Music."
 	},
 	"attribution": {
 		"youtube": "פותח עם YouTube"

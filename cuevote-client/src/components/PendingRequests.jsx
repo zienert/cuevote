@@ -99,7 +99,8 @@ export const PendingRequestsExports = {
 		</div >
 		);
 	},
-	PendingRequestsPage({ requests, onApprove, onReject, onBan, onManageBanned, onPreview, onClose }) {
+	// showYouTubeAttribution: off in Apple Music channels, which play nothing from YouTube.
+	PendingRequestsPage({ requests, onApprove, onReject, onBan, onManageBanned, onPreview, onClose, showYouTubeAttribution = true }) {
 		const { t } = Language.useLanguage();
 		return (
 		<div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex flex-col animate-in fade-in">
@@ -119,7 +120,7 @@ export const PendingRequestsExports = {
 								({t('pending.pendingCount', { count: requests.length })})
 							</span>
 						</h1>
-						<YouTubeBrandSubtitle className="ml-9" />
+						{showYouTubeAttribution && <YouTubeBrandSubtitle className="ml-9" />}
 					</div>
 				</div>
 				<button

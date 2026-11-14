@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "주최자가 먼저 Apple Music을 연결해야 합니다.",
 		"appleMusicRoom": "이 채널은 Apple Music을 재생합니다. music.apple.com 링크를 붙여넣거나 이름으로 검색하세요.",
 		"appleMusicNotFound": "Apple Music에서 찾을 수 없습니다.",
+		"appleMusicLinkUnsupported": "곡 하나 또는 뮤직비디오 하나의 링크를 붙여넣거나 이름으로 검색하세요.",
 		"appleMusicNotInStorefront": "이 곡은 주최자 국가의 Apple Music에서 이용할 수 없습니다.",
 		"appleMusicCatalogError": "Apple Music이 응답하지 않았습니다. 다시 시도하세요."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "음악을 재생하려면 YouTube 플레이어를 로드해야 합니다. 이는 Google 서버에 연결됩니다.",
 		"policy": "개인정보 처리방침 읽기",
 		"accept": "수락 및 음악 재생",
-		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오."
+		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오.",
+		"signInDescription": "Google로 로그인하려면 Google 로그인을 불러옵니다. 이때 Google 서버에 연결됩니다. 같은 동의로 YouTube 채널에서는 YouTube 플레이어도 불러옵니다.",
+		"signInAccept": "동의"
 	},
 	"join": {
 		"welcome": "{brand}에 오신 것을 환영합니다",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "인터넷에 연결되지 않음",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "라디오로 돌아가기",
 		"retry": "연결 재시도",
 		"retrying": "재시도 중...",
 		"connecting": "서버 연결 중...",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "음악 소스",
-		"sourceHint": "Apple Music은 내 기기에서만 재생되며 Apple Music 구독이 필요합니다.",
+		"sourceHint": "Apple Music은 내 컴퓨터에서 재생되며 Apple Music 구독이 필요합니다.",
 		"connect": "Apple Music 연결",
 		"connectHint": "Apple Music을 구독 중인 Apple 계정으로 로그인하세요.",
 		"start": "재생 시작",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music 재생이 중지되었습니다({code}). 재생 버튼을 눌러 다시 시도하세요.",
 		"contentNotice": "이 채널의 커버 아트와 미리듣기는 Apple에서 제공됩니다. 로드할 때 Apple이 귀하의 IP 주소를 확인할 수 있습니다.",
 		"contentAccept": "켜기",
-		"previewFailed": "이 미리듣기를 재생할 수 없습니다."
+		"previewFailed": "이 미리듣기를 재생할 수 없습니다.",
+		"standby": "이 채널은 지금 다른 기기에서 재생 중입니다.",
+		"playHere": "여기에서 재생",
+		"waitingForHost": "주최자가 다시 재생할 때까지 일시 정지됩니다.",
+		"playsOnComputer": "Apple Music은 컴퓨터에서 재생됩니다. 컴퓨터에서 이 채널을 열고 Apple Music을 연결하세요."
 	},
 	"attribution": {
 		"youtube": "YouTube로 개발됨"

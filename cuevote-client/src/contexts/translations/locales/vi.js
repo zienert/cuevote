@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Người tổ chức cần kết nối Apple Music trước.",
 		"appleMusicRoom": "Kênh này phát Apple Music. Hãy dán link music.apple.com hoặc tìm theo tên.",
 		"appleMusicNotFound": "Không tìm thấy trên Apple Music.",
+		"appleMusicLinkUnsupported": "Hãy dán link của một bài hát hoặc một video âm nhạc, hoặc tìm theo tên.",
 		"appleMusicNotInStorefront": "Bài hát này không khả dụng trên Apple Music ở quốc gia của người tổ chức.",
 		"appleMusicCatalogError": "Apple Music không phản hồi. Vui lòng thử lại."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Để phát nhạc, chúng tôi cần tải trình phát YouTube. Điều này kết nối với máy chủ của Google.",
 		"policy": "Đọc Chính sách bảo mật của chúng tôi",
 		"accept": "Chấp nhận & Phát nhạc",
-		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới."
+		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới.",
+		"signInDescription": "Để đăng nhập bằng Google, chúng tôi tải trang đăng nhập của Google, vốn kết nối với máy chủ của Google. Sự đồng ý này cũng tải trình phát YouTube trong các kênh YouTube.",
+		"signInAccept": "Chấp nhận"
 	},
 	"join": {
 		"welcome": "Chào mừng đến với {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Không có kết nối internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Quay lại radio",
 		"retry": "Thử lại kết nối",
 		"switching": "Đang chuyển kênh...",
 		"channelNotFound": "Kênh không tồn tại",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Nguồn nhạc",
-		"sourceHint": "Apple Music chỉ phát trên thiết bị của bạn và cần gói đăng ký Apple Music.",
+		"sourceHint": "Apple Music phát trên máy tính của bạn và cần gói đăng ký Apple Music.",
 		"connect": "Kết nối Apple Music",
 		"connectHint": "Đăng nhập bằng tài khoản Apple có gói đăng ký Apple Music của bạn.",
 		"start": "Bắt đầu phát",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music đã dừng phát ({code}). Nhấn phát để thử lại.",
 		"contentNotice": "Ảnh bìa và bản nghe thử trong kênh này đến từ Apple. Khi tải, Apple thấy địa chỉ IP của bạn.",
 		"contentAccept": "Bật",
-		"previewFailed": "Không thể phát bản nghe thử này."
+		"previewFailed": "Không thể phát bản nghe thử này.",
+		"standby": "Kênh này đang phát trên một thiết bị khác của bạn.",
+		"playHere": "Phát tại đây",
+		"waitingForHost": "Đang tạm dừng cho đến khi người tổ chức phát lại.",
+		"playsOnComputer": "Apple Music phát trên máy tính. Hãy mở kênh này trên máy tính và kết nối Apple Music."
 	},
 	"attribution": {
 		"youtube": "Phát triển với YouTube"

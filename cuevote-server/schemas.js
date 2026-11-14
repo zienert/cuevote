@@ -98,16 +98,31 @@ const FetchSuggestionsPayload = z.object({
   videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
 });
 
-const UpdateDurationPayload = z.number().finite().positive().max(86400);
+// A bare number is what older clients send; the object names the queue entry
+// the duration belongs to, so a late report cannot land on the next track.
+const DurationSeconds = z.number().finite().positive().max(86400);
+const UpdateDurationPayload = z.union([
+  DurationSeconds,
+  z.object({ duration: DurationSeconds, trackId: z.string().min(1).max(100) }),
+]);
 
 // The host's player reports why the current track failed: a YouTube IFrame
 // error number, or a MusicKit error code in Apple rooms.
 const PlaybackErrorPayload = z.object({
   videoId: z.string().min(1).max(50),
   errorCode: z.union([z.number().int(), z.string().max(60)]).optional(),
+  // The queue entry that failed: the same song can be queued twice in a row.
+  trackId: z.string().min(1).max(100).optional(),
 });
 
 const PlayPausePayload = z.boolean();
+
+// What the owner's Apple player can do: play (playing, or ready and paused
+// with the room), not (blocked: loading, signed out, waiting for a tap, an
+// error), or stand by while another owner device plays.
+const ApplePlayerStatusPayload = z.object({
+  state: z.enum(['playing', 'ready', 'blocked', 'standby']),
+});
 
 // Remote DJ MCP: the web consent page sends this (over the user's authenticated
 // socket) to approve an OAuth authorization. The server adds the user id and
@@ -151,6 +166,7 @@ module.exports = {
   FetchSuggestionsPayload,
   UpdateDurationPayload,
   PlaybackErrorPayload,
+  ApplePlayerStatusPayload,
   PlayPausePayload,
   McpAuthorizePayload,
   GuestSessionPayload,

@@ -5,7 +5,8 @@ import { Ban, X, ArrowLeft, CheckCircle } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 
-export function BannedVideosPage({ bannedVideos, onUnban, onClose }) {
+// showYouTubeAttribution: off in Apple Music channels, which play nothing from YouTube.
+export function BannedVideosPage({ bannedVideos, onUnban, onClose, showYouTubeAttribution = true }) {
 	const { t } = Language.useLanguage();
 	return (
 		<div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex flex-col animate-in fade-in">
@@ -24,7 +25,7 @@ export function BannedVideosPage({ bannedVideos, onUnban, onClose }) {
 							({bannedVideos.length})
 						</span>
 					</h1>
-					<YouTubeBrandSubtitle className="ml-9" />
+					{showYouTubeAttribution && <YouTubeBrandSubtitle className="ml-9" />}
 				</div>
 			</div>
 

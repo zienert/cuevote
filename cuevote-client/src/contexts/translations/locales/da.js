@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Værten skal først forbinde Apple Music.",
 		"appleMusicRoom": "Denne kanal spiller Apple Music. Indsæt et link fra music.apple.com eller søg efter navn.",
 		"appleMusicNotFound": "Ikke fundet på Apple Music.",
+		"appleMusicLinkUnsupported": "Indsæt et link til én sang eller musikvideo, eller søg efter navn.",
 		"appleMusicNotInStorefront": "Dette nummer er ikke tilgængeligt på Apple Music i værtens land.",
 		"appleMusicCatalogError": "Apple Music svarede ikke. Prøv igen."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "For at afspille musik skal vi indlæse YouTube-afspilleren. Dette opretter forbindelse til Googles servere.",
 		"policy": "Læs vores fortrolighedspolitik",
 		"accept": "Accepter & Spil musik",
-		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor."
+		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor.",
+		"signInDescription": "For at logge ind med Google indlæser vi Googles login, som forbinder til Googles servere. Det samme samtykke indlæser også YouTube-afspilleren i YouTube-kanaler.",
+		"signInAccept": "Accepter"
 	},
 	"join": {
 		"welcome": "Velkommen til {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Ingen internetforbindelse",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Tilbage til radioen",
 		"retry": "Prøv forbindelse igen",
 		"switching": "Skifter kanal...",
 		"channelNotFound": "Kanal eksisterer ikke",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musikkilde",
-		"sourceHint": "Apple Music spiller kun på din enhed og kræver et Apple Music-abonnement.",
+		"sourceHint": "Apple Music spiller på din computer og kræver et Apple Music-abonnement.",
 		"connect": "Forbind Apple Music",
 		"connectHint": "Log ind med den Apple-konto, der har dit Apple Music-abonnement.",
 		"start": "Start afspilning",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music stoppede afspilningen ({code}). Tryk på afspil for at prøve igen.",
 		"contentNotice": "Covers og forhåndsvisninger i denne kanal kommer fra Apple. Når de indlæses, ser Apple din IP-adresse.",
 		"contentAccept": "Slå til",
-		"previewFailed": "Denne forhåndsvisning kan ikke afspilles."
+		"previewFailed": "Denne forhåndsvisning kan ikke afspilles.",
+		"standby": "Denne kanal afspilles lige nu på en anden af dine enheder.",
+		"playHere": "Afspil her",
+		"waitingForHost": "Sat på pause, indtil værten afspiller igen.",
+		"playsOnComputer": "Apple Music afspilles på en computer. Åbn kanalen der, og forbind Apple Music."
 	},
 	"attribution": {
 		"youtube": "Udviklet med YouTube"

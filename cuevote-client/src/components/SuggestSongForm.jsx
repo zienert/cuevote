@@ -28,14 +28,17 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
     }
   }, [isConnected, isSubmittingSuggestion, t]);
 
-  // Safety Timeout to prevent hanging
+  // Safety Timeout to prevent hanging. Longer than the server may take: Apple's
+  // catalog gets up to 8 s per request, and a link from another country takes
+  // two (apple-catalog.js); at 5 s the form gave up before the server's own,
+  // translated answer arrived.
   useEffect(() => {
     let timeout;
     if (isSubmittingSuggestion) {
       timeout = setTimeout(() => {
         setIsSubmittingSuggestion(false);
         setSuggestionError(t('app.takingTooLong'));
-      }, 5000);
+      }, 20000);
     }
     return () => clearTimeout(timeout);
   }, [isSubmittingSuggestion, t]);

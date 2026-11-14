@@ -303,10 +303,10 @@ export function Header({
     <GoogleAuthButton
       onLoginSuccess={onLoginSuccess}
       render={(performLogin, disabled) => (
+        // Without the cookie consent performLogin asks for it.
         <button
-          onClick={() => !disabled && performLogin()}
-          disabled={disabled}
-          className={`flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-neutral-700 bg-neutral-800/50 transition-all ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:ring-2 hover:ring-orange-500/30 active:scale-95'}`}
+          onClick={() => performLogin()}
+          className={`flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-neutral-700 bg-neutral-800/50 transition-all ${disabled ? 'opacity-40' : 'hover:ring-2 hover:ring-orange-500/30 active:scale-95'}`}
           title={disabled ? t('header.acceptCookies') : t('header.signIn')}
         >
           <GoogleGIcon className="w-4 h-4" />

@@ -107,23 +107,27 @@ export function PlaybackControls({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered]);
 
-  const handleSeekClick = (e) => {
-    if (!isOwner || !onSeek) return;
+  const percentageAt = (e) => {
     const rect = progressBarRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const width = rect.width;
-    const percentage = Math.max(0, Math.min(100, (x / width) * 100));
-    onSeek(percentage);
+    return Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
   };
 
-  // Dragging support could be added here with mouse move logic, 
-  // but click-to-seek is often sufficient and cleaner for this context. 
-  // Adding simple drag support:
+  // Where a drag along the bar stands. Dragging only moves the bar; the seek
+  // goes out once, with the click that ends it. Seeking on every mouse move
+  // sent dozens of seeks a second, up to the server's rate limit, and made
+  // the Apple player seek on each (Nov. 2026).
+  const [dragPercent, setDragPercent] = useState(null);
+
+  const handleSeekClick = (e) => {
+    setDragPercent(null);
+    if (!isOwner || !onSeek) return;
+    onSeek(percentageAt(e));
+  };
+
   const handleMouseMove = (e) => {
-    if (e.buttons === 1) { // Left Button Pressed
-      handleSeekClick(e);
-    }
-  }
+    if (e.buttons === 1) setDragPercent(percentageAt(e)); // left button held
+    else if (dragPercent !== null) setDragPercent(null);
+  };
 
 
   const footerRef = useRef(null);
@@ -173,10 +177,11 @@ export function PlaybackControls({
           className={`w-full bg-neutral-900 rounded-full h-2 overflow-hidden relative ${isOwner ? 'cursor-pointer group' : ''}`}
           onClick={handleSeekClick}
           onMouseMove={isOwner ? handleMouseMove : undefined}
+          onMouseLeave={() => setDragPercent(null)}
         >
           <div
-            className="h-2 bg-gradient-to-r from-orange-400 to-orange-600 transition-all relative"
-            style={{ width: `${progress}%` }}
+            className={`h-2 bg-gradient-to-r from-orange-400 to-orange-600 relative ${dragPercent === null ? 'transition-all' : ''}`}
+            style={{ width: `${dragPercent ?? progress}%` }}
           >
             {/* Handle for owners */}
             {isOwner && (

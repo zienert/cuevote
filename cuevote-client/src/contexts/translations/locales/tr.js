@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Ev sahibinin önce Apple Music'i bağlaması gerekiyor.",
 		"appleMusicRoom": "Bu kanalda Apple Music çalıyor. Bir music.apple.com bağlantısı yapıştırın veya adıyla arayın.",
 		"appleMusicNotFound": "Apple Music'te bulunamadı.",
+		"appleMusicLinkUnsupported": "Tek bir şarkının veya müzik videosunun bağlantısını yapıştırın ya da adıyla arayın.",
 		"appleMusicNotInStorefront": "Bu parça, ev sahibinin ülkesinde Apple Music'te mevcut değil.",
 		"appleMusicCatalogError": "Apple Music yanıt vermedi. Lütfen tekrar deneyin."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Müzik çalmak için YouTube Oynatıcısını yüklememiz gerekiyor. Bu, Google sunucularına bağlanır.",
 		"policy": "Gizlilik Politikamızı okuyun",
 		"accept": "Kabul Et & Müzik Çal",
-		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin."
+		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin.",
+		"signInDescription": "Google ile giriş yapmak için Google girişini yüklüyoruz; bu, Google sunucularına bağlanır. Aynı onay, YouTube kanallarında YouTube oynatıcısını da yükler.",
+		"signInAccept": "Kabul et"
 	},
 	"join": {
 		"welcome": "{brand}'a hoş geldiniz",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "İnternet bağlantısı yok",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Radyoya dön",
 		"retry": "Bağlantıyı tekrar dene",
 		"switching": "Kanal Değiştiriliyor...",
 		"channelNotFound": "Kanal mevcut değil",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Müzik kaynağı",
-		"sourceHint": "Apple Music yalnızca sizin cihazınızda çalar ve Apple Music aboneliği gerektirir.",
+		"sourceHint": "Apple Music bilgisayarınızda çalar ve Apple Music aboneliği gerektirir.",
 		"connect": "Apple Music'i bağla",
 		"connectHint": "Apple Music aboneliğinizin bağlı olduğu Apple hesabıyla giriş yapın.",
 		"start": "Oynatmayı başlat",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music oynatmayı durdurdu ({code}). Tekrar denemek için oynat düğmesine basın.",
 		"contentNotice": "Bu kanaldaki kapak görselleri ve önizlemeler Apple'dan gelir. Yüklenirken Apple IP adresinizi görür.",
 		"contentAccept": "Aç",
-		"previewFailed": "Bu önizleme oynatılamıyor."
+		"previewFailed": "Bu önizleme oynatılamıyor.",
+		"standby": "Bu kanal şu anda başka bir cihazınızda çalıyor.",
+		"playHere": "Burada çal",
+		"waitingForHost": "Ev sahibi yeniden çalana kadar duraklatıldı.",
+		"playsOnComputer": "Apple Music bir bilgisayarda çalar. Bu kanalı orada açın ve Apple Music'i bağlayın."
 	},
 	"attribution": {
 		"youtube": "YouTube ile geliştirildi"

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "L'hôte doit d'abord connecter Apple Music.",
 		"appleMusicRoom": "Cette chaîne diffuse Apple Music. Collez un lien music.apple.com ou recherchez par nom.",
 		"appleMusicNotFound": "Introuvable sur Apple Music.",
+		"appleMusicLinkUnsupported": "Collez le lien d'un seul titre ou d'un clip, ou recherchez par nom.",
 		"appleMusicNotInStorefront": "Ce titre n'est pas disponible sur Apple Music dans le pays de l'hôte.",
 		"appleMusicCatalogError": "Apple Music n'a pas répondu. Réessayez."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Pour lire la musique, nous devons charger le lecteur YouTube. Cela se connecte aux serveurs de Google.",
 		"policy": "Lire notre politique de confidentialité",
 		"accept": "Accepter & Lire la musique",
-		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous."
+		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous.",
+		"signInDescription": "Pour vous connecter avec Google, nous chargeons la connexion Google, qui se connecte aux serveurs de Google. Le même consentement charge aussi le lecteur YouTube dans les chaînes YouTube.",
+		"signInAccept": "Accepter"
 	},
 	"join": {
 		"welcome": "Bienvenue sur {brand}",
@@ -187,7 +190,7 @@ export default {
 		"noInternet": "Pas de connexion internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Retour à la radio",
 		"retry": "Réessayer",
 		"retrying": "Tentative...",
 		"connecting": "Connexion au serveur...",
@@ -296,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Source musicale",
-		"sourceHint": "Avec Apple Music, la lecture se fait uniquement sur votre appareil et nécessite un abonnement Apple Music.",
+		"sourceHint": "Avec Apple Music, la lecture se fait sur votre ordinateur et nécessite un abonnement Apple Music.",
 		"connect": "Connecter Apple Music",
 		"connectHint": "Connectez-vous avec le compte Apple lié à votre abonnement Apple Music.",
 		"start": "Lancer la lecture",
@@ -307,7 +310,11 @@ export default {
 		"problemGeneric": "Apple Music a arrêté la lecture ({code}). Appuyez sur Lecture pour réessayer.",
 		"contentNotice": "Les pochettes et les aperçus de cette chaîne viennent d'Apple. Lors de leur chargement, Apple voit votre adresse IP.",
 		"contentAccept": "Activer",
-		"previewFailed": "Impossible de lire cet aperçu."
+		"previewFailed": "Impossible de lire cet aperçu.",
+		"standby": "Cette chaîne est en cours de lecture sur un autre de vos appareils.",
+		"playHere": "Lire ici",
+		"waitingForHost": "En pause jusqu'à ce que l'hôte relance la lecture.",
+		"playsOnComputer": "Apple Music se lit sur un ordinateur. Ouvrez cette chaîne sur celui-ci et connectez Apple Music."
 	},
 	"attribution": {
 		"youtube": "Développé avec YouTube"

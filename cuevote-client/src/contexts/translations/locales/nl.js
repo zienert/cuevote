@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "De host moet eerst Apple Music verbinden.",
 		"appleMusicRoom": "Dit kanaal speelt Apple Music. Plak een link van music.apple.com of zoek op naam.",
 		"appleMusicNotFound": "Niet gevonden op Apple Music.",
+		"appleMusicLinkUnsupported": "Plak een link naar één nummer of muziekvideo, of zoek op naam.",
 		"appleMusicNotInStorefront": "Dit nummer is niet beschikbaar op Apple Music in het land van de host.",
 		"appleMusicCatalogError": "Apple Music reageerde niet. Probeer het opnieuw."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Om muziek af te spelen, moeten we de YouTube-speler laden. Dit maakt verbinding met Google-servers.",
 		"policy": "Lees ons privacybeleid",
 		"accept": "Accepteren & Muziek luisteren",
-		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies."
+		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies.",
+		"signInDescription": "Om in te loggen met Google laden we de inlogfunctie van Google. Dit maakt verbinding met de servers van Google. Met dezelfde toestemming laden we in YouTube-kanalen ook de YouTube-speler.",
+		"signInAccept": "Accepteren"
 	},
 	"join": {
 		"welcome": "Welkom bij {brand}",
@@ -187,7 +190,7 @@ export default {
 		"noInternet": "Geen internetverbinding",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Terug naar de radio",
 		"retry": "Opnieuw proberen",
 		"retrying": "Opnieuw proberen...",
 		"connecting": "Verbinden met server...",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Muziekbron",
-		"sourceHint": "Apple Music speelt alleen af op je eigen apparaat en vereist een Apple Music-abonnement.",
+		"sourceHint": "Apple Music speelt af op je computer en vereist een Apple Music-abonnement.",
 		"connect": "Apple Music verbinden",
 		"connectHint": "Log in met het Apple-account van je Apple Music-abonnement.",
 		"start": "Afspelen starten",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music heeft het afspelen gestopt ({code}). Druk op afspelen om het opnieuw te proberen.",
 		"contentNotice": "Albumhoezen en voorbeelden in dit kanaal komen van Apple. Bij het laden ziet Apple je IP-adres.",
 		"contentAccept": "Aanzetten",
-		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld."
+		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld.",
+		"standby": "Dit kanaal speelt nu op een ander apparaat van je.",
+		"playHere": "Hier afspelen",
+		"waitingForHost": "Gepauzeerd tot de host weer afspeelt.",
+		"playsOnComputer": "Apple Music speelt op een computer. Open dit kanaal daar en verbind Apple Music."
 	},
 	"attribution": {
 		"youtube": "Ontwikkeld met YouTube"

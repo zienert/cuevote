@@ -6,6 +6,8 @@ const assert = require('node:assert/strict');
 const {
   bestMatch,
   createAppleCatalog,
+  isAppleMusicPage,
+  looksLikeLink,
   parseAppleMusicLink,
   isStorefront,
   toTrack,
@@ -65,6 +67,24 @@ describe('Apple Music catalog', () => {
       assert.deepEqual(parseAppleMusicLink('https://music.apple.com/us/song/levitating/1538003843'), { kind: 'song', id: '1538003843' });
       assert.deepEqual(parseAppleMusicLink('https://music.apple.com/us/album/levitating/1538003494?i=1538003843'), { kind: 'song', id: '1538003843' });
       assert.deepEqual(parseAppleMusicLink(' https://music.apple.com/de/music-video/1258705880 '), { kind: 'musicVideo', id: '1258705880' });
+    });
+
+    it('reads share, embed and old iTunes links and an upper-case storefront', () => {
+      assert.deepEqual(parseAppleMusicLink('https://geo.music.apple.com/NL/song/levitating/1538003843'), { kind: 'song', id: '1538003843' });
+      assert.deepEqual(parseAppleMusicLink('https://embed.music.apple.com/nl/music-video/new-rules/1258705880'), { kind: 'musicVideo', id: '1258705880' });
+      assert.deepEqual(parseAppleMusicLink('https://itunes.apple.com/us/album/levitating/id1538003494?i=1538003843'), { kind: 'song', id: '1538003843' });
+    });
+
+    it('tells links from titles, and Apple pages that are not a song', () => {
+      for (const link of ['https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT', 'www.youtube.com/watch?v=dQw4w9WgXcQ', 'youtu.be/dQw4w9WgXcQ', 'https://apple.co/3xYz']) {
+        assert.equal(looksLikeLink(link), true, link);
+      }
+      for (const title of ['New Rules', 'Still D.R.E.', 'AC/DC Thunderstruck', 'Mr. Brightside']) {
+        assert.equal(looksLikeLink(title), false, title);
+      }
+      assert.equal(isAppleMusicPage('https://music.apple.com/us/album/levitating/1538003494'), true);
+      assert.equal(isAppleMusicPage('https://apple.co/3xYz'), true);
+      assert.equal(isAppleMusicPage('https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT'), false);
     });
 
     it('ignores everything else', () => {
@@ -166,6 +186,21 @@ describe('Apple Music catalog', () => {
     });
   });
 
+  describe('equivalents', () => {
+    it('finds the id this storefront uses for the same recording, one request per key', async () => {
+      const fetchImpl = fakeFetch((url) => {
+        const id = url.searchParams.get('filter[equivalents]');
+        if (id === '693246512') return { body: { data: [song(1715687117, 'Sexy Bitch (feat. Akon)')] } };
+        return { body: { data: [] } };
+      });
+      const catalog = createAppleCatalog({ getToken, fetchImpl });
+      const found = await catalog.equivalents('nl', ['am:song:693246512', 'am:video:1', 'dQw4w9WgXcQ']);
+      assert.deepEqual([...found.keys()], ['am:song:693246512']);
+      assert.equal(found.get('am:song:693246512').videoId, 'am:song:1715687117');
+      assert.deepEqual(fetchImpl.calls.map(c => c.url.pathname), ['/v1/catalog/nl/songs', '/v1/catalog/nl/music-videos']);
+    });
+  });
+
   describe('errors', () => {
     it('names rate limits, rejected tokens, outages and other failures', async () => {
       const cases = [
@@ -203,6 +238,37 @@ describe('Apple Music catalog', () => {
         songs: [s('Anti-Hero', 'Taylor Swift')],
       });
       assert.equal(antiHero.videoId, 'am:video:Anti-Hero');
+    });
+
+    it('returns nothing when no result is about what was typed', () => {
+      const unrelated = { videos: [v('Open Your Eyes', 'Snow Patrol')], songs: [s('Shape of You', 'Ed Sheeran')] };
+      assert.equal(bestMatch('Zzyzx Road Dreamland', unrelated), null);
+      assert.equal(bestMatch('levitating dua lipa official music video 4k', { videos: levitating }).videoId, 'am:video:Levitating (feat. DaBaby)');
+    });
+
+    it('takes a song by the artist named over a song the artist is only featured on', () => {
+      const pick = bestMatch('Ed Sheeran', {
+        songs: [s('Yours Eternally (feat. Ed Sheeran & Taras Topolia)', 'U2'), s('Shape of You', 'Ed Sheeran')],
+      });
+      assert.equal(pick.artist, 'Ed Sheeran');
+    });
+
+    it('forgives typos and half-typed words', () => {
+      const queen = { videos: [v('Bohemian Rhapsody (Remastered)', 'Queen')], songs: [s('Bohemian Rhapsody', 'Queen')] };
+      assert.equal(bestMatch('Bohemain Rapsody', queen).videoId, 'am:video:Bohemian Rhapsody (Remastered)');
+      assert.equal(bestMatch('levit', { videos: levitating }).videoId, 'am:video:Levitating (feat. DaBaby)');
+      assert.equal(bestMatch('Still Dre', { videos: [v('Still D.R.E. (feat. Snoop Dogg)', 'Dr. Dre')] }).artist, 'Dr. Dre');
+    });
+
+    it('prefers the original video over a numbered alternate, but not over a single version', () => {
+      const brightside = bestMatch('Mr Brightside', {
+        videos: [v('Mr. Brightside (Version 2)', 'The Killers'), v('Mr. Brightside', 'The Killers')],
+        songs: [s('Mr. Brightside', 'The Killers')],
+      });
+      assert.equal(brightside.videoId, 'am:video:Mr. Brightside');
+
+      const single = bestMatch('New Rules', { videos: [v('New Rules (Single Version)'), v('New Rules (Live)')] });
+      assert.equal(single.videoId, 'am:video:New Rules (Single Version)');
     });
 
     it('gives a remix, a live or a lyric video to whoever asks for one', () => {

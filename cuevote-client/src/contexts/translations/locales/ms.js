@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Hos perlu menyambungkan Apple Music terlebih dahulu.",
 		"appleMusicRoom": "Saluran ini memainkan Apple Music. Tampal pautan music.apple.com atau cari mengikut nama.",
 		"appleMusicNotFound": "Tidak dijumpai di Apple Music.",
+		"appleMusicLinkUnsupported": "Tampal pautan ke satu lagu atau video muzik, atau cari mengikut nama.",
 		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara hos.",
 		"appleMusicCatalogError": "Apple Music tidak menjawab. Sila cuba lagi."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Untuk memainkan muzik, kami perlu memuatkan Pemain YouTube. Ini bersambung ke pelayan Google.",
 		"policy": "Baca Dasar Privasi kami",
 		"accept": "Terima & Mainkan Muzik",
-		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah."
+		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah.",
+		"signInDescription": "Untuk log masuk dengan Google, kami memuatkan log masuk Google, yang bersambung ke pelayan Google. Persetujuan yang sama juga memuatkan pemain YouTube dalam saluran YouTube.",
+		"signInAccept": "Terima"
 	},
 	"join": {
 		"welcome": "Selamat datang ke {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Tiada sambungan internet",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Kembali ke Radio",
 		"retry": "Cuba semula sambungan",
 		"switching": "Menukar Saluran...",
 		"channelNotFound": "Saluran tidak wujud",
@@ -292,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Sumber muzik",
-		"sourceHint": "Apple Music hanya dimainkan pada peranti anda dan memerlukan langganan Apple Music.",
+		"sourceHint": "Apple Music dimainkan pada komputer anda dan memerlukan langganan Apple Music.",
 		"connect": "Sambungkan Apple Music",
 		"connectHint": "Log masuk dengan akaun Apple yang mempunyai langganan Apple Music anda.",
 		"start": "Mulakan main balik",
@@ -303,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music menghentikan main balik ({code}). Tekan main untuk mencuba lagi.",
 		"contentNotice": "Kulit album dan pratonton dalam saluran ini datang daripada Apple. Semasa ia dimuatkan, Apple dapat melihat alamat IP anda.",
 		"contentAccept": "Hidupkan",
-		"previewFailed": "Pratonton ini tidak dapat dimainkan."
+		"previewFailed": "Pratonton ini tidak dapat dimainkan.",
+		"standby": "Saluran ini sedang dimainkan pada peranti anda yang lain.",
+		"playHere": "Main di sini",
+		"waitingForHost": "Dijeda sehingga hos memainkan semula.",
+		"playsOnComputer": "Apple Music dimainkan pada komputer. Buka saluran ini di sana dan sambungkan Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dibangunkan dengan YouTube"

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Ο οικοδεσπότης πρέπει πρώτα να συνδέσει το Apple Music.",
 		"appleMusicRoom": "Αυτό το κανάλι παίζει Apple Music. Επικολλήστε έναν σύνδεσμο από το music.apple.com ή αναζητήστε με όνομα.",
 		"appleMusicNotFound": "Δεν βρέθηκε στο Apple Music.",
+		"appleMusicLinkUnsupported": "Επικολλήστε σύνδεσμο για ένα μόνο τραγούδι ή μουσικό βίντεο ή αναζητήστε με το όνομα.",
 		"appleMusicNotInStorefront": "Αυτό το κομμάτι δεν είναι διαθέσιμο στο Apple Music στη χώρα του οικοδεσπότη.",
 		"appleMusicCatalogError": "Το Apple Music δεν απάντησε. Δοκιμάστε ξανά."
 	},
@@ -87,7 +88,9 @@ export default {
 		"description": "Για την αναπαραγωγή μουσικής, πρέπει να φορτώσουμε το YouTube Player. Αυτό συνδέεται με διακομιστές της Google.",
 		"policy": "Διαβάστε την Πολιτική Απορρήτου",
 		"accept": "Αποδοχή & Αναπαραγωγή",
-		"youtubeConsent": "Χρειαζόμαστε τη συγκατάθεσή σας για τη φόρτωση του YouTube Player. Παρακαλούμε αποδεχτείτε τα cookies παρακάτω."
+		"youtubeConsent": "Χρειαζόμαστε τη συγκατάθεσή σας για τη φόρτωση του YouTube Player. Παρακαλούμε αποδεχτείτε τα cookies παρακάτω.",
+		"signInDescription": "Για σύνδεση με Google φορτώνουμε τη σύνδεση της Google, η οποία συνδέεται στους διακομιστές της Google. Η ίδια συγκατάθεση φορτώνει επίσης το πρόγραμμα αναπαραγωγής YouTube στα κανάλια YouTube.",
+		"signInAccept": "Αποδοχή"
 	},
 	"join": {
 		"welcome": "Καλώς ήρθατε στο {brand}",
@@ -170,7 +173,7 @@ export default {
 		"noInternet": "Χωρίς σύνδεση στο διαδίκτυο",
 		"windowTooSmall": "Window Too Small",
 		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"backToRadio": "Πίσω στο ραδιόφωνο",
 		"retry": "Επαναпроσπάθεια σύνδεσης",
 		"switching": "Αλλαγή Καναλιού...",
 		"channelNotFound": "Το κανάλι δεν υπάρχει",
@@ -294,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Πηγή μουσικής",
-		"sourceHint": "Το Apple Music παίζει μόνο στη συσκευή σας και απαιτεί συνδρομή στο Apple Music.",
+		"sourceHint": "Το Apple Music παίζει στον υπολογιστή σας και απαιτεί συνδρομή στο Apple Music.",
 		"connect": "Σύνδεση Apple Music",
 		"connectHint": "Συνδεθείτε με τον λογαριασμό Apple που έχει τη συνδρομή σας στο Apple Music.",
 		"start": "Έναρξη αναπαραγωγής",
@@ -305,7 +308,11 @@ export default {
 		"problemGeneric": "Το Apple Music διέκοψε την αναπαραγωγή ({code}). Πατήστε αναπαραγωγή για να δοκιμάσετε ξανά.",
 		"contentNotice": "Τα εξώφυλλα και οι προεπισκοπήσεις σε αυτό το κανάλι προέρχονται από την Apple. Κατά τη φόρτωσή τους, η Apple βλέπει τη διεύθυνση IP σας.",
 		"contentAccept": "Ενεργοποίηση",
-		"previewFailed": "Δεν είναι δυνατή η αναπαραγωγή αυτής της προεπισκόπησης."
+		"previewFailed": "Δεν είναι δυνατή η αναπαραγωγή αυτής της προεπισκόπησης.",
+		"standby": "Αυτό το κανάλι παίζει τώρα σε άλλη συσκευή σας.",
+		"playHere": "Αναπαραγωγή εδώ",
+		"waitingForHost": "Σε παύση μέχρι ο οικοδεσπότης να παίξει ξανά.",
+		"playsOnComputer": "Το Apple Music παίζει σε υπολογιστή. Ανοίξτε εκεί αυτό το κανάλι και συνδέστε το Apple Music."
 	},
 	"attribution": {
 		"youtube": "Αναπτύχθηκε με το YouTube"
