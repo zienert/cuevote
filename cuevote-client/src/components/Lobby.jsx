@@ -15,6 +15,7 @@ import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 import { channelLanguages, getFlagEmoji } from '../constants/channelLanguages';
 
 import { LoadingScreen } from './LoadingScreen';
+import { SegmentedControl } from './SegmentedControl';
 import { displayName, isSignedIn } from '../utils/participation';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 
@@ -884,7 +885,21 @@ export function Lobby() {
                                         ) : (
                                             <div className={`absolute inset-0 bg-gradient-to-br ${channel.color} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
                                         )}
+                                        {/* Apple channels never send a thumbnail, so a warm glow
+                                            from the label's corner fills the card instead. */}
+                                        {channel.provider === 'apple' && (
+                                            <div className="absolute inset-0 bg-[radial-gradient(130%_100%_at_0%_0%,rgba(249,115,22,0.22),transparent_60%)]" />
+                                        )}
                                     </div>
+
+                                    {/* The source in words, set like the rest of the card: Apple
+                                        allows its badges and icon only as links to Apple Music,
+                                        and the name stays "Apple Music" in every language. */}
+                                    {channel.provider === 'apple' && (
+                                        <span className={`absolute top-3 left-4 sm:top-5 sm:left-6 z-10 text-xs font-semibold transition-colors ${actualIndex === focusedIndex ? 'text-orange-300' : 'text-orange-400'}`}>
+                                            Apple Music
+                                        </span>
+                                    )}
 
                                     <div className="absolute inset-0 p-4 sm:p-6 flex flex-col justify-end z-10 w-full pointer-events-none">
                                         <div className="flex items-center justify-between pointer-events-auto">
@@ -931,16 +946,15 @@ export function Lobby() {
                                             </div>
                                             <Radio className={`transition-colors flex-shrink-0 ${actualIndex === focusedIndex ? "text-white" : "text-neutral-500"}`} />
                                         </div>
-                                        <p className="text-neutral-400 text-sm line-clamp-2 mt-2 pointer-events-auto">{channel.description}</p>
+                                        {/* One line, and none on a phone, where the card has no room
+                                            for it: the name and the source label keep theirs. */}
+                                        <p className="max-sm:hidden text-neutral-400 text-sm line-clamp-1 mt-2 pointer-events-auto">{channel.description}</p>
 
-                                        <div className="flex items-center gap-2 pt-4 text-xs font-medium text-neutral-500 uppercase tracking-wider justify-between pointer-events-auto">
+                                        <div className="flex items-center gap-2 pt-3 sm:pt-4 text-xs font-medium text-neutral-500 uppercase tracking-wider justify-between pointer-events-auto">
                                             <div className="flex items-center gap-2">
                                                 <Users size={14} /> <span>{channel.listeners || 0} {t('lobby.live')}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {channel.provider === 'apple' && (
-                                                    <span className="normal-case tracking-normal rounded-full border border-neutral-700 px-2 py-0.5 text-neutral-300">Apple Music</span>
-                                                )}
                                                 <span className="text-base normal-case" title={localizedCountries.find(l => l.code === channel.language_flag)?.label || 'International'}>{getFlagEmoji(channel.language_flag)}</span>
                                                 {channel.is_protected && <Lock size={14} className="text-orange-500" />}
                                             </div>
@@ -1013,49 +1027,46 @@ export function Lobby() {
                                         </div>
                                     </div>
 
+                                    {/* The sources in words: Apple allows its badges and icon only
+                                        as links to Apple Music, YouTube its logo only as a link to
+                                        YouTube content, and neither is a link here. */}
                                     {appleMusicAvailable && (
                                         <div>
-                                            <label className="block text-sm font-medium text-neutral-400 mb-1">{t('appleMusic.source')}</label>
-                                            <div className="flex gap-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setProvider('youtube')}
-                                                    className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${provider === 'youtube' ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
-                                                >
-                                                    YouTube
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setProvider('apple')}
-                                                    className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${provider === 'apple' ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
-                                                >
-                                                    Apple Music
-                                                </button>
-                                            </div>
+                                            <p id="create-source-label" className="block text-sm font-medium text-neutral-400 mb-1">{t('appleMusic.source')}</p>
+                                            <SegmentedControl
+                                                labelledBy="create-source-label"
+                                                value={provider}
+                                                onChange={setProvider}
+                                                options={[
+                                                    { value: 'youtube', label: 'YouTube' },
+                                                    { value: 'apple', label: 'Apple Music' },
+                                                ]}
+                                            />
                                             {provider === 'apple' && (
-                                                <p className="mt-2 text-xs text-neutral-500">{t('appleMusic.sourceHint')}</p>
+                                                <p className="mt-2 text-xs text-neutral-500 animate-in fade-in slide-in-from-top-1 duration-200">{t('appleMusic.sourceHint')}</p>
                                             )}
                                         </div>
                                     )}
 
                                     <div>
-                                        <label className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.privacy')}</label>
-                                        <div className="flex gap-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsPrivate(false)}
-                                                className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${!isPrivate ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
-                                            >
-                                                <Globe size={18} /> {t('lobby.public')}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => { setIsPrivate(true); setLanguageFlag('international'); setLanguageFlagOpen(false); }}
-                                                className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${isPrivate ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
-                                            >
-                                                <Lock size={18} /> {t('lobby.private')}
-                                            </button>
-                                        </div>
+                                        <p id="create-privacy-label" className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.privacy')}</p>
+                                        <SegmentedControl
+                                            labelledBy="create-privacy-label"
+                                            value={isPrivate ? 'private' : 'public'}
+                                            onChange={(choice) => {
+                                                if (choice === 'public') {
+                                                    setIsPrivate(false);
+                                                    return;
+                                                }
+                                                setIsPrivate(true);
+                                                setLanguageFlag('international');
+                                                setLanguageFlagOpen(false);
+                                            }}
+                                            options={[
+                                                { value: 'public', label: t('lobby.public'), icon: Globe },
+                                                { value: 'private', label: t('lobby.private'), icon: Lock },
+                                            ]}
+                                        />
                                     </div>
 
                                     {!isPrivate && (
