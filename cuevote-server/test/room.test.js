@@ -1027,6 +1027,42 @@ describe('Room', () => {
       room.destroy();
     });
 
+    it("takes the owner's country as the storefront until the player reports the account's", async () => {
+      useCatalog();
+      const room = appleRoom(null);
+      const guest = guestWs();
+      guest.country = 'de';
+      room.addClient(guest);
+      assert.equal(room.metadata.apple_storefront, null, 'a guest never sets it');
+
+      const owner = ownerWs();
+      owner.country = 'nl';
+      room.addClient(owner);
+      assert.equal(room.metadata.apple_storefront, 'nl');
+      assert.equal(room.state.appleStorefront, 'nl', 'guests get it for previews');
+
+      await room.handleMessage(owner, { type: 'APPLE_STOREFRONT', payload: 'be' });
+      assert.equal(room.state.appleStorefront, 'be');
+      room.destroy();
+    });
+
+    it('moves waiting entries to the ids of a new storefront and drops what it lacks', async () => {
+      const dutch = { ...song(1715687117, 'Sexy Bitch (feat. Akon)'), artist: 'David Guetta' };
+      useCatalog({ items: [video(1, 'Playing'), video(2, 'Everywhere')], equivalents: { 'am:song:693246512': dutch } });
+      const room = appleRoom('us');
+      room.state.queue = [video(1, 'Playing'), video(2, 'Everywhere'), song(693246512, 'Sexy Bitch'), video(3, 'US only')]
+        .map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
+      room.state.currentTrack = room.state.queue[0];
+      room.state.pendingSuggestions = [{ ...video(4, 'Also US only'), id: 'p1', score: 0, voters: {} }];
+
+      room.setAppleStorefront('nl');
+      await new Promise(resolve => setTimeout(resolve, 10));
+      assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1', 'am:video:2', 'am:song:1715687117']);
+      assert.equal(room.state.queue[2].id, 'q3', 'the same entry, votes and all');
+      assert.equal(room.state.pendingSuggestions.length, 0);
+      room.destroy();
+    });
+
     it('refuses links it cannot play instead of searching them as text', async () => {
       useCatalog({ search: { videos: [video(9, 'Open Your Eyes')], songs: [] } });
       const room = appleRoom();

@@ -138,6 +138,8 @@ class Room {
             activeChannel: name,
             ownerId: metadata.owner_id,
             provider: this.metadata.provider,
+            // Guests' previews look items up in the same country as the host.
+            appleStorefront: this.metadata.provider === 'apple' ? this.metadata.apple_storefront : null,
             suggestionsEnabled: true,
             musicOnly: false, // Default false
             maxDuration: 600, // Default 10 minutes
@@ -296,6 +298,15 @@ class Room {
         if (!this.metadata.owner_id && ws.user) {
             logger.warn(`[Room ${this.id}] Missing owner_id in metadata; treating as ownerless for this session.`);
             this.state.ownerId = null;
+        }
+
+        // An Apple room needs a country before it can look anything up. Until
+        // the host's player reports the one of their Apple account, take the
+        // country the owner connects from (Cloudflare's CF-IPCountry): a room
+        // made on a phone, where no player runs, refused every suggestion.
+        if (this.metadata.provider === 'apple' && !this.metadata.apple_storefront
+            && isOwner(this, ws) && isStorefront(ws.country)) {
+            this.setAppleStorefront(ws.country, { guessed: true });
         }
 
         try {
@@ -769,40 +780,82 @@ class Room {
         }
     }
 
-    setAppleStorefront(storefront) {
-        if (this.metadata.apple_storefront === storefront) return;
+    /**
+     * The country whose Apple Music catalog the room plays from. The host's
+     * player reports the one of their account; until it has, the owner's
+     * country stands in (`guessed`), so a channel made on a phone takes
+     * suggestions straight away. Whatever is queued is checked again in a new
+     * storefront.
+     */
+    setAppleStorefront(storefront, { guessed = false } = {}) {
+        if (!isStorefront(storefront) || this.metadata.apple_storefront === storefront) return;
+        const previous = this.metadata.apple_storefront;
         this.metadata.apple_storefront = storefront;
         try {
             db.updateRoomAppleStorefront(this.id, storefront);
         } catch (e) {
             logger.error(`[Room ${this.id}] Failed to store the Apple storefront: ${e && e.message}`);
         }
-        logger.info(`[Room ${this.id}] Apple Music storefront: ${storefront}`);
+        this.updateState({ appleStorefront: storefront });
+        logger.info(`[Room ${this.id}] Apple Music storefront: ${storefront}${guessed ? " (the owner's country, until their player reports the account)" : ''}`);
+        if (previous) {
+            this.recheckAppleQueue().catch(e => logger.error(`[Room ${this.id}] Re-checking the queue failed: ${e && e.message}`));
+        }
+    }
+
+    // After a storefront change: every waiting entry is looked up again in the
+    // new storefront, moved to the id it has there, or dropped when the host
+    // cannot play it. The current track is left to the host's player, which
+    // reports it if it fails.
+    async recheckAppleQueue() {
+        const waiting = [...this.state.queue.slice(1), ...(this.state.pendingSuggestions || [])];
+        const keys = [...new Set(waiting.map(t => t.videoId).filter(Boolean))];
+        if (keys.length === 0) return;
+        const checked = await this.checkAppleAvailability(keys);
+        const update = (track) => {
+            if (!keys.includes(track.videoId)) return track; // queued meanwhile, checked when it came in
+            if (!checked.has(track.videoId)) return null;
+            const fresh = checked.get(track.videoId);
+            return fresh ? { ...track, ...fresh } : track;
+        };
+        // State may have moved on during the lookups: apply to what is there now.
+        const current = this.state.queue[0];
+        const queue = [current, ...this.state.queue.slice(1).map(update).filter(Boolean)].filter(Boolean);
+        const pendingSuggestions = (this.state.pendingSuggestions || []).map(update).filter(Boolean);
+        const dropped = (this.state.queue.length - queue.length) + ((this.state.pendingSuggestions || []).length - pendingSuggestions.length);
+        this.updateState({ queue, pendingSuggestions });
+        logger.info(`[Room ${this.id}] Queue checked in storefront ${this.metadata.apple_storefront}: ${dropped} not available there.`);
     }
 
     // Same contract as checkVideoAvailability, for Apple keys: a key maps to
     // fresh metadata, to null when it could not be checked (no catalog, no
     // storefront yet, Apple unreachable), and is absent when Apple confirmed it
-    // cannot be played in the host's country.
+    // cannot be played in the host's country. A key the storefront knows under
+    // another id maps to metadata carrying that `videoId`.
     async checkAppleAvailability(keys) {
         const storefront = this.metadata.apple_storefront;
         const unchecked = () => new Map(keys.map(key => [key, null]));
         if (!appleCatalog || !storefront || keys.length === 0) return unchecked();
         let found;
+        let equivalent = new Map();
         try {
             found = await appleCatalog.lookup(storefront, keys);
+            const missing = keys.filter(key => !found.has(key));
+            if (missing.length > 0 && appleCatalog.equivalents) {
+                equivalent = await appleCatalog.equivalents(storefront, missing);
+            }
         } catch (e) {
             logger.error(`[Room ${this.id}] Apple Music lookup failed: ${e && e.code} ${e && e.message}`);
             return unchecked();
         }
         const result = new Map();
         for (const key of keys) {
-            const track = found.get(key);
+            const track = found.get(key) || equivalent.get(key);
             if (!track) continue;
             const meta = { title: track.title, artist: track.artist, thumbnail: track.thumbnail, duration: track.duration };
-            result.set(key, meta);
+            result.set(key, track.videoId === key ? meta : { ...meta, videoId: track.videoId });
             try {
-                db.upsertVideo({ id: key, ...meta, category_id: null, language: null });
+                db.upsertVideo({ id: track.videoId, ...meta, category_id: null, language: null });
             } catch (e) { /* ignore cache refresh errors */ }
         }
         return result;
