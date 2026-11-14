@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "แหล่งเพลง",
-		"sourceHint": "Apple Music เล่นเฉพาะบนอุปกรณ์ของคุณ และต้องสมัครสมาชิก Apple Music",
+		"sourceHint": "Apple Music เล่นบนคอมพิวเตอร์ของคุณ และต้องสมัครสมาชิก Apple Music",
 		"connect": "เชื่อมต่อ Apple Music",
 		"connectHint": "เข้าสู่ระบบด้วยบัญชี Apple ที่สมัครสมาชิก Apple Music ไว้",
 		"start": "เริ่มเล่น",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Music หยุดเล่น ({code}) กดเล่นเพื่อลองอีกครั้ง",
 		"contentNotice": "ภาพปกและตัวอย่างในช่องนี้มาจาก Apple ระหว่างโหลด Apple จะเห็นที่อยู่ IP ของคุณ",
 		"contentAccept": "เปิดใช้",
-		"previewFailed": "ไม่สามารถเล่นตัวอย่างนี้ได้"
+		"previewFailed": "ไม่สามารถเล่นตัวอย่างนี้ได้",
+		"standby": "ช่องนี้กำลังเล่นอยู่บนอุปกรณ์อื่นของคุณ",
+		"playHere": "เล่นที่นี่",
+		"waitingForHost": "หยุดชั่วคราวจนกว่าเจ้าภาพจะเล่นอีกครั้ง",
+		"playsOnComputer": "Apple Music เล่นบนคอมพิวเตอร์ เปิดช่องนี้บนคอมพิวเตอร์แล้วเชื่อมต่อ Apple Music"
 	},
 	"attribution": {
 		"youtube": "พัฒนาด้วย YouTube"

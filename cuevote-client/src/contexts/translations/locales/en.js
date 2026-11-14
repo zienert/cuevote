@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Music source",
-		"sourceHint": "Apple Music plays only on your device and needs an Apple Music subscription.",
+		"sourceHint": "Apple Music plays on your computer and needs an Apple Music subscription.",
 		"connect": "Connect Apple Music",
 		"connectHint": "Sign in with the Apple account that has your Apple Music subscription.",
 		"start": "Start playback",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music stopped playback ({code}). Press play to try again.",
 		"contentNotice": "Cover art and previews in this channel come from Apple. Apple sees your IP address when they load.",
 		"contentAccept": "Turn on",
-		"previewFailed": "This preview cannot be played."
+		"previewFailed": "This preview cannot be played.",
+		"standby": "This channel is playing on another of your devices.",
+		"playHere": "Play here",
+		"waitingForHost": "Paused until the host plays again.",
+		"playsOnComputer": "Apple Music plays on a computer. Open this channel there and connect Apple Music."
 	},
 	"attribution": {
 		"youtube": "Developed with YouTube"

@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Zeneforrás",
-		"sourceHint": "Az Apple Music csak a te eszközödön szól, és Apple Music-előfizetés kell hozzá.",
+		"sourceHint": "Az Apple Music a számítógépeden szól, és Apple Music-előfizetés kell hozzá.",
 		"connect": "Apple Music csatlakoztatása",
 		"connectHint": "Jelentkezz be azzal az Apple-fiókkal, amelyhez az Apple Music-előfizetésed tartozik.",
 		"start": "Lejátszás indítása",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Az Apple Music leállította a lejátszást ({code}). Az újrapróbálkozáshoz nyomd meg a lejátszás gombot.",
 		"contentNotice": "A csatorna borítói és előnézetei az Apple-től származnak. Betöltésükkor az Apple látja az IP-címedet.",
 		"contentAccept": "Bekapcsolás",
-		"previewFailed": "Ez az előnézet nem játszható le."
+		"previewFailed": "Ez az előnézet nem játszható le.",
+		"standby": "Ez a csatorna most egy másik eszközödön szól.",
+		"playHere": "Lejátszás itt",
+		"waitingForHost": "Szünetel, amíg a házigazda újra nem indítja a lejátszást.",
+		"playsOnComputer": "Az Apple Music számítógépen szól. Nyisd meg ott ezt a csatornát, és csatlakoztasd az Apple Musicot."
 	},
 	"attribution": {
 		"youtube": "YouTube-val fejlesztve"

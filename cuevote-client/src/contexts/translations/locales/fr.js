@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Source musicale",
-		"sourceHint": "Avec Apple Music, la lecture se fait uniquement sur votre appareil et nécessite un abonnement Apple Music.",
+		"sourceHint": "Avec Apple Music, la lecture se fait sur votre ordinateur et nécessite un abonnement Apple Music.",
 		"connect": "Connecter Apple Music",
 		"connectHint": "Connectez-vous avec le compte Apple lié à votre abonnement Apple Music.",
 		"start": "Lancer la lecture",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music a arrêté la lecture ({code}). Appuyez sur Lecture pour réessayer.",
 		"contentNotice": "Les pochettes et les aperçus de cette chaîne viennent d'Apple. Lors de leur chargement, Apple voit votre adresse IP.",
 		"contentAccept": "Activer",
-		"previewFailed": "Impossible de lire cet aperçu."
+		"previewFailed": "Impossible de lire cet aperçu.",
+		"standby": "Cette chaîne est en cours de lecture sur un autre de vos appareils.",
+		"playHere": "Lire ici",
+		"waitingForHost": "En pause jusqu'à ce que l'hôte relance la lecture.",
+		"playsOnComputer": "Apple Music se lit sur un ordinateur. Ouvrez cette chaîne sur celui-ci et connectez Apple Music."
 	},
 	"attribution": {
 		"youtube": "Développé avec YouTube"

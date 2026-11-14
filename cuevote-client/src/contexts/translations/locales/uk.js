@@ -299,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Джерело музики",
-		"sourceHint": "Apple Music грає лише на вашому пристрої та потребує підписки на Apple Music.",
+		"sourceHint": "Apple Music грає на вашому комп'ютері та потребує підписки на Apple Music.",
 		"connect": "Підключити Apple Music",
 		"connectHint": "Увійдіть в обліковий запис Apple, у якому оформлено вашу підписку на Apple Music.",
 		"start": "Почати відтворення",
@@ -310,7 +310,11 @@ export default {
 		"problemGeneric": "Відтворення в Apple Music зупинено ({code}). Натисніть «Відтворити», щоб спробувати ще раз.",
 		"contentNotice": "Обкладинки та прев'ю в цьому каналі надходять від Apple. Під час завантаження Apple бачить вашу IP-адресу.",
 		"contentAccept": "Увімкнути",
-		"previewFailed": "Не вдалося відтворити це прев'ю."
+		"previewFailed": "Не вдалося відтворити це прев'ю.",
+		"standby": "Цей канал зараз відтворюється на іншому вашому пристрої.",
+		"playHere": "Відтворювати тут",
+		"waitingForHost": "Пауза, доки організатор знову не ввімкне відтворення.",
+		"playsOnComputer": "Apple Music відтворюється на комп'ютері. Відкрийте цей канал там і підключіть Apple Music."
 	},
 	"attribution": {
 		"youtube": "Розроблено з YouTube"

@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Sumber musik",
-		"sourceHint": "Apple Music hanya diputar di perangkat Anda dan memerlukan langganan Apple Music.",
+		"sourceHint": "Apple Music diputar di komputer Anda dan memerlukan langganan Apple Music.",
 		"connect": "Hubungkan Apple Music",
 		"connectHint": "Masuk dengan akun Apple yang memiliki langganan Apple Music Anda.",
 		"start": "Mulai pemutaran",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Music menghentikan pemutaran ({code}). Tekan putar untuk mencoba lagi.",
 		"contentNotice": "Sampul album dan pratinjau di saluran ini berasal dari Apple. Saat dimuat, Apple dapat melihat alamat IP Anda.",
 		"contentAccept": "Aktifkan",
-		"previewFailed": "Pratinjau ini tidak dapat diputar."
+		"previewFailed": "Pratinjau ini tidak dapat diputar.",
+		"standby": "Saluran ini sedang diputar di perangkat Anda yang lain.",
+		"playHere": "Putar di sini",
+		"waitingForHost": "Dijeda sampai tuan rumah memutar lagi.",
+		"playsOnComputer": "Apple Music diputar di komputer. Buka saluran ini di sana dan hubungkan Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

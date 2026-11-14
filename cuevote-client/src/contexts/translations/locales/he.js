@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "מקור המוזיקה",
-		"sourceHint": "Apple Music מתנגן רק במכשיר שלך ודורש מינוי ל-Apple Music.",
+		"sourceHint": "Apple Music מתנגן במחשב שלך ודורש מינוי ל-Apple Music.",
 		"connect": "חיבור Apple Music",
 		"connectHint": "יש להתחבר עם חשבון Apple שיש בו מינוי ל-Apple Music.",
 		"start": "התחלת ניגון",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music עצר את הניגון ({code}). יש ללחוץ על ניגון כדי לנסות שוב.",
 		"contentNotice": "עטיפות האלבומים והתצוגות המקדימות בערוץ הזה מגיעות מ-Apple. בזמן הטעינה Apple רואה את כתובת ה-IP שלך.",
 		"contentAccept": "הפעלה",
-		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו."
+		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו.",
+		"standby": "הערוץ הזה מתנגן כעת במכשיר אחר שלך.",
+		"playHere": "לנגן כאן",
+		"waitingForHost": "מושהה עד שהמארח ינגן שוב.",
+		"playsOnComputer": "Apple Music מתנגן במחשב. יש לפתוח את הערוץ שם ולחבר את Apple Music."
 	},
 	"attribution": {
 		"youtube": "פותח עם YouTube"

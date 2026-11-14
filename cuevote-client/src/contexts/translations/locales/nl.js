@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Muziekbron",
-		"sourceHint": "Apple Music speelt alleen af op je eigen apparaat en vereist een Apple Music-abonnement.",
+		"sourceHint": "Apple Music speelt af op je computer en vereist een Apple Music-abonnement.",
 		"connect": "Apple Music verbinden",
 		"connectHint": "Log in met het Apple-account van je Apple Music-abonnement.",
 		"start": "Afspelen starten",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music heeft het afspelen gestopt ({code}). Druk op afspelen om het opnieuw te proberen.",
 		"contentNotice": "Albumhoezen en voorbeelden in dit kanaal komen van Apple. Bij het laden ziet Apple je IP-adres.",
 		"contentAccept": "Aanzetten",
-		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld."
+		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld.",
+		"standby": "Dit kanaal speelt nu op een ander apparaat van je.",
+		"playHere": "Hier afspelen",
+		"waitingForHost": "Gepauzeerd tot de host weer afspeelt.",
+		"playsOnComputer": "Apple Music speelt op een computer. Open dit kanaal daar en verbind Apple Music."
 	},
 	"attribution": {
 		"youtube": "Ontwikkeld met YouTube"

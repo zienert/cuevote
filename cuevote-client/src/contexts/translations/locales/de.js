@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musikquelle",
-		"sourceHint": "Apple Music läuft nur auf deinem Gerät und braucht ein Abo.",
+		"sourceHint": "Apple Music läuft auf deinem Computer und braucht ein Abo.",
 		"connect": "Apple Music verbinden",
 		"connectHint": "Melde dich mit dem Apple-Konto an, mit dem du Apple Music abonniert hast.",
 		"start": "Wiedergabe starten",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music hat die Wiedergabe gestoppt ({code}). Drücke auf Play, um es erneut zu versuchen.",
 		"contentNotice": "Cover und Vorschauen in diesem Kanal kommen von Apple. Beim Laden sieht Apple deine IP-Adresse.",
 		"contentAccept": "Einschalten",
-		"previewFailed": "Diese Vorschau lässt sich nicht abspielen."
+		"previewFailed": "Diese Vorschau lässt sich nicht abspielen.",
+		"standby": "Dieser Kanal läuft gerade auf einem anderen deiner Geräte.",
+		"playHere": "Hier abspielen",
+		"waitingForHost": "Pausiert, bis der Host wieder abspielt.",
+		"playsOnComputer": "Apple Music spielt am Computer. Öffne diesen Kanal dort und verbinde Apple Music."
 	},
 	"attribution": {
 		"youtube": "Entwickelt mit YouTube"

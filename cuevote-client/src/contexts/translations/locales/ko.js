@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "음악 소스",
-		"sourceHint": "Apple Music은 내 기기에서만 재생되며 Apple Music 구독이 필요합니다.",
+		"sourceHint": "Apple Music은 내 컴퓨터에서 재생되며 Apple Music 구독이 필요합니다.",
 		"connect": "Apple Music 연결",
 		"connectHint": "Apple Music을 구독 중인 Apple 계정으로 로그인하세요.",
 		"start": "재생 시작",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Music 재생이 중지되었습니다({code}). 재생 버튼을 눌러 다시 시도하세요.",
 		"contentNotice": "이 채널의 커버 아트와 미리듣기는 Apple에서 제공됩니다. 로드할 때 Apple이 귀하의 IP 주소를 확인할 수 있습니다.",
 		"contentAccept": "켜기",
-		"previewFailed": "이 미리듣기를 재생할 수 없습니다."
+		"previewFailed": "이 미리듣기를 재생할 수 없습니다.",
+		"standby": "이 채널은 지금 다른 기기에서 재생 중입니다.",
+		"playHere": "여기에서 재생",
+		"waitingForHost": "주최자가 다시 재생할 때까지 일시 정지됩니다.",
+		"playsOnComputer": "Apple Music은 컴퓨터에서 재생됩니다. 컴퓨터에서 이 채널을 열고 Apple Music을 연결하세요."
 	},
 	"attribution": {
 		"youtube": "YouTube로 개발됨"

@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Nguồn nhạc",
-		"sourceHint": "Apple Music chỉ phát trên thiết bị của bạn và cần gói đăng ký Apple Music.",
+		"sourceHint": "Apple Music phát trên máy tính của bạn và cần gói đăng ký Apple Music.",
 		"connect": "Kết nối Apple Music",
 		"connectHint": "Đăng nhập bằng tài khoản Apple có gói đăng ký Apple Music của bạn.",
 		"start": "Bắt đầu phát",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Music đã dừng phát ({code}). Nhấn phát để thử lại.",
 		"contentNotice": "Ảnh bìa và bản nghe thử trong kênh này đến từ Apple. Khi tải, Apple thấy địa chỉ IP của bạn.",
 		"contentAccept": "Bật",
-		"previewFailed": "Không thể phát bản nghe thử này."
+		"previewFailed": "Không thể phát bản nghe thử này.",
+		"standby": "Kênh này đang phát trên một thiết bị khác của bạn.",
+		"playHere": "Phát tại đây",
+		"waitingForHost": "Đang tạm dừng cho đến khi người tổ chức phát lại.",
+		"playsOnComputer": "Apple Music phát trên máy tính. Hãy mở kênh này trên máy tính và kết nối Apple Music."
 	},
 	"attribution": {
 		"youtube": "Phát triển với YouTube"

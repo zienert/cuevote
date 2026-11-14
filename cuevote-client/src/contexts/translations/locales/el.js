@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Πηγή μουσικής",
-		"sourceHint": "Το Apple Music παίζει μόνο στη συσκευή σας και απαιτεί συνδρομή στο Apple Music.",
+		"sourceHint": "Το Apple Music παίζει στον υπολογιστή σας και απαιτεί συνδρομή στο Apple Music.",
 		"connect": "Σύνδεση Apple Music",
 		"connectHint": "Συνδεθείτε με τον λογαριασμό Apple που έχει τη συνδρομή σας στο Apple Music.",
 		"start": "Έναρξη αναπαραγωγής",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Το Apple Music διέκοψε την αναπαραγωγή ({code}). Πατήστε αναπαραγωγή για να δοκιμάσετε ξανά.",
 		"contentNotice": "Τα εξώφυλλα και οι προεπισκοπήσεις σε αυτό το κανάλι προέρχονται από την Apple. Κατά τη φόρτωσή τους, η Apple βλέπει τη διεύθυνση IP σας.",
 		"contentAccept": "Ενεργοποίηση",
-		"previewFailed": "Δεν είναι δυνατή η αναπαραγωγή αυτής της προεπισκόπησης."
+		"previewFailed": "Δεν είναι δυνατή η αναπαραγωγή αυτής της προεπισκόπησης.",
+		"standby": "Αυτό το κανάλι παίζει τώρα σε άλλη συσκευή σας.",
+		"playHere": "Αναπαραγωγή εδώ",
+		"waitingForHost": "Σε παύση μέχρι ο οικοδεσπότης να παίξει ξανά.",
+		"playsOnComputer": "Το Apple Music παίζει σε υπολογιστή. Ανοίξτε εκεί αυτό το κανάλι και συνδέστε το Apple Music."
 	},
 	"attribution": {
 		"youtube": "Αναπτύχθηκε με το YouTube"

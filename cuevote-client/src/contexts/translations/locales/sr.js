@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Izvor muzike",
-		"sourceHint": "Apple Music svira samo na vašem uređaju i zahteva pretplatu na Apple Music.",
+		"sourceHint": "Apple Music svira na vašem računaru i zahteva pretplatu na Apple Music.",
 		"connect": "Poveži Apple Music",
 		"connectHint": "Prijavite se Apple nalogom na kojem imate pretplatu na Apple Music.",
 		"start": "Pokreni reprodukciju",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music je zaustavio reprodukciju ({code}). Pritisnite Play da biste pokušali ponovo.",
 		"contentNotice": "Omoti i pregledi u ovom kanalu stižu od Apple-a. Pri njihovom učitavanju Apple vidi vašu IP adresu.",
 		"contentAccept": "Uključi",
-		"previewFailed": "Ovaj pregled nije moguće pustiti."
+		"previewFailed": "Ovaj pregled nije moguće pustiti.",
+		"standby": "Ovaj kanal se trenutno pušta na drugom vašem uređaju.",
+		"playHere": "Pusti ovde",
+		"waitingForHost": "Pauzirano dok domaćin ponovo ne pusti muziku.",
+		"playsOnComputer": "Apple Music se pušta na računaru. Otvorite ovaj kanal tamo i povežite Apple Music."
 	},
 	"attribution": {
 		"youtube": "Развијено уз YouTube"

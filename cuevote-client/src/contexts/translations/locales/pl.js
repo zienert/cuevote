@@ -299,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Źródło muzyki",
-		"sourceHint": "Apple Music gra tylko na Twoim urządzeniu i wymaga subskrypcji Apple Music.",
+		"sourceHint": "Apple Music gra na Twoim komputerze i wymaga subskrypcji Apple Music.",
 		"connect": "Połącz Apple Music",
 		"connectHint": "Zaloguj się na konto Apple, na którym masz subskrypcję Apple Music.",
 		"start": "Rozpocznij odtwarzanie",
@@ -310,7 +310,11 @@ export default {
 		"problemGeneric": "Odtwarzanie w Apple Music zostało zatrzymane ({code}). Naciśnij przycisk odtwarzania, aby spróbować ponownie.",
 		"contentNotice": "Okładki i podglądy w tym kanale pochodzą od Apple. Podczas ich ładowania Apple widzi Twój adres IP.",
 		"contentAccept": "Włącz",
-		"previewFailed": "Nie można odtworzyć tego podglądu."
+		"previewFailed": "Nie można odtworzyć tego podglądu.",
+		"standby": "Ten kanał jest odtwarzany na innym Twoim urządzeniu.",
+		"playHere": "Odtwarzaj tutaj",
+		"waitingForHost": "Wstrzymano, dopóki gospodarz znów nie zacznie odtwarzać.",
+		"playsOnComputer": "Apple Music odtwarza się na komputerze. Otwórz tam ten kanał i połącz Apple Music."
 	},
 	"attribution": {
 		"youtube": "Stworzone z YouTube"

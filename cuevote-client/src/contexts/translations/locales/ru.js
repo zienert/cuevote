@@ -299,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Источник музыки",
-		"sourceHint": "Apple Music играет только на вашем устройстве и требует подписки Apple Music.",
+		"sourceHint": "Apple Music играет на вашем компьютере и требует подписки Apple Music.",
 		"connect": "Подключить Apple Music",
 		"connectHint": "Войдите в аккаунт Apple, на котором оформлена ваша подписка Apple Music.",
 		"start": "Начать воспроизведение",
@@ -310,7 +310,11 @@ export default {
 		"problemGeneric": "Воспроизведение в Apple Music остановлено ({code}). Нажмите «Воспроизвести», чтобы попробовать снова.",
 		"contentNotice": "Обложки и превью в этом канале загружаются от Apple. При загрузке Apple видит ваш IP-адрес.",
 		"contentAccept": "Включить",
-		"previewFailed": "Не удалось воспроизвести это превью."
+		"previewFailed": "Не удалось воспроизвести это превью.",
+		"standby": "Этот канал сейчас воспроизводится на другом вашем устройстве.",
+		"playHere": "Воспроизводить здесь",
+		"waitingForHost": "Пауза, пока организатор снова не включит воспроизведение.",
+		"playsOnComputer": "Apple Music воспроизводится на компьютере. Откройте этот канал там и подключите Apple Music."
 	},
 	"attribution": {
 		"youtube": "Разработано с YouTube"

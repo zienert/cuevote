@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Sursa muzicii",
-		"sourceHint": "Apple Music se redă doar pe dispozitivul tău și necesită un abonament Apple Music.",
+		"sourceHint": "Apple Music se redă pe computerul tău și necesită un abonament Apple Music.",
 		"connect": "Conectează Apple Music",
 		"connectHint": "Autentifică-te cu contul Apple pe care ai abonamentul Apple Music.",
 		"start": "Pornește redarea",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music a oprit redarea ({code}). Apasă pe redare pentru a încerca din nou.",
 		"contentNotice": "Copertele și previzualizările din acest canal vin de la Apple. La încărcarea lor, Apple vede adresa ta IP.",
 		"contentAccept": "Activează",
-		"previewFailed": "Această previzualizare nu poate fi redată."
+		"previewFailed": "Această previzualizare nu poate fi redată.",
+		"standby": "Acest canal rulează acum pe un alt dispozitiv al tău.",
+		"playHere": "Redă aici",
+		"waitingForHost": "În pauză până când gazda pornește din nou redarea.",
+		"playsOnComputer": "Apple Music se redă pe un computer. Deschide canalul acolo și conectează Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

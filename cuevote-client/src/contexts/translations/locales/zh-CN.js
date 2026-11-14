@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "音乐来源",
-		"sourceHint": "Apple Music 仅在你的设备上播放，并且需要 Apple Music 订阅。",
+		"sourceHint": "Apple Music 在你的电脑上播放，并且需要 Apple Music 订阅。",
 		"connect": "连接 Apple Music",
 		"connectHint": "请使用订阅了 Apple Music 的 Apple 账号登录。",
 		"start": "开始播放",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Music 已停止播放（{code}）。请按播放键重试。",
 		"contentNotice": "此频道的封面图片和试听来自 Apple。加载时，Apple 会看到你的 IP 地址。",
 		"contentAccept": "开启",
-		"previewFailed": "无法播放此试听。"
+		"previewFailed": "无法播放此试听。",
+		"standby": "此频道正在你的另一台设备上播放。",
+		"playHere": "在此播放",
+		"waitingForHost": "已暂停，等待主持人重新播放。",
+		"playsOnComputer": "Apple Music 在电脑上播放。请在电脑上打开此频道并连接 Apple Music。"
 	},
 	"attribution": {
 		"youtube": "基于 YouTube 开发"

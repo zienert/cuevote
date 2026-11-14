@@ -303,7 +303,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "مصدر الموسيقى",
-		"sourceHint": "يعمل Apple Music على جهازك فقط ويتطلب اشتراكًا في Apple Music.",
+		"sourceHint": "يعمل Apple Music على جهاز الكمبيوتر الخاص بك ويتطلب اشتراكًا في Apple Music.",
 		"connect": "ربط Apple Music",
 		"connectHint": "سجّل الدخول بحساب Apple الذي يتضمن اشتراكك في Apple Music.",
 		"start": "بدء التشغيل",
@@ -314,7 +314,11 @@ export default {
 		"problemGeneric": "أوقف Apple Music التشغيل ({code}). اضغط على تشغيل للمحاولة مرة أخرى.",
 		"contentNotice": "صور الأغلفة والمعاينات في هذه القناة تأتي من Apple. ترى Apple عنوان IP الخاص بك عند تحميلها.",
 		"contentAccept": "تفعيل",
-		"previewFailed": "تعذّر تشغيل هذه المعاينة."
+		"previewFailed": "تعذّر تشغيل هذه المعاينة.",
+		"standby": "تعمل هذه القناة الآن على جهاز آخر من أجهزتك.",
+		"playHere": "التشغيل هنا",
+		"waitingForHost": "متوقف مؤقتًا حتى يعاود المضيف التشغيل.",
+		"playsOnComputer": "يعمل Apple Music على جهاز كمبيوتر. افتح هذه القناة هناك واربط Apple Music."
 	},
 	"attribution": {
 		"youtube": "تم التطوير مع YouTube"

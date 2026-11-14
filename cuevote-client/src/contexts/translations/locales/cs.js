@@ -299,7 +299,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Zdroj hudby",
-		"sourceHint": "Apple Music hraje jen na vašem zařízení a vyžaduje předplatné Apple Music.",
+		"sourceHint": "Apple Music hraje na vašem počítači a vyžaduje předplatné Apple Music.",
 		"connect": "Připojit Apple Music",
 		"connectHint": "Přihlaste se účtem Apple, ke kterému patří vaše předplatné Apple Music.",
 		"start": "Spustit přehrávání",
@@ -310,7 +310,11 @@ export default {
 		"problemGeneric": "Přehrávání v Apple Music se zastavilo ({code}). Stiskněte přehrát a zkuste to znovu.",
 		"contentNotice": "Obaly alb a náhledy v tomto kanálu pocházejí od Apple. Při jejich načtení Apple vidí vaši IP adresu.",
 		"contentAccept": "Zapnout",
-		"previewFailed": "Tento náhled nelze přehrát."
+		"previewFailed": "Tento náhled nelze přehrát.",
+		"standby": "Tento kanál se právě přehrává na jiném vašem zařízení.",
+		"playHere": "Přehrávat zde",
+		"waitingForHost": "Pozastaveno, dokud hostitel znovu nespustí přehrávání.",
+		"playsOnComputer": "Apple Music se přehrává na počítači. Otevřete tam tento kanál a připojte Apple Music."
 	},
 	"attribution": {
 		"youtube": "Vyvinuto s YouTube"

@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Pinagmulan ng musika",
-		"sourceHint": "Sa device mo lang tumutugtog ang Apple Music at kailangan nito ng Apple Music subscription.",
+		"sourceHint": "Sa computer mo tumutugtog ang Apple Music at kailangan nito ng Apple Music subscription.",
 		"connect": "Ikonekta ang Apple Music",
 		"connectHint": "Mag-sign in gamit ang Apple account na may Apple Music subscription mo.",
 		"start": "Simulan ang pagpapatugtog",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Itinigil ng Apple Music ang pagpapatugtog ({code}). Pindutin ang play para subukang muli.",
 		"contentNotice": "Galing sa Apple ang mga cover art at preview sa channel na ito. Habang nilo-load ang mga ito, nakikita ng Apple ang iyong IP address.",
 		"contentAccept": "I-on",
-		"previewFailed": "Hindi ma-play ang preview na ito."
+		"previewFailed": "Hindi ma-play ang preview na ito.",
+		"standby": "Tumutugtog ang channel na ito sa isa pang device mo.",
+		"playHere": "I-play dito",
+		"waitingForHost": "Naka-pause hanggang tumugtog muli ang host.",
+		"playsOnComputer": "Sa computer tumutugtog ang Apple Music. Buksan doon ang channel na ito at ikonekta ang Apple Music."
 	},
 	"attribution": {
 		"youtube": "Binuo gamit ang YouTube"

@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Müzik kaynağı",
-		"sourceHint": "Apple Music yalnızca sizin cihazınızda çalar ve Apple Music aboneliği gerektirir.",
+		"sourceHint": "Apple Music bilgisayarınızda çalar ve Apple Music aboneliği gerektirir.",
 		"connect": "Apple Music'i bağla",
 		"connectHint": "Apple Music aboneliğinizin bağlı olduğu Apple hesabıyla giriş yapın.",
 		"start": "Oynatmayı başlat",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music oynatmayı durdurdu ({code}). Tekrar denemek için oynat düğmesine basın.",
 		"contentNotice": "Bu kanaldaki kapak görselleri ve önizlemeler Apple'dan gelir. Yüklenirken Apple IP adresinizi görür.",
 		"contentAccept": "Aç",
-		"previewFailed": "Bu önizleme oynatılamıyor."
+		"previewFailed": "Bu önizleme oynatılamıyor.",
+		"standby": "Bu kanal şu anda başka bir cihazınızda çalıyor.",
+		"playHere": "Burada çal",
+		"waitingForHost": "Ev sahibi yeniden çalana kadar duraklatıldı.",
+		"playsOnComputer": "Apple Music bir bilgisayarda çalar. Bu kanalı orada açın ve Apple Music'i bağlayın."
 	},
 	"attribution": {
 		"youtube": "YouTube ile geliştirildi"

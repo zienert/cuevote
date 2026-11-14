@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musikkälla",
-		"sourceHint": "Apple Music spelas bara upp på din enhet och kräver ett Apple Music-abonnemang.",
+		"sourceHint": "Apple Music spelas upp på din dator och kräver ett Apple Music-abonnemang.",
 		"connect": "Anslut Apple Music",
 		"connectHint": "Logga in med det Apple-konto som har ditt Apple Music-abonnemang.",
 		"start": "Starta uppspelning",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music stoppade uppspelningen ({code}). Tryck på spela upp för att försöka igen.",
 		"contentNotice": "Omslag och förhandsgranskningar i den här kanalen kommer från Apple. När de laddas ser Apple din IP-adress.",
 		"contentAccept": "Slå på",
-		"previewFailed": "Den här förhandsgranskningen kan inte spelas upp."
+		"previewFailed": "Den här förhandsgranskningen kan inte spelas upp.",
+		"standby": "Den här kanalen spelas just nu på en annan av dina enheter.",
+		"playHere": "Spela här",
+		"waitingForHost": "Pausad tills värden spelar igen.",
+		"playsOnComputer": "Apple Music spelas upp på en dator. Öppna kanalen där och anslut Apple Music."
 	},
 	"attribution": {
 		"youtube": "Utvecklad med YouTube"

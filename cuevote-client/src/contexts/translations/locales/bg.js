@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Източник на музика",
-		"sourceHint": "Apple Music свири само на вашето устройство и изисква абонамент за Apple Music.",
+		"sourceHint": "Apple Music свири на вашия компютър и изисква абонамент за Apple Music.",
 		"connect": "Свържи Apple Music",
 		"connectHint": "Влезте с Apple акаунта, в който е абонаментът ви за Apple Music.",
 		"start": "Стартирай възпроизвеждането",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music спря възпроизвеждането ({code}). Натиснете бутона за пускане, за да опитате отново.",
 		"contentNotice": "Обложките и прегледите в този канал идват от Apple. При зареждането им Apple вижда вашия IP адрес.",
 		"contentAccept": "Включване",
-		"previewFailed": "Този преглед не може да бъде пуснат."
+		"previewFailed": "Този преглед не може да бъде пуснат.",
+		"standby": "Този канал в момента свири на друго ваше устройство.",
+		"playHere": "Пусни тук",
+		"waitingForHost": "На пауза, докато домакинът отново пусне музиката.",
+		"playsOnComputer": "Apple Music се възпроизвежда на компютър. Отворете канала там и свържете Apple Music."
 	},
 	"attribution": {
 		"youtube": "Създадено с YouTube"

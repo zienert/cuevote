@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Sumber muzik",
-		"sourceHint": "Apple Music hanya dimainkan pada peranti anda dan memerlukan langganan Apple Music.",
+		"sourceHint": "Apple Music dimainkan pada komputer anda dan memerlukan langganan Apple Music.",
 		"connect": "Sambungkan Apple Music",
 		"connectHint": "Log masuk dengan akaun Apple yang mempunyai langganan Apple Music anda.",
 		"start": "Mulakan main balik",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Music menghentikan main balik ({code}). Tekan main untuk mencuba lagi.",
 		"contentNotice": "Kulit album dan pratonton dalam saluran ini datang daripada Apple. Semasa ia dimuatkan, Apple dapat melihat alamat IP anda.",
 		"contentAccept": "Hidupkan",
-		"previewFailed": "Pratonton ini tidak dapat dimainkan."
+		"previewFailed": "Pratonton ini tidak dapat dimainkan.",
+		"standby": "Saluran ini sedang dimainkan pada peranti anda yang lain.",
+		"playHere": "Main di sini",
+		"waitingForHost": "Dijeda sehingga hos memainkan semula.",
+		"playsOnComputer": "Apple Music dimainkan pada komputer. Buka saluran ini di sana dan sambungkan Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dibangunkan dengan YouTube"

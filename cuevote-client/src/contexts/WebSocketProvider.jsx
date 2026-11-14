@@ -72,6 +72,14 @@ export function WebSocketProvider({ children }) {
   const pendingAcks = useRef(new Map());
   const ackCounter = useRef(0);
   const progressRef = useRef(0);
+  // When progressRef last came from the server: it arrives every few seconds,
+  // and a player comparing against it has to add the time since.
+  const progressAtRef = useRef(0);
+  // Apple rooms: whether this socket is the room's player (true), on standby
+  // (false), or not told yet (null). Kept here, not in lastMessage, which a
+  // following message can overwrite before anyone reads it.
+  const [applePlayerLease, setApplePlayerLease] = useState(null);
+  const leaseRoomRef = useRef(null);
 
   const sendMessage = useCallback((message) => {
     if (message.type === "JOIN_ROOM") {
@@ -230,13 +238,23 @@ export function WebSocketProvider({ children }) {
           if (message.type === "state") {
             setState(message.payload);
             progressRef.current = message.payload.progress || 0;
+            progressAtRef.current = Date.now();
+            // Another room: its player has yet to be settled.
+            if (message.payload?.roomId !== leaseRoomRef.current) {
+              leaseRoomRef.current = message.payload?.roomId ?? null;
+              setApplePlayerLease(null);
+            }
           } else if (message.type === "state_delta") {
             setState(prev => prev ? { ...prev, ...message.payload } : message.payload);
             if ('progress' in message.payload) {
               progressRef.current = message.payload.progress || 0;
+              progressAtRef.current = Date.now();
             }
           } else if (message.type === "progress") {
             progressRef.current = message.payload;
+            progressAtRef.current = Date.now();
+          } else if (message.type === "APPLE_PLAYER_LEASE") {
+            setApplePlayerLease(!!message.payload?.active);
           } else if (message.type === "LOGIN_SUCCESS") {
             // Auth handled inline rather than via setLastMessage, because the
             // shared `lastMessage` state can be overwritten by a subsequent
@@ -390,7 +408,7 @@ export function WebSocketProvider({ children }) {
   }, [clientId]);
 
   return (
-    <WebSocketContext.Provider value={{ state, isConnected, sendMessage, lastError, lastErrorCode, lastErrorTimestamp, lastMessage, clientId, user, handleLoginSuccess, handleLogout, clearMessage: () => setLastMessage(null), reconnectAttempt, forceReconnect: () => { if (window.cuevoteReconnect) window.cuevoteReconnect(); }, connectionQuality, progressRef }}>
+    <WebSocketContext.Provider value={{ state, isConnected, sendMessage, lastError, lastErrorCode, lastErrorTimestamp, lastMessage, clientId, user, handleLoginSuccess, handleLogout, clearMessage: () => setLastMessage(null), reconnectAttempt, forceReconnect: () => { if (window.cuevoteReconnect) window.cuevoteReconnect(); }, connectionQuality, progressRef, progressAtRef, applePlayerLease }}>
       {children}
     </WebSocketContext.Provider>
   );

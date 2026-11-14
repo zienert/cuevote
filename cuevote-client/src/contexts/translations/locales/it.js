@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Fonte musicale",
-		"sourceHint": "Apple Music viene riprodotto solo sul tuo dispositivo e richiede un abbonamento ad Apple Music.",
+		"sourceHint": "Apple Music viene riprodotto sul tuo computer e richiede un abbonamento ad Apple Music.",
 		"connect": "Collega Apple Music",
 		"connectHint": "Accedi con l'account Apple a cui è associato il tuo abbonamento Apple Music.",
 		"start": "Avvia riproduzione",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music ha interrotto la riproduzione ({code}). Premi play per riprovare.",
 		"contentNotice": "Le copertine e le anteprime di questo canale arrivano da Apple. Durante il caricamento Apple vede il tuo indirizzo IP.",
 		"contentAccept": "Attiva",
-		"previewFailed": "Impossibile riprodurre questa anteprima."
+		"previewFailed": "Impossibile riprodurre questa anteprima.",
+		"standby": "Questo canale è in riproduzione su un altro dei tuoi dispositivi.",
+		"playHere": "Riproduci qui",
+		"waitingForHost": "In pausa finché l'host non riprende la riproduzione.",
+		"playsOnComputer": "Apple Music si riproduce su un computer. Apri lì questo canale e collega Apple Music."
 	},
 	"attribution": {
 		"youtube": "Sviluppato con YouTube"

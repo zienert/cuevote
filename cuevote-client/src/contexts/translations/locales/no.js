@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musikkilde",
-		"sourceHint": "Apple Music spilles bare av på enheten din og krever et Apple Music-abonnement.",
+		"sourceHint": "Apple Music spilles av på datamaskinen din og krever et Apple Music-abonnement.",
 		"connect": "Koble til Apple Music",
 		"connectHint": "Logg inn med Apple-kontoen som har Apple Music-abonnementet ditt.",
 		"start": "Start avspilling",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music stoppet avspillingen ({code}). Trykk på spill av for å prøve igjen.",
 		"contentNotice": "Omslag og forhåndsvisninger i denne kanalen kommer fra Apple. Når de lastes inn, ser Apple IP-adressen din.",
 		"contentAccept": "Slå på",
-		"previewFailed": "Denne forhåndsvisningen kan ikke spilles av."
+		"previewFailed": "Denne forhåndsvisningen kan ikke spilles av.",
+		"standby": "Denne kanalen spilles nå av på en annen av enhetene dine.",
+		"playHere": "Spill av her",
+		"waitingForHost": "Satt på pause til verten spiller av igjen.",
+		"playsOnComputer": "Apple Music spilles av på en datamaskin. Åpne kanalen der og koble til Apple Music."
 	},
 	"attribution": {
 		"youtube": "Utviklet med YouTube"

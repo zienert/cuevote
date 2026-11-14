@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Musiikkilähde",
-		"sourceHint": "Apple Music soi vain omalla laitteellasi ja vaatii Apple Music -tilauksen.",
+		"sourceHint": "Apple Music soi tietokoneellasi ja vaatii Apple Music -tilauksen.",
 		"connect": "Yhdistä Apple Music",
 		"connectHint": "Kirjaudu sisään sillä Apple-tilillä, johon Apple Music -tilauksesi kuuluu.",
 		"start": "Aloita toisto",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music keskeytti toiston ({code}). Yritä uudelleen painamalla toistopainiketta.",
 		"contentNotice": "Tämän kanavan kansikuvat ja esikatselut tulevat Applelta. Kun ne latautuvat, Apple näkee IP-osoitteesi.",
 		"contentAccept": "Ota käyttöön",
-		"previewFailed": "Tätä esikatselua ei voi toistaa."
+		"previewFailed": "Tätä esikatselua ei voi toistaa.",
+		"standby": "Tätä kanavaa toistetaan nyt toisella laitteellasi.",
+		"playHere": "Toista tässä",
+		"waitingForHost": "Tauolla, kunnes isäntä jatkaa toistoa.",
+		"playsOnComputer": "Apple Music soi tietokoneella. Avaa kanava siellä ja yhdistä Apple Music."
 	},
 	"attribution": {
 		"youtube": "Kehitetty YouTuben kanssa"

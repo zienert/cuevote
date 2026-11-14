@@ -293,7 +293,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "音楽ソース",
-		"sourceHint": "Apple Musicはお使いのデバイスでのみ再生され、Apple Musicのサブスクリプションが必要です。",
+		"sourceHint": "Apple Musicはお使いのコンピュータで再生され、Apple Musicのサブスクリプションが必要です。",
 		"connect": "Apple Musicを接続",
 		"connectHint": "Apple Musicのサブスクリプションに登録しているAppleアカウントでログインしてください。",
 		"start": "再生を開始",
@@ -304,7 +304,11 @@ export default {
 		"problemGeneric": "Apple Musicの再生が停止しました（{code}）。再生ボタンを押してもう一度お試しください。",
 		"contentNotice": "このチャンネルのカバーアートと試聴はAppleから読み込まれます。その際、Appleにお客様のIPアドレスが伝わります。",
 		"contentAccept": "オンにする",
-		"previewFailed": "この試聴は再生できません。"
+		"previewFailed": "この試聴は再生できません。",
+		"standby": "このチャンネルは現在、あなたの別のデバイスで再生中です。",
+		"playHere": "ここで再生",
+		"waitingForHost": "主催者が再生を再開するまで一時停止中です。",
+		"playsOnComputer": "Apple Musicはコンピュータで再生されます。そこでこのチャンネルを開き、Apple Musicを接続してください。"
 	},
 	"attribution": {
 		"youtube": "YouTube と共に開発"

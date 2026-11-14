@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Fonte de música",
-		"sourceHint": "O Apple Music toca apenas no seu dispositivo e exige uma assinatura do Apple Music.",
+		"sourceHint": "O Apple Music toca no seu computador e exige uma assinatura do Apple Music.",
 		"connect": "Conectar Apple Music",
 		"connectHint": "Entre com a conta Apple que tem a sua assinatura do Apple Music.",
 		"start": "Iniciar reprodução",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "O Apple Music parou a reprodução ({code}). Toque em reproduzir para tentar novamente.",
 		"contentNotice": "As capas e as prévias deste canal vêm da Apple. Ao carregá-las, a Apple vê o seu endereço IP.",
 		"contentAccept": "Ativar",
-		"previewFailed": "Não é possível reproduzir esta prévia."
+		"previewFailed": "Não é possível reproduzir esta prévia.",
+		"standby": "Este canal está tocando em outro dos seus dispositivos.",
+		"playHere": "Tocar aqui",
+		"waitingForHost": "Pausado até o anfitrião voltar a tocar.",
+		"playsOnComputer": "O Apple Music toca em um computador. Abra este canal nele e conecte o Apple Music."
 	},
 	"attribution": {
 		"youtube": "Desenvolvido com YouTube"

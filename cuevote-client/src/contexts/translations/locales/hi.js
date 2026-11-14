@@ -295,7 +295,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "संगीत स्रोत",
-		"sourceHint": "Apple Music सिर्फ़ आपके डिवाइस पर चलता है और इसके लिए Apple Music सदस्यता ज़रूरी है।",
+		"sourceHint": "Apple Music आपके कंप्यूटर पर चलता है और इसके लिए Apple Music सदस्यता ज़रूरी है।",
 		"connect": "Apple Music कनेक्ट करें",
 		"connectHint": "उस Apple खाते से साइन इन करें जिसमें आपकी Apple Music सदस्यता है।",
 		"start": "प्लेबैक शुरू करें",
@@ -306,7 +306,11 @@ export default {
 		"problemGeneric": "Apple Music ने प्लेबैक रोक दिया ({code})। फिर से प्रयास करने के लिए प्ले दबाएं।",
 		"contentNotice": "इस चैनल के कवर आर्ट और पूर्वावलोकन Apple से आते हैं। इन्हें लोड करते समय Apple आपका IP पता देखता है।",
 		"contentAccept": "चालू करें",
-		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।"
+		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।",
+		"standby": "यह चैनल अभी आपके किसी दूसरे डिवाइस पर चल रहा है।",
+		"playHere": "यहाँ चलाएँ",
+		"waitingForHost": "होस्ट के दोबारा चलाने तक रुका हुआ है।",
+		"playsOnComputer": "Apple Music कंप्यूटर पर चलता है। वहाँ यह चैनल खोलें और Apple Music कनेक्ट करें।"
 	},
 	"attribution": {
 		"youtube": "YouTube के साथ विकसित"

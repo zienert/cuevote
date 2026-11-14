@@ -297,7 +297,7 @@ export default {
 	},
 	"appleMusic": {
 		"source": "Fuente de música",
-		"sourceHint": "Apple Music solo suena en tu dispositivo y requiere una suscripción a Apple Music.",
+		"sourceHint": "Apple Music suena en tu computadora y requiere una suscripción a Apple Music.",
 		"connect": "Conectar Apple Music",
 		"connectHint": "Inicia sesión con la cuenta de Apple que tiene tu suscripción a Apple Music.",
 		"start": "Iniciar reproducción",
@@ -308,7 +308,11 @@ export default {
 		"problemGeneric": "Apple Music detuvo la reproducción ({code}). Pulsa reproducir para volver a intentarlo.",
 		"contentNotice": "Las portadas y las vistas previas de este canal vienen de Apple. Al cargarlas, Apple ve tu dirección IP.",
 		"contentAccept": "Activar",
-		"previewFailed": "No se puede reproducir esta vista previa."
+		"previewFailed": "No se puede reproducir esta vista previa.",
+		"standby": "Este canal se está reproduciendo en otro de tus dispositivos.",
+		"playHere": "Reproducir aquí",
+		"waitingForHost": "En pausa hasta que el anfitrión vuelva a reproducir.",
+		"playsOnComputer": "Apple Music suena en una computadora. Abre este canal allí y conecta Apple Music."
 	},
 	"attribution": {
 		"youtube": "Desarrollado con YouTube"
