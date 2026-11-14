@@ -205,6 +205,17 @@ describe('Apple Music catalog', () => {
       assert.equal(antiHero.videoId, 'am:video:Anti-Hero');
     });
 
+    it('prefers the original video over a numbered alternate, but not over a single version', () => {
+      const brightside = bestMatch('Mr Brightside', {
+        videos: [v('Mr. Brightside (Version 2)', 'The Killers'), v('Mr. Brightside', 'The Killers')],
+        songs: [s('Mr. Brightside', 'The Killers')],
+      });
+      assert.equal(brightside.videoId, 'am:video:Mr. Brightside');
+
+      const single = bestMatch('New Rules', { videos: [v('New Rules (Single Version)'), v('New Rules (Live)')] });
+      assert.equal(single.videoId, 'am:video:New Rules (Single Version)');
+    });
+
     it('gives a remix, a live or a lyric video to whoever asks for one', () => {
       assert.match(bestMatch('levitating remix', { videos: levitating }).title, /Remix/);
       assert.equal(bestMatch('levitating lyrics', { videos: levitating }).title, 'Levitating (Lyric Video)');

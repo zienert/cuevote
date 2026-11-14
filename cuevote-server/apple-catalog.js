@@ -178,7 +178,10 @@ function judgeGroup(group, query) {
     const none = { kind: 'none', penalty: 0, asked: false };
     if (group.length === 0 || CREDIT.has(group[0])) return none;
     const meaningful = group.filter(word => !NEUTRAL.has(word) && !STOP_WORDS.has(word) && !/^[0-9]+$/.test(word));
-    if (meaningful.every(word => ORIGINAL_WHEN_ALONE.has(word)) && meaningful.length <= 1) return none;
+    // A numbered one is an alternate take, though: "Mr. Brightside (Version 2)",
+    // which Apple ranks first in the Dutch storefront (Nov. 2026).
+    const numbered = meaningful.length === 1 && group.some(word => /^[0-9]+$/.test(word));
+    if (meaningful.every(word => ORIGINAL_WHEN_ALONE.has(word)) && meaningful.length <= 1 && !numbered) return none;
     const variants = meaningful.filter(word => OTHER_RECORDING.has(word) || LESSER_VIDEO.has(word));
     if (variants.length === 0) {
         return { kind: 'other', penalty: 0, asked: meaningful.every(word => query.has(word)) };
