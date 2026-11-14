@@ -1788,6 +1788,7 @@ function RoomBody() {
             onManageBanned={() => setShowBannedPage(true)}
             onPreview={isAppleRoom ? undefined : handlePreviewTrack}
             onClose={() => setShowPendingPage(false)}
+            showYouTubeAttribution={!isAppleRoom}
           />
         ) : null;
       })()}
@@ -1824,6 +1825,7 @@ function RoomBody() {
           bannedVideos={bannedVideos}
           onUnban={handleUnbanSong}
           onClose={() => setShowBannedPage(false)}
+          showYouTubeAttribution={!isAppleRoom}
         />
       )}
 
@@ -2074,6 +2076,7 @@ function RoomBody() {
         <div className="fixed inset-0 z-[200] w-full h-screen bg-[#1a1a1a] text-white overflow-hidden">
           <SettingsView
             onClose={() => setShowSettings(false)}
+            isAppleRoom={isAppleRoom}
             pendingCount={pendingSuggestions.length}
             suggestionMode={suggestionMode}
             onManageRequests={() => {
