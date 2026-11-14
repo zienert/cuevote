@@ -209,8 +209,9 @@ class Room {
                 if (saved.progress) this.state.progress = saved.progress;
                 if (saved.isPlaying) this.state.isPlaying = saved.isPlaying;
                 // Recalculate startedAt from saved progress so tick() doesn't
-                // see a stale timestamp and immediately advance past the track
-                if (this.state.currentTrack && this.state.progress > 0) {
+                // see a stale timestamp and immediately advance past the track,
+                // also at progress 0.
+                if (this.state.currentTrack) {
                     this.state.currentTrack = {
                         ...this.state.currentTrack,
                         startedAt: Date.now() - (this.state.progress * 1000)
@@ -438,7 +439,35 @@ class Room {
         }
     }
 
+    // Seconds into the current track by its clock (startedAt).
+    currentPosition() {
+        const track = this.state.currentTrack;
+        if (!track || !track.startedAt) return this.state.progress || 0;
+        return Math.max(0, Math.floor((Date.now() - track.startedAt) / 1000));
+    }
+
+    // Moves the clock of the current track so that it stands at `seconds` now.
+    setTrackPosition(seconds) {
+        const track = this.state.currentTrack;
+        if (!track) return;
+        this.state.currentTrack = { ...track, startedAt: Date.now() - (seconds * 1000) };
+        if (this.state.queue[0] && this.state.queue[0].id === track.id) {
+            this.state.queue = [this.state.currentTrack, ...this.state.queue.slice(1)];
+        }
+    }
+
     updateState(newState) {
+        // A pause stops the clock of the current track, play starts it again
+        // where it stopped. The clock is startedAt: left alone, a pause counted
+        // as played time, and a long one skipped the track on play (14.11.2026).
+        if ('isPlaying' in newState && !('currentTrack' in newState) && this.state.currentTrack
+            && !!newState.isPlaying !== !!this.state.isPlaying) {
+            if (newState.isPlaying) {
+                this.setTrackPosition(this.state.progress || 0);
+            } else {
+                newState = { ...newState, progress: this.currentPosition() };
+            }
+        }
         const trackChanged = 'currentTrack' in newState
             && newState.currentTrack !== this.state.currentTrack;
         // Another queue entry, not the same one with a new duration.
@@ -901,7 +930,7 @@ class Room {
                 if (isOwner(this, ws) && this.state.currentTrack) {
                     const duration = this.state.currentTrack.duration || 0;
                     const clamped = duration > 0 ? Math.min(r.data, duration) : r.data;
-                    this.state.currentTrack = { ...this.state.currentTrack, startedAt: Date.now() - (clamped * 1000) };
+                    this.setTrackPosition(clamped);
                     this.updateState({ progress: clamped });
                 }
                 break;

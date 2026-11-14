@@ -254,6 +254,28 @@ describe('Room', () => {
       assert.ok(room.state.history.length >= 1);
       room.destroy();
     });
+
+    it('resumes a paused track where it stopped, however long the pause', async () => {
+      const room = new Room('pause-room', 'Pause', null, { owner_id: 'owner-1' });
+      const owner = mockWs({ id: 'owner-1', name: 'Owner' });
+      room.addClient(owner);
+      room.state.queue = [{ id: 'current', videoId: 'v1', title: 'Current', score: 0, voters: {}, duration: 210, artist: 'A', thumbnail: 'x' }];
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() - 60000 };
+      room.state.isPlaying = true;
+      room.tick();
+      assert.equal(room.state.progress, 60);
+
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: false });
+      assert.equal(room.state.progress, 60, 'the pause freezes the position');
+
+      // Ten minutes later, longer than the track.
+      room.state.currentTrack.startedAt -= 600000;
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: true });
+      room.tick();
+      assert.equal(room.state.currentTrack.id, 'current', 'not skipped');
+      assert.ok(room.state.progress >= 60 && room.state.progress <= 61, `goes on at 60 s, got ${room.state.progress}`);
+      room.destroy();
+    });
   });
 
   describe('Playback Error Handling', () => {
