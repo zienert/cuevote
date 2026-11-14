@@ -15,6 +15,8 @@ const ConnectAI = lazy(() => import('./components/ConnectAI.jsx').then(m => ({ d
 const AndroidVenuePreview = import.meta.env.DEV ? lazy(() => import('./components/__AndroidVenuePreview.jsx')) : null;
 // DEV-only: does this browser play full Apple Music videos and start the next one without a click?
 const AppleMusicLab = import.meta.env.DEV ? lazy(() => import('./components/__AppleMusicLab.jsx')) : null;
+// DEV-only: the lobby with mock YouTube and Apple Music channels, no backend needed.
+const LobbyPreview = import.meta.env.DEV ? lazy(() => import('./components/__LobbyPreview.jsx')) : null;
 
 import { Consent } from './contexts/ConsentContext.jsx';
 import { Language } from './contexts/LanguageContext.jsx';
@@ -37,6 +39,9 @@ createRoot(document.getElementById('root')).render(
                   ) : null}
                   {import.meta.env.DEV && AppleMusicLab ? (
                     <Route path="/__apple-music-lab" element={<Suspense fallback={null}><AppleMusicLab /></Suspense>} />
+                  ) : null}
+                  {import.meta.env.DEV && LobbyPreview ? (
+                    <Route path="/__lobby-preview" element={<Suspense fallback={null}><LobbyPreview /></Suspense>} />
                   ) : null}
                   <Route path="/room/:roomId" element={<Suspense fallback={<div className="min-h-screen bg-[#050505] flex items-center justify-center"><span className="text-neutral-500">Loading…</span></div>}><App /></Suspense>} />
                   <Route path="/legal" element={<Suspense fallback={<div className="min-h-screen bg-[#050505]" />}><LegalPage /></Suspense>} />
