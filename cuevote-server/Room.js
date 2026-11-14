@@ -5,7 +5,7 @@ const db = require("./db");
 const dbAsync = require("./db-async");
 const logger = require("./logger");
 const schemas = require("./schemas");
-const { sortUpcoming } = require("./queue-order");
+const { sortUpcoming, AUTO_DJ } = require("./queue-order");
 const guest = require("./guest");
 const { appleTrackKey } = require("./track-keys");
 const { bestMatch, isStorefront, parseAppleMusicLink } = require("./apple-catalog");
@@ -663,7 +663,7 @@ class Room {
                         id: crypto.randomUUID(),
                         score: 0,
                         voters: {},
-                        suggestedBy: 'System',
+                        suggestedBy: AUTO_DJ,
                         suggestedByUsername: 'Channel Mix'
                     });
                 } else {
