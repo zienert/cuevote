@@ -893,7 +893,8 @@ describe('Room', () => {
     const song = (id, title) => ({ ...video(id, title), videoId: `am:song:${id}`, kind: 'song' });
 
     let calls = [];
-    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false, equivalents = {} } = {}) {
+    // songForVideo: { 'am:video:id': song track }, or a function (key) => track / promise.
+    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false, equivalents = {}, songForVideo = {} } = {}) {
       calls = [];
       const outage = () => Object.assign(new Error('down'), { code: 'APPLE_CATALOG_UNREACHABLE' });
       Room.setAppleCatalog({
@@ -912,6 +913,11 @@ describe('Room', () => {
           calls.push(['equivalents', storefront, keys]);
           if (fail) throw outage();
           return new Map(keys.filter(k => equivalents[k]).map(k => [k, equivalents[k]]));
+        },
+        async songForVideo(storefront, key, hint) {
+          calls.push(['songForVideo', storefront, key, hint]);
+          if (fail) throw outage();
+          return typeof songForVideo === 'function' ? songForVideo(key) : (songForVideo[key] || null);
         },
       });
     }
@@ -1275,6 +1281,97 @@ describe('Room', () => {
       room.state.queue[0] = room.state.currentTrack;
       room.state.isPlaying = true;
     };
+
+    describe('a player that cannot play music videos (Android)', () => {
+      const asSong = (room, ws, videoId, trackId) =>
+        room.handleMessage(ws, { type: 'APPLE_PLAY_AS_SONG', payload: { videoId, trackId } });
+
+      it('plays the current music video as its song: same entry, the song\'s length, the position kept', async () => {
+        useCatalog({ songForVideo: { 'am:video:1': { ...song(11, 'One (Album)'), duration: 180 } } });
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One', 200), video(2, 'Two')]);
+        room.state.currentTrack.suggestedBy = 'guest-1';
+        room.state.queue[0] = room.state.currentTrack;
+        room.setTrackPosition(60);
+
+        await asSong(room, owner, 'am:video:1', 'q1');
+        const current = room.state.currentTrack;
+        assert.deepEqual(calls.pop(), ['songForVideo', 'nl', 'am:video:1', { title: 'One', artist: 'Dua Lipa' }]);
+        assert.equal(current.id, 'q1');
+        assert.equal(current.videoId, 'am:song:11');
+        assert.equal(current.title, 'One (Album)');
+        assert.equal(current.duration, 180);
+        assert.equal(current.suggestedBy, 'guest-1');
+        assert.equal(room.state.queue[0], current);
+        assert.equal(room.state.queue[1].videoId, 'am:video:2', 'later entries stay videos');
+        assert.ok(Math.abs(room.currentPosition() - 60) <= 1);
+        room.destroy();
+      });
+
+      it('keeps the position inside a shorter song', async () => {
+        useCatalog({ songForVideo: { 'am:video:1': { ...song(11, 'One'), duration: 180 } } });
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One', 240)]);
+        room.setTrackPosition(200);
+        await asSong(room, owner, 'am:video:1', 'q1');
+        assert.equal(room.state.currentTrack.videoId, 'am:song:11');
+        assert.ok(room.currentPosition() <= 175);
+        room.destroy();
+      });
+
+      it('listens only to the room\'s player, and only about the current music video', async () => {
+        useCatalog({ songForVideo: { 'am:video:1': song(11, 'One'), 'am:video:2': song(12, 'Two') } });
+        const room = appleRoom();
+        const player = withPlayer(room, ownerWs());
+        const standby = ownerWs();
+        room.addClient(standby);
+        const guest = guestWs();
+        room.addClient(guest);
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+
+        await asSong(room, guest, 'am:video:1', 'q1');
+        await asSong(room, standby, 'am:video:1', 'q1');
+        await asSong(room, player, 'am:video:2', 'q2');
+        await asSong(room, player, 'am:video:1', 'q9');
+        await room.handleMessage(player, { type: 'APPLE_PLAY_AS_SONG', payload: { videoId: { bad: true } } });
+        assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+        assert.equal(calls.length, 0);
+
+        room.state.currentTrack = { ...room.state.currentTrack, videoId: 'am:song:5' };
+        await asSong(room, player, 'am:song:5', 'q1');
+        assert.equal(calls.length, 0, 'a song needs no swap');
+        room.destroy();
+      });
+
+      it('skips a music video Apple knows no song for, like any item it cannot play', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'Live'), video(2, 'Two')]);
+        await asSong(room, owner, 'am:video:1', 'q1');
+        assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+        assert.ok(!room.state.history.some(t => t.videoId === 'am:video:1'));
+        room.destroy();
+      });
+
+      it('drops a song that arrives after the room moved on', async () => {
+        let answer;
+        useCatalog({ songForVideo: () => new Promise((resolve) => { answer = resolve; }) });
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+        const asking = asSong(room, owner, 'am:video:1', 'q1');
+        await new Promise(resolve => setImmediate(resolve));
+        room.handleNextTrack();
+        answer(song(11, 'One'));
+        await asking;
+        assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+        assert.ok(!room.state.queue.some(t => t.videoId === 'am:song:11'));
+        room.destroy();
+      });
+    });
 
     it('pauses at the third item error in a row instead of skipping the whole queue', async () => {
       useCatalog();

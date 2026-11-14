@@ -7,7 +7,7 @@ const logger = require("./logger");
 const schemas = require("./schemas");
 const { sortUpcoming, AUTO_DJ } = require("./queue-order");
 const guest = require("./guest");
-const { appleTrackKey } = require("./track-keys");
+const { appleTrackKey, parseTrackKey } = require("./track-keys");
 const { bestMatch, isAppleMusicPage, isStorefront, looksLikeLink, parseAppleMusicLink } = require("./apple-catalog");
 
 // Apple Music catalog for Apple rooms; index.js sets it when MusicKit is set up
@@ -1109,6 +1109,13 @@ class Room {
                 this.followApplePlayer();
                 break;
             }
+            case "APPLE_PLAY_AS_SONG": {
+                // The room's player cannot play the current music video.
+                const r = schemas.ApplePlayAsSongPayload.safeParse(message.payload);
+                if (!r.success || this.metadata.provider !== 'apple' || !isOwner(this, ws) || !this.isApplePlayerSocket(ws)) break;
+                await this.playAppleVideoAsSong(r.data);
+                break;
+            }
             case "UPDATE_DURATION": {
                 const r = schemas.UpdateDurationPayload.safeParse(message.payload);
                 if (!r.success) break;
@@ -1847,6 +1854,59 @@ class Room {
                 client.send(JSON.stringify({ type: "APPLE_PLAYBACK_PROBLEM", payload: { code } }));
             }
         }
+    }
+
+    // The room's player cannot play music videos: MusicKit JS plays none on
+    // Android, phones and TVs alike (checked 14.11.2026). It asks for the song
+    // instead, and the current entry becomes that song, with the song's title,
+    // cover and length, so the clock ends it when the song ends. Same entry, so
+    // votes and who suggested it stay; the position is kept.
+    async playAppleVideoAsSong({ videoId, trackId }) {
+        const current = this.state.currentTrack;
+        if (!current || current.videoId !== videoId || (trackId && current.id !== trackId)) return;
+        const parsed = parseTrackKey(videoId);
+        if (!parsed || parsed.provider !== 'apple' || parsed.kind !== 'musicVideo') return;
+        if (this.appleSongLookup === current.id) return; // asked again while looking
+        this.appleSongLookup = current.id;
+        let song = null;
+        let failed = false;
+        try {
+            const storefront = this.metadata.apple_storefront;
+            if (appleCatalog && appleCatalog.songForVideo && isStorefront(storefront)) {
+                song = await appleCatalog.songForVideo(storefront, videoId, { title: current.title, artist: current.artist });
+            }
+        } catch (e) {
+            failed = true;
+            logger.error(`[Room ${this.id}] Looking up the song of ${videoId} failed: ${e && e.code} ${e && e.message}`);
+        } finally {
+            if (this.appleSongLookup === current.id) this.appleSongLookup = null;
+        }
+        // The room may have moved on during the lookup.
+        const now = this.state.currentTrack;
+        if (!now || now.id !== current.id || now.videoId !== videoId) return;
+        if (!song) {
+            // Nothing this player can play: skipped like any item it cannot play.
+            this.handleApplePlaybackError({ videoId, errorCode: failed ? 'CONTENT_UNAVAILABLE' : 'NOT_FOUND', trackId: now.id });
+            return;
+        }
+        const position = Math.min(this.currentPosition(), Math.max(0, song.duration - 5));
+        const swapped = {
+            ...now,
+            videoId: song.videoId,
+            title: song.title,
+            artist: song.artist,
+            thumbnail: song.thumbnail,
+            duration: song.duration,
+            startedAt: Date.now() - position * 1000,
+        };
+        const queue = this.state.queue[0] && this.state.queue[0].id === now.id
+            ? [swapped, ...this.state.queue.slice(1)]
+            : this.state.queue;
+        this.updateState({ currentTrack: swapped, queue, progress: position });
+        try {
+            db.upsertVideo({ id: song.videoId, title: song.title, artist: song.artist, thumbnail: song.thumbnail, duration: song.duration, category_id: null, language: null });
+        } catch (e) { /* metadata cache only */ }
+        logger.info(`[Room ${this.id}] ${videoId} plays as the song ${song.videoId}: this player cannot play music videos.`);
     }
 
     // Removes these items from the stored library as well, which the room
