@@ -22,7 +22,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange }) {
 		>
 			<span
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-neutral-800 ring-1 ring-inset ring-orange-500/40 shadow-md shadow-black/50 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-gradient-to-b from-orange-500 to-orange-600 shadow-[0_6px_18px_-6px_rgba(249,115,22,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
 				style={{
 					width: `calc((100% - 0.5rem) / ${options.length})`,
 					transform: `translateX(${selectedIndex * 100}%)`,
@@ -37,9 +37,9 @@ export function SegmentedControl({ labelledBy, options, value, onChange }) {
 						type="button"
 						aria-pressed={selected}
 						onClick={() => onChange(option.value)}
-						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:text-white ${selected ? 'text-white' : 'text-neutral-500 hover:text-neutral-200'}`}
+						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:text-white ${selected ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
 					>
-						{Icon ? <Icon size={16} className={`shrink-0 transition-colors ${selected ? 'text-orange-500' : ''}`} /> : null}
+						{Icon ? <Icon size={16} className="shrink-0" /> : null}
 						<span className="truncate">{option.label}</span>
 					</button>
 				);
