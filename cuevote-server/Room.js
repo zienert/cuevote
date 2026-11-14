@@ -27,6 +27,13 @@ const APPLE_ITEM_ERRORS = new Set([
 // The third item error within a minute pauses instead of skipping.
 const APPLE_ITEM_ERROR_LIMIT = 3;
 const APPLE_ITEM_ERROR_WINDOW_MS = 60 * 1000;
+// An Apple room plays on one owner device, its "player". The player reports
+// its state about every 10 s (APPLE_PLAYER_STATUS); silent this long, it
+// counts as gone.
+const APPLE_PLAYER_STALE_MS = 25 * 1000;
+// How long a playing Apple room keeps its clock going without a player that
+// can play (a reload, buffering) before it waits for the host.
+const APPLE_HOST_GRACE_MS = 15 * 1000;
 
 // A seek this soon after the current track changed was aimed at the previous
 // one, whose progress bar was still on screen. Clicking the end of the bar to
@@ -127,6 +134,10 @@ class Room {
         this.videoStatusCache = new Map(); // videoId -> { reason, checkedAt } to avoid redundant API calls
         this.videoStatusChecksInFlight = new Set(); // videoIds mid-API-check; dedupes concurrent PLAYBACK_ERRORs
         this.isRehydrating = false;        // Guards the on-join metadata re-fetch from concurrent duplicate runs
+        // Apple rooms: the owner socket that plays the room { ws, state, lastSeen },
+        // and since when no player has been able to play while the room plays.
+        this.applePlayer = null;
+        this.hostMissingSince = null;
 
         this.state = {
             roomId: id, // Send ID to client for validation
@@ -140,6 +151,8 @@ class Room {
             provider: this.metadata.provider,
             // Guests' previews look items up in the same country as the host.
             appleStorefront: this.metadata.provider === 'apple' ? this.metadata.apple_storefront : null,
+            // Apple rooms: the room plays, but no host player can (followApplePlayer).
+            waitingForHost: false,
             suggestionsEnabled: true,
             musicOnly: false, // Default false
             maxDuration: 600, // Default 10 minutes
@@ -410,6 +423,96 @@ class Room {
 
     removeClient(ws) {
         this.clients.delete(ws);
+        // The player left: another owner device on standby takes over.
+        if (this.applePlayer && this.applePlayer.ws === ws) {
+            this.applePlayer = null;
+            const standby = [...this.clients].reverse().find(client => client.applePlayerState && isOwner(this, client));
+            if (standby) this.grantApplePlayer(standby);
+            this.followApplePlayer();
+        }
+    }
+
+    // ---- Apple Music: the one player of the room ---------------------------
+
+    isApplePlayerReady() {
+        const player = this.applePlayer;
+        return !!player && this.clients.has(player.ws)
+            && Date.now() - player.lastSeen < APPLE_PLAYER_STALE_MS
+            && (player.state === 'playing' || player.state === 'ready');
+    }
+
+    // Errors, durations and the storefront count only from the room's player.
+    // With no player known (a client from before players reported), from any
+    // owner socket.
+    isApplePlayerSocket(ws) {
+        return !this.applePlayer || this.applePlayer.ws === ws;
+    }
+
+    sendApplePlayerLease(ws) {
+        if (ws.readyState !== 1) return;
+        const active = !!this.applePlayer && this.applePlayer.ws === ws;
+        ws.send(JSON.stringify({ type: "APPLE_PLAYER_LEASE", payload: { active } }));
+    }
+
+    // This owner socket plays the room from now on; every other owner device
+    // stops and offers to take over. Apple streams one account on one device
+    // at a time: two players cut each other off (14.11.2026).
+    grantApplePlayer(ws) {
+        this.applePlayer = { ws, state: ws.applePlayerState || 'blocked', lastSeen: Date.now() };
+        logger.info(`[Room ${this.id}] Apple player: ${ws.id}`);
+        for (const client of this.clients) {
+            if (client.applePlayerState) this.sendApplePlayerLease(client);
+        }
+    }
+
+    handleApplePlayerStatus(ws, state) {
+        ws.applePlayerState = state;
+        const player = this.applePlayer;
+        const playerGone = !player || !this.clients.has(player.ws) || Date.now() - player.lastSeen >= APPLE_PLAYER_STALE_MS;
+        if (playerGone && (!player || player.ws !== ws)) this.grantApplePlayer(ws);
+        if (this.applePlayer.ws === ws) {
+            this.applePlayer.state = state;
+            this.applePlayer.lastSeen = Date.now();
+        }
+        // Every report gets the answer: a lost one is put right by the next.
+        this.sendApplePlayerLease(ws);
+        this.followApplePlayer();
+        // The host is back to an empty room: the Auto-DJ, which waited for
+        // them, may fill it now.
+        if (this.isApplePlayerReady() && !this.state.currentTrack && this.state.queue.length === 0
+            && this.state.autoRefill && this.state.history.length > 0 && !this.state.isRefilling) {
+            this.populateQueueFromHistory();
+        }
+    }
+
+    // A playing Apple room keeps its clock going only while its player can
+    // play. The server cannot hear whether anything plays: with the host's
+    // tab closed, the laptop asleep or only a phone (which never plays), the
+    // room went on silently through every request and into the Auto-DJ
+    // (13./14.11.2026). After a short grace it now holds its position until
+    // the player is back.
+    followApplePlayer() {
+        if (this.metadata.provider !== 'apple') return;
+        if (!this.state.currentTrack || !this.state.isPlaying) {
+            this.hostMissingSince = null;
+            if (this.state.waitingForHost) this.updateState({ waitingForHost: false });
+            return;
+        }
+        if (this.isApplePlayerReady()) {
+            this.hostMissingSince = null;
+            if (this.state.waitingForHost) {
+                this.setTrackPosition(this.state.progress || 0);
+                this.updateState({ waitingForHost: false });
+                logger.info(`[Room ${this.id}] The Apple player is back: playing on.`);
+            }
+            return;
+        }
+        if (!this.hostMissingSince) this.hostMissingSince = Date.now();
+        if (!this.state.waitingForHost && Date.now() - this.hostMissingSince >= APPLE_HOST_GRACE_MS) {
+            this.updateState({ waitingForHost: true, progress: this.currentPosition() });
+            logger.info(`[Room ${this.id}] No Apple player can play: waiting for the host.`);
+        }
+        if (this.state.waitingForHost) this.setTrackPosition(this.state.progress || 0);
     }
 
     // Send one socket the state as that viewer may see it. Used when ws.user
@@ -516,6 +619,9 @@ class Room {
     }
 
     tick() {
+        // An Apple room holds still while no host player can play.
+        this.followApplePlayer();
+        if (this.state.waitingForHost) return;
         if (this.state.isPlaying && this.state.currentTrack) {
             // FIX: Timestamp Stability
             // If startedAt is missing (legacy track or server restart), back-fill it
@@ -618,6 +724,13 @@ class Room {
             // room would queue songs its host may not be able to play.
             if (this.metadata.provider === 'apple' && !this.metadata.apple_storefront) {
                 logger.info(`[AutoRefill] Apple room ${this.id} has no storefront yet. Abort.`);
+                this.updateState({ isRefilling: false });
+                return;
+            }
+            // Only the host's player plays an Apple room: without it nobody
+            // would hear the picks. It refills once the player reports back.
+            if (this.metadata.provider === 'apple' && !this.isApplePlayerReady()) {
+                logger.info(`[AutoRefill] Apple room ${this.id} has no player that can play. Abort.`);
                 this.updateState({ isRefilling: false });
                 return;
             }
@@ -968,7 +1081,7 @@ class Room {
             case "PLAYBACK_ERROR": {
                 const r = schemas.PlaybackErrorPayload.safeParse(message.payload);
                 if (!r.success) break;
-                if (isOwner(this, ws)) {
+                if (isOwner(this, ws) && (this.metadata.provider !== 'apple' || this.isApplePlayerSocket(ws))) {
                     await this.handlePlaybackError(ws, r.data);
                 }
                 break;
@@ -976,15 +1089,31 @@ class Room {
             case "APPLE_STOREFRONT": {
                 // The host's MusicKit reports the country of their Apple account.
                 // Suggestions are looked up there, where the host can play them.
-                if (this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
+                if (this.metadata.provider !== 'apple' || !isOwner(this, ws) || !this.isApplePlayerSocket(ws)) break;
                 if (!isStorefront(message.payload)) break;
                 this.setAppleStorefront(message.payload);
+                break;
+            }
+            case "APPLE_PLAYER_STATUS": {
+                // The owner's player says whether it can play (see followApplePlayer).
+                const r = schemas.ApplePlayerStatusPayload.safeParse(message.payload);
+                if (!r.success || this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
+                this.handleApplePlayerStatus(ws, r.data.state);
+                break;
+            }
+            case "APPLE_PLAYER_CLAIM": {
+                // "Play here" on an owner device that is on standby.
+                if (this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
+                ws.applePlayerState = ws.applePlayerState || 'blocked';
+                this.grantApplePlayer(ws);
+                this.followApplePlayer();
                 break;
             }
             case "UPDATE_DURATION": {
                 const r = schemas.UpdateDurationPayload.safeParse(message.payload);
                 if (!r.success) break;
-                if (isOwner(this, ws) && this.state.currentTrack) {
+                if (isOwner(this, ws) && this.state.currentTrack
+                    && (this.metadata.provider !== 'apple' || this.isApplePlayerSocket(ws))) {
                     const { duration, trackId } = typeof r.data === 'number' ? { duration: r.data } : r.data;
                     // A late report for an entry that is no longer current.
                     if (trackId && trackId !== this.state.currentTrack.id) break;

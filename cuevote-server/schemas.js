@@ -117,6 +117,13 @@ const PlaybackErrorPayload = z.object({
 
 const PlayPausePayload = z.boolean();
 
+// What the owner's Apple player can do: play (playing, or ready and paused
+// with the room), not (blocked: loading, signed out, waiting for a tap, an
+// error), or stand by while another owner device plays.
+const ApplePlayerStatusPayload = z.object({
+  state: z.enum(['playing', 'ready', 'blocked', 'standby']),
+});
+
 // Remote DJ MCP: the web consent page sends this (over the user's authenticated
 // socket) to approve an OAuth authorization. The server adds the user id and
 // finalizes with the MCP server-to-server, so the finalize secret never reaches
@@ -159,6 +166,7 @@ module.exports = {
   FetchSuggestionsPayload,
   UpdateDurationPayload,
   PlaybackErrorPayload,
+  ApplePlayerStatusPayload,
   PlayPausePayload,
   McpAuthorizePayload,
   GuestSessionPayload,

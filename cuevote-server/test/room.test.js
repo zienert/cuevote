@@ -1185,6 +1185,90 @@ describe('Room', () => {
       room.destroy();
     });
 
+    // An owner socket that reports a player able to play.
+    const withPlayer = (room, ws, state = 'ready') => {
+      if (!room.clients.has(ws)) room.addClient(ws);
+      ws.applePlayerState = state;
+      room.applePlayer = { ws, state, lastSeen: Date.now() };
+      return ws;
+    };
+
+    it('lets one owner device play and puts the others on standby until they take over', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const tv = ownerWs();
+      const laptop = ownerWs();
+      room.addClient(tv);
+      room.addClient(laptop);
+
+      await room.handleMessage(tv, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      await room.handleMessage(laptop, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      assert.deepEqual(lastOf(laptop, 'APPLE_PLAYER_LEASE').payload, { active: false });
+
+      // Only the player's errors count.
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      await room.handleMessage(laptop, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'NOT_FOUND' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+
+      await room.handleMessage(laptop, { type: 'APPLE_PLAYER_CLAIM' });
+      assert.deepEqual(lastOf(laptop, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: false });
+
+      // The player closes: the device on standby takes over.
+      room.removeClient(laptop);
+      assert.equal(room.applePlayer.ws, tv);
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      room.destroy();
+    });
+
+    it('holds its position while no host player can play and goes on from there', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      room.state.currentTrack.startedAt = Date.now() - 40000;
+      room.state.queue[0] = room.state.currentTrack;
+
+      room.tick(); // no player: the grace starts, the clock still runs
+      assert.equal(room.state.waitingForHost, false);
+      room.hostMissingSince = Date.now() - 20000;
+      room.tick();
+      assert.equal(room.state.waitingForHost, true);
+      const held = room.state.progress;
+      assert.ok(held >= 40 && held <= 41, `held at ${held}`);
+
+      // Ten minutes without a host: nothing moves.
+      room.state.currentTrack.startedAt -= 600000;
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.progress, held);
+
+      await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'playing' } });
+      assert.equal(room.state.waitingForHost, false);
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1', 'not skipped');
+      assert.ok(room.state.progress >= held && room.state.progress <= held + 1, `goes on at ${held}, got ${room.state.progress}`);
+      room.destroy();
+    });
+
+    it('lets the Auto-DJ wait for the host and fill the room when the host is back', async () => {
+      useCatalog({ items: [video(1, 'Fine')] });
+      const room = appleRoom();
+      room.state.autoRefill = true;
+      room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      await room.populateQueueFromHistory();
+      assert.equal(room.state.queue.length, 0, 'nobody to hear it');
+
+      const owner = ownerWs();
+      room.addClient(owner);
+      await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
+      room.destroy();
+    });
+
     const playing = (room, tracks) => {
       room.state.queue = tracks.map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
       room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() };
@@ -1274,8 +1358,8 @@ describe('Room', () => {
       room.state.autoRefill = true;
       room.state.history = [video(1, 'Fine'), video(2, 'Banned'), video(3, 'Gone')].map(t => ({ ...t, playedAt: Date.now() - 60000 }));
       room.state.bannedVideos = [{ videoId: 'am:video:2', title: 'Banned' }];
+      withPlayer(room, ownerWs());
 
-      // No viewers: an Apple room still checks its picks.
       await room.populateQueueFromHistory();
       assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1']);
       assert.equal(room.state.currentTrack.videoId, 'am:video:1');
@@ -1294,6 +1378,7 @@ describe('Room', () => {
       useCatalog({ items: [video(1, 'Fine')] });
       const room = appleRoom();
       room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      withPlayer(room, ownerWs());
       room.state.isPlaying = true; // play pressed, nothing current
       await room.populateQueueFromHistory();
       assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
