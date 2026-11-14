@@ -28,6 +28,11 @@ import androidx.annotation.Keep
 
 import android.os.Message
 import android.app.Dialog
+import android.view.KeyEvent
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // The origins this wrapper will load. Everything else belongs in the system
@@ -45,6 +50,21 @@ private fun isCueVoteUrl(url: String?): Boolean =
     if (url.isNullOrBlank()) false
     else try { isCueVoteUrl(android.net.Uri.parse(url)) } catch (_: Exception) { false }
 
+// Apple Music's sign-in. MusicKit JS opens it with window.open and waits for the
+// popup to post the result back to window.opener, so it has to run as a real
+// popup of this WebView: handed to the system browser, it can never report back
+// and the host stays signed out.
+private fun isAppleSignInUrl(uri: android.net.Uri?): Boolean =
+    uri != null && uri.scheme?.lowercase() == "https" &&
+        uri.host?.lowercase() == "authorize.music.apple.com"
+
+// The pages that sign-in moves through: Apple ID, two-factor, password reset.
+private fun isApplePage(uri: android.net.Uri?): Boolean {
+    if (uri == null || uri.scheme?.lowercase() != "https") return false
+    val host = uri.host?.lowercase() ?: return false
+    return host == "apple.com" || host.endsWith(".apple.com")
+}
+
 class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
     private lateinit var webView: WebView
@@ -53,6 +73,12 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     private var wasOffline = false
     private var reconnectHandler: android.os.Handler? = null
     private var reconnectRunnable: Runnable? = null
+
+    // User agent for Apple's sign-in page: the WebView's own, minus the WebView marker.
+    private var appleUserAgent: String? = null
+
+    // The Apple Music sign-in currently on screen, if any.
+    internal var appleSignIn: AppleSignInWindow? = null
 
     // Whether this device has any camera (front, back, or external/USB). Since the TV
     // change relaxed the camera uses-features to required="false", the app also installs
@@ -111,6 +137,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             val isTelevision = uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
             val tvSuffix = if (isTelevision) " AndroidTV" else ""
             userAgentString = "$sanitizedUserAgent CueVoteWrapper/1.0$tvSuffix"
+            appleUserAgent = sanitizedUserAgent
         }
 
         // 3. Inject Offline Layout
@@ -168,29 +195,63 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
         // Web Chrome Client for Popups
         //
-        // Popups are intercepted: cuevote.com targets stay in this WebView,
-        // everything else (legal links, YouTube, Google docs) is handed to
-        // the system browser. Previously every popup landed in a full-screen
-        // dialog WebView that would happily load any URL — a compromised
-        // first-party page could have used it to load an attacker-controlled
-        // origin with the CueVoteWrapper user-agent in front of the user.
+        // Popups are intercepted: everything (legal links, YouTube, Google
+        // docs) is handed to the system browser, except Apple Music's sign-in,
+        // which opens in a window of its own (see AppleSignInWindow). Previously
+        // every popup landed in a full-screen dialog WebView that would happily
+        // load any URL — a compromised first-party page could have used it to
+        // load an attacker-controlled origin with the CueVoteWrapper user-agent
+        // in front of the user.
         webView.webChromeClient = object : WebChromeClient() {
             override fun onCreateWindow(view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message?): Boolean {
-                // Throw-away WebView whose only purpose is to surface the
-                // popup's target URL via shouldOverrideUrlLoading, then route
-                // it. WebView is never attached to the view hierarchy and is
-                // destroyed once we've decided what to do with the URL.
-                val captureWebView = WebView(this@MainActivity)
-                captureWebView.webViewClient = object : WebViewClient() {
+                val message = resultMsg ?: return false
+                val transport = message.obj as? WebView.WebViewTransport ?: return false
+                // The popup's first navigation decides what it becomes. Until
+                // then it is never attached to the view hierarchy; anything but
+                // Apple's sign-in goes to the system browser and the WebView is
+                // destroyed. It never gets the CueVoteAndroid interface.
+                val popup = WebView(this@MainActivity)
+                popup.settings.apply {
+                    // Apple's sign-in is a script-driven page, and like CueVote
+                    // it should see a plain Chrome rather than a WebView.
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    userAgentString = appleUserAgent
+                }
+                var signIn: AppleSignInWindow? = null
+                popup.webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                        this@MainActivity.openExternally(request?.url)
-                        captureWebView.destroy()
+                        val url = request?.url
+                        val window = signIn
+                        if (window == null) {
+                            if (isAppleSignInUrl(url) && isCueVoteUrl(webView.url)) {
+                                signIn = AppleSignInWindow(this@MainActivity, popup).also { it.show() }
+                                return false
+                            }
+                            this@MainActivity.openExternally(url)
+                            popup.destroy()
+                            return true
+                        }
+                        // Inside the sign-in, Apple's own pages only.
+                        if (request?.isForMainFrame != true || isApplePage(url)) return false
+                        this@MainActivity.openExternally(url)
                         return true
                     }
+
+                    override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                        super.onPageStarted(view, url, favicon)
+                        signIn?.showAddress(url)
+                    }
                 }
-                val transport = resultMsg?.obj as? WebView.WebViewTransport
-                transport?.webView = captureWebView
-                resultMsg?.sendToTarget()
+                popup.webChromeClient = object : WebChromeClient() {
+                    // Apple's page closes itself once MusicKit has the result.
+                    override fun onCloseWindow(window: WebView?) {
+                        val open = signIn
+                        if (open != null) open.close() else popup.destroy()
+                    }
+                }
+                transport.webView = popup
+                message.sendToTarget()
                 return true
             }
         }
@@ -303,6 +364,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     }
 
     override fun onDestroy() {
+        appleSignIn?.close()
         reconnectRunnable?.let { reconnectHandler?.removeCallbacks(it) }
         reconnectHandler = null
         networkCallback?.let {
@@ -381,6 +443,95 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     }
 
     // Removed onActivityResult as we don't use IntentIntegrator anymore
+}
+
+// Apple Music's sign-in, shown over CueVote in a window of its own: a bar with
+// the address of the page and a close button, Apple's page underneath. The page
+// is a popup of CueVote's WebView, so MusicKit gets its answer the regular way.
+// Closing the window cancels the sign-in: the popup is destroyed, MusicKit sees
+// its window closed and stops waiting.
+internal class AppleSignInWindow(
+    private val activity: MainActivity,
+    private val popup: WebView,
+) {
+    private val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+    private val address = TextView(activity)
+    private var destroyed = false
+
+    init {
+        val density = activity.resources.displayMetrics.density
+        fun dp(value: Int) = (value * density).toInt()
+
+        address.apply {
+            setTextColor(Color.parseColor("#A3A3A3"))
+            textSize = 14f
+            gravity = Gravity.CENTER_VERTICAL
+            isSingleLine = true
+            ellipsize = android.text.TextUtils.TruncateAt.END
+        }
+        val close = ImageButton(activity).apply {
+            setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+            setBackgroundColor(Color.TRANSPARENT)
+            // The wrapper has no translations of its own; the system's word is localized.
+            contentDescription = activity.getString(android.R.string.cancel)
+            setOnClickListener { dialog.dismiss() }
+        }
+        val bar = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setBackgroundColor(Color.parseColor("#0A0A0A"))
+            setPadding(dp(16), 0, dp(4), 0)
+            addView(address, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
+            addView(close, LinearLayout.LayoutParams(dp(48), dp(48)))
+        }
+        val root = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(Color.BLACK)
+            addView(bar, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
+            addView(popup, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
+        }
+        dialog.setContentView(root)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        // Back walks Apple's pages first, then cancels.
+        dialog.setOnKeyListener { _, keyCode, event ->
+            if (keyCode != KeyEvent.KEYCODE_BACK) return@setOnKeyListener false
+            if (event.action == KeyEvent.ACTION_UP) {
+                if (popup.canGoBack()) popup.goBack() else dialog.dismiss()
+            }
+            true
+        }
+        dialog.setOnDismissListener {
+            if (activity.appleSignIn === this) activity.appleSignIn = null
+            destroyPopup()
+        }
+    }
+
+    fun show() {
+        if (activity.isFinishing || activity.isDestroyed) {
+            destroyPopup()
+            return
+        }
+        activity.appleSignIn?.close()
+        activity.appleSignIn = this
+        dialog.show()
+    }
+
+    fun showAddress(url: String?) {
+        address.text = try { android.net.Uri.parse(url).host } catch (_: Exception) { null } ?: ""
+    }
+
+    fun close() {
+        if (dialog.isShowing) dialog.dismiss() else destroyPopup()
+    }
+
+    private fun destroyPopup() {
+        if (destroyed) return
+        destroyed = true
+        (popup.parent as? ViewGroup)?.removeView(popup)
+        popup.stopLoading()
+        popup.destroy()
+    }
 }
 
 @Keep
