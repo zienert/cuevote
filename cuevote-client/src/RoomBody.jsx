@@ -190,7 +190,8 @@ function RoomBody() {
     bannedVideos = [], // Added this
     captionsEnabled = false,
     requireLogin = false,
-    provider = 'youtube'
+    provider = 'youtube',
+    appleStorefront = null,
   } = serverState || {};
   // Apple Music rooms play only on the owner's device (MusicKit needs the
   // host's own subscription); everyone else gets the playlist view.
@@ -1396,6 +1397,7 @@ function RoomBody() {
     track: isAppleRoom && !isOwner && appleConsent ? previewTrack : null,
     volume: isMuted ? 0 : volume / 100,
     onEnded: handleStopPreview,
+    storefront: appleStorefront,
   });
 
   // Watch for Room Not Found Error

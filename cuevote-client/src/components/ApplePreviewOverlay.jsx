@@ -25,7 +25,8 @@ export function ApplePreviewOverlay({ track, preview, consent, onAccept, isCinem
 		message = <p className="text-neutral-300">{t('appleMusic.loading')}</p>;
 	} else if (consent && preview.status === 'error') {
 		message = <p className="text-neutral-300">{t('appleMusic.previewFailed')}</p>;
-	} else if (consent && preview.status === 'needs-start') {
+	} else if (consent && (preview.status === 'needs-start' || preview.status === 'paused')) {
+		// Paused without the guest: the phone locked, or the browser stopped it.
 		message = (
 			<button
 				type="button"
