@@ -885,13 +885,18 @@ export function Lobby() {
                                         ) : (
                                             <div className={`absolute inset-0 bg-gradient-to-br ${channel.color} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
                                         )}
+                                        {/* Apple channels never send a thumbnail, so a warm glow
+                                            from the label's corner fills the card instead. */}
+                                        {channel.provider === 'apple' && (
+                                            <div className="absolute inset-0 bg-[radial-gradient(130%_100%_at_0%_0%,rgba(249,115,22,0.22),transparent_60%)]" />
+                                        )}
                                     </div>
 
                                     {/* The source in words, set like the rest of the card: Apple
                                         allows its badges and icon only as links to Apple Music,
                                         and the name stays "Apple Music" in every language. */}
                                     {channel.provider === 'apple' && (
-                                        <span className={`absolute top-3 left-4 sm:top-5 sm:left-6 z-10 text-xs font-semibold transition-colors ${actualIndex === focusedIndex ? 'text-white' : 'text-neutral-400'}`}>
+                                        <span className={`absolute top-3 left-4 sm:top-5 sm:left-6 z-10 text-xs font-semibold transition-colors ${actualIndex === focusedIndex ? 'text-orange-300' : 'text-orange-400'}`}>
                                             Apple Music
                                         </span>
                                     )}
