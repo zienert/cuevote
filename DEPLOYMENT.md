@@ -351,6 +351,17 @@ existing Apple Music channels refuse suggestions.
 The CSP lists the Apple hosts even while Apple Music is off; nothing loads
 from them then.
 
+A channel needs a country (storefront) to search Apple's catalog. The host's
+player reports the one of their Apple account; until it has, the server takes
+the country of the owner's connection from Cloudflare's `CF-IPCountry` header
+(Cloudflare: Network → IP Geolocation on; nginx passes the header on as it
+is). Without that header a new Apple channel refuses suggestions until its
+host has connected Apple Music on a computer once.
+
+An Apple channel plays only while the owner's player can play: with no player
+for 15 s it holds its position and waits (guests see that), and goes on when
+the player is back. After deploying a new client, reload the host's tab.
+
 ## 6. SSL Setup (Optional but Recommended)
 
 install certbot:
