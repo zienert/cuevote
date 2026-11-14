@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Domaćin prvo mora da poveže Apple Music.",
 		"appleMusicRoom": "Ovaj kanal pušta Apple Music. Nalepite link sa music.apple.com ili pretražujte po nazivu.",
 		"appleMusicNotFound": "Nije pronađeno na Apple Music-u.",
+		"appleMusicLinkUnsupported": "Nalepite link do jedne pesme ili muzičkog spota ili pretražujte po nazivu.",
 		"appleMusicNotInStorefront": "Ova pesma nije dostupna na Apple Music-u u zemlji domaćina.",
 		"appleMusicCatalogError": "Apple Music ne odgovara. Pokušajte ponovo."
 	},

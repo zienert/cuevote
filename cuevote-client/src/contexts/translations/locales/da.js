@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Værten skal først forbinde Apple Music.",
 		"appleMusicRoom": "Denne kanal spiller Apple Music. Indsæt et link fra music.apple.com eller søg efter navn.",
 		"appleMusicNotFound": "Ikke fundet på Apple Music.",
+		"appleMusicLinkUnsupported": "Indsæt et link til én sang eller musikvideo, eller søg efter navn.",
 		"appleMusicNotInStorefront": "Dette nummer er ikke tilgængeligt på Apple Music i værtens land.",
 		"appleMusicCatalogError": "Apple Music svarede ikke. Prøv igen."
 	},

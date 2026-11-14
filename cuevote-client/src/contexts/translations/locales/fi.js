@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Isännän täytyy ensin yhdistää Apple Music.",
 		"appleMusicRoom": "Tällä kanavalla soi Apple Music. Liitä music.apple.com-linkki tai hae nimellä.",
 		"appleMusicNotFound": "Ei löytynyt Apple Musicista.",
+		"appleMusicLinkUnsupported": "Liitä linkki yhteen kappaleeseen tai musiikkivideoon tai hae nimellä.",
 		"appleMusicNotInStorefront": "Tämä kappale ei ole saatavilla Apple Musicissa isännän maassa.",
 		"appleMusicCatalogError": "Apple Music ei vastannut. Yritä uudelleen."
 	},

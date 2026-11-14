@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Người tổ chức cần kết nối Apple Music trước.",
 		"appleMusicRoom": "Kênh này phát Apple Music. Hãy dán link music.apple.com hoặc tìm theo tên.",
 		"appleMusicNotFound": "Không tìm thấy trên Apple Music.",
+		"appleMusicLinkUnsupported": "Hãy dán link của một bài hát hoặc một video âm nhạc, hoặc tìm theo tên.",
 		"appleMusicNotInStorefront": "Bài hát này không khả dụng trên Apple Music ở quốc gia của người tổ chức.",
 		"appleMusicCatalogError": "Apple Music không phản hồi. Vui lòng thử lại."
 	},

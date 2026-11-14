@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "A házigazdának előbb csatlakoztatnia kell az Apple Musicot.",
 		"appleMusicRoom": "Ez a csatorna az Apple Musicot használja. Illessz be egy music.apple.com linket, vagy keress név alapján.",
 		"appleMusicNotFound": "Nem található az Apple Musicon.",
+		"appleMusicLinkUnsupported": "Illessz be egy linket egyetlen dalhoz vagy videoklipphez, vagy keress név alapján.",
 		"appleMusicNotInStorefront": "Ez a szám a házigazda országában nem érhető el az Apple Musicon.",
 		"appleMusicCatalogError": "Az Apple Music nem válaszolt. Próbáld újra."
 	},

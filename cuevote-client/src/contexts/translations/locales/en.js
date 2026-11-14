@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "The host has to connect Apple Music first.",
 		"appleMusicRoom": "This channel plays Apple Music. Paste a music.apple.com link or search by name.",
 		"appleMusicNotFound": "Could not find this on Apple Music.",
+		"appleMusicLinkUnsupported": "Paste a link to a single song or music video, or search by name.",
 		"appleMusicNotInStorefront": "This title is not available on Apple Music in the host's country.",
 		"appleMusicCatalogError": "Apple Music did not answer. Please try again."
 	},

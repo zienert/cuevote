@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Hostitel musí nejdřív připojit Apple Music.",
 		"appleMusicRoom": "Tento kanál přehrává Apple Music. Vložte odkaz z music.apple.com nebo hledejte podle názvu.",
 		"appleMusicNotFound": "V Apple Music nebylo nalezeno.",
+		"appleMusicLinkUnsupported": "Vložte odkaz na jednu skladbu nebo hudební video, nebo hledejte podle názvu.",
 		"appleMusicNotInStorefront": "Tato skladba není v Apple Music v zemi hostitele dostupná.",
 		"appleMusicCatalogError": "Apple Music neodpovídá. Zkuste to znovu."
 	},

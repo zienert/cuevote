@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Värden måste först ansluta Apple Music.",
 		"appleMusicRoom": "Den här kanalen spelar Apple Music. Klistra in en länk från music.apple.com eller sök på namn.",
 		"appleMusicNotFound": "Hittades inte på Apple Music.",
+		"appleMusicLinkUnsupported": "Klistra in en länk till en enskild låt eller musikvideo, eller sök på namn.",
 		"appleMusicNotInStorefront": "Den här låten är inte tillgänglig på Apple Music i värdens land.",
 		"appleMusicCatalogError": "Apple Music svarade inte. Försök igen."
 	},

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "主持人需要先連接 Apple Music。",
 		"appleMusicRoom": "此頻道播放 Apple Music。請貼上 music.apple.com 連結，或依名稱搜尋。",
 		"appleMusicNotFound": "在 Apple Music 上找不到此內容。",
+		"appleMusicLinkUnsupported": "請貼上單一歌曲或音樂影片的連結，或依名稱搜尋。",
 		"appleMusicNotInStorefront": "此曲目在主持人所在國家/地區的 Apple Music 上無法使用。",
 		"appleMusicCatalogError": "Apple Music 沒有回應，請重試。"
 	},

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Ev sahibinin önce Apple Music'i bağlaması gerekiyor.",
 		"appleMusicRoom": "Bu kanalda Apple Music çalıyor. Bir music.apple.com bağlantısı yapıştırın veya adıyla arayın.",
 		"appleMusicNotFound": "Apple Music'te bulunamadı.",
+		"appleMusicLinkUnsupported": "Tek bir şarkının veya müzik videosunun bağlantısını yapıştırın ya da adıyla arayın.",
 		"appleMusicNotInStorefront": "Bu parça, ev sahibinin ülkesinde Apple Music'te mevcut değil.",
 		"appleMusicCatalogError": "Apple Music yanıt vermedi. Lütfen tekrar deneyin."
 	},

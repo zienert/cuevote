@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Tuan rumah harus menghubungkan Apple Music terlebih dahulu.",
 		"appleMusicRoom": "Kanal ini memutar Apple Music. Tempel link music.apple.com atau cari berdasarkan nama.",
 		"appleMusicNotFound": "Tidak ditemukan di Apple Music.",
+		"appleMusicLinkUnsupported": "Tempel link ke satu lagu atau video musik, atau cari berdasarkan nama.",
 		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara tuan rumah.",
 		"appleMusicCatalogError": "Apple Music tidak merespons. Silakan coba lagi."
 	},

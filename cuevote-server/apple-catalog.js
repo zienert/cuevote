@@ -78,6 +78,27 @@ function toTrack(resource) {
  * Returns { kind, id } or null. The link's own storefront is ignored: the
  * room plays from the host's.
  */
+const APPLE_MUSIC_HOSTS = new Set(['music.apple.com', 'geo.music.apple.com', 'embed.music.apple.com', 'itunes.apple.com']);
+
+// Text that is a link (to any site), not a title to search for.
+function looksLikeLink(input) {
+    const text = String(input || '').trim();
+    return /^(?:https?:\/\/|www\.)\S+$/i.test(text) || /^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}\/\S*$/i.test(text);
+}
+
+// A link to Apple Music that is not a single song or music video: an album,
+// a playlist, an artist, or an apple.co short link nobody here can resolve.
+function isAppleMusicPage(input) {
+    if (!looksLikeLink(input)) return false;
+    try {
+        const text = String(input).trim();
+        const { hostname } = new URL(/^https?:\/\//i.test(text) ? text : `https://${text}`);
+        return APPLE_MUSIC_HOSTS.has(hostname.toLowerCase()) || hostname.toLowerCase() === 'apple.co';
+    } catch {
+        return false;
+    }
+}
+
 function parseAppleMusicLink(input) {
     if (typeof input !== 'string') return null;
     let url;
@@ -87,12 +108,13 @@ function parseAppleMusicLink(input) {
         return null;
     }
     if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
-    if (url.hostname !== 'music.apple.com') return null;
+    if (!APPLE_MUSIC_HOSTS.has(url.hostname.toLowerCase())) return null;
     const parts = url.pathname.split('/').filter(Boolean);
-    // [storefront, type, slug?, id]
-    if (parts.length < 3 || !STOREFRONT.test(parts[0])) return null;
+    // [storefront, type, slug?, id]; the share sheet writes "NL" at times.
+    if (parts.length < 3 || !STOREFRONT.test(parts[0].toLowerCase())) return null;
     const type = parts[1];
-    const last = parts[parts.length - 1];
+    // Old itunes.apple.com links write the id as "id1440717826".
+    const last = parts[parts.length - 1].replace(/^id(?=[0-9])/, '');
     if (type === 'music-video' && /^[0-9]{1,20}$/.test(last)) return { kind: 'musicVideo', id: last };
     if (type === 'song' && /^[0-9]{1,20}$/.test(last)) return { kind: 'song', id: last };
     if (type === 'album') {
@@ -259,6 +281,36 @@ function score(c, original, plainSongs) {
         + 3 - penalty + (asked ? 1 : 0) - (c.track.kind === 'song' ? 1 : 0);
 }
 
+// Two words are the same if they are equal, one starts the other ("levit"),
+// or they are a typo apart: one letter in short words, two in long ones.
+function sameWord(a, b) {
+    if (a === b) return true;
+    if (a.length < 4 || b.length < 4) return false;
+    if (a.startsWith(b) || b.startsWith(a)) return true;
+    const allowed = Math.max(a.length, b.length) >= 7 ? 2 : 1;
+    if (Math.abs(a.length - b.length) > allowed) return false;
+    let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+        const row = [i];
+        for (let j = 1; j <= b.length; j++) {
+            row[j] = Math.min(previous[j] + 1, row[j - 1] + 1, previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        }
+        previous = row;
+    }
+    return previous[b.length] <= allowed;
+}
+
+// Whether a result is about what was typed: at least half of the telling words
+// of the query appear in its title or artist. Apple answers every search with
+// something, and without this an unknown title or a pasted Spotify link got a
+// random song queued (14.11.2026).
+function namesEnough(track, telling) {
+    if (telling.length === 0) return true;
+    const own = [...words(track.title), ...words(track.artist)];
+    const hits = telling.filter(word => own.some(other => sameWord(word, other))).length;
+    return hits >= Math.ceil(telling.length / 2);
+}
+
 /**
  * The search result a guest most likely meant: the title they typed, by the
  * artist they named (or the original artist), the original rather than a
@@ -268,10 +320,11 @@ function score(c, original, plainSongs) {
  */
 function bestMatch(term, { videos = [], songs = [] } = {}) {
     const query = new Set(words(term));
+    const telling = [...query].filter(word => !STOP_WORDS.has(word) && !NEUTRAL.has(word));
     const candidates = [
         ...songs.map((track, index) => ({ ...analyze(track, query), index, kind: 1 })),
         ...videos.map((track, index) => ({ ...analyze(track, query), index, kind: 0 })),
-    ];
+    ].filter(c => namesEnough(c.track, telling));
     if (candidates.length === 0) return null;
     const original = originalArtist(candidates);
     const plainSongs = new Set(candidates.filter(c => c.plain).map(c => c.song));
@@ -354,13 +407,36 @@ function createAppleCatalog({ getToken, fetchImpl = (...args) => fetch(...args) 
         return found;
     }
 
-    return { search, lookup };
+    /**
+     * The same recordings under the ids this storefront uses. Apple gives some
+     * songs another id per country: the US id of "Sexy Bitch" is missing in
+     * the Dutch storefront, which has its own (Nov. 2026). Returns a Map
+     * original key -> track fields for the keys an equivalent was found for.
+     * One request per key: Apple's answer to several ids does not say which
+     * result belongs to which.
+     */
+    async function equivalents(storefront, keys) {
+        if (!isStorefront(storefront)) throw new AppleCatalogError(`Invalid storefront: ${storefront}`, { code: 'APPLE_CATALOG_BAD_STOREFRONT' });
+        const found = new Map();
+        for (const key of new Set(keys || [])) {
+            const parsed = parseTrackKey(key);
+            if (!parsed || parsed.provider !== 'apple') continue;
+            const body = await request(`${storefront}/${CATALOG_TYPE_BY_KIND[parsed.kind]}`, { 'filter[equivalents]': parsed.id });
+            const track = ((body && body.data) || []).map(toTrack).find(Boolean);
+            if (track) found.set(key, track);
+        }
+        return found;
+    }
+
+    return { search, lookup, equivalents };
 }
 
 module.exports = {
     AppleCatalogError,
     bestMatch,
     createAppleCatalog,
+    isAppleMusicPage,
+    looksLikeLink,
     parseAppleMusicLink,
     isStorefront,
     toTrack,

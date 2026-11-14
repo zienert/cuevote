@@ -893,7 +893,7 @@ describe('Room', () => {
     const song = (id, title) => ({ ...video(id, title), videoId: `am:song:${id}`, kind: 'song' });
 
     let calls = [];
-    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false } = {}) {
+    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false, equivalents = {} } = {}) {
       calls = [];
       const outage = () => Object.assign(new Error('down'), { code: 'APPLE_CATALOG_UNREACHABLE' });
       Room.setAppleCatalog({
@@ -906,6 +906,12 @@ describe('Room', () => {
           calls.push(['lookup', storefront, keys]);
           if (fail) throw outage();
           return new Map(items.filter(t => keys.includes(t.videoId)).map(t => [t.videoId, t]));
+        },
+        // equivalents: { 'am:song:US-id': track in this storefront }
+        async equivalents(storefront, keys) {
+          calls.push(['equivalents', storefront, keys]);
+          if (fail) throw outage();
+          return new Map(keys.filter(k => equivalents[k]).map(k => [k, equivalents[k]]));
         },
       });
     }
@@ -1018,6 +1024,30 @@ describe('Room', () => {
       await suggest(room, ws, 'long one');
       assert.match(lastOf(ws, 'error').message, /too long/);
       assert.equal(room.state.queue.length, 0);
+      room.destroy();
+    });
+
+    it('refuses links it cannot play instead of searching them as text', async () => {
+      useCatalog({ search: { videos: [video(9, 'Open Your Eyes')], songs: [] } });
+      const room = appleRoom();
+      const ws = guestWs();
+      await suggest(room, ws, 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_ROOM');
+      const another = guestWs(); // past the per-socket wait between suggestions
+      await suggest(room, another, 'https://music.apple.com/nl/album/future-nostalgia/1538003494');
+      assert.equal(lastOf(another, 'error').code, 'APPLE_MUSIC_LINK_UNSUPPORTED');
+      assert.equal(room.state.queue.length, 0);
+      assert.equal(calls.some(c => c[0] === 'search'), false, 'no text search');
+      room.destroy();
+    });
+
+    it('takes a link from another country as the same recording in the host country', async () => {
+      const dutch = { ...song(1715687117, 'Sexy Bitch (feat. Akon)'), artist: 'David Guetta' };
+      useCatalog({ equivalents: { 'am:song:693246512': dutch } });
+      const room = appleRoom('nl');
+      const ws = guestWs();
+      await suggest(room, ws, 'https://music.apple.com/us/song/sexy-bitch-feat-akon/693246512');
+      assert.equal(room.state.queue[0] && room.state.queue[0].videoId, 'am:song:1715687117');
       room.destroy();
     });
 

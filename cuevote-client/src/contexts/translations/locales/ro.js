@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Gazda trebuie mai întâi să conecteze Apple Music.",
 		"appleMusicRoom": "Acest canal redă Apple Music. Lipește un link de pe music.apple.com sau caută după nume.",
 		"appleMusicNotFound": "Nu a fost găsit pe Apple Music.",
+		"appleMusicLinkUnsupported": "Lipește linkul unei singure melodii sau al unui videoclip muzical ori caută după nume.",
 		"appleMusicNotInStorefront": "Această piesă nu este disponibilă pe Apple Music în țara gazdei.",
 		"appleMusicCatalogError": "Apple Music nu a răspuns. Încearcă din nou."
 	},

@@ -8,7 +8,7 @@ const schemas = require("./schemas");
 const { sortUpcoming, AUTO_DJ } = require("./queue-order");
 const guest = require("./guest");
 const { appleTrackKey } = require("./track-keys");
-const { bestMatch, isStorefront, parseAppleMusicLink } = require("./apple-catalog");
+const { bestMatch, isAppleMusicPage, isStorefront, looksLikeLink, parseAppleMusicLink } = require("./apple-catalog");
 
 // Apple Music catalog for Apple rooms; index.js sets it when MusicKit is set up
 // (Room.setAppleCatalog). Without it Apple rooms cannot resolve suggestions.
@@ -1423,8 +1423,15 @@ class Room {
                 const key = appleTrackKey(link.kind, link.id);
                 if (isBanned(key)) return fail("This video has been banned from this channel.");
                 found = (await appleCatalog.lookup(storefront, [key])).get(key) || null;
+                // A link from another country may carry an id the host's
+                // storefront files the same recording under another one.
+                if (!found) found = (await appleCatalog.equivalents(storefront, [key])).get(key) || null;
                 if (!found) return fail("This title is not available on Apple Music in the host's country.", "APPLE_MUSIC_NOT_IN_STOREFRONT");
-            } else if (/(?:youtube\.com|youtu\.be)\//i.test(query)) {
+            } else if (isAppleMusicPage(query)) {
+                return fail("Paste a link to a single song or music video, or search by name.", "APPLE_MUSIC_LINK_UNSUPPORTED");
+            } else if (looksLikeLink(query) || /(?:youtube\.com|youtu\.be)\//i.test(query)) {
+                // Searching a Spotify or YouTube link as text found some
+                // unrelated song (14.11.2026).
                 return fail("This channel plays Apple Music. Paste a music.apple.com link or search by name.", "APPLE_MUSIC_ROOM");
             } else {
                 // Ten of each: the original is often not among Apple's first few.

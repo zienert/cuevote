@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Gospodarz musi najpierw połączyć Apple Music.",
 		"appleMusicRoom": "Ten kanał odtwarza Apple Music. Wklej link z music.apple.com lub wyszukaj po nazwie.",
 		"appleMusicNotFound": "Nie znaleziono w Apple Music.",
+		"appleMusicLinkUnsupported": "Wklej link do jednego utworu lub teledysku albo wyszukaj po nazwie.",
 		"appleMusicNotInStorefront": "Ten utwór jest niedostępny w Apple Music w kraju gospodarza.",
 		"appleMusicCatalogError": "Apple Music nie odpowiada. Spróbuj ponownie."
 	},

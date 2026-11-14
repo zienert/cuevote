@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Организатор должен сначала подключить Apple Music.",
 		"appleMusicRoom": "В этом канале играет Apple Music. Вставьте ссылку с music.apple.com или найдите по названию.",
 		"appleMusicNotFound": "Не найдено в Apple Music.",
+		"appleMusicLinkUnsupported": "Вставьте ссылку на одну песню или музыкальный клип или найдите по названию.",
 		"appleMusicNotInStorefront": "Этот трек недоступен в Apple Music в стране организатора.",
 		"appleMusicCatalogError": "Apple Music не отвечает. Попробуйте ещё раз."
 	},

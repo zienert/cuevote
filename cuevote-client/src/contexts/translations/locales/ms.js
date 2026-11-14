@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Hos perlu menyambungkan Apple Music terlebih dahulu.",
 		"appleMusicRoom": "Saluran ini memainkan Apple Music. Tampal pautan music.apple.com atau cari mengikut nama.",
 		"appleMusicNotFound": "Tidak dijumpai di Apple Music.",
+		"appleMusicLinkUnsupported": "Tampal pautan ke satu lagu atau video muzik, atau cari mengikut nama.",
 		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara hos.",
 		"appleMusicCatalogError": "Apple Music tidak menjawab. Sila cuba lagi."
 	},

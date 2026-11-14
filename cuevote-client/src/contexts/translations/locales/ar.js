@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "يجب على المضيف ربط Apple Music أولاً.",
 		"appleMusicRoom": "تشغّل هذه القناة Apple Music. يرجى لصق رابط من music.apple.com أو البحث بالاسم.",
 		"appleMusicNotFound": "تعذّر العثور على هذا في Apple Music.",
+		"appleMusicLinkUnsupported": "يرجى لصق رابط لأغنية واحدة أو فيديو موسيقي واحد، أو البحث بالاسم.",
 		"appleMusicNotInStorefront": "هذا المقطع غير متاح في Apple Music في بلد المضيف.",
 		"appleMusicCatalogError": "لم يستجب Apple Music. يرجى المحاولة مرة أخرى."
 	},

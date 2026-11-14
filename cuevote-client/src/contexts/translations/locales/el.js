@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Ο οικοδεσπότης πρέπει πρώτα να συνδέσει το Apple Music.",
 		"appleMusicRoom": "Αυτό το κανάλι παίζει Apple Music. Επικολλήστε έναν σύνδεσμο από το music.apple.com ή αναζητήστε με όνομα.",
 		"appleMusicNotFound": "Δεν βρέθηκε στο Apple Music.",
+		"appleMusicLinkUnsupported": "Επικολλήστε σύνδεσμο για ένα μόνο τραγούδι ή μουσικό βίντεο ή αναζητήστε με το όνομα.",
 		"appleMusicNotInStorefront": "Αυτό το κομμάτι δεν είναι διαθέσιμο στο Apple Music στη χώρα του οικοδεσπότη.",
 		"appleMusicCatalogError": "Το Apple Music δεν απάντησε. Δοκιμάστε ξανά."
 	},

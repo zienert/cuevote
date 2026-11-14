@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "เจ้าภาพต้องเชื่อมต่อ Apple Music ก่อน",
 		"appleMusicRoom": "ช่องนี้เล่นเพลงจาก Apple Music วางลิงก์ music.apple.com หรือค้นหาด้วยชื่อ",
 		"appleMusicNotFound": "ไม่พบใน Apple Music",
+		"appleMusicLinkUnsupported": "วางลิงก์ของเพลงหรือมิวสิกวิดีโอเพียงรายการเดียว หรือค้นหาด้วยชื่อ",
 		"appleMusicNotInStorefront": "เพลงนี้ไม่พร้อมใช้งานบน Apple Music ในประเทศของเจ้าภาพ",
 		"appleMusicCatalogError": "Apple Music ไม่ตอบสนอง โปรดลองอีกครั้ง"
 	},

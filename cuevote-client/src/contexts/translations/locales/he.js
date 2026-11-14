@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "על המארח לחבר קודם את Apple Music.",
 		"appleMusicRoom": "הערוץ הזה מנגן Apple Music. יש להדביק קישור מ-music.apple.com או לחפש לפי שם.",
 		"appleMusicNotFound": "לא נמצא ב-Apple Music.",
+		"appleMusicLinkUnsupported": "יש להדביק קישור לשיר בודד או לקליפ, או לחפש לפי שם.",
 		"appleMusicNotInStorefront": "השיר הזה אינו זמין ב-Apple Music במדינה של המארח.",
 		"appleMusicCatalogError": "Apple Music לא הגיב. יש לנסות שוב."
 	},

@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "होस्ट को पहले Apple Music कनेक्ट करना होगा।",
 		"appleMusicRoom": "यह चैनल Apple Music चलाता है। music.apple.com का लिंक पेस्ट करें या नाम से खोजें।",
 		"appleMusicNotFound": "यह Apple Music पर नहीं मिला।",
+		"appleMusicLinkUnsupported": "किसी एक गाने या म्यूज़िक वीडियो का लिंक पेस्ट करें या नाम से खोजें।",
 		"appleMusicNotInStorefront": "यह गाना होस्ट के देश में Apple Music पर उपलब्ध नहीं है।",
 		"appleMusicCatalogError": "Apple Music ने जवाब नहीं दिया। कृपया पुनः प्रयास करें।"
 	},

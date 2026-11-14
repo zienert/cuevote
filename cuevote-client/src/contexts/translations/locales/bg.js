@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Домакинът първо трябва да свърже Apple Music.",
 		"appleMusicRoom": "В този канал свири Apple Music. Поставете връзка от music.apple.com или търсете по име.",
 		"appleMusicNotFound": "Не е намерено в Apple Music.",
+		"appleMusicLinkUnsupported": "Поставете връзка към една песен или музикален клип или търсете по име.",
 		"appleMusicNotInStorefront": "Тази песен не е достъпна в Apple Music в страната на домакина.",
 		"appleMusicCatalogError": "Apple Music не отговаря. Опитайте отново."
 	},

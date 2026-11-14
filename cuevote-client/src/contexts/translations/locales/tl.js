@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "Kailangan munang ikonekta ng host ang Apple Music.",
 		"appleMusicRoom": "Apple Music ang tumutugtog sa channel na ito. Mag-paste ng link mula sa music.apple.com o maghanap ayon sa pangalan.",
 		"appleMusicNotFound": "Hindi ito nahanap sa Apple Music.",
+		"appleMusicLinkUnsupported": "Mag-paste ng link sa iisang kanta o music video, o maghanap ayon sa pangalan.",
 		"appleMusicNotInStorefront": "Hindi available ang kantang ito sa Apple Music sa bansa ng host.",
 		"appleMusicCatalogError": "Hindi sumagot ang Apple Music. Pakisubukang muli."
 	},

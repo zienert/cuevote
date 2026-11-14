@@ -12,6 +12,7 @@ export default {
 		"appleMusicNotConnected": "주최자가 먼저 Apple Music을 연결해야 합니다.",
 		"appleMusicRoom": "이 채널은 Apple Music을 재생합니다. music.apple.com 링크를 붙여넣거나 이름으로 검색하세요.",
 		"appleMusicNotFound": "Apple Music에서 찾을 수 없습니다.",
+		"appleMusicLinkUnsupported": "곡 하나 또는 뮤직비디오 하나의 링크를 붙여넣거나 이름으로 검색하세요.",
 		"appleMusicNotInStorefront": "이 곡은 주최자 국가의 Apple Music에서 이용할 수 없습니다.",
 		"appleMusicCatalogError": "Apple Music이 응답하지 않았습니다. 다시 시도하세요."
 	},
