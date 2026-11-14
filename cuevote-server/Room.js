@@ -603,6 +603,14 @@ class Room {
                 this.updateState({ isRefilling: false });
                 return;
             }
+            // Without the host's country nothing can be checked, and an Apple
+            // room would queue songs its host may not be able to play.
+            if (this.metadata.provider === 'apple' && !this.metadata.apple_storefront) {
+                logger.info(`[AutoRefill] Apple room ${this.id} has no storefront yet. Abort.`);
+                this.updateState({ isRefilling: false });
+                return;
+            }
+            const isBanned = (videoId) => (this.state.bannedVideos || []).some(b => b.videoId === videoId);
 
             // User: "Fill the playlist with half of its queue size."
             const targetFillSize = Math.floor((maxQueueSize > 0 ? maxQueueSize : 50) / 2); // Default to 25 if unlimited
@@ -636,7 +644,7 @@ class Room {
             for (const track of shuffledHistory) {
                 if (candidates.length >= needed) break;
 
-                if (!track.videoId) continue;
+                if (!track.videoId || isBanned(track.videoId)) continue;
 
                 // Duration Check (skip if known; null duration passes through for API re-fetch)
                 if (maxDuration > 0 && track.duration && track.duration > maxDuration) continue;
@@ -667,7 +675,7 @@ class Room {
                 logger.info(`[AutoRefill] No candidates after strict filtering. Relaxing checks for small library (${uniqueHistory.length} unique videos).`);
                 for (const track of shuffledHistory) {
                     if (candidates.length >= needed) break;
-                    if (!track.videoId) continue;
+                    if (!track.videoId || isBanned(track.videoId)) continue;
                     if (maxDuration > 0 && track.duration && track.duration > maxDuration) continue;
                     const ipEntry = this.ipBlockedVideos.get(track.videoId);
                     if (ipEntry && (Date.now() - ipEntry.lastFailedAt) < 1800000) continue;
@@ -688,7 +696,9 @@ class Room {
             // here may carry null title/artist. That's fine — when no one is watching
             // we don't re-fetch, and the next viewer's rehydrateVisibleMetadata() fills
             // the gaps on join. Full API validation also runs here when viewers are present.
-            const validVideos = this.hasViewers()
+            // Apple's catalog has no daily quota, and an Apple pick that the
+            // host's country does not offer would fail on the host: always check.
+            const validVideos = (this.hasViewers() || this.metadata.provider === 'apple')
                 ? await this.checkVideoAvailability(videoIdsToCheck)
                 : new Map(videoIdsToCheck.map(id => [id, null]));
 
@@ -736,7 +746,9 @@ class Room {
                     isRefilling: false
                 };
 
-                if (!this.state.isPlaying && newQueue.length > 0) {
+                // Nothing current: start the first pick. (A play pressed while
+                // the refill ran makes isPlaying true without a track.)
+                if (!this.state.currentTrack && newQueue.length > 0) {
                     newState.currentTrack = { ...newQueue[0], startedAt: Date.now() };
                     newQueue[0] = newState.currentTrack;
                     newState.queue = newQueue;

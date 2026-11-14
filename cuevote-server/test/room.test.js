@@ -1202,5 +1202,36 @@ describe('Room', () => {
       room.destroy();
     });
 
+    it('lets the Auto-DJ pick only checked, unbanned items, and nothing without a storefront', async () => {
+      useCatalog({ items: [video(1, 'Fine'), video(2, 'Banned')] });
+      const room = appleRoom();
+      room.state.autoRefill = true;
+      room.state.history = [video(1, 'Fine'), video(2, 'Banned'), video(3, 'Gone')].map(t => ({ ...t, playedAt: Date.now() - 60000 }));
+      room.state.bannedVideos = [{ videoId: 'am:video:2', title: 'Banned' }];
+
+      // No viewers: an Apple room still checks its picks.
+      await room.populateQueueFromHistory();
+      assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1']);
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.history.some(t => t.videoId === 'am:video:3'), false, 'gone from history');
+      room.destroy();
+
+      const unconnected = appleRoom(null);
+      unconnected.state.autoRefill = true;
+      unconnected.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      await unconnected.populateQueueFromHistory();
+      assert.equal(unconnected.state.queue.length, 0);
+      unconnected.destroy();
+    });
+
+    it('starts the refill even when play was pressed while it ran', async () => {
+      useCatalog({ items: [video(1, 'Fine')] });
+      const room = appleRoom();
+      room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      room.state.isPlaying = true; // play pressed, nothing current
+      await room.populateQueueFromHistory();
+      assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
+      room.destroy();
+    });
   });
 });
