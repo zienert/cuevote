@@ -1,6 +1,8 @@
 package com.cuevote.wrapper
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -66,6 +68,26 @@ private fun isApplePage(uri: android.net.Uri?): Boolean {
     return host == "apple.com" || host.endsWith(".apple.com")
 }
 
+// How often the page is asked whether its Apple Music channel is playing.
+private const val PLAYBACK_PROBE_MS = 1000L
+
+// Asks MusicKit what it is playing: the title of an Apple Music channel that
+// plays here in full, or null. A guest's preview (previewOnly) is not the
+// channel, and a YouTube channel has no MusicKit at all.
+private const val PLAYBACK_PROBE_JS = """
+(function () {
+  try {
+    var music = window.MusicKit && MusicKit.getInstance();
+    if (!music || music.previewOnly || music.playbackState !== MusicKit.PlaybackStates.playing) return null;
+    var item = music.nowPlayingItem;
+    if (!item) return null;
+    return { title: String(item.title || ''), artist: String(item.artistName || '') };
+  } catch (e) {
+    return null;
+  }
+})()
+"""
+
 class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
     private lateinit var webView: WebView
@@ -90,10 +112,41 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
         packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 
+    // An Apple Music channel that plays on this device keeps playing in the
+    // background (see PlaybackService). Android lets that service start only
+    // while the app is on screen, so whether the channel plays has to be known
+    // before the app leaves it: the page is asked every second while the app is
+    // on screen, and on for as long as the service runs.
+    //
+    // It is asked through evaluateJavascript, which runs in the main frame.
+    // The CueVoteAndroid interface would be the wrong way: it is reachable from
+    // every frame, the YouTube player included, and no frame may switch
+    // background playback on.
+    private var isTelevision = false
+    private var resumed = false
+    private var probing = false
+    private val playbackHandler = Handler(Looper.getMainLooper())
+    private val playbackProbe = object : Runnable {
+        override fun run() {
+            playbackHandler.postDelayed(this, PLAYBACK_PROBE_MS)
+            probePlayback()
+        }
+    }
+    // The page the channel was last found playing on. The service's grace
+    // period belongs to that page; on any other one the channel has been left.
+    private var playingUrl: String? = null
+
+    // The service gave up while the app is in the background: from here on the
+    // page is paused like any other.
+    private val onPlaybackServiceStopped: () -> Unit = {
+        if (!resumed && ::webView.isInitialized) pauseWebView()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Keep Screen On
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        PlaybackService.onStopped = onPlaybackServiceStopped
 
         // 1. Setup Layout Container (FrameLayout)
         val container = FrameLayout(this)
@@ -135,7 +188,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             val defaultUserAgent = userAgentString
             val sanitizedUserAgent = defaultUserAgent.replace("; wv", "")
             val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-            val isTelevision = uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
+            isTelevision = uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
             val tvSuffix = if (isTelevision) " AndroidTV" else ""
             userAgentString = "$sanitizedUserAgent CueVoteWrapper/1.0$tvSuffix"
             appleUserAgent = sanitizedUserAgent
@@ -364,20 +417,93 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
     override fun onResume() {
         super.onResume()
+        resumed = true
         if (::webView.isInitialized) {
             webView.onResume()
             webView.evaluateJavascript("window.cuevoteReconnect && window.cuevoteReconnect()", null)
+            startPlaybackProbe()
         }
     }
 
     override fun onPause() {
         super.onPause()
+        resumed = false
         if (::webView.isInitialized) {
-            webView.onPause()
+            // A playing Apple Music channel goes on in the background, and its
+            // page has to stay live for that. Everything else, YouTube above
+            // all, is paused as it always was.
+            if (!PlaybackService.isActive) pauseWebView()
         }
     }
 
+    private fun pauseWebView() {
+        stopPlaybackProbe()
+        webView.onPause()
+    }
+
+    private fun startPlaybackProbe() {
+        // Not on a TV: nothing there turns the screen off or leaves the app
+        // while a channel plays.
+        if (isTelevision || probing) return
+        probing = true
+        playbackProbe.run()
+    }
+
+    private fun stopPlaybackProbe() {
+        probing = false
+        playbackHandler.removeCallbacks(playbackProbe)
+    }
+
+    private fun probePlayback() {
+        val url = webView.url
+        if (!isCueVoteUrl(url)) {
+            playbackLeft()
+            return
+        }
+        webView.evaluateJavascript(PLAYBACK_PROBE_JS) { result ->
+            // Stopped or moved on since it was asked: the next probe looks again.
+            if (!probing || webView.url != url) return@evaluateJavascript
+            val item = parsePlayingItem(result)
+            if (item == null) {
+                // Not playing. On the page it played on, the service's grace
+                // period decides (the gap between two titles, a pause); on
+                // another page the channel has been left.
+                if (url != playingUrl) playbackLeft()
+                return@evaluateJavascript
+            }
+            // Started playing while the app is off screen: too late for Android
+            // to let the service start.
+            if (!resumed && !PlaybackService.isActive) return@evaluateJavascript
+            playingUrl = url
+            PlaybackService.playing(this, item.first, item.second)
+        }
+    }
+
+    private fun playbackLeft() {
+        playingUrl = null
+        PlaybackService.stop()
+    }
+
+    // Title and artist of what MusicKit plays, from the probe's answer.
+    private fun parsePlayingItem(result: String?): Pair<String, String>? {
+        if (result.isNullOrEmpty() || result == "null") return null
+        return try {
+            val item = org.json.JSONObject(result)
+            notificationText(item.optString("title")) to notificationText(item.optString("artist"))
+        } catch (_: org.json.JSONException) {
+            null
+        }
+    }
+
+    // Text from the page, on its way into a notification: one plain, short line.
+    private fun notificationText(text: String): String =
+        text.filterNot { it.isISOControl() }.trim().take(120)
+
     override fun onDestroy() {
+        // The page that played goes with the activity.
+        if (PlaybackService.onStopped === onPlaybackServiceStopped) PlaybackService.onStopped = null
+        stopPlaybackProbe()
+        PlaybackService.stop()
         appleSignIn?.close()
         reconnectRunnable?.let { reconnectHandler?.removeCallbacks(it) }
         reconnectHandler = null
