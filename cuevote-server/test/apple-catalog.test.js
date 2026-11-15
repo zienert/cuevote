@@ -201,6 +201,69 @@ describe('Apple Music catalog', () => {
     });
   });
 
+  // Players on Android play no music videos and ask for the song instead.
+  // Shapes as Apple's nl storefront answered on 14.11.2026: "Yellow" is linked
+  // to compilation tracks first; the album version shares their ISRC.
+  describe('songForVideo', () => {
+    const yellow = (id, albumName, isrc = 'GBAYE0000267', overrides = {}) =>
+      song(id, 'Yellow', { artistName: 'Coldplay', albumName, isrc, durationInMillis: 266773, ...overrides });
+
+    it('finds the album version of the linked recording through a song search', async () => {
+      const fetchImpl = fakeFetch((url) => {
+        if (url.pathname === '/v1/catalog/nl/music-videos/1075518660/songs') {
+          return { body: { data: [yellow(1, 'Billion Stream Hits'), yellow(2, 'Britpop')] } };
+        }
+        if (url.pathname === '/v1/catalog/nl/search') {
+          return { body: { results: { songs: { data: [yellow(3, 'Yellow (Live)', 'GBAYE0900001'), yellow(4, 'Parachutes'), yellow(1, 'Billion Stream Hits')] } } } };
+        }
+        return { status: 404 };
+      });
+      const catalog = createAppleCatalog({ getToken, fetchImpl });
+      const found = await catalog.songForVideo('nl', 'am:video:1075518660', { title: 'Yellow', artist: 'Coldplay' });
+      assert.equal(found.videoId, 'am:song:4');
+      assert.equal(found.duration, 267);
+      const search = fetchImpl.calls.find(c => c.url.pathname === '/v1/catalog/nl/search');
+      assert.equal(search.url.searchParams.get('term'), 'Coldplay Yellow');
+      assert.equal(search.url.searchParams.get('types'), 'songs');
+    });
+
+    it('takes the first linked song when the search does not find the recording', async () => {
+      const fetchImpl = fakeFetch((url) => {
+        if (url.pathname.endsWith('/songs')) return { body: { data: [yellow(1, 'Billion Stream Hits', 'X', { playParams: undefined }), yellow(2, 'Britpop')] } };
+        return { body: { results: { songs: { data: [] } } } };
+      });
+      const catalog = createAppleCatalog({ getToken, fetchImpl });
+      const found = await catalog.songForVideo('nl', 'am:video:1', { title: 'Yellow', artist: 'Coldplay' });
+      assert.equal(found.videoId, 'am:song:2');
+    });
+
+    it('falls back to the best search match for a video Apple links to no song', async () => {
+      const fetchImpl = fakeFetch((url) => {
+        if (url.pathname.endsWith('/songs')) return { status: 404 };
+        return { body: { results: { songs: { data: [song(7, 'Something Else', { artistName: 'Other' }), song(8, 'Wake Me Up', { artistName: 'Avicii' })] } } } };
+      });
+      const catalog = createAppleCatalog({ getToken, fetchImpl });
+      const found = await catalog.songForVideo('nl', 'am:video:9', { title: 'Wake Me Up', artist: 'Avicii' });
+      assert.equal(found.videoId, 'am:song:8');
+
+      const nothing = createAppleCatalog({
+        getToken,
+        fetchImpl: fakeFetch((url) => (url.pathname.endsWith('/songs') ? { status: 404 } : { body: { results: {} } })),
+      });
+      assert.equal(await nothing.songForVideo('nl', 'am:video:9', { title: 'Wake Me Up', artist: 'Avicii' }), null);
+    });
+
+    it('answers only for music videos and passes other failures on', async () => {
+      const fetchImpl = fakeFetch(() => ({ status: 500 }));
+      const catalog = createAppleCatalog({ getToken, fetchImpl });
+      assert.equal(await catalog.songForVideo('nl', 'am:song:1', { title: 'x' }), null);
+      assert.equal(await catalog.songForVideo('nl', 'dQw4w9WgXcQ', { title: 'x' }), null);
+      assert.equal(fetchImpl.calls.length, 0);
+      await assert.rejects(catalog.songForVideo('nl', 'am:video:1', { title: 'x' }), { code: 'APPLE_CATALOG_ERROR' });
+      await assert.rejects(catalog.songForVideo('NL', 'am:video:1'), { code: 'APPLE_CATALOG_BAD_STOREFRONT' });
+    });
+  });
+
   describe('errors', () => {
     it('names rate limits, rejected tokens, outages and other failures', async () => {
       const cases = [

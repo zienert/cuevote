@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLatestRef } from './useLatestRef';
-import { configureMusicKit, fetchDeveloperToken } from '../utils/musicKit';
+import { configureMusicKit, fetchDeveloperToken, musicKitPlaysVideos } from '../utils/musicKit';
 import { parseTrackKey } from '../utils/trackKeys';
 
 // A guest's preview of an Apple Music item in an Apple channel. Apple lets
@@ -26,10 +26,14 @@ const CATALOG_TYPE = { song: 'songs', musicVideo: 'music-videos' };
 // storefrontId says (14.11.2026), and some ids of the host's country do not
 // exist there. So the item is fetched from the room's storefront and queued
 // as it is, which needs no further lookup.
+// MusicKit plays no music videos on Android (musicKitPlaysVideos): there a
+// music video is previewed through the song Apple links to it.
 async function queueFromStorefront(music, kind, id, storefront) {
 	if (!storefront) return music.setQueue({ [kind]: id, startPlaying: false });
-	const response = await music.api.music(`/v1/catalog/${storefront}/${CATALOG_TYPE[kind]}/${id}`);
-	const resource = response?.data?.data?.[0];
+	let path = `/v1/catalog/${storefront}/${CATALOG_TYPE[kind]}/${id}`;
+	if (kind === 'musicVideo' && !musicKitPlaysVideos()) path += '/songs';
+	const response = await music.api.music(path);
+	const resource = (response?.data?.data || []).find(item => item?.attributes?.playParams);
 	if (!resource) throw Object.assign(new Error('Not in this storefront'), { errorCode: 'NOT_FOUND' });
 	return music.setQueue({ items: [resource], startPlaying: false });
 }
