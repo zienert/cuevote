@@ -39,6 +39,9 @@
 //   ?lang=de          the language
 //   ?design=b         the design proposal "Neu" (src/redesign-b) in place of the
 //                     room; it shows the two main views only
+//   ?data=...         a stress test (see __previewData.js): worst (the
+//                     realistic worst case for every value), empty, one, many
+//                     (300 titles); a switch at the bottom changes it
 import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
 import { WebSocketContext } from '../contexts/WebSocketContext';
@@ -47,6 +50,8 @@ import { Consent } from '../contexts/ConsentContext';
 import { Language } from '../contexts/LanguageContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 import { deviceDetection } from '../utils/deviceDetection';
+import { DATA, WORST_CHANNEL_NAME, WORST_SCORES, WORST_SONGS, WORST_SUGGESTERS, WORST_USER } from './__previewData';
+import { DataToggle } from './__PreviewDataToggle';
 
 const PARAMS = new URLSearchParams(window.location.search);
 // The design proposal "Neu": the same mock room, drawn by the draft.
@@ -75,7 +80,7 @@ if (DEVICE) {
 
 // RoomBody falls back to this id without a :roomId in the path.
 const ROOM_ID = 'synthwave';
-const OWNER = { id: 'preview-owner', name: 'Alex', email: 'alex@example.com', picture: null };
+const OWNER = { id: 'preview-owner', name: 'Alex', email: 'alex@example.com', picture: null, ...(DATA === 'worst' ? WORST_USER : null) };
 const GUEST = { id: 'preview-guest', name: 'Guest K7QF', isGuest: true, guestTag: 'K7QF' };
 
 // Stand-ins for cover art and video thumbnails.
@@ -94,14 +99,14 @@ function cover(index) {
 	return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-const SONGS = [
+const SONGS = DATA === 'worst' ? WORST_SONGS : [
 	['Blinding Lights', 'The Weeknd'], ['Levitating', 'Dua Lipa'], ['Major Tom', 'Peter Schilling'],
 	['As It Was', 'Harry Styles'], ['Flowers', 'Miley Cyrus'], ['Mr. Brightside', 'The Killers'],
 	['Bad Guy', 'Billie Eilish'], ['99 Luftballons', 'Nena'], ['Uptown Funk', 'Mark Ronson ft. Bruno Mars'],
 	['Dance Monkey', 'Tones and I'], ['Shape of You', 'Ed Sheeran'], ['Wonderwall', 'Oasis'],
 	['Believer', 'Imagine Dragons'], ['Sunflower', 'Post Malone & Swae Lee'], ['Atemlos durch die Nacht', 'Helene Fischer'],
 ];
-const SUGGESTERS = [
+const SUGGESTERS = DATA === 'worst' ? WORST_SUGGESTERS : [
 	{ suggestedByUsername: 'Mia' }, { suggestedByIsGuest: true, suggestedByGuestTag: 'K7QF' }, { suggestedByUsername: 'Lukas' },
 	{ suggestedByIsGuest: true, suggestedByGuestTag: 'P2MX' }, { suggestedByUsername: 'Alex' },
 ];
@@ -130,15 +135,22 @@ function track(provider, index, extra = {}) {
 // queue[0] mirrors currentTrack, as in a live room.
 function initialRoom(provider, { empty, waiting, requireLogin, pending }) {
 	const now = Date.now();
-	const history = empty ? [] : [0, 1, 2].map(i => track(provider, i, { id: `played-${i}`, playedAt: now - (30 - i * 8) * 60000 }));
-	const scores = [6, 4, 3, 2, 1, 0, 0];
+	// How many titles were played, and the scores of the upcoming ones, per
+	// ?data: one of each, a long evening's worth, or the demo's handful.
+	const played = { one: 1, worst: 60, many: 60 }[DATA] || 3;
+	const scores = {
+		one: [1],
+		worst: WORST_SCORES,
+		many: Array.from({ length: 300 }, (_, i) => Math.max(0, 40 - Math.floor(i / 3))),
+	}[DATA] || [6, 4, 3, 2, 1, 0, 0];
+	const history = empty ? [] : Array.from({ length: played }, (_, i) => track(provider, i, { id: `played-${i}`, playedAt: now - (played * 4 - i * 4) * 60000 }));
 	const queue = empty ? [] : [
 		track(provider, 3),
 		...scores.map((score, i) => track(provider, 4 + i, { score, myVote: i === 1 ? 'up' : undefined })),
 	];
 	return {
 		roomId: ROOM_ID,
-		activeChannel: 'WG-Party Küche',
+		activeChannel: DATA === 'worst' ? WORST_CHANNEL_NAME : 'WG-Party Küche',
 		ownerId: OWNER.id,
 		provider,
 		queue,
@@ -298,7 +310,7 @@ export default function RoomPreview() {
 	const stuck = PARAMS.has('stuck');
 	const lang = PARAMS.get('lang');
 
-	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin'), pending: PARAMS.has('pending') }));
+	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty') || DATA === 'empty', waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin'), pending: PARAMS.has('pending') }));
 	const [lastMessage, setLastMessage] = useState(null);
 	const [lastError, setLastError] = useState( // { message, code, at }
 		CONNECTION === 'password' ? { message: 'Password required', code: 'PASSWORD_REQUIRED', at: Date.now() } : null,
@@ -496,6 +508,7 @@ export default function RoomPreview() {
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
 				{RoomB ? <Suspense fallback={null}><RoomB /></Suspense> : <RoomBody />}
+				<DataToggle many="300 rows" />
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>
 	);

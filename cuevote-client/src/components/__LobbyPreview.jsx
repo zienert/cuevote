@@ -16,6 +16,9 @@
 //   ?offline     the device has no internet
 //   ?design=b    the design proposal "Neu" (src/redesign-b) in place of the
 //                lobby; its channels open the room preview of the same draft
+//   ?data=...    a stress test (see __previewData.js): worst (the realistic
+//                worst case for every value), empty, one, many (200
+//                channels); a switch at the bottom changes it
 //
 // Thumbnails are generated SVGs, so the page loads nothing from YouTube or
 // Apple, and the cookie banner stays closed without anything being accepted.
@@ -25,12 +28,14 @@ import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
 import { Consent } from '../contexts/ConsentContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
+import { DATA, WORST_CHANNELS, WORST_USER } from './__previewData';
+import { DataToggle } from './__PreviewDataToggle';
 
 // The design proposal "Neu": the same mock channels, drawn by the draft.
 const LobbyB = lazy(() => import('../redesign-b/LobbyB'));
 const roomPreviewOf = (room) => `/__room-preview?design=b${room.provider === 'apple' ? '&provider=apple' : ''}`;
 
-const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null };
+const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null, ...(DATA === 'worst' ? WORST_USER : null) };
 // Before the lobby renders: it asks navigator.onLine while rendering.
 if (new URLSearchParams(window.location.search).has('offline')) {
 	Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false });
@@ -69,7 +74,7 @@ function channel(id, name, {
 	};
 }
 
-const CHANNELS = [
+const DEMO_CHANNELS = [
 	channel('yt-rooftop', 'Rooftop Saturday', { listeners: 14, thumb: thumbnail('#1a0b2e', '#ff6a3d', '#6b2bd9'), flag: 'de', host: 'Mia', track: ['Blinding Lights', 'The Weeknd'] }),
 	channel('am-late', 'Late Night Vibes', { provider: 'apple', listeners: 6, mine: true }),
 	channel('yt-kitchen', 'WG-Party Küche', { listeners: 9, thumb: thumbnail('#120d0a', '#ef4444', '#f97316'), flag: 'at', host: 'Lukas', mine: true, track: ['As It Was', 'Harry Styles'] }),
@@ -82,6 +87,20 @@ const CHANNELS = [
 	channel('yt-office', 'Office Friday', { listeners: 4, thumb: thumbnail('#0a1410', '#22c55e', '#0ea5e9'), isPublic: false, password: true, host: 'Kim', track: ['Levitating', 'Dua Lipa'] }),
 	channel('am-pregame', 'Pregame', { provider: 'apple', isPublic: false, password: true, flag: 'ch', host: 'Nico' }),
 ];
+
+const THUMBS = DEMO_CHANNELS.map((entry) => entry.currentTrack?.thumbnail).filter(Boolean);
+const withThumb = (options) => ({ ...options, thumb: options.thumb === undefined ? null : THUMBS[options.thumb % THUMBS.length] });
+
+// The channels per ?data: the worst case, none, one, a busy evening's list.
+const CHANNELS = {
+	worst: WORST_CHANNELS.map(([name, options], i) => channel(`worst-${i}`, name, withThumb(options))),
+	empty: [],
+	one: [channel('only', 'WG-Party Küche', { listeners: 1, thumb: THUMBS[1], flag: 'at', mine: true })],
+	many: Array.from({ length: 200 }, (_, i) => {
+		const source = DEMO_CHANNELS[i % DEMO_CHANNELS.length];
+		return { ...source, id: `many-${i}`, name: `${source.name} ${i + 1}`, listeners: Math.max(0, 60 - i) };
+	}),
+}[DATA] || DEMO_CHANNELS;
 
 // The server's filters: private lists only channels with a password.
 function listFor(channels, type) {
@@ -186,6 +205,7 @@ export default function LobbyPreview() {
 				{design === 'b'
 					? <Suspense fallback={null}><LobbyB roomHref={roomPreviewOf} startCreating={openCreate && !signedOut} /></Suspense>
 					: <Lobby />}
+				<DataToggle many="200 channels" />
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>
 	);
