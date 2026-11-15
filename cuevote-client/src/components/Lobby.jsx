@@ -71,6 +71,16 @@ export function Lobby() {
         return () => clearTimeout(timer);
     }, [isConnected]);
 
+    // The placeholders stay until the first list is there, so they hand over to
+    // the channels and not to an empty grid. A server that does not answer
+    // gets the grid anyway.
+    const [hasList, setHasList] = useState(false);
+    useEffect(() => {
+        if (!isConnected || hasList) return undefined;
+        const timer = setTimeout(() => setHasList(true), 4000);
+        return () => clearTimeout(timer);
+    }, [isConnected, hasList]);
+
     // Native Bridge: Sync QR Button State (LOBBY ONLY)
     useEffect(() => {
         // Show QR only if user has consented AND no banner is shown (implicit Lobby because this component IS valid)
@@ -199,6 +209,7 @@ export function Lobby() {
         if (lastMessage) {
             if (lastMessage.type === "ROOM_LIST") {
                 setRooms(lastMessage.payload);
+                setHasList(true);
             } else if (lastMessage.type === "ROOM_CREATED") {
                 // Auto-share only for private channels (is_public === 0)
                 navigate(`/room/${lastMessage.payload.id}`, { state: { showShareOnLoad: !lastMessage.payload.is_public } });
@@ -802,7 +813,7 @@ export function Lobby() {
                     </div>
                 </div>
 
-                {showConnectingOverlay ? (
+                {showConnectingOverlay || !hasList ? (
                     <LoadingScreen embedded isOnline={isOnline} message={t('lobby.connecting')} reconnectAttempt={reconnectAttempt} onForceReconnect={forceReconnect} />
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">

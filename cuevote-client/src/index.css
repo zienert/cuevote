@@ -170,3 +170,32 @@ body,
 .animate-bounce-subtle {
   animation: bounce-subtle 2s infinite;
 }
+
+/* Placeholders for content that is on its way (Skeletons.jsx): a soft light
+   passes over each one. The colour of the placeholder itself comes from its
+   own classes. */
+@keyframes skeleton-light {
+  0% {
+    background-position: 150% 0;
+  }
+
+  60%,
+  100% {
+    background-position: -50% 0;
+  }
+}
+
+.skeleton {
+  background-image: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-position: 150% 0;
+  animation: skeleton-light 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-image: none;
+  }
+}

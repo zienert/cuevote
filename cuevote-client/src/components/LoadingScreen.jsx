@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { CloudOff, RotateCw, WifiOff } from "lucide-react";
 import { Language } from "../contexts/LanguageContext";
-import { Spinner } from "./Spinner";
-import { StatusButton, StatusCard, StatusWaiting } from "./PlayerStatus";
+import { StatusButton, StatusCard } from "./PlayerStatus";
+import { LobbySkeleton, RoomSkeleton } from "./Skeletons";
 
 // A connection that has not come after this long, and after several attempts,
 // is a problem to tell about. Until then the app is simply connecting.
@@ -16,9 +16,9 @@ const RETRY_BUSY_MS = 1500;
  * What the app shows while it has no connection: the whole screen when a
  * channel opens, or (`embedded`) the lobby's place for its channels.
  *
- * Connecting passes on its own: the ring and one quiet line. A connection that
- * does not come, or a device that is offline, gets the card with the way to
- * try again, in the same place.
+ * Connecting passes on its own: placeholders in the shape of what is coming,
+ * with a light passing over them. A connection that does not come, or a
+ * device that is offline, gets the card with the way to try again.
  */
 export function LoadingScreen({ isOnline, embedded = false, message, reconnectAttempt = 0, onForceReconnect }) {
 	const { t } = Language.useLanguage();
@@ -68,25 +68,18 @@ export function LoadingScreen({ isOnline, embedded = false, message, reconnectAt
 	);
 
 	if (embedded) {
+		if (!card) return <LobbySkeleton label={connecting} />;
 		return (
 			<div role="status" className="flex min-h-[19rem] items-center justify-center py-6">
-				{card || <StatusWaiting>{connecting}</StatusWaiting>}
+				{card}
 			</div>
 		);
 	}
 
-	// The whole screen. The ring sits exactly where the ring of the first paint
-	// was; the line comes in under it once connecting takes a moment.
+	if (!card) return <RoomSkeleton label={connecting} />;
 	return (
 		<div role="status" className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#050505] p-6 text-white">
-			{card || (
-				<div className="relative">
-					<Spinner className="h-10 w-10" />
-					<p className="absolute left-1/2 top-full mt-4 w-max max-w-[80vw] -translate-x-1/2 text-center text-sm text-neutral-400 animate-in fade-in fill-mode-backwards delay-500 duration-300">
-						{connecting}
-					</p>
-				</div>
-			)}
+			{card}
 		</div>
 	);
 }

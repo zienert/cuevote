@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Consent } from './contexts/ConsentContext';
 import { useWebSocketContext } from './hooks/useWebSocketContext';
 import { JoinWelcome } from './components/JoinWelcome';
-import { SpinnerScreen } from './components/Spinner';
+import { RoomSkeleton } from './components/Skeletons';
 
 const RoomBody = lazy(() => import('./RoomBody'));
 
@@ -55,7 +55,7 @@ function App() {
   }
 
   return (
-    <Suspense fallback={<SpinnerScreen />}>
+    <Suspense fallback={<RoomSkeleton />}>
       <RoomBody />
     </Suspense>
   );
