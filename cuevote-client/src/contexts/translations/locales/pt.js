@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Login para Criar",
 		"noChannelsFound": "Nenhum canal encontrado para",
 		"live": "Ao vivo",
+		"hostedBy": "Anfitrião: {name}",
 		"createNewChannel": "Criar Novo Canal",
 		"channelName": "Nome do Canal",
 		"channelNamePlaceholder": "ex. Vibe da Noite",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Sem conexão com a internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Janela demasiado pequena",
+		"windowTooSmallMessage": "Aumente a janela para continuar a usar o CueVote.",
 		"backToRadio": "Voltar à rádio",
 		"retry": "Tentar novamente",
 		"retrying": "Tentando...",

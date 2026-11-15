@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "登录以创建",
 		"noChannelsFound": "未找到频道",
 		"live": "直播",
+		"hostedBy": "主持人：{name}",
 		"createNewChannel": "创建新频道",
 		"channelName": "频道名称",
 		"channelNamePlaceholder": "例如：深夜氛围",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "无网络连接",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "窗口太小",
+		"windowTooSmallMessage": "请放大窗口以继续使用 CueVote。",
 		"backToRadio": "返回电台",
 		"retry": "重试连接",
 		"retrying": "重试中...",

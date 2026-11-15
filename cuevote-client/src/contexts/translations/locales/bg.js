@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Влез, за да създадешь",
 		"noChannelsFound": "Няма намерени канали за",
 		"live": "На живо",
+		"hostedBy": "Домакин: {name}",
 		"createNewChannel": "Създай нов канал",
 		"channelName": "Име на канала",
 		"channelNamePlaceholder": "напр. Нощни вибрации",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Няма интернет връзка",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Прозорецът е твърде малък",
+		"windowTooSmallMessage": "Уголемете прозореца, за да продължите да използвате CueVote.",
 		"backToRadio": "Обратно към радиото",
 		"retry": "Опитайте отново връзката",
 		"switching": "Смяна на канал...",

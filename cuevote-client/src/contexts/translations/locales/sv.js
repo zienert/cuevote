@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Logga in för att skapa",
 		"noChannelsFound": "Inga kanaler hittades för",
 		"live": "Live",
+		"hostedBy": "Värd: {name}",
 		"createNewChannel": "Skapa ny kanal",
 		"channelName": "Kanalnamn",
 		"channelNamePlaceholder": "t.ex. Late Night Vibes",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internetanslutning",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Fönstret är för litet",
+		"windowTooSmallMessage": "Gör fönstret större för att fortsätta använda CueVote.",
 		"backToRadio": "Tillbaka till radion",
 		"retry": "Försök ansluta igen",
 		"switching": "Byter kanal...",

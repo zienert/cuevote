@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Accedi per Creare",
 		"noChannelsFound": "Nessun canale trovato per",
 		"live": "Live",
+		"hostedBy": "Organizzato da {name}",
 		"createNewChannel": "Crea Nuovo Canale",
 		"channelName": "Nome Canale",
 		"channelNamePlaceholder": "es. Late Night Vibes",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nessuna connessione internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Finestra troppo piccola",
+		"windowTooSmallMessage": "Ingrandisci la finestra per continuare a usare CueVote.",
 		"backToRadio": "Torna alla radio",
 		"retry": "Riprova connessione",
 		"retrying": "Riprovo...",

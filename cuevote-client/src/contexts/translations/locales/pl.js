@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Zaloguj się, aby utworzyć",
 		"noChannelsFound": "Nie znaleziono kanałów dla",
 		"live": "Na żywo",
+		"hostedBy": "Gospodarz: {name}",
 		"createNewChannel": "Utwórz nowy kanał",
 		"channelName": "Nazwa kanału",
 		"channelNamePlaceholder": "np. Nocne wibracje",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Brak połączenia z internetem",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Okno jest za małe",
+		"windowTooSmallMessage": "Powiększ okno, aby dalej korzystać z CueVote.",
 		"backToRadio": "Wróć do radia",
 		"retry": "Ponów połączenie",
 		"switching": "Przełączanie kanału...",

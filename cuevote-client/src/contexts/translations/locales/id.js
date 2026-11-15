@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Login untuk Membuat",
 		"noChannelsFound": "Kanal tidak ditemukan",
 		"live": "Live",
+		"hostedBy": "Tuan rumah: {name}",
 		"createNewChannel": "Buat Kanal Baru",
 		"channelName": "Nama Kanal",
 		"channelNamePlaceholder": "cth. Santai Malam",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tidak ada koneksi internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Jendela terlalu kecil",
+		"windowTooSmallMessage": "Perbesar jendela untuk terus menggunakan CueVote.",
 		"backToRadio": "Kembali ke Radio",
 		"retry": "Coba lagi koneksi",
 		"switching": "Ganti Kanal...",

@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "बनाने के लिए लॉग इन करें",
 		"noChannelsFound": "कोई चैनल नहीं मिला",
 		"live": "लाइव",
+		"hostedBy": "मेज़बान: {name}",
 		"createNewChannel": "नया चैनल बनाएं",
 		"channelName": "चैनल का नाम",
 		"channelNamePlaceholder": "उदा. देर रात की धुन",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "कोई इंटरनेट कनेक्शन नहीं",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "विंडो बहुत छोटी है",
+		"windowTooSmallMessage": "CueVote का उपयोग जारी रखने के लिए विंडो बड़ी करें।",
 		"backToRadio": "रेडियो पर वापस जाएँ",
 		"retry": "कनेक्शन पुनः प्रयास करें",
 		"retrying": "पुनः प्रयास कर रहा है...",

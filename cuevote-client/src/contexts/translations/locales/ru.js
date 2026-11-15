@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Войдите, чтобы создать",
 		"noChannelsFound": "Каналы не найдены по запросу",
 		"live": "Эфир",
+		"hostedBy": "Ведущий: {name}",
 		"createNewChannel": "Создать новый канал",
 		"channelName": "Название канала",
 		"channelNamePlaceholder": "напр., Ночные ритмы",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Нет подключения к интернету",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Окно слишком маленькое",
+		"windowTooSmallMessage": "Увеличьте окно, чтобы продолжить пользоваться CueVote.",
 		"backToRadio": "Назад к радио",
 		"retry": "Повторить попытку подключения",
 		"switching": "Переключение канала...",

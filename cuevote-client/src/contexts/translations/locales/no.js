@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Logg inn for å opprette",
 		"noChannelsFound": "Ingen kanaler funnet for",
 		"live": "Live",
+		"hostedBy": "Vert: {name}",
 		"createNewChannel": "Opprett ny kanal",
 		"channelName": "Kanalnavn",
 		"channelNamePlaceholder": "f.eks. Late Night Vibes",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internettforbindelse",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Vinduet er for lite",
+		"windowTooSmallMessage": "Gjør vinduet større for å fortsette å bruke CueVote.",
 		"backToRadio": "Tilbake til radioen",
 		"retry": "Prøv tilkobling på nytt",
 		"switching": "Bytter kanal...",

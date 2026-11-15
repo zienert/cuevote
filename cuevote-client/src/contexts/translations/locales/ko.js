@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "로그인하여 만들기",
 		"noChannelsFound": "채널을 찾을 수 없음:",
 		"live": "라이브",
+		"hostedBy": "호스트: {name}",
 		"createNewChannel": "새 채널 만들기",
 		"channelName": "채널 이름",
 		"channelNamePlaceholder": "예: 늦은 밤 감성",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "인터넷에 연결되지 않음",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "창이 너무 작습니다",
+		"windowTooSmallMessage": "CueVote를 계속 사용하려면 창을 키워 주세요.",
 		"backToRadio": "라디오로 돌아가기",
 		"retry": "연결 재시도",
 		"retrying": "재시도 중...",

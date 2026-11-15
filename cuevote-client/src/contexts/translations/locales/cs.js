@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Přihlaste se pro vytvoření",
 		"noChannelsFound": "Nebyly nalezeny žádné kanály pro",
 		"live": "Živě",
+		"hostedBy": "Hostitel: {name}",
 		"createNewChannel": "Vytvořit Nový Kanál",
 		"channelName": "Název Kanálu",
 		"channelNamePlaceholder": "např. Noční Atmosféra",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žádné připojení k internetu",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Okno je příliš malé",
+		"windowTooSmallMessage": "Zvětšete okno, abyste mohli CueVote dál používat.",
 		"backToRadio": "Zpět k rádiu",
 		"retry": "Zkusit připojení znovu",
 		"switching": "Přepínání Kanálu...",

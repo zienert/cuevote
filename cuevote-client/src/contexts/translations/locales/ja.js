@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "ログインして作成",
 		"noChannelsFound": "チャンネルが見つかりません:",
 		"live": "ライブ",
+		"hostedBy": "ホスト: {name}",
 		"createNewChannel": "新規チャンネル作成",
 		"channelName": "チャンネル名",
 		"channelNamePlaceholder": "例: 深夜のバイブス",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "インターネット接続がありません",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "ウィンドウが小さすぎます",
+		"windowTooSmallMessage": "CueVoteを引き続き使うには、ウィンドウを大きくしてください。",
 		"backToRadio": "ラジオに戻る",
 		"retry": "接続を再試行",
 		"retrying": "再試行中...",

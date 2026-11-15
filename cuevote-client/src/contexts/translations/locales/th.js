@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "เข้าสู่ระบบเพื่อสร้าง",
 		"noChannelsFound": "ไม่พบช่อง",
 		"live": "สด",
+		"hostedBy": "โฮสต์: {name}",
 		"createNewChannel": "สร้างช่องใหม่",
 		"channelName": "ชื่อช่อง",
 		"channelNamePlaceholder": "เช่น วิดีโอฟังสบาย",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "หน้าต่างเล็กเกินไป",
+		"windowTooSmallMessage": "ขยายหน้าต่างเพื่อใช้ CueVote ต่อ",
 		"backToRadio": "กลับไปที่วิทยุ",
 		"retry": "ลองเชื่อมต่ออีกครั้ง",
 		"switching": "กำลังเปลี่ยนช่อง...",

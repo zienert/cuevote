@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Log masuk untuk Cipta",
 		"noChannelsFound": "Tiada saluran dijumpai",
 		"live": "Langsung",
+		"hostedBy": "Hos: {name}",
 		"createNewChannel": "Cipta Saluran Baru",
 		"channelName": "Nama Saluran",
 		"channelNamePlaceholder": "cth. Rentak Malam",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tiada sambungan internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Tetingkap terlalu kecil",
+		"windowTooSmallMessage": "Besarkan tetingkap untuk terus menggunakan CueVote.",
 		"backToRadio": "Kembali ke Radio",
 		"retry": "Cuba semula sambungan",
 		"switching": "Menukar Saluran...",

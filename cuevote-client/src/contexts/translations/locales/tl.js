@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Mag-login upang Gumawa",
 		"noChannelsFound": "Walang channel na nahanap",
 		"live": "Live",
+		"hostedBy": "Host: {name}",
 		"createNewChannel": "Gumawa ng Bagong Channel",
 		"channelName": "Pangalan ng Channel",
 		"channelNamePlaceholder": "hal. Late Night Vibes",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Walang Koneksyon sa Internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Masyadong maliit ang window",
+		"windowTooSmallMessage": "Palakihin ang window para magpatuloy sa paggamit ng CueVote.",
 		"backToRadio": "Bumalik sa Radyo",
 		"retry": "Subukan Muli ang Koneksyon",
 		"switching": "Nagpapalit ng Channel...",

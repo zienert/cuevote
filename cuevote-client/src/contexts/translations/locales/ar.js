@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "تسجيل الدخول للإنشاء",
 		"noChannelsFound": "لم يتم العثور على قنوات لـ",
 		"live": "مباشر",
+		"hostedBy": "يستضيفها {name}",
 		"createNewChannel": "إنشاء قناة جديدة",
 		"channelName": "اسم القناة",
 		"channelNamePlaceholder": "مثلاً: أجواء ليلية",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "لا يوجد اتصال بالإنترنت",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "النافذة صغيرة جدًا",
+		"windowTooSmallMessage": "كبّر النافذة لمتابعة استخدام CueVote.",
 		"backToRadio": "العودة إلى الراديو",
 		"retry": "أعد محاولة الاتصال",
 		"switching": "جارٍ تبديل القناة...",

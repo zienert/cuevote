@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Kirjaudu luodaksesi",
 		"noChannelsFound": "Kanavia ei löytynyt haulla",
 		"live": "Live",
+		"hostedBy": "Isäntä: {name}",
 		"createNewChannel": "Luo uusi kanava",
 		"channelName": "Kanavan nimi",
 		"channelNamePlaceholder": "esim. Yöfiilikset",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ei internetyhteyttä",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Ikkuna on liian pieni",
+		"windowTooSmallMessage": "Suurenna ikkunaa jatkaaksesi CueVoten käyttöä.",
 		"backToRadio": "Takaisin radioon",
 		"retry": "Yritä yhteyttä uudelleen",
 		"switching": "Vaihdetaan kanavaa...",

@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Prijavi se za stvaranje",
 		"noChannelsFound": "Nema pronađenih kanala za",
 		"live": "Uživo",
+		"hostedBy": "Domaćin: {name}",
 		"createNewChannel": "Stvori Novi Kanal",
 		"channelName": "Naziv Kanala",
 		"channelNamePlaceholder": "npr. Noćne Vibracije",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nema internetske veze",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Prozor je premalen",
+		"windowTooSmallMessage": "Povećajte prozor da biste nastavili koristiti CueVote.",
 		"backToRadio": "Natrag na radio",
 		"retry": "Pokušaj ponovno povezivanje",
 		"switching": "Promjena Kanala...",

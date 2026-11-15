@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "התחבר ליצירה",
 		"noChannelsFound": "לא נמצאו ערוצים עבור",
 		"live": "חי",
+		"hostedBy": "מארח: {name}",
 		"createNewChannel": "צור ערוץ חדש",
 		"channelName": "שם הערוץ",
 		"channelNamePlaceholder": "למשל, לילה רגוע",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "אין חיבור לאינטרנט",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "החלון קטן מדי",
+		"windowTooSmallMessage": "הגדילו את החלון כדי להמשיך להשתמש ב-CueVote.",
 		"backToRadio": "חזרה לרדיו",
 		"retry": "נסה להתחבר שוב",
 		"switching": "מחליף ערוץ...",

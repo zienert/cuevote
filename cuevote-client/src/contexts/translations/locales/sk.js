@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Prihláste sa pre vytvorenie",
 		"noChannelsFound": "Neboli nájdené žiadne kanály pre",
 		"live": "Živo",
+		"hostedBy": "Hostiteľ: {name}",
 		"createNewChannel": "Vytvoriť Nový Kanál",
 		"channelName": "Názov Kanála",
 		"channelNamePlaceholder": "napr. Nočná Pohoda",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žiadne pripojenie na internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Okno je príliš malé",
+		"windowTooSmallMessage": "Zväčšite okno, aby ste mohli CueVote ďalej používať.",
 		"backToRadio": "Späť na rádio",
 		"retry": "Skúsiť pripojenie znova",
 		"switching": "Prepínanie Kanála...",

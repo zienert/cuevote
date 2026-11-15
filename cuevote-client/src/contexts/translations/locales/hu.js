@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Jelentkezz be a létrehozáshoz",
 		"noChannelsFound": "Nem található csatorna ehhez",
 		"live": "Élő",
+		"hostedBy": "Házigazda: {name}",
 		"createNewChannel": "Új Csatorna Létrehozása",
 		"channelName": "Csatorna Neve",
 		"channelNamePlaceholder": "pl. Késő Esti Hangulat",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nincs internetkapcsolat",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Az ablak túl kicsi",
+		"windowTooSmallMessage": "Nagyítsd az ablakot a CueVote további használatához.",
 		"backToRadio": "Vissza a rádióhoz",
 		"retry": "Kapcsolat újrapróbálása",
 		"switching": "Csatorna Váltása...",

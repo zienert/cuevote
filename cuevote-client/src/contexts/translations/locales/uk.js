@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Увійдіть, щоб створити",
 		"noChannelsFound": "Каналів не знайдено за запитом",
 		"live": "Наживо",
+		"hostedBy": "Ведучий: {name}",
 		"createNewChannel": "Створити новий канал",
 		"channelName": "Назва каналу",
 		"channelNamePlaceholder": "напр., Нічні вібрації",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Немає підключення до інтернету",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Вікно замале",
+		"windowTooSmallMessage": "Збільште вікно, щоб і далі користуватися CueVote.",
 		"backToRadio": "Назад до радіо",
 		"retry": "Повторити спробу підключення",
 		"switching": "Перемикання каналу...",

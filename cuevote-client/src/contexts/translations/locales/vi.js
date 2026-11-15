@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Đăng nhập để tạo",
 		"noChannelsFound": "Không tìm thấy kênh",
 		"live": "Trực tiếp",
+		"hostedBy": "Chủ phòng: {name}",
 		"createNewChannel": "Tạo Kênh Mới",
 		"channelName": "Tên Kênh",
 		"channelNamePlaceholder": "vd. Nhạc Thư Giãn",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Không có kết nối internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Cửa sổ quá nhỏ",
+		"windowTooSmallMessage": "Hãy phóng to cửa sổ để tiếp tục dùng CueVote.",
 		"backToRadio": "Quay lại radio",
 		"retry": "Thử lại kết nối",
 		"switching": "Đang chuyển kênh...",

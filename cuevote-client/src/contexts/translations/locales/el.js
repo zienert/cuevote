@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Συνδεθείτε για Δημιουργία",
 		"noChannelsFound": "Δεν βρέθηκαν κανάλια για",
 		"live": "Ζωντανά",
+		"hostedBy": "Οικοδεσπότης: {name}",
 		"createNewChannel": "Δημιουργία Νέου Καναλιού",
 		"channelName": "Όνομα Καναλιού",
 		"channelNamePlaceholder": "π.χ. Late Night Vibes",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Χωρίς σύνδεση στο διαδίκτυο",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Το παράθυρο είναι πολύ μικρό",
+		"windowTooSmallMessage": "Μεγαλώστε το παράθυρο για να συνεχίσετε να χρησιμοποιείτε το CueVote.",
 		"backToRadio": "Πίσω στο ραδιόφωνο",
 		"retry": "Επαναпроσπάθεια σύνδεσης",
 		"switching": "Αλλαγή Καναλιού...",

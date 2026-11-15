@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Oluşturmak İçin Giriş Yap",
 		"noChannelsFound": "Kanal bulunamadı:",
 		"live": "Canlı",
+		"hostedBy": "Ev sahibi: {name}",
 		"createNewChannel": "Yeni Kanal Oluştur",
 		"channelName": "Kanal Adı",
 		"channelNamePlaceholder": "ör. Gece Modu",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "İnternet bağlantısı yok",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Pencere çok küçük",
+		"windowTooSmallMessage": "CueVote'u kullanmaya devam etmek için pencereyi büyütün.",
 		"backToRadio": "Radyoya dön",
 		"retry": "Bağlantıyı tekrar dene",
 		"switching": "Kanal Değiştiriliyor...",

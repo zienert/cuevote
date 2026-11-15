@@ -46,6 +46,7 @@ export default {
 		"loginToCreate": "Autentifică-te pentru a crea",
 		"noChannelsFound": "Nu s-au găsit canale pentru",
 		"live": "Live",
+		"hostedBy": "Gazdă: {name}",
 		"createNewChannel": "Creează Canal Nou",
 		"channelName": "Nume Canal",
 		"channelNamePlaceholder": "ex. Vibe de Noapte",
@@ -172,8 +173,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Fără conexiune la internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Fereastra este prea mică",
+		"windowTooSmallMessage": "Mărește fereastra pentru a folosi în continuare CueVote.",
 		"backToRadio": "Înapoi la radio",
 		"retry": "Reîncearcă conexiunea",
 		"switching": "Schimbare Canal...",
