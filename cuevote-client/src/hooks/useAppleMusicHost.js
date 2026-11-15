@@ -26,6 +26,8 @@ const DRIFT_CHECK_MS = 5000;
 const MAX_DRIFT_S = 3;
 const SIGN_IN_POLL_MS = 2000;
 const START_CHECK_MS = 3000;
+// How long a start may go on loading before it counts as not started.
+const START_PATIENCE_MS = 20000;
 const STATUS_HEARTBEAT_MS = 10000;
 const SONG_ASK_AGAIN_MS = 10000;
 // The host's own controls (hostPlay): how often the room is asked again until
@@ -40,6 +42,11 @@ const SEEK_STEP_S = 15;
 // A seek this soon after a track change was aimed at the previous track,
 // whose bar was still showing. The server drops it as well.
 const SEEK_AFTER_CHANGE_MS = 2000;
+// MusicKit stops at the end of an item a moment before the server moves on.
+// Finished further than this from the end, it is not waiting for the next
+// track: it lost its place and the entry is loaded again.
+const FINISHED_EARLY_S = MAX_DRIFT_S + 2;
+const RELOAD_FINISHED_MS = 10000;
 // A page whose developer token runs out within this reloads at the next track
 // change; MusicKit takes its token once, at configure (24 h, renewed by the
 // server below 12 h).
@@ -107,6 +114,9 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	// MusicKit calls run one after another: a cancelled load's setQueue must
 	// not land after the next one's (14.11.2026).
 	const chainRef = useRef(Promise.resolve());
+	// Loads under way. MusicKit is "stopped" between taking an item and
+	// starting it, which is not a player that lost its item (drift check).
+	const loadingRef = useRef(0);
 	// Bumped whenever this player may no longer play (switched off, standby,
 	// signed out): async work started before checks it after every await.
 	const generationRef = useRef(0);
@@ -119,6 +129,10 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		askedRef.current = want;
 		setAskedState(want);
 	}, []);
+	// The length MusicKit gave for an entry: once the item has finished it no
+	// longer says.
+	const durationRef = useRef({ entry: null, seconds: 0 });
+	const finishedReloadRef = useRef({ entry: null, at: 0 });
 	const entrySinceRef = useRef(0);
 
 	const currentKey = currentTrack?.videoId || null;
@@ -128,6 +142,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	const isPlayingRef = useLatestRef(isPlaying);
 	const sendRef = useLatestRef(sendMessage);
 	const connectedRef = useLatestRef(connected);
+	const roomDurationRef = useLatestRef(currentTrack?.duration || 0);
 	useEffect(() => {
 		entrySinceRef.current = Date.now();
 	}, [currentEntry]);
@@ -221,6 +236,9 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			setProblem(null);
 			const entry = currentEntryRef.current;
 			const duration = music.currentPlaybackDuration;
+			if (entry && readyEntryRef.current === entry && duration > 0 && holdsCurrentItem()) {
+				durationRef.current = { entry, seconds: duration };
+			}
 			if (entry && readyEntryRef.current === entry && durationSentForRef.current !== entry && duration > 0 && holdsCurrentItem()) {
 				durationSentForRef.current = entry;
 				sendRef.current({ type: 'UPDATE_DURATION', payload: { duration: Math.round(duration), trackId: trackIdOf(entry) } });
@@ -332,11 +350,19 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		}
 		// After a page load Chrome refuses sound without a click, and MusicKit
 		// resolves play() all the same (13.11.2026). Check that it really plays.
-		await new Promise(resolve => setTimeout(resolve, START_CHECK_MS));
-		if (generation !== generationRef.current) return;
-		if (isPlayingRef.current && askedRef.current !== 'pause' && music.playbackState !== window.MusicKit?.PlaybackStates?.playing) {
-			setStatus(prev => (prev === 'ready' ? 'needs-start' : prev));
+		// Still loading is not refused: on a slow connection the start card
+		// came up over a track that began a moment later, and with the phone
+		// locked nobody was there to tap it (16.11.2026).
+		const states = window.MusicKit?.PlaybackStates || {};
+		for (let waited = START_CHECK_MS; ; waited += START_CHECK_MS) {
+			await new Promise(resolve => setTimeout(resolve, START_CHECK_MS));
+			if (generation !== generationRef.current) return;
+			const state = music.playbackState;
+			if (state === states.playing || !isPlayingRef.current || askedRef.current === 'pause') return;
+			const loading = state === states.loading || state === states.waiting || state === states.seeking || state === states.stalled;
+			if (!loading || waited >= START_PATIENCE_MS) break;
 		}
+		setStatus(prev => (prev === 'ready' ? 'needs-start' : prev));
 	}, [music, isPlayingRef]);
 
 	// Play whatever the server says is current, from the server's position.
@@ -383,6 +409,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		const stale = () => cancelled || generation !== generationRef.current;
 		chainRef.current = chainRef.current.catch(() => {}).then(async () => {
 			if (stale()) return;
+			loadingRef.current += 1;
 			try {
 				// Whatever played before must not go on under the new title, not
 				// even when the new item cannot be loaded (13.11.2026).
@@ -411,6 +438,8 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 				const code = errorCodeOf(err);
 				setProblem({ code, message: describeMusicKitError(err) });
 				sendRef.current({ type: 'PLAYBACK_ERROR', payload: { videoId: currentKey, errorCode: code, trackId: trackIdOf(currentEntry) } });
+			} finally {
+				loadingRef.current -= 1;
 			}
 		});
 		return () => {
@@ -472,28 +501,48 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			// Where the server is now: its last report plus the time since.
 			const elapsed = progressAtRef?.current ? (Date.now() - progressAtRef.current) / 1000 : 0;
 			const expected = (progressRef.current || 0) + Math.max(0, elapsed);
-			const duration = music.currentPlaybackDuration || 0;
+			const known = durationRef.current.entry === entry ? durationRef.current.seconds : 0;
+			const duration = music.currentPlaybackDuration || known || roomDurationRef.current || 0;
 			const nearEnd = duration && expected > duration - 2;
 			if (state !== states.playing) {
 				// Paused on this device's own controls: the room is being told.
 				if (askedRef.current === 'pause') return;
-				// Stopped under a playing room (headphones pulled, the browser):
-				// start it again. Not near or past the end, where MusicKit stops
-				// before the server moves on, and not while it loads.
 				const settling = state === states.loading || state === states.waiting || state === states.seeking || state === states.stalled;
+				if (settling || loadingRef.current > 0) return;
 				const finishedItem = state === states.ended || state === states.completed;
-				if (!nearEnd && !settling && !finishedItem && status === 'ready') {
+				if (finishedItem || state === states.stopped || state === states.none) {
+					// MusicKit has let go of the item. At the end of a track that is
+					// in order: it stops a moment before the server moves on. Well
+					// before the end (a seek or a skip past it that the room did not
+					// take, an item that broke off) it stayed silent for the rest of
+					// the track: load the entry again at the server's position.
+					const early = duration ? expected < duration - FINISHED_EARLY_S : !finishedItem;
+					const last = finishedReloadRef.current;
+					if (early && status === 'ready' && (last.entry !== entry || Date.now() - last.at > RELOAD_FINISHED_MS)) {
+						finishedReloadRef.current = { entry, at: Date.now() };
+						loadedEntryRef.current = null;
+						readyEntryRef.current = null;
+						setReloadTick(tick => tick + 1);
+					}
+					return;
+				}
+				// Paused under a playing room (headphones pulled, the browser):
+				// start it again, but not near the end.
+				if (!nearEnd && status === 'ready') {
 					play().catch(() => { /* reported by the error event */ });
 				}
 				return;
 			}
 			if (nearEnd) return;
-			if (Math.abs((music.currentPlaybackTime || 0) - expected) > MAX_DRIFT_S) {
+			// Only within an item MusicKit has loaded: a seek while it had no
+			// length yet ended the item (16.11.2026).
+			const loaded = music.currentPlaybackDuration || 0;
+			if (loaded > 0 && expected < loaded - 1 && Math.abs((music.currentPlaybackTime || 0) - expected) > MAX_DRIFT_S) {
 				Promise.resolve(music.seekToTime(expected)).catch(() => { /* next check tries again */ });
 			}
 		}, DRIFT_CHECK_MS);
 		return () => clearInterval(timer);
-	}, [canPlay, music, status, play, progressRef, progressAtRef, isPlayingRef, currentEntryRef, currentKeyRef, sendRef, holdsCurrentItem]);
+	}, [canPlay, music, status, play, progressRef, progressAtRef, isPlayingRef, currentEntryRef, currentKeyRef, sendRef, roomDurationRef, holdsCurrentItem]);
 
 	// Play, pause and seek on this device's own controls: the lock screen and
 	// Control Center of a phone, a keyboard's media keys, a headset. MusicKit
@@ -639,10 +688,17 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	const start = useCallback(() => {
 		// play() puts the button back if this attempt does not start either.
 		setStatus('ready');
+		// MusicKit has let go of the item meanwhile: load it again.
+		if (readyEntryRef.current && !holdsCurrentItem()) {
+			loadedEntryRef.current = null;
+			readyEntryRef.current = null;
+			setReloadTick(tick => tick + 1);
+			return;
+		}
 		play().catch((err) => {
 			setProblem({ code: errorCodeOf(err), message: describeMusicKitError(err) });
 		});
-	}, [play]);
+	}, [play, holdsCurrentItem]);
 
 	// "Play here" on a device on standby.
 	const claim = useCallback(() => {
