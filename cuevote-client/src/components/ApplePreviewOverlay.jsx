@@ -2,8 +2,8 @@
 // Copyright (c) 2026 Julian Zienert
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CircleAlert, Loader2, Play } from 'lucide-react';
-import { StatusButton, StatusLine } from './PlayerStatus';
+import { CircleAlert, Play } from 'lucide-react';
+import { StatusButton, StatusLine, StatusWaiting } from './PlayerStatus';
 import { Language } from '../contexts/LanguageContext';
 import { parseTrackKey } from '../utils/trackKeys';
 import { AppleContentNotice } from './AppleContentNotice';
@@ -24,7 +24,7 @@ export function ApplePreviewOverlay({ track, preview, consent, onAccept, isCinem
 
 	let message = null;
 	if (consent && preview.status === 'loading') {
-		message = <StatusLine icon={Loader2} spin>{t('appleMusic.loading')}</StatusLine>;
+		message = <StatusWaiting>{t('appleMusic.loading')}</StatusWaiting>;
 	} else if (consent && preview.status === 'error') {
 		message = <StatusLine icon={CircleAlert}>{t('appleMusic.previewFailed')}</StatusLine>;
 	} else if (consent && (preview.status === 'needs-start' || preview.status === 'paused')) {

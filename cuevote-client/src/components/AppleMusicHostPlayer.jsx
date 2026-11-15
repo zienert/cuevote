@@ -2,11 +2,11 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { CircleAlert, CloudOff, Link2, ListMusic, Loader2, MonitorSmartphone, Play, RotateCw } from "lucide-react";
+import { CircleAlert, CloudOff, Link2, ListMusic, MonitorSmartphone, Play, RotateCw } from "lucide-react";
 import { Language } from "../contexts/LanguageContext";
 import { useLatestRef } from "../hooks/useLatestRef";
 import { parseTrackKey } from "../utils/trackKeys";
-import { StatusButton, StatusCard, StatusLine } from "./PlayerStatus";
+import { StatusButton, StatusCard, StatusLine, StatusWaiting } from "./PlayerStatus";
 
 // Problems the host can do something about, by MusicKit error code.
 const SUBSCRIPTION_CODES = new Set(['SUBSCRIPTION_ERROR', 'STREAM_UPSELL']);
@@ -16,12 +16,6 @@ const OTHER_DEVICE_CODES = new Set(['DEVICE_LIMIT', 'CONCURRENT_STREAMS', 'STREA
 const PROBLEM_DELAY_MS = 400;
 // "Try again" stays busy this long at most; the player's answer ends it earlier.
 const RETRY_WAIT_MS = 12000;
-
-// A code worth showing: one that tells support more than "something failed".
-function supportCode(problem) {
-	const code = problem?.code;
-	return code && code !== 'UNKNOWN_ERROR' ? code : undefined;
-}
 
 /**
  * The playback problem to show, if any. A problem belongs to the track it came
@@ -66,6 +60,12 @@ export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
 	const { status, connect, start, claim, disconnect } = apple;
 	const problem = useShownProblem(apple.problem, currentTrack?.id);
 
+	// A card says what the host can do. MusicKit's code says what went wrong to
+	// whoever looks into it: that goes to the console, not onto the card.
+	useEffect(() => {
+		if (apple.problem?.code) console.warn('[Apple Music]', apple.problem.code, apple.problem.message || '');
+	}, [apple.problem]);
+
 	// "Try again" is answered by the player: it plays (the problem goes) or
 	// fails again (a new problem comes).
 	const [retrying, setRetrying] = useState(false);
@@ -92,22 +92,21 @@ export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
 			</StatusCard>
 		);
 	} else if (status === 'loading' || status === 'off') {
-		line = <StatusLine icon={Loader2} spin>{t('appleMusic.loading')}</StatusLine>;
+		line = <StatusWaiting>{t('appleMusic.loading')}</StatusWaiting>;
 	} else if (status === 'error') {
 		card = (
-			<StatusCard icon={CloudOff} tone="attention" title={t('appleMusic.loadFailed')} code={supportCode(apple.problem)}>
+			<StatusCard icon={CloudOff} tone="attention" title={t('appleMusic.loadFailed')}>
 				<StatusButton icon={RotateCw} onClick={() => window.location.reload()}>{t('player.ipBlockRetry')}</StatusButton>
 			</StatusCard>
 		);
 	} else if (status === 'signed-out') {
 		// A sign-in that failed says so; one the host closed says nothing.
-		const failed = apple.problem?.signIn ? apple.problem : null;
+		const failed = !!apple.problem?.signIn;
 		card = (
 			<StatusCard
 				icon={Link2}
 				title={failed ? t('appleMusic.signInFailed') : undefined}
 				text={t('appleMusic.connectHint')}
-				code={supportCode(failed)}
 			>
 				<StatusButton onClick={connect}>{t('appleMusic.connect')}</StatusButton>
 			</StatusCard>
@@ -135,7 +134,7 @@ export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
 		);
 	} else if (problem) {
 		card = (
-			<StatusCard icon={CircleAlert} tone="attention" title={t('appleMusic.problemGeneric')} code={supportCode(problem)}>
+			<StatusCard icon={CircleAlert} tone="attention" title={t('appleMusic.problemGeneric')}>
 				<StatusButton icon={RotateCw} busy={retrying} onClick={retry}>{t('app.retryPlayback')}</StatusButton>
 			</StatusCard>
 		);
@@ -171,7 +170,7 @@ export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
 AppleMusicHostPlayer.propTypes = {
 	apple: PropTypes.shape({
 		status: PropTypes.string.isRequired,
-		problem: PropTypes.shape({ code: PropTypes.string, signIn: PropTypes.bool }),
+		problem: PropTypes.shape({ code: PropTypes.string, message: PropTypes.string, signIn: PropTypes.bool }),
 		connect: PropTypes.func.isRequired,
 		start: PropTypes.func.isRequired,
 		claim: PropTypes.func.isRequired,

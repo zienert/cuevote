@@ -3,6 +3,7 @@
 import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import { LanguageContext } from './LanguageContextValue.js';
 import { LANGUAGE_CODES, loadLanguage } from './translations';
+import { SpinnerScreen } from '../components/Spinner';
 
 const pluralRulesCache = new Map();
 function getPluralRules(lang) {
@@ -218,9 +219,7 @@ export const Language = {
 					// Language-neutral splash until translations resolve, so raw i18n
 					// keys never paint. Intentionally text-free — any copy here would
 					// itself be untranslated. Matches the app's dark + orange theme.
-					<div className="fixed inset-0 z-[100] bg-[#050505] flex items-center justify-center" role="status" aria-label="Loading">
-						<div className="w-10 h-10 rounded-full border-2 border-neutral-800 border-t-orange-500 animate-spin" />
-					</div>
+					<SpinnerScreen />
 				)}
 			</LanguageContext.Provider>
 		);

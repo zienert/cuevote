@@ -27,6 +27,12 @@
 //   ?appleConsent=0   a guest who has not turned Apple content on
 //   ?empty            nothing queued
 //   ?requireLogin     a channel where only signed-in users vote and suggest
+//   ?conn=...         the connection: opening (the channel opens and has no
+//                     answer yet), opening-problem (it does not come: the card
+//                     shows after 12 s), lost (it dropped while the room is
+//                     open), lost-problem (and does not come back). "Retry"
+//                     connects.
+//   ?offline          the device has no internet
 //   ?lang=de          the language
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
@@ -38,6 +44,11 @@ import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 import { deviceDetection } from '../utils/deviceDetection';
 
 const PARAMS = new URLSearchParams(window.location.search);
+const CONNECTION = PARAMS.get('conn') || '';
+// Before the room renders: it asks navigator.onLine while rendering.
+if (PARAMS.has('offline')) {
+	Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false });
+}
 
 // What the device detection answers, per ?device. Set before the room renders:
 // RoomBody and Header ask while rendering.
@@ -284,6 +295,7 @@ export default function RoomPreview() {
 	const [lastMessage, setLastMessage] = useState(null);
 	const [lastError, setLastError] = useState(null); // { message, code, at }
 	const [lease, setLease] = useState(scenario === 'standby' ? false : true);
+	const [connected, setConnected] = useState(!CONNECTION);
 	const progressRef = useRef(47);
 	const progressAtRef = useRef(Date.now());
 	const added = useRef(0);
@@ -373,8 +385,8 @@ export default function RoomPreview() {
 	}, [provider, isOwner]);
 
 	const socket = useMemo(() => ({
-		state: room,
-		isConnected: true,
+		state: !connected && CONNECTION.startsWith('opening') ? null : room,
+		isConnected: connected,
 		sendMessage,
 		lastError: lastError?.message || null,
 		lastErrorCode: lastError?.code || null,
@@ -385,13 +397,13 @@ export default function RoomPreview() {
 		handleLoginSuccess: () => {},
 		handleLogout: () => {},
 		clearMessage: () => setLastMessage(null),
-		reconnectAttempt: 0,
-		forceReconnect: () => {},
+		reconnectAttempt: connected ? 0 : (CONNECTION.endsWith('problem') ? 5 : 1),
+		forceReconnect: () => { setTimeout(() => setConnected(true), 1200); },
 		connectionQuality: 'good',
 		progressRef,
 		progressAtRef,
 		applePlayerLease: provider === 'apple' && isOwner ? lease : null,
-	}), [room, sendMessage, lastMessage, lastError, isOwner, provider, lease]);
+	}), [room, sendMessage, lastMessage, lastError, isOwner, provider, lease, connected]);
 
 	// The cookie banner belongs to the real page around this one: keep it
 	// closed. The room below gets its own consent value.

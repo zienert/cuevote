@@ -13,7 +13,7 @@ import { Player } from "./components/Player";
 import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
 import { AppleContentNotice } from "./components/AppleContentNotice";
 import { ApplePreviewOverlay } from "./components/ApplePreviewOverlay";
-import { StatusBar } from "./components/PlayerStatus";
+import { StatusBar, StatusBarButton } from "./components/PlayerStatus";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
 import { useApplePreview } from "./hooks/useApplePreview";
 import { parseTrackKey } from "./utils/trackKeys";
@@ -1655,6 +1655,19 @@ function RoomBody() {
 
   const showThrottleBar = networkThrottle && !ipBlockDetected && !throttleDismissed;
 
+  // The connection dropped while the room is open (brief drops show nothing).
+  const connectionBar = showReconnectBanner ? (
+    <StatusBar
+      icon={WifiOff}
+      busy={isOnline}
+      action={reconnectAttempt > 3 ? (
+        <StatusBarButton onClick={forceReconnect}>{t('app.retry', 'Retry')}</StatusBarButton>
+      ) : null}
+    >
+      {isOnline ? `${t('app.reconnecting', 'Reconnecting')}...` : t('app.noInternet', 'No Internet Connection')}
+    </StatusBar>
+  ) : null;
+
   // The suggest form: opened under the header, or docked at the bottom of a phone.
   const suggestForm = (docked) => (
     <SuggestSongForm
@@ -1724,30 +1737,10 @@ function RoomBody() {
         </div>
       )}
 
-      {showReconnectBanner && serverState && !isStaleState && (
-        <div className={`fixed top-0 left-0 right-0 z-[100] ${!isOnline ? 'bg-red-600/95' : 'bg-orange-600/95'} backdrop-blur-sm text-white text-center py-1.5 text-xs font-medium`}>
-          <div className="flex items-center justify-center gap-2">
-            {!isOnline ? (
-              <>
-                <WifiOff size={12} />
-                <span>{t('app.noInternet', 'No Internet Connection')}</span>
-              </>
-            ) : (
-              <>
-                <RefreshCw size={12} className="animate-spin" />
-                <span>{t('app.reconnecting', 'Reconnecting')}...</span>
-              </>
-            )}
-            {reconnectAttempt > 3 && (
-              <button
-                onClick={forceReconnect}
-                className="ml-1 px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 transition-colors"
-              >
-                {t('app.retry', 'Retry')}
-              </button>
-            )}
-          </div>
-        </div>
+      {/* The room is there, the connection is not: one line under the header.
+          Without a header (cinema mode) it lies over the top edge. */}
+      {connectionBar && isCinemaMode && (
+        <div className="fixed inset-x-0 top-0 z-[100] bg-[#050505]">{connectionBar}</div>
       )}
       {!isCinemaMode && (
         <div className="sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out">
@@ -1808,6 +1801,7 @@ function RoomBody() {
             channelName={activeChannel}
             hasPlayerView={!isVenueMode}
           />
+          {connectionBar}
           {showThrottleBar && (
             <div className="bg-yellow-600/95 text-white text-center py-1.5 text-xs font-medium">
               <div className="flex items-center justify-center gap-2 px-2">
