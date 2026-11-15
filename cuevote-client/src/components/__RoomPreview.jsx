@@ -37,7 +37,9 @@
 //                     link asks for the password (any password opens it).
 //   ?offline          the device has no internet
 //   ?lang=de          the language
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+//   ?design=b         the design proposal "Neu" (src/redesign-b) in place of the
+//                     room; it shows the two main views only
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
@@ -47,6 +49,8 @@ import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 import { deviceDetection } from '../utils/deviceDetection';
 
 const PARAMS = new URLSearchParams(window.location.search);
+// The design proposal "Neu": the same mock room, drawn by the draft.
+const RoomB = PARAMS.get('design') === 'b' ? lazy(() => import('../redesign-b/RoomB')) : null;
 const CONNECTION = PARAMS.get('conn') || '';
 // Before the room renders: it asks navigator.onLine while rendering.
 if (PARAMS.has('offline')) {
@@ -491,7 +495,7 @@ export default function RoomPreview() {
 	return (
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
-				<RoomBody />
+				{RoomB ? <Suspense fallback={null}><RoomB /></Suspense> : <RoomBody />}
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>
 	);
