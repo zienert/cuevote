@@ -73,7 +73,11 @@ class PlaybackService : Service() {
             return START_NOT_STICKY
         }
         if (!wanted) {
-            shutDown()
+            // Stopped before it got this far. Only this start is taken back:
+            // the channel may have started playing again since, and that
+            // start is then still on its way.
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf(startId)
             return START_NOT_STICKY
         }
         running = this
