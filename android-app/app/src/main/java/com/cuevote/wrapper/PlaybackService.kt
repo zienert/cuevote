@@ -154,7 +154,6 @@ class PlaybackService : Service() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val channel = NotificationChannel(CHANNEL_ID, getString(R.string.playback_channel_name), NotificationManager.IMPORTANCE_LOW)
         channel.setShowBadge(false)
-        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
