@@ -156,7 +156,7 @@ function initialRoom(provider, { empty, waiting, requireLogin, pending }) {
 		queue,
 		currentTrack: queue[0] || null,
 		isPlaying: queue.length > 0,
-		progress: 47,
+		progress: queue.length > 0 ? 47 : 0,
 		history,
 		suggestionsEnabled: true,
 		votesEnabled: true,
@@ -318,7 +318,7 @@ export default function RoomPreview() {
 	const [lease, setLease] = useState(scenario === 'standby' ? false : true);
 	const [connected, setConnected] = useState(!CONNECTION || CONNECTION === 'password');
 	const [locked, setLocked] = useState(CONNECTION === 'password');
-	const progressRef = useRef(47);
+	const progressRef = useRef(room.queue.length > 0 ? 47 : 0);
 	const progressAtRef = useRef(Date.now());
 	const added = useRef(0);
 
