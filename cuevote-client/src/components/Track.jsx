@@ -56,11 +56,15 @@ export function Track({
   // The count ticks when it changes, not when the row first shows: up from
   // below when it grew, down from above when it shrank.
   const [shownScore, setShownScore] = useState(score);
-  const [tick, setTick] = useState({ count: 0, grew: true });
+  const [tick, setTick] = useState({ count: 0, grew: true, settled: true });
   if (score !== shownScore) {
     setShownScore(score);
-    setTick({ count: tick.count + 1, grew: score > shownScore });
+    setTick({ count: tick.count + 1, grew: score > shownScore, settled: false });
   }
+  // Once the number has arrived it is plain text again: a row that changes
+  // its place is taken out of the page and put back in, and a number that
+  // still carried the tick would rise a second time.
+  const settleTick = () => setTick((current) => (current.settled ? current : { ...current, settled: true }));
 
   // The panel stays in the page while the row closes, so that closing is as
   // smooth as opening. Out of reach (inert) from the moment it starts to close.
@@ -191,7 +195,7 @@ export function Track({
             {/* As wide as its digits: a big count takes room from the title,
                 never from the thumb next to it. */}
             <span className={`min-w-6 flex-none whitespace-nowrap text-center text-sm font-bold tabular-nums sm:min-w-7 ${score > 0 ? "text-orange-400" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
-              <span key={tick.count} className={tick.count === 0 ? undefined : tick.grew ? "cv-tick" : "cv-tick cv-tick-down"}>{formatCount(score, language)}</span>
+              <span key={tick.count} onTransitionEnd={settleTick} className={tick.settled ? undefined : tick.grew ? "cv-tick" : "cv-tick cv-tick-down"}>{formatCount(score, language)}</span>
             </span>
 
             <button
