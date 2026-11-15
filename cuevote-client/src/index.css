@@ -117,6 +117,26 @@ body,
   animation: fadeIn 0.25s var(--ease-out) both;
 }
 
+/* A number that has just changed rises into place (a vote count). A
+   transition from its starting style, so a second vote right after the first
+   picks up where the first one is. */
+.cv-tick {
+  display: inline-block;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+@starting-style {
+  .cv-tick {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+
+  /* A count that shrank comes down from above. */
+  .cv-tick.cv-tick-down {
+    transform: translateY(-40%);
+  }
+}
+
 @keyframes pulse-slow {
 
   0%,
@@ -170,6 +190,10 @@ body,
 @media (prefers-reduced-motion: reduce) {
   .animate-fadeIn {
     animation-name: cover-in;
+  }
+
+  .cv-tick {
+    transition: none;
   }
 
   .skeleton {
