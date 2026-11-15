@@ -36,7 +36,8 @@ const CreateRoomPayload = z.object({
   description: z.string().max(500).optional(),
   color: z.string().max(100).optional(),
   isPrivate: z.boolean().optional(),
-  password: z.string().max(PASSWORD_MAX).optional(),
+  // Lobby builds already in browsers send null for a public room.
+  password: z.string().max(PASSWORD_MAX).nullish(),
   captionsEnabled: z.boolean().optional(),
   languageFlag: z.string().max(50).optional(),
   provider: z.enum(['youtube', 'apple']).optional(),
