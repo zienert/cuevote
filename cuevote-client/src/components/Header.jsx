@@ -464,18 +464,21 @@ export function Header({
               className="qr-code-modal bg-card border border-line rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 text-center flex flex-col items-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-xl font-semibold text-ink mb-4">{t('header.share')}</h3>
+              <h3 className="text-xl font-semibold text-accent mb-4">{t('header.share')}</h3>
               {/* Dark on white, with a quiet zone: a code drawn light on dark is
-                  one that some phone cameras do not read. */}
-              <div className="mb-4 rounded-xl bg-white p-4">
-                <QRCodeSVG
-                  value={window.location.href}
-                  size={200}
-                  level={"H"}
-                  includeMargin={false}
-                  fgColor={"#0a0a09"}
-                  bgColor={"#ffffff"}
-                />
+                  one that some phone cameras do not read. The orange of the
+                  brand frames the white tile instead of colouring the code. */}
+              <div className="mb-4 rounded-2xl border border-accent/60 p-1.5">
+                <div className="rounded-xl bg-white p-3.5">
+                  <QRCodeSVG
+                    value={window.location.href}
+                    size={200}
+                    level={"H"}
+                    includeMargin={false}
+                    fgColor={"#0a0a09"}
+                    bgColor={"#ffffff"}
+                  />
+                </div>
               </div>
 
               <div className="flex items-center gap-2 mb-6 bg-page p-1.5 pl-3 rounded-xl w-full max-w-[280px] border border-line">
@@ -503,7 +506,7 @@ export function Header({
 
               <button
                 onClick={() => onShowQRCode(false)}
-                className="cv-btn cv-btn-quiet px-6"
+                className="cv-btn border border-accent/25 bg-raised px-6 text-accent hover:border-accent/50 hover:bg-[#2b2927]"
               >
                 {t('header.close')}
               </button>
