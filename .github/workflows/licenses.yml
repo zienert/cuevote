@@ -10,6 +10,8 @@ on:
       - 'cuevote-client/package-lock.json'
       - 'cuevote-server/package.json'
       - 'cuevote-server/package-lock.json'
+      - 'cuevote-mcp/package.json'
+      - 'cuevote-mcp/package-lock.json'
       - 'cuevote-client/src/**'
       - 'cuevote-client/scripts/**'
       - 'cuevote-server/**'
@@ -23,6 +25,8 @@ on:
       - 'cuevote-client/package-lock.json'
       - 'cuevote-server/package.json'
       - 'cuevote-server/package-lock.json'
+      - 'cuevote-mcp/package.json'
+      - 'cuevote-mcp/package-lock.json'
       - 'cuevote-client/src/**'
       - 'cuevote-client/scripts/**'
       - 'cuevote-server/**'
@@ -42,6 +46,9 @@ jobs:
         run: npm ci
       - name: Install server deps
         working-directory: cuevote-server
+        run: npm ci
+      - name: Install MCP deps
+        working-directory: cuevote-mcp
         run: npm ci
       - name: Verify allow-list
         run: node scripts/check-licenses.mjs
