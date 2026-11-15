@@ -7,6 +7,65 @@
   --sab: env(safe-area-inset-bottom, 0px);
   --sal: env(safe-area-inset-left, 0px);
   --sar: env(safe-area-inset-right, 0px);
+
+  /* Colours, as RGB channels (tailwind.config.js turns them into classes).
+     One neutral ramp, a little warm like a room at night with the TV on:
+     page, card, raised. Three text roles. One accent, the brand's orange,
+     with dark text on it (white on this orange reaches only 2.8 : 1). */
+  --cv-page: 9 9 8;
+  --cv-card: 22 21 20;
+  --cv-raised: 34 32 30;
+  --cv-ink: 245 241 235;
+  --cv-ink-2: 172 166 158;
+  --cv-ink-3: 145 140 133;
+  --cv-accent: 249 115 22;
+  --cv-accent-ink: 26 13 3;
+}
+
+html {
+  /* No grey flash over a tapped element; every control has its own pressed
+     look instead. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+button,
+a,
+[role="button"] {
+  /* A tap is a tap at once, never the start of a double-tap zoom. */
+  touch-action: manipulation;
+}
+
+button,
+[role="button"] {
+  /* A long press on a control does not select its label. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+:where(button, a, [role="button"]):focus-visible {
+  outline: 2px solid rgb(var(--cv-accent));
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* The buttons of the lobby and the room: one height, one radius, a small
+     step down when pressed. */
+  .cv-btn {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium transition-[background-color,border-color,color,opacity,transform] duration-150 ease-cv active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
+  }
+
+  .cv-btn-accent {
+    @apply bg-accent text-accent-ink hover:bg-[#fb8b3c];
+  }
+
+  .cv-btn-quiet {
+    @apply border border-line bg-raised text-ink hover:bg-[#2b2927];
+  }
+
+  .cv-btn-ghost {
+    @apply text-ink-2 hover:bg-raised hover:text-ink;
+  }
 }
 
 /* Fallback: If on mobile, ensure at least 24px top padding if env() returns 0px (broken support) */
@@ -17,7 +76,7 @@
 html,
 body,
 #root {
-  background-color: black;
+  background-color: rgb(var(--cv-page));
   margin: 0;
   padding: 0;
   width: 100%;
