@@ -193,7 +193,7 @@ export default {
 		"takingTooLong": "Траје дуже него обично...",
 		"checkConnection": "Молимо проверите интернет везу.",
 		"networkThrottle": "YouTube је блокирао IP ове мреже. Репродукција је паузирана. Покушајте да се пребаците на мобилну приступну тачку.",
-		"retryPlayback": "Покушај поново",
+		"retryPlayback": "Pokušaj ponovo",
 		"tapToUnmute": "Додирните за укључивање звука"
 	},
 	"track": {
