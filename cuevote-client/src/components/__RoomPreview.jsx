@@ -27,6 +27,8 @@
 //   ?appleConsent=0   a guest who has not turned Apple content on
 //   ?empty            nothing queued
 //   ?requireLogin     a channel where only signed-in users vote and suggest
+//   ?pending          two suggestions wait for the host's answer (with
+//                     ?role=owner)
 //   ?conn=...         the connection: opening (the channel opens and has no
 //                     answer yet), opening-problem (it does not come: the card
 //                     shows after 12 s), lost (it dropped while the room is
@@ -122,7 +124,7 @@ function track(provider, index, extra = {}) {
 }
 
 // queue[0] mirrors currentTrack, as in a live room.
-function initialRoom(provider, { empty, waiting, requireLogin }) {
+function initialRoom(provider, { empty, waiting, requireLogin, pending }) {
 	const now = Date.now();
 	const history = empty ? [] : [0, 1, 2].map(i => track(provider, i, { id: `played-${i}`, playedAt: now - (30 - i * 8) * 60000 }));
 	const scores = [6, 4, 3, 2, 1, 0, 0];
@@ -145,7 +147,7 @@ function initialRoom(provider, { empty, waiting, requireLogin }) {
 		allowPrelisten: true,
 		playlistViewMode: false,
 		suggestionMode: 'auto',
-		pendingSuggestions: [],
+		pendingSuggestions: pending ? [track(provider, 12), track(provider, 13)] : [],
 		ownerPopups: true,
 		bannedVideos: [],
 		appleStorefront: provider === 'apple' ? 'de' : null,
@@ -292,7 +294,7 @@ export default function RoomPreview() {
 	const stuck = PARAMS.has('stuck');
 	const lang = PARAMS.get('lang');
 
-	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin') }));
+	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin'), pending: PARAMS.has('pending') }));
 	const [lastMessage, setLastMessage] = useState(null);
 	const [lastError, setLastError] = useState( // { message, code, at }
 		CONNECTION === 'password' ? { message: 'Password required', code: 'PASSWORD_REQUIRED', at: Date.now() } : null,
