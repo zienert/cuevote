@@ -89,17 +89,17 @@ function LanguageSwitcher({ minimized = false, className = "", isOpen: controlle
 					if (isControlled) controlledOnToggle && controlledOnToggle(!isOpen);
 					else setInternalIsOpen(!internalIsOpen);
 				}}
-				className={`flex items-center gap-2 p-2 rounded-full hover:bg-neutral-800 transition-all ${isOpen ? 'bg-neutral-800 text-white' : 'text-neutral-400 hover:text-white'} ${focused ? 'ring-2 ring-orange-500 text-white z-20 bg-neutral-800' : ''}`}
+				className={`flex h-9 items-center gap-1.5 rounded-lg px-2 transition-colors duration-150 hover:bg-raised ${isOpen ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${focused ? 'ring-2 ring-accent text-ink z-20 bg-raised' : ''}`}
 				title={t('header.changeLanguage')}
 			>
-				<Globe size={20} />
-				{!minimized && <span className="text-sm font-medium uppercase font-mono">{language}</span>}
+				<Globe size={18} />
+				{!minimized && <span className="text-[13px] font-medium uppercase">{language}</span>}
 			</button>
 
 			{isOpen && (
 				<div
 					ref={listRef}
-					className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-xl overflow-hidden py-1 z-[100] animate-in fade-in zoom-in-95 duration-200 max-h-80 overflow-y-auto"
+					className="absolute right-0 top-full mt-2 w-48 origin-top-right bg-card border border-line rounded-xl shadow-xl overflow-hidden py-1 z-[100] animate-in fade-in zoom-in-95 duration-150 max-h-80 overflow-y-auto"
 				>
 					{languages.map((lang, index) => (
 						<button
@@ -110,7 +110,7 @@ function LanguageSwitcher({ minimized = false, className = "", isOpen: controlle
 								if (isControlled) controlledOnToggle && controlledOnToggle(false);
 								else setInternalIsOpen(false);
 							}}
-							className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between hover:bg-neutral-800 transition-colors ${language === lang.code ? 'text-orange-500 font-bold bg-orange-500/10' : 'text-neutral-300'} ${focusedLanguageIndex === index ? 'bg-neutral-800 text-white ring-1 ring-inset ring-neutral-700' : ''}`}
+							className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-raised transition-colors duration-150 ${language === lang.code ? 'text-accent font-medium bg-accent/10' : 'text-ink'} ${focusedLanguageIndex === index ? 'bg-raised text-ink ring-1 ring-inset ring-ink/20' : ''}`}
 						>
 							<span>{lang.label}</span>
 							{language === lang.code && <Check size={16} />}
