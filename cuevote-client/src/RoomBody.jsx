@@ -1705,7 +1705,7 @@ function RoomBody() {
       {ipBlockDetected && !throttleDismissed && (
         <div className="fixed inset-0 z-[100] bg-[#050505] text-white flex items-center justify-center p-6 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/20 via-[#050505] to-[#050505] pointer-events-none" />
-          <div className="relative z-10 w-full flex flex-col items-center justify-center text-center max-w-md animate-in fade-in zoom-in-95 duration-500">
+          <div className="relative z-10 w-full flex flex-col items-center justify-center text-center max-w-md animate-in fade-in zoom-in-95 duration-200">
             <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
               <WifiOff size={32} className="text-red-400" />
             </div>
@@ -2194,7 +2194,7 @@ function RoomBody() {
 
       {/* TV Unmute Overlay - only when video is visible (not in playlist-only view) */}
       {deviceDetection.isTV() && isMuted && isPlayerReady && !isAnyPlaylistView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <button
             onClick={() => {
               handleMuteToggle();

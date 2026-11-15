@@ -142,6 +142,14 @@ body,
   display: none;
 }
 
+/* Everything that enters (dialogs, menus, hints: animate-in) eases out
+   unless it names a curve of its own. */
+@layer components {
+  .animate-in {
+    animation-timing-function: var(--ease-out);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -194,7 +202,7 @@ body,
    own classes. */
 @keyframes skeleton-light {
   0% {
-    background-position: 150% 0;
+    transform: translateX(-100%);
   }
 
   60%,
