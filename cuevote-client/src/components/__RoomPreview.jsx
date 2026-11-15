@@ -31,7 +31,8 @@
 //                     answer yet), opening-problem (it does not come: the card
 //                     shows after 12 s), lost (it dropped while the room is
 //                     open), lost-problem (and does not come back). "Retry"
-//                     connects.
+//                     connects. password: a protected channel opened by its
+//                     link asks for the password (any password opens it).
 //   ?offline          the device has no internet
 //   ?lang=de          the language
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -293,9 +294,12 @@ export default function RoomPreview() {
 
 	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin') }));
 	const [lastMessage, setLastMessage] = useState(null);
-	const [lastError, setLastError] = useState(null); // { message, code, at }
+	const [lastError, setLastError] = useState( // { message, code, at }
+		CONNECTION === 'password' ? { message: 'Password required', code: 'PASSWORD_REQUIRED', at: Date.now() } : null,
+	);
 	const [lease, setLease] = useState(scenario === 'standby' ? false : true);
-	const [connected, setConnected] = useState(!CONNECTION);
+	const [connected, setConnected] = useState(!CONNECTION || CONNECTION === 'password');
+	const [locked, setLocked] = useState(CONNECTION === 'password');
 	const progressRef = useRef(47);
 	const progressAtRef = useRef(Date.now());
 	const added = useRef(0);
@@ -378,14 +382,22 @@ export default function RoomPreview() {
 			case 'REMOVE_FROM_LIBRARY':
 				setRoom(current => ({ ...current, history: current.history.filter(entry => entry.videoId !== payload.videoId) }));
 				break;
+			case 'JOIN_ROOM':
+				if (payload?.password) {
+					setTimeout(() => {
+						setLastError(null);
+						setLocked(false);
+					}, 400);
+				}
+				break;
 			default:
-				// JOIN_ROOM, UPDATE_DURATION, APPLE_PLAYER_STATUS, APPLE_STOREFRONT, ...
+				// UPDATE_DURATION, APPLE_PLAYER_STATUS, APPLE_STOREFRONT, ...
 				break;
 		}
 	}, [provider, isOwner]);
 
 	const socket = useMemo(() => ({
-		state: !connected && CONNECTION.startsWith('opening') ? null : room,
+		state: locked || (!connected && CONNECTION.startsWith('opening')) ? null : room,
 		isConnected: connected,
 		sendMessage,
 		lastError: lastError?.message || null,
@@ -403,7 +415,7 @@ export default function RoomPreview() {
 		progressRef,
 		progressAtRef,
 		applePlayerLease: provider === 'apple' && isOwner ? lease : null,
-	}), [room, sendMessage, lastMessage, lastError, isOwner, provider, lease, connected]);
+	}), [room, sendMessage, lastMessage, lastError, isOwner, provider, lease, connected, locked]);
 
 	// The cookie banner belongs to the real page around this one: keep it
 	// closed. The room below gets its own consent value.
