@@ -166,7 +166,9 @@ export function PlaybackControls({
       )}
       <footer
         ref={footerRef}
-        className={`fixed bottom-0 left-0 w-full bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 px-6 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col gap-2 z-[70] select-none transition-transform duration-500 ease-in-out ${shouldShow ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`fixed left-0 w-full bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 px-6 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col gap-2 z-[70] select-none transition-transform duration-500 ease-in-out ${shouldShow ? 'translate-y-0' : 'translate-y-full'}`}
+        // Above the room's bar when that sits at the bottom (phones).
+        style={{ bottom: 'var(--bottom-bar-h, 0px)' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchInteraction}

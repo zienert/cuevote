@@ -2,9 +2,11 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { CheckCircle, Send, Clock } from "lucide-react";
+import { CheckCircle, Send, Clock, X } from "lucide-react";
 import { Language } from '../contexts/LanguageContext';
-export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, serverMessage, isOwner, suggestionsEnabled, isConnected = true }) {
+// compact (PROTOTYPE, design proposals b and c): one row for a bar at the
+// bottom of a phone, with a round send button; onClose adds a close button.
+export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, serverMessage, isOwner, suggestionsEnabled, isConnected = true, compact = false, autoFocus = false, onClose }) {
   const [songSuggestion, setSongSuggestion] = useState("");
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [suggestionError, setSuggestionError] = useState("");
@@ -128,9 +130,20 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
   const activeError = suggestionError || serverError;
 
   return (
-    <div className="keep-open w-full max-w-5xl mx-auto mt-3 animate-fadeIn space-y-2">
+    <div className={`keep-open w-full max-w-5xl mx-auto space-y-2 ${compact ? "" : "mt-3 animate-fadeIn"}`}>
       <div className="keep-open flex items-center gap-2">
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t('header.close')}
+            className="keep-open flex h-10 w-10 flex-none items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <X size={20} />
+          </button>
+        )}
         <input
+          autoFocus={autoFocus}
           type="text"
           value={songSuggestion}
           onChange={handleInputChange}
@@ -138,14 +151,15 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
 
           placeholder={!suggestionsEnabled && !isOwner ? t('suggest.disabledPlaceholder') : t('suggest.placeholder')}
           disabled={isSubmittingSuggestion || (!suggestionsEnabled && !isOwner)}
-          className="keep-open flex-1 px-5 py-2 rounded-full bg-[#121212] text-white border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-orange-500 text-base disabled:opacity-60 disabled:cursor-not-allowed"
+          className={`keep-open flex-1 min-w-0 px-5 rounded-full bg-[#121212] text-white border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-orange-500 text-base disabled:opacity-60 disabled:cursor-not-allowed ${compact ? "h-11" : "py-2"}`}
         />              <button
+          aria-label={compact ? t('suggest.submit') : undefined}
           onClick={(event) => {
             event.stopPropagation();
             handleSubmitSuggestion();
           }}
           disabled={isSubmittingSuggestion || (!suggestionsEnabled && !isOwner)}
-          className={`keep-open px-5 py-2 rounded-full text-white transition-all flex items-center gap-2 text-base disabled:cursor-not-allowed disabled:opacity-70 whitespace-nowrap ${submissionSuccess
+          className={`keep-open rounded-full text-white transition-all flex items-center gap-2 text-base disabled:cursor-not-allowed disabled:opacity-70 whitespace-nowrap ${compact ? "h-11 w-11 flex-none justify-center" : "px-5 py-2"} ${submissionSuccess
             ? (infoMessage ? "bg-blue-600 hover:bg-blue-500" : "bg-green-600 hover:bg-green-500")
             : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500"
             }`}
@@ -153,15 +167,18 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
           {submissionSuccess ? (
             <>
               {infoMessage ? <Clock size={18} /> : <CheckCircle size={18} />}
-              {infoMessage || t('suggest.added')}
+              {!compact && (infoMessage || t('suggest.added'))}
             </>
           ) : (
             <>
-              <Send size={18} /> {isSubmittingSuggestion ? t('suggest.adding') : t('suggest.submit')}
+              <Send size={18} /> {!compact && (isSubmittingSuggestion ? t('suggest.adding') : t('suggest.submit'))}
             </>
           )}
         </button>
       </div>
+      {compact && submissionSuccess && (
+        <p className="keep-open px-2 text-sm text-neutral-300">{infoMessage || t('suggest.added')}</p>
+      )}
       {
         activeError && (
           <p className="keep-open text-sm text-red-400">{activeError}</p>
@@ -179,5 +196,8 @@ SuggestSongForm.propTypes = {
   isOwner: PropTypes.bool,
   suggestionsEnabled: PropTypes.bool,
   suggestionMode: PropTypes.string,
-  isConnected: PropTypes.bool
+  isConnected: PropTypes.bool,
+  compact: PropTypes.bool,
+  autoFocus: PropTypes.bool,
+  onClose: PropTypes.func,
 };

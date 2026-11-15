@@ -31,7 +31,9 @@ export function Track({
   activeSuggestionId, // <--- New Prop
   suggestions,        // <--- New Prop
   isFetchingSuggestions, // <--- New Prop
-  queueVideoIds       // <--- New Prop
+  queueVideoIds,      // <--- New Prop
+  // PROTOTYPE (design proposal, ?list=tidy): a tighter row with larger vote buttons.
+  dense = false,
 }) {
   // Check prioritized status
   const isPriority = track.isOwnerPriority;
@@ -52,7 +54,7 @@ export function Track({
   return (
     <div
       onClick={() => onToggleExpand(track.id)}
-      className={`transition-all duration-500 ease-in-out p-4 rounded-3xl shadow-lg backdrop-blur-sm cursor-pointer overflow-hidden border ${isActive
+      className={`transition-all duration-500 ease-in-out ${dense ? "p-2.5 rounded-2xl" : "p-4 rounded-3xl"} shadow-lg backdrop-blur-sm cursor-pointer overflow-hidden border ${isActive
         ? "border-green-500 bg-[#0a0a0a] shadow-[0_0_15px_rgba(34,197,94,0.3)]"
         : isPriority
           ? "border-red-500/50 bg-[#1a1a1a] shadow-[0_0_10px_rgba(239,68,68,0.15)] ring-1 ring-red-500/30"
@@ -69,16 +71,16 @@ export function Track({
         } ${readOnly ? "opacity-90" : ""}`}
     >
       <div className="flex justify-between items-center gap-3">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
+        <div className={`flex items-center flex-1 min-w-0 ${dense ? "gap-3" : "gap-4"}`}>
           {!track.title ? (
             // Metadata still loading — cleared by the 28-day cleanup, refilled on
             // join. Don't show YouTube imagery until we have fresh metadata.
-            <div className="w-16 h-16 rounded-3xl bg-neutral-700/50 animate-pulse flex-shrink-0" aria-hidden="true" />
+            <div className={`${dense ? "w-12 h-12 rounded-xl" : "w-16 h-16 rounded-3xl"} bg-neutral-700/50 animate-pulse flex-shrink-0`} aria-hidden="true" />
           ) : (isApple ? hasAppleConsent : hasConsent) && thumbnailSrc ? (
             <img
               src={thumbnailSrc}
               alt={track.title}
-              className="w-16 h-16 rounded-3xl object-cover shadow-md flex-shrink-0"
+              className={`${dense ? "w-12 h-12 rounded-xl" : "w-16 h-16 rounded-3xl"} object-cover shadow-md flex-shrink-0`}
               loading="lazy"
               onError={(e) => {
                 if (isApple) return;
@@ -87,13 +89,13 @@ export function Track({
               }}
             />
           ) : (
-            <div className="w-16 h-16 rounded-3xl bg-neutral-800 flex items-center justify-center flex-shrink-0 shadow-inner">
-              <Headphones size={24} className="text-neutral-600" />
+            <div className={`${dense ? "w-12 h-12 rounded-xl" : "w-16 h-16 rounded-3xl"} bg-neutral-800 flex items-center justify-center flex-shrink-0 shadow-inner`}>
+              <Headphones size={dense ? 20 : 24} className="text-neutral-600" />
             </div>
           )}
           <div className="flex-1 min-w-0">
             {track.title ? (
-              <MarqueeText as="h3" className="text-lg font-semibold tracking-tight">
+              <MarqueeText as="h3" className={`${dense ? "text-base" : "text-lg"} font-semibold tracking-tight`}>
                 {track.title}
               </MarqueeText>
             ) : (
@@ -124,13 +126,13 @@ export function Track({
           )}
 
           {!readOnly && votesEnabled && !isActive && (
-            <div className="flex items-center gap-1 sm:gap-4 order-1 sm:order-2">
+            <div className={`flex items-center sm:gap-4 order-1 sm:order-2 ${dense ? "gap-1.5" : "gap-1"}`}>
               <button
                 onClick={(event) => {
                   event.stopPropagation();
                   onVote(track.id, "up");
                 }}
-                className={`transition-transform duration-300 ease-out drop-shadow-md transform relative rounded-full p-1.5 ${vote === "up"
+                className={`transition-transform duration-300 ease-out drop-shadow-md transform relative rounded-full ${dense ? "p-2" : "p-1.5"} ${vote === "up"
                   ? "scale-125 bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg"
                   : "text-orange-400 hover:scale-125 hover:bg-orange-500/20"
                   }`}
@@ -149,7 +151,7 @@ export function Track({
                   event.stopPropagation();
                   onVote(track.id, "down");
                 }}
-                className={`transition-transform duration-300 ease-out transform relative rounded-full p-1.5 ${vote === "down"
+                className={`transition-transform duration-300 ease-out transform relative rounded-full ${dense ? "p-2" : "p-1.5"} ${vote === "down"
                   ? "scale-125 bg-gradient-to-br from-neutral-600 to-neutral-800 text-white shadow-lg"
                   : "text-neutral-500 hover:scale-125 hover:bg-neutral-700/20"
                   }`}
@@ -303,4 +305,5 @@ Track.propTypes = {
   suggestions: PropTypes.array,
   isFetchingSuggestions: PropTypes.bool,
   queueVideoIds: PropTypes.object, // Set
+  dense: PropTypes.bool,
 };

@@ -27,6 +27,9 @@ export function PlaylistView({
     onLibraryDelete,
     activeTab = "playlist",
     appFooterPresent = false,
+    // PROTOTYPE (design proposal, ?list=tidy): the list opens at the current
+    // track with what is next below it, and its rows are tighter.
+    tidy = false,
 }) {
     const scrollRef = useRef(null);
     const [expandedTrackId, setExpandedTrackId] = useState(null);
@@ -46,7 +49,9 @@ export function PlaylistView({
                 setShowJumpToNow(false);
                 const containerRect = container.getBoundingClientRect();
                 const elementRect = currentEl.getBoundingClientRect();
-                const scrollTop = container.scrollTop + elementRect.top - containerRect.top - containerRect.height / 2 + elementRect.height / 2;
+                const scrollTop = tidy
+                    ? container.scrollTop + elementRect.top - containerRect.top
+                    : container.scrollTop + elementRect.top - containerRect.top - containerRect.height / 2 + elementRect.height / 2;
                 container.scrollTo({ top: scrollTop, behavior: smooth ? "smooth" : "auto" });
             }
         }
@@ -113,7 +118,7 @@ export function PlaylistView({
                     className="flex-1 overflow-y-auto pb-24 custom-scrollbar scroll-smooth relative"
                     ref={scrollRef}
                 >
-                    <div className="max-w-3xl mx-auto space-y-4 py-4 px-4">
+                    <div className={`max-w-3xl mx-auto py-4 ${tidy ? "space-y-2 px-3" : "space-y-4 px-4"}`}>
                         {/* History */}
                         {history.length > 0 && (
                             <div className="space-y-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
@@ -127,6 +132,7 @@ export function PlaylistView({
                                     <Track
                                         key={`hist-${track.id}-${i}`}
                                         track={track}
+                                        dense={tidy}
                                         isActive={false}
                                         isExpanded={expandedTrackId === `hist-${track.id}-${i}`}
                                         vote={null}
@@ -149,13 +155,14 @@ export function PlaylistView({
 
                         {/* Current Track */}
                         {currentTrack && (
-                            <div id="playlist-current-track" className="space-y-2 py-4">
+                            <div id="playlist-current-track" className={tidy ? "space-y-2 pt-3 pb-1" : "space-y-2 py-4"}>
                                 <div className="flex items-center gap-2 px-2 pb-2">
                                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                                     <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">{t('playlist.nowPlaying')}</span>
                                 </div>
                                 <Track
                                     track={currentTrack}
+                                    dense={tidy}
                                     isActive={true}
                                     isExpanded={expandedTrackId === currentTrack.id}
                                     vote={votes?.[currentTrack.id] || null}
@@ -176,8 +183,8 @@ export function PlaylistView({
 
                         {/* Queue */}
                         {filteredQueue.length > 0 ? (
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2 px-2 pb-2 border-b border-neutral-800 mt-4">
+                            <div className={tidy ? "space-y-2" : "space-y-4"}>
+                                <div className={`flex items-center gap-2 px-2 pb-2 border-b border-neutral-800 ${tidy ? "mt-3" : "mt-4"}`}>
                                     <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">{t('playlist.upNext')}</span>
                                     <span className="text-xs px-1.5 py-0.5 rounded-full bg-neutral-800 text-neutral-400 font-mono">{filteredQueue.length}</span>
                                 </div>
@@ -185,6 +192,7 @@ export function PlaylistView({
                                     <Track
                                         key={track.id}
                                         track={track}
+                                        dense={tidy}
                                         isActive={false}
                                         isExpanded={expandedTrackId === track.id}
                                         vote={votes?.[track.id]}

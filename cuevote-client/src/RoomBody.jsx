@@ -28,6 +28,7 @@ import { useLatestRef } from "./hooks/useLatestRef";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { BannedVideosPage } from "./components/BannedVideos"; // Added this import
 import { PlaybackControls } from "./components/PlaybackControls";
+import { PhoneTabBar } from "./components/PhoneTabBar";
 import { Skeleton } from "./components/Skeleton";
 import { useWebSocketContext } from "./hooks/useWebSocketContext";
 
@@ -58,6 +59,15 @@ const STUCK_DEADLINE_MS = 15 * 1000;
 // A click on the progress bar this soon after the track changed was aimed at
 // the previous track. The server ignores such seeks as well (Room.js).
 const SEEK_AFTER_CHANGE_MS = 2000;
+
+// PROTOTYPE (design proposals, development only): ?layout=a|b|c picks how the
+// room is laid out on a phone.
+//   a  the existing bar moves to the bottom as it is
+//   b  a slim bar on top, tabs and a suggest button at the bottom
+//   c  a slim bar and tabs on top, the suggest field always at the bottom
+const PHONE_LAYOUT = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('layout') : null;
+// ?list=tidy: the playlist opens at the current track, with tighter rows.
+const TIDY_LIST = import.meta.env.DEV && new URLSearchParams(window.location.search).get('list') === 'tidy';
 
 function RoomBody() {
   const [CookieBlockedPlaceholderComponent, setCookieBlockedPlaceholder] = useState(null);
@@ -275,19 +285,21 @@ function RoomBody() {
   // adds nothing, so the footer stays off there.
   const showAppFooter = deviceDetection.isAndroid() && !deviceDetection.isNativeApp() && !isAppleRoom;
   const isAnyPlaylistView = isVenueMode || localPlaylistView;
-  // Phones (below md, where the header switches to its two-row layout) get the
-  // bar at the bottom of the playlist view, within reach of the thumb. The
-  // player view keeps it on top: its playback controls own the bottom edge.
-  const isNarrowScreen = useMediaQuery('(max-width: 767px)');
-  const headerAtBottom = isAnyPlaylistView && isNarrowScreen;
-  // A state, not a ref: the bar mounts only once the room has loaded.
-  const [headerBar, setHeaderBar] = useState(null);
-
   // TV always defaults to Fullscreen (CinemaMode), unless manually exited
   const [isCinemaMode, setIsCinemaMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return deviceDetection.isTV() || ((deviceDetection.isMobile() && !deviceDetection.isTablet()) && window.matchMedia("(orientation: landscape)").matches);
   });
+
+  // Phones (below md, where the header switches to its phone layout) get the
+  // suggest button within reach of the thumb, at the bottom.
+  const isNarrowScreen = useMediaQuery('(max-width: 767px)');
+  const phoneLayout = isNarrowScreen && !isCinemaMode && ['a', 'b', 'c'].includes(PHONE_LAYOUT) ? PHONE_LAYOUT : null;
+  // a: the whole bar sits at the bottom. b, c: a bar of their own does.
+  const headerAtBottom = phoneLayout === 'a';
+  const hasBottomBar = phoneLayout === 'b' || phoneLayout === 'c';
+  // A state, not a ref: the bar mounts only once the room has loaded.
+  const [bottomBar, setBottomBar] = useState(null);
 
   // Force exit cinema mode when Venue Mode is activated
   useEffect(() => {
@@ -300,19 +312,19 @@ function RoomBody() {
   // bottom: its height is published as --bottom-bar-h (0 when hidden).
   useEffect(() => {
     const root = document.documentElement;
-    if (!headerAtBottom || !headerBar) {
+    if (!phoneLayout || !bottomBar) {
       root.style.setProperty('--bottom-bar-h', '0px');
       return undefined;
     }
-    const publish = () => root.style.setProperty('--bottom-bar-h', `${headerBar.offsetHeight}px`);
+    const publish = () => root.style.setProperty('--bottom-bar-h', `${bottomBar.offsetHeight}px`);
     publish();
     const observer = new ResizeObserver(publish);
-    observer.observe(headerBar);
+    observer.observe(bottomBar);
     return () => {
       observer.disconnect();
       root.style.setProperty('--bottom-bar-h', '0px');
     };
-  }, [headerAtBottom, headerBar]);
+  }, [phoneLayout, bottomBar]);
 
   // The on-screen keyboard shrinks only the visual viewport (iOS Safari, and
   // Android Chrome by default): 100dvh stays tall and a bar at the bottom would
@@ -321,7 +333,7 @@ function RoomBody() {
   useEffect(() => {
     const viewport = window.visualViewport;
     const root = document.documentElement;
-    if (!headerAtBottom || !viewport) return undefined;
+    if (!phoneLayout || !viewport) return undefined;
     const follow = () => {
       root.style.setProperty('--vv-height', `${viewport.height}px`);
       root.style.setProperty('--vv-top', `${viewport.offsetTop}px`);
@@ -335,7 +347,7 @@ function RoomBody() {
       root.style.removeProperty('--vv-height');
       root.style.removeProperty('--vv-top');
     };
-  }, [headerAtBottom]);
+  }, [phoneLayout]);
 
   // Pending Suggestions Handlers
   const handleApproveSuggestion = (trackId) => {
@@ -1650,11 +1662,47 @@ function RoomBody() {
 
   const showThrottleBar = networkThrottle && !ipBlockDetected && !throttleDismissed;
 
+  // With a bar at the bottom the room is as tall as the visible part of the
+  // screen, keyboard excluded, so the bar and its suggest field stay in view.
+  const followsViewport = !!phoneLayout && (isAnyPlaylistView || isQueueMinimized);
+  // In the player view the playback controls sit above the bottom bar; the bar
+  // leaves them that room.
+  const bottomBarStyle = phoneLayout && !isAnyPlaylistView ? { marginTop: `${controlsHeight}px` } : undefined;
+  const bottomBarPlace = followsViewport ? "order-last" : "order-last sticky bottom-0";
+  const suggestForm = (compact) => (
+    <SuggestSongForm
+      onSongSuggested={handleSongSuggested}
+      onShowSuggest={setShowSuggest}
+      serverError={participationErrorKey(lastErrorCode) ? t(participationErrorKey(lastErrorCode)) : lastError}
+      serverMessage={lastMessage}
+      isOwner={isOwner && ownerBypass}
+      suggestionsEnabled={suggestionsEnabled}
+      suggestionMode={suggestionMode}
+      isConnected={isConnected}
+      currentTrack={currentTrack}
+      onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
+      suggestions={manualSuggestions}
+      isFetchingSuggestions={isFetchingSuggestions}
+      queueVideoIds={queueVideoIds}
+      compact={compact}
+      autoFocus={phoneLayout === 'b'}
+      onClose={phoneLayout === 'b' ? () => setShowSuggest(false) : undefined}
+    />
+  );
+  const openPlaylistTab = (tab) => {
+    setPlaylistActiveTab(tab);
+    if (!isAnyPlaylistView) {
+      setLocalPlaylistView(true);
+      setShowSettings(false);
+      setShowSuggest(false);
+    }
+  };
+
   return (
     <ConsentContext.Provider value={roomConsent}>
     <div
       className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")} ${headerAtBottom ? "safe-pt" : ""}`}
-      style={headerAtBottom
+      style={followsViewport
         ? { position: 'fixed', left: 0, right: 0, top: 'var(--vv-top, 0px)', height: 'var(--vv-height, 100dvh)' }
         : (isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined)}
     >
@@ -1722,12 +1770,13 @@ function RoomBody() {
       )}
       {!isCinemaMode && (
         <div
-          ref={setHeaderBar}
+          ref={headerAtBottom ? setBottomBar : undefined}
           className={headerAtBottom
             // At the bottom the suggest form opens above the bar (column
             // reversed); a preview's own bar takes the bottom edge meanwhile.
-            ? `order-last flex flex-col-reverse z-[55] bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 ${previewTrack ? "hidden" : ""}`
+            ? `${bottomBarPlace} flex flex-col-reverse z-[55] bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 ${previewTrack ? "hidden" : ""}`
             : "sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out"}
+          style={headerAtBottom ? bottomBarStyle : undefined}
         >
           <Header
             showYouTubeAttribution={!isAppleRoom}
@@ -1777,6 +1826,9 @@ function RoomBody() {
             playlistViewMode={playlistViewMode}
             onFullscreenOverlay={setHeaderOverlay}
             atBottom={headerAtBottom}
+            phoneLayout={phoneLayout}
+            channelName={activeChannel}
+            onTab={openPlaylistTab}
           />
           {showThrottleBar && (
             <div className="bg-yellow-600/95 text-white text-center py-1.5 text-xs font-medium">
@@ -1801,24 +1853,32 @@ function RoomBody() {
               </div>
             </div>
           )}
-          {showSuggest && (
+          {showSuggest && !hasBottomBar && (
             <div className={headerAtBottom ? "px-4 pt-3" : "px-4 pb-3"}>
-              <SuggestSongForm
-                onSongSuggested={handleSongSuggested}
-                onShowSuggest={setShowSuggest}
-                serverError={participationErrorKey(lastErrorCode) ? t(participationErrorKey(lastErrorCode)) : lastError}
-                serverMessage={lastMessage}
-                isOwner={isOwner && ownerBypass}
-                suggestionsEnabled={suggestionsEnabled}
-                suggestionMode={suggestionMode}
-                isConnected={isConnected}
-                currentTrack={currentTrack}
-                onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
-                suggestions={manualSuggestions}
-                isFetchingSuggestions={isFetchingSuggestions}
-                queueVideoIds={queueVideoIds}
-              />
+              {suggestForm(false)}
             </div>
+          )}
+        </div>
+      )}
+      {hasBottomBar && (
+        <div
+          ref={setBottomBar}
+          className={`${bottomBarPlace} z-[55] bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 safe-pb ${previewTrack ? "hidden" : ""}`}
+          style={bottomBarStyle}
+        >
+          {phoneLayout === 'c' || showSuggest ? (
+            <div className="px-2 py-2">{suggestForm(true)}</div>
+          ) : (
+            <PhoneTabBar
+              mode={isAnyPlaylistView ? playlistActiveTab : "default"}
+              onPlaylist={() => openPlaylistTab("playlist")}
+              onLibrary={() => openPlaylistTab("library")}
+              onSuggest={() => {
+                setShowSuggest(true);
+                setShowSettings(false);
+              }}
+              suggestDisabled={!suggestionsEnabled && !(isOwner && ownerBypass)}
+            />
           )}
         </div>
       )}
@@ -1965,6 +2025,7 @@ function RoomBody() {
               onLibraryDelete={isOwner ? handleRemoveFromLibrary : undefined}
               activeTab={playlistActiveTab}
               appFooterPresent={showAppFooter}
+              tidy={TIDY_LIST}
             />
             </div>
             {showAppFooter && <AppPromoFooter />}

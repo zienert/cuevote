@@ -76,7 +76,7 @@ function cover(index) {
 }
 
 const SONGS = [
-	['Blinding Lights', 'The Weeknd'], ['Levitating', 'Dua Lipa'], ['Major Tom (Völlig losgelöst)', 'Peter Schilling'],
+	['Blinding Lights', 'The Weeknd'], ['Levitating', 'Dua Lipa'], ['Major Tom', 'Peter Schilling'],
 	['As It Was', 'Harry Styles'], ['Flowers', 'Miley Cyrus'], ['Mr. Brightside', 'The Killers'],
 	['Bad Guy', 'Billie Eilish'], ['99 Luftballons', 'Nena'], ['Uptown Funk', 'Mark Ronson ft. Bruno Mars'],
 	['Dance Monkey', 'Tones and I'], ['Shape of You', 'Ed Sheeran'], ['Wonderwall', 'Oasis'],
@@ -432,7 +432,11 @@ export default function RoomPreview() {
 		};
 		const timers = [];
 		if (PARAMS.has('suggest')) {
-			timers.push(press(() => [...document.querySelectorAll('header button[aria-label]')].find(button => button.offsetParent)));
+			// The visible suggest button, wherever the layout puts it; none when
+			// the field is open already.
+			timers.push(press(() => (document.querySelector('input.keep-open')
+				? { click: () => {} }
+				: [...document.querySelectorAll('button:has(svg.lucide-send)')].find(button => button.offsetParent))));
 		}
 		if (PARAMS.get('auto') === 'connect') {
 			// The only button of the host's player while signed out.

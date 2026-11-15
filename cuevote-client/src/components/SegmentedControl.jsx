@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
  * field of the dialog.
  */
 export function SegmentedControl({ labelledBy, options, value, onChange }) {
-	const selectedIndex = Math.max(0, options.findIndex((option) => option.value === value));
+	const selectedIndex = options.findIndex((option) => option.value === value);
 
 	return (
 		<div
@@ -20,14 +20,16 @@ export function SegmentedControl({ labelledBy, options, value, onChange }) {
 			aria-labelledby={labelledBy}
 			className="relative grid grid-flow-col auto-cols-fr rounded-xl border border-neutral-800 bg-[#050505] p-1"
 		>
-			<span
-				aria-hidden="true"
-				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-gradient-to-b from-orange-500 to-orange-600 shadow-[0_6px_18px_-6px_rgba(249,115,22,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
-				style={{
-					width: `calc((100% - 0.5rem) / ${options.length})`,
-					transform: `translateX(${selectedIndex * 100}%)`,
-				}}
-			/>
+			{selectedIndex >= 0 && (
+				<span
+					aria-hidden="true"
+					className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-gradient-to-b from-orange-500 to-orange-600 shadow-[0_6px_18px_-6px_rgba(249,115,22,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+					style={{
+						width: `calc((100% - 0.5rem) / ${options.length})`,
+						transform: `translateX(${selectedIndex * 100}%)`,
+					}}
+				/>
+			)}
 			{options.map((option) => {
 				const selected = option.value === value;
 				const Icon = option.icon;
@@ -49,7 +51,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange }) {
 }
 
 SegmentedControl.propTypes = {
-	labelledBy: PropTypes.string.isRequired,
+	labelledBy: PropTypes.string,
 	options: PropTypes.arrayOf(PropTypes.shape({
 		value: PropTypes.string.isRequired,
 		label: PropTypes.string.isRequired,

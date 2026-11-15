@@ -11,6 +11,7 @@ import { Language } from '../contexts/LanguageContext';
 import { deviceDetection } from '../utils/deviceDetection';
 import { dangerousHtml } from '../utils/sanitizeHtml';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
+import { SegmentedControl } from './SegmentedControl';
 import { displayName, isSignedIn } from '../utils/participation';
 
 
@@ -43,6 +44,11 @@ export function Header({
   // On phones in the playlist view the bar sits at the bottom of the screen:
   // it then keeps clear of the home indicator instead of the status bar.
   atBottom = false,
+  // PROTOTYPE (design proposals): 'b' and 'c' turn the phone header into one
+  // slim row with the channel's name; 'c' adds the tabs below it.
+  phoneLayout = null,
+  channelName,
+  onTab,
 }) {
   const headerRef = React.useRef(null);
   const [showExitConfirm, setShowExitConfirm] = React.useState(false);
@@ -345,11 +351,51 @@ export function Header({
         {showYouTubeAttribution && <YouTubeBrandSubtitle className="flex-shrink-0 whitespace-nowrap" />}
       </div>
 
+      {/* PROTOTYPE, phones (< md), proposals b and c: one slim row. Leave,
+          the wordmark, the channel's name over its music source, share,
+          settings and the account. */}
+      {(phoneLayout === 'b' || phoneLayout === 'c') && (
+        <div className="md:hidden">
+          <div className="flex items-center gap-1.5 min-w-0">
+            {backButton}
+            {wordmark}
+            <div className="h-5 w-px bg-neutral-800 flex-shrink-0 mx-0.5" />
+            <div className="min-w-0 flex-1 leading-tight">
+              <p className="truncate text-sm font-semibold text-white">{channelName}</p>
+              {showYouTubeAttribution
+                ? <YouTubeBrandSubtitle className="block truncate" />
+                : <span className="block truncate text-[10px] font-semibold text-orange-400">Apple Music</span>}
+            </div>
+            <button onClick={onShare} title={t('header.share')} aria-label={t('header.share')} className="keep-open flex h-9 w-9 flex-none items-center justify-center rounded-full text-orange-500/80 transition-colors hover:bg-orange-500/10 hover:text-orange-400">
+              <QrCode size={18} />
+            </button>
+            {isOwner && (
+              <button onClick={onToggleSettings} title={t('header.settings')} aria-label={t('header.settings')} className={`keep-open flex h-9 w-9 flex-none items-center justify-center rounded-full transition-colors ${showSettings ? "bg-orange-500/15 text-orange-500" : "text-orange-500/80 hover:bg-orange-500/10 hover:text-orange-400"}`}>
+                <Settings size={18} />
+              </button>
+            )}
+            {userIdentity}
+          </div>
+          {phoneLayout === 'c' && (
+            <div className="mt-2 mb-0.5">
+              <SegmentedControl
+                options={[
+                  { value: 'playlist', label: t('header.playlist'), icon: List },
+                  { value: 'library', label: t('header.library'), icon: Library },
+                ]}
+                value={mode}
+                onChange={onTab}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Mobile (< md): grid layout with two left-column rows + a tall
           right-column Suggest button spanning both rows. Top-left row
           groups branding, identity and the YouTube text attribution;
           bottom-left row is the scrollable pills strip with full width. */}
-      <div className="md:hidden grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-1.5 items-stretch">
+      <div className={`${phoneLayout === 'b' || phoneLayout === 'c' ? "hidden" : "md:hidden grid"} grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-1.5 items-stretch`}>
         <div className="flex items-center gap-2 min-w-0">
           {wordmark}
           {backButton}
@@ -605,4 +651,7 @@ Header.propTypes = {
   showYouTubeAttribution: PropTypes.bool,
   onFullscreenOverlay: PropTypes.func,
   atBottom: PropTypes.bool,
+  phoneLayout: PropTypes.string,
+  channelName: PropTypes.string,
+  onTab: PropTypes.func,
 };
