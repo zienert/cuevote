@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { deviceDetection } from './utils/deviceDetection';
-import { Volume2, VolumeX, ArrowLeft, Lock, X, Maximize2, WifiOff, RefreshCw, AlertTriangle } from "lucide-react";
+import { Volume2, VolumeX, ArrowLeft, Lock, X, Maximize2, WifiOff, RefreshCw, AlertTriangle, CirclePause, Monitor } from "lucide-react";
 import { Consent } from './contexts/ConsentContext';
 import { ConsentContext } from './contexts/ConsentContextValue.js';
 import { Language } from './contexts/LanguageContext';
@@ -13,6 +13,7 @@ import { Player } from "./components/Player";
 import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
 import { AppleContentNotice } from "./components/AppleContentNotice";
 import { ApplePreviewOverlay } from "./components/ApplePreviewOverlay";
+import { StatusBar, StatusBarButton } from "./components/PlayerStatus";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
 import { useApplePreview } from "./hooks/useApplePreview";
 import { parseTrackKey } from "./utils/trackKeys";
@@ -24,6 +25,7 @@ import { AppPromoFooter } from "./components/AppPromoFooter";
 import { SettingsView } from "./components/SettingsView";
 import { canParticipate, participationErrorKey } from "./utils/participation";
 import { useLatestRef } from "./hooks/useLatestRef";
+import { useMediaQuery } from "./hooks/useMediaQuery";
 import { BannedVideosPage } from "./components/BannedVideos"; // Added this import
 import { PlaybackControls } from "./components/PlaybackControls";
 import { Skeleton } from "./components/Skeleton";
@@ -286,6 +288,57 @@ function RoomBody() {
       setIsCinemaMode(false);
     }
   }, [isVenueMode]);
+
+  // Phones (below md, where the header switches to its phone layout) get the
+  // room laid out for one hand: the suggest field sits at the bottom of the
+  // screen, always there, and the playback controls sit right above it.
+  const isPhoneLayout = useMediaQuery('(max-width: 767px)') && !isCinemaMode;
+  // A state, not a ref: the bar mounts only once the room has loaded.
+  const [bottomBar, setBottomBar] = useState(null);
+
+  // Floating buttons and pop-ups keep clear of that bar: its height is
+  // published as --bottom-bar-h (0 without it).
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!isPhoneLayout || !bottomBar) {
+      root.style.setProperty('--bottom-bar-h', '0px');
+      return undefined;
+    }
+    const publish = () => root.style.setProperty('--bottom-bar-h', `${bottomBar.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(bottomBar);
+    return () => {
+      observer.disconnect();
+      root.style.setProperty('--bottom-bar-h', '0px');
+    };
+  }, [isPhoneLayout, bottomBar]);
+
+  // The on-screen keyboard shrinks only the visual viewport (iOS Safari, and
+  // Android Chrome by default): 100dvh stays tall, and a field at the bottom
+  // would end up under the keyboard. So on phones the room follows the visual
+  // viewport. With the keyboard up the bar also drops the room it leaves for
+  // the home indicator, which the keyboard covers.
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const root = document.documentElement;
+    if (!isPhoneLayout || !viewport) return undefined;
+    const follow = () => {
+      root.style.setProperty('--vv-height', `${viewport.height}px`);
+      root.style.setProperty('--vv-top', `${viewport.offsetTop}px`);
+      root.style.setProperty('--bar-safe-bottom', window.innerHeight - viewport.height > 120 ? '0px' : 'var(--sab)');
+    };
+    follow();
+    viewport.addEventListener('resize', follow);
+    viewport.addEventListener('scroll', follow);
+    return () => {
+      viewport.removeEventListener('resize', follow);
+      viewport.removeEventListener('scroll', follow);
+      root.style.removeProperty('--vv-height');
+      root.style.removeProperty('--vv-top');
+      root.style.removeProperty('--bar-safe-bottom');
+    };
+  }, [isPhoneLayout]);
 
   // Pending Suggestions Handlers
   const handleApproveSuggestion = (trackId) => {
@@ -1321,12 +1374,14 @@ function RoomBody() {
 
 
 
+  // Returns false when nothing was sent, so the form does not wait for an answer.
   const handleSongSuggested = useCallback((query) => {
     if (!canParticipate(user, requireLogin)) {
       setToast({ message: t(user ? 'errors.loginRequired' : 'errors.sessionNotReady'), type: 'error' });
-      return;
+      return false;
     }
     sendMessage({ type: "SUGGEST_SONG", payload: { query, userId: user?.id } });
+    return true;
   }, [user, requireLogin, sendMessage, t]);
 
   const handleLibraryAdd = useCallback((videoId) => {
@@ -1526,8 +1581,10 @@ function RoomBody() {
     userVotes[currentTrack.id] = currentTrack.myVote;
   }
 
+  // Above the loading screen (z-100): a protected channel opened by its link
+  // has no room yet, and the prompt has to show over the placeholders.
   const passwordModalContent = showPasswordModal ? (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-200">
       <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
@@ -1600,11 +1657,50 @@ function RoomBody() {
 
   const showThrottleBar = networkThrottle && !ipBlockDetected && !throttleDismissed;
 
+  // The connection dropped while the room is open (brief drops show nothing).
+  const connectionBar = showReconnectBanner ? (
+    <StatusBar
+      icon={WifiOff}
+      busy={isOnline}
+      action={reconnectAttempt > 3 ? (
+        <StatusBarButton onClick={forceReconnect}>{t('app.retry', 'Retry')}</StatusBarButton>
+      ) : null}
+    >
+      {isOnline ? `${t('app.reconnecting', 'Reconnecting')}...` : t('app.noInternet', 'No Internet Connection')}
+    </StatusBar>
+  ) : null;
+
+  // The suggest form: opened under the header, or docked at the bottom of a phone.
+  const suggestForm = (docked) => (
+    <SuggestSongForm
+      onSongSuggested={handleSongSuggested}
+      onShowSuggest={setShowSuggest}
+      serverError={participationErrorKey(lastErrorCode) ? t(participationErrorKey(lastErrorCode)) : lastError}
+      serverMessage={lastMessage}
+      isOwner={isOwner && ownerBypass}
+      suggestionsEnabled={suggestionsEnabled}
+      suggestionMode={suggestionMode}
+      isConnected={isConnected}
+      isAppleRoom={isAppleRoom}
+      docked={docked}
+      currentTrack={currentTrack}
+      onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
+      suggestions={manualSuggestions}
+      isFetchingSuggestions={isFetchingSuggestions}
+      queueVideoIds={queueVideoIds}
+    />
+  );
+
   return (
     <ConsentContext.Provider value={roomConsent}>
     <div
-      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-[100dvh] h-screen overflow-hidden bg-[#0a0a0a] pb-0" : (isQueueMinimized && !isCinemaMode ? "h-[100dvh] h-screen overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
-      style={isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined}
+      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isPhoneLayout || (isQueueMinimized && !isCinemaMode) ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
+      // On phones the room is exactly the visible part of the screen and its
+      // parts share that height; elsewhere the playback controls float over
+      // the bottom edge and the room leaves them room.
+      style={isPhoneLayout
+        ? { position: 'fixed', left: 0, right: 0, top: 'var(--vv-top, 0px)', height: 'var(--vv-height, 100dvh)' }
+        : (isQueueMinimized && !isCinemaMode && !isAnyPlaylistView ? { paddingBottom: `${controlsHeight}px` } : undefined)}
     >
       {ipBlockDetected && !throttleDismissed && (
         <div className="fixed inset-0 z-[100] bg-[#050505] text-white flex items-center justify-center p-6 overflow-hidden">
@@ -1643,30 +1739,10 @@ function RoomBody() {
         </div>
       )}
 
-      {showReconnectBanner && serverState && !isStaleState && (
-        <div className={`fixed top-0 left-0 right-0 z-[100] ${!isOnline ? 'bg-red-600/95' : 'bg-orange-600/95'} backdrop-blur-sm text-white text-center py-1.5 text-xs font-medium`}>
-          <div className="flex items-center justify-center gap-2">
-            {!isOnline ? (
-              <>
-                <WifiOff size={12} />
-                <span>{t('app.noInternet', 'No Internet Connection')}</span>
-              </>
-            ) : (
-              <>
-                <RefreshCw size={12} className="animate-spin" />
-                <span>{t('app.reconnecting', 'Reconnecting')}...</span>
-              </>
-            )}
-            {reconnectAttempt > 3 && (
-              <button
-                onClick={forceReconnect}
-                className="ml-1 px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 transition-colors"
-              >
-                {t('app.retry', 'Retry')}
-              </button>
-            )}
-          </div>
-        </div>
+      {/* The room is there, the connection is not: one line under the header.
+          Without a header (cinema mode) it lies over the top edge. */}
+      {connectionBar && isCinemaMode && (
+        <div className="fixed inset-x-0 top-0 z-[100] bg-[#050505]">{connectionBar}</div>
       )}
       {!isCinemaMode && (
         <div className="sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out">
@@ -1698,7 +1774,14 @@ function RoomBody() {
                 setShowSuggest(false);
               }
             }}
-            onLibrary={() => setPlaylistActiveTab("library")}
+            onLibrary={() => {
+              if (!isAnyPlaylistView) {
+                setLocalPlaylistView(true);
+                setShowSettings(false);
+                setShowSuggest(false);
+              }
+              setPlaylistActiveTab("library");
+            }}
             onSuggest={() => {
               setShowSuggest(prev => !prev);
               setShowSettings(false);
@@ -1717,7 +1800,10 @@ function RoomBody() {
             ownerBypass={ownerBypass}
             playlistViewMode={playlistViewMode}
             onFullscreenOverlay={setHeaderOverlay}
+            channelName={activeChannel}
+            hasPlayerView={!isVenueMode}
           />
+          {connectionBar}
           {showThrottleBar && (
             <div className="bg-yellow-600/95 text-white text-center py-1.5 text-xs font-medium">
               <div className="flex items-center justify-center gap-2 px-2">
@@ -1741,23 +1827,9 @@ function RoomBody() {
               </div>
             </div>
           )}
-          {showSuggest && (
+          {showSuggest && !isPhoneLayout && (
             <div className="px-4 pb-3">
-              <SuggestSongForm
-                onSongSuggested={handleSongSuggested}
-                onShowSuggest={setShowSuggest}
-                serverError={participationErrorKey(lastErrorCode) ? t(participationErrorKey(lastErrorCode)) : lastError}
-                serverMessage={lastMessage}
-                isOwner={isOwner && ownerBypass}
-                suggestionsEnabled={suggestionsEnabled}
-                suggestionMode={suggestionMode}
-                isConnected={isConnected}
-                currentTrack={currentTrack}
-                onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
-                suggestions={manualSuggestions}
-                isFetchingSuggestions={isFetchingSuggestions}
-                queueVideoIds={queueVideoIds}
-              />
+              {suggestForm(false)}
             </div>
           )}
         </div>
@@ -1855,7 +1927,12 @@ function RoomBody() {
         {appleHostEnabled && (
           <div className={!isAnyPlaylistView && !showPendingPage && !showBannedPage ? "absolute inset-0" : "hidden"}>
             <PlayerErrorBoundary>
-              <AppleMusicHostPlayer apple={apple} currentTrack={currentTrack} />
+              <AppleMusicHostPlayer
+                apple={apple}
+                currentTrack={currentTrack}
+                // Playing again loads the track afresh (useAppleMusicHost).
+                onRetry={() => sendMessage({ type: "PLAY_PAUSE", payload: true })}
+              />
             </PlayerErrorBoundary>
           </div>
         )}
@@ -1865,14 +1942,10 @@ function RoomBody() {
             {isAppleRoom && !appleConsent && <AppleContentNotice onAccept={giveAppleConsent} />}
             {/* An owner on a phone: nothing plays here, and nothing said so. */}
             {isAppleRoom && isOwner && isForcedVenueMode && (
-              <p className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2 text-center text-xs text-neutral-300 leading-snug">
-                {t('appleMusic.playsOnComputer')}
-              </p>
+              <StatusBar icon={Monitor}>{t('appleMusic.playsOnComputer')}</StatusBar>
             )}
             {isAppleRoom && waitingForHost && !(isOwner && isForcedVenueMode) && (
-              <p className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2 text-center text-xs text-amber-300 leading-snug">
-                {t('appleMusic.waitingForHost')}
-              </p>
+              <StatusBar icon={CirclePause}>{t('appleMusic.waitingForHost')}</StatusBar>
             )}
             <div className="flex-1 min-h-0 overflow-hidden">
             <PlaylistView
@@ -1967,7 +2040,7 @@ function RoomBody() {
       </div>
 
       {!isAnyPlaylistView && !isCinemaMode && (
-        <div className={`min-h-0 transition-all duration-700 ease-in-out ${isQueueMinimized ? "flex-none" : "pb-4 flex-1"}`}>
+        <div className={`min-h-0 transition-all duration-700 ease-in-out ${isQueueMinimized ? "flex-none" : `pb-4 flex-1 ${isPhoneLayout ? "overflow-y-auto" : ""}`}`}>
           <Queue
             tracks={queue}
             currentTrack={currentTrack}
@@ -2061,10 +2134,22 @@ function RoomBody() {
               onSeek={handleSeek}
               onHeightChange={handleControlsHeightChange}
               canShowControls={canShowControls}
+              docked={isPhoneLayout}
             />
           )
         )
       }
+      {/* Phones: the suggest field, always at the bottom and within reach of
+          the thumb. A preview's own bar takes the bottom edge meanwhile. */}
+      {isPhoneLayout && (
+        <div
+          ref={setBottomBar}
+          className={`flex-none z-[55] border-t border-neutral-900 bg-[#050505]/95 px-2 pt-2 backdrop-blur-md ${previewTrack ? "hidden" : ""}`}
+          style={{ paddingBottom: 'calc(0.5rem + var(--bar-safe-bottom, var(--sab)))' }}
+        >
+          {suggestForm(true)}
+        </div>
+      )}
       {toast && (
         <Toast
           message={toast.message}

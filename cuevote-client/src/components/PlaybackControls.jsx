@@ -27,6 +27,9 @@ export function PlaybackControls({
   isQueueMinimized = true,
   onQueueToggle,
   upcomingCount = 0,
+  // On phones the bar is part of the room's column, above the suggest field,
+  // instead of floating over the bottom edge.
+  docked = false,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [tempVisible, setTempVisible] = useState(false);
@@ -166,7 +169,9 @@ export function PlaybackControls({
       )}
       <footer
         ref={footerRef}
-        className={`fixed bottom-0 left-0 w-full bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 px-6 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col gap-2 z-[70] select-none transition-transform duration-500 ease-in-out ${shouldShow ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`w-full bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 px-6 pt-3 flex flex-col gap-2 select-none ${docked
+          ? 'relative flex-none pb-3'
+          : `fixed bottom-0 left-0 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-[70] transition-transform duration-500 ease-in-out ${shouldShow ? 'translate-y-0' : 'translate-y-full'}`}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchInteraction}
@@ -297,4 +302,5 @@ PlaybackControls.propTypes = {
   isQueueMinimized: PropTypes.bool,
   onQueueToggle: PropTypes.func,
   upcomingCount: PropTypes.number,
+  docked: PropTypes.bool,
 };

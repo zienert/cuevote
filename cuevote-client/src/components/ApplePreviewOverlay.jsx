@@ -2,6 +2,8 @@
 // Copyright (c) 2026 Julian Zienert
 import React from 'react';
 import PropTypes from 'prop-types';
+import { CircleAlert, Play } from 'lucide-react';
+import { StatusButton, StatusLine, StatusWaiting } from './PlayerStatus';
 import { Language } from '../contexts/LanguageContext';
 import { parseTrackKey } from '../utils/trackKeys';
 import { musicKitPlaysVideos } from '../utils/musicKit';
@@ -24,19 +26,15 @@ export function ApplePreviewOverlay({ track, preview, consent, onAccept, isCinem
 
 	let message = null;
 	if (consent && preview.status === 'loading') {
-		message = <p className="text-neutral-300">{t('appleMusic.loading')}</p>;
+		message = <StatusWaiting>{t('appleMusic.loading')}</StatusWaiting>;
 	} else if (consent && preview.status === 'error') {
-		message = <p className="text-neutral-300">{t('appleMusic.previewFailed')}</p>;
+		message = <StatusLine icon={CircleAlert}>{t('appleMusic.previewFailed')}</StatusLine>;
 	} else if (consent && (preview.status === 'needs-start' || preview.status === 'paused')) {
 		// Paused without the guest: the phone locked, or the browser stopped it.
 		message = (
-			<button
-				type="button"
-				onClick={preview.start}
-				className="px-6 py-3 rounded-full bg-white text-black font-semibold hover:bg-neutral-200 transition-colors"
-			>
-				{t('appleMusic.start')}
-			</button>
+			<div className="w-full max-w-[16rem]">
+				<StatusButton icon={Play} onClick={preview.start}>{t('appleMusic.start')}</StatusButton>
+			</div>
 		);
 	}
 
@@ -63,7 +61,7 @@ export function ApplePreviewOverlay({ track, preview, consent, onAccept, isCinem
 					</div>
 				)}
 				{open && message && (
-					<div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/70 p-6 text-center">
+					<div role="status" className="absolute inset-0 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md">
 						{message}
 					</div>
 				)}

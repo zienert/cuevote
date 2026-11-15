@@ -7,17 +7,14 @@ import { Language } from '../contexts/LanguageContext';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 import { suggesterLabel } from "../utils/participation";
 import { isAppleKey } from "../utils/trackKeys";
+import { CoverImage } from "./CoverImage";
 
 const buildThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 // Apple Music artwork may appear with playback or playlists, and reviewing what
 // enters the queue is managing the playlist. Apple items have no YouTube
 // thumbnail to fall back to.
 const artworkFor = (track) => track.thumbnail ?? (isAppleKey(track.videoId) ? null : buildThumbnailUrl(track.videoId));
-const fallBackToYouTube = (event, track) => {
-	if (isAppleKey(track.videoId)) return;
-	const fallback = buildThumbnailUrl(track.videoId);
-	if (event.target.src !== fallback) event.target.src = fallback;
-};
+const youTubeFallback = (track) => (isAppleKey(track.videoId) ? undefined : buildThumbnailUrl(track.videoId));
 
 // Single export with inline components so bundler cannot reorder and cause TDZ.
 export const PendingRequestsExports = {
@@ -25,7 +22,11 @@ export const PendingRequestsExports = {
 		const { t } = Language.useLanguage();
 		if (!requests || requests.length === 0) return null;
 		return (
-		<div className="fixed bottom-20 sm:bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[450px] z-30 bg-neutral-900/95 backdrop-blur-md border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-5">
+		<div
+			className="fixed bottom-20 sm:bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[450px] z-30 bg-neutral-900/95 backdrop-blur-md border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-5"
+			// Clear of the room's bar at the bottom of a phone.
+			style={{ marginBottom: 'var(--bottom-bar-h, 0px)' }}
+		>
 			<div className="bg-neutral-800/50 p-3 border-b border-neutral-700 flex justify-between items-center">
 				<h3 className="font-bold text-white flex items-center gap-2">
 					<Clock size={16} className="text-orange-500" />
@@ -43,11 +44,11 @@ export const PendingRequestsExports = {
 				{requests.map((track) => (
 					<div key={track.id} className="p-3 pr-4 border-b border-neutral-800 hover:bg-neutral-800/30 transition-colors flex gap-3 items-start">
 						{artworkFor(track) ? (
-							<img
+							<CoverImage
 								src={artworkFor(track)}
+								fallbackSrc={youTubeFallback(track)}
 								alt={track.title}
-								className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
-								onError={(e) => fallBackToYouTube(e, track)}
+								className="w-10 h-10 sm:w-12 sm:h-12 rounded flex-shrink-0"
 							/>
 						) : (
 							<div className="w-10 h-10 sm:w-12 sm:h-12 rounded bg-neutral-800 flex-shrink-0" aria-hidden="true" />
@@ -144,11 +145,11 @@ export const PendingRequestsExports = {
 							<div key={track.id} className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 sm:p-4 flex items-start justify-between gap-3 sm:gap-4 hover:border-neutral-700 transition-colors">
 								<div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
 									{artworkFor(track) ? (
-										<img
+										<CoverImage
 											src={artworkFor(track)}
+											fallbackSrc={youTubeFallback(track)}
 											alt={track.title}
-											className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
-											onError={(e) => fallBackToYouTube(e, track)}
+											className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg flex-shrink-0 shadow-sm"
 										/>
 									) : (
 										<div className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg bg-neutral-800 flex-shrink-0" aria-hidden="true" />

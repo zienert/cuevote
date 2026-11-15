@@ -52,6 +52,10 @@ function isAutoplayRefusal(err) {
 	return code === 'NotAllowedError' || code === 'USER_INTERACTION_REQUIRED';
 }
 
+// What MusicKit rejects authorize() with when the host closes Apple's sign-in
+// window or declines there. No error: the connect button simply stays.
+const SIGN_IN_CLOSED = new Set(['AUTHORIZATION_ERROR', 'ACCESS_DENIED']);
+
 // "<queue entry id>|<track key>": what is loaded is tracked per entry, not per
 // key, since the same song can come back as a new entry.
 function entryOf(track) {
@@ -468,9 +472,19 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		music.authorize().then(() => {
 			if (music.isAuthorized && enabled) setStatus(prev => (prev === 'standby' ? prev : 'ready'));
 		}).catch((err) => {
-			setProblem({ code: errorCodeOf(err), message: describeMusicKitError(err) });
+			const code = errorCodeOf(err);
+			if (SIGN_IN_CLOSED.has(code)) return;
+			setProblem({ code, message: describeMusicKitError(err), signIn: true });
 		});
 	}, [music, enabled]);
+
+	// Signs the Apple account out, for a host who connected one without a
+	// subscription. The authorization event above brings the connect button back.
+	const disconnect = useCallback(() => {
+		if (!music) return;
+		setProblem(null);
+		Promise.resolve(music.unauthorize()).catch(() => { /* still signed in: the problem comes back with the next play */ });
+	}, [music]);
 
 	useEffect(() => {
 		if (!awaitingSignIn || !music || !enabled) return undefined;
@@ -522,5 +536,5 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		} catch { /* not ready yet */ }
 	}, [music]);
 
-	return { status, problem, connect, start, claim, reportProblem, seek, getDuration, setVolume };
+	return { status, problem, connect, disconnect, start, claim, reportProblem, seek, getDuration, setVolume };
 }

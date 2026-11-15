@@ -4,12 +4,20 @@ import React, { useCallback, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { CheckCircle, Send, Clock } from "lucide-react";
 import { Language } from '../contexts/LanguageContext';
-export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, serverMessage, isOwner, suggestionsEnabled, isConnected = true }) {
+import { useLatestRef } from '../hooks/useLatestRef';
+
+// `docked`: the form as the room's bar at the bottom of a phone. It is always
+// there, one row with a round send button, and under it it shows only the
+// server's answer to its own entry: a refused vote is the room's notice, not
+// this field's.
+export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, serverMessage, isOwner, suggestionsEnabled, isConnected = true, isAppleRoom = false, docked = false }) {
   const [songSuggestion, setSongSuggestion] = useState("");
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [suggestionError, setSuggestionError] = useState("");
+  const [answerError, setAnswerError] = useState("");
   const [infoMessage, setInfoMessage] = useState("");
   const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false);
+  const isSubmittingRef = useLatestRef(isSubmittingSuggestion);
   const { t } = Language.useLanguage();
 
 
@@ -17,6 +25,7 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
   const handleInputChange = (e) => {
     setSongSuggestion(e.target.value);
     if (suggestionError) setSuggestionError("");
+    if (answerError) setAnswerError("");
     if (infoMessage) setInfoMessage("");
   };
 
@@ -52,23 +61,30 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
     const input = songSuggestion.trim();
 
     if (!input) {
-      setSuggestionError(t('suggest.error'));
+      // What to enter depends on the channel's music source. An Apple Music
+      // channel answers with the words the server uses for a wrong entry.
+      setSuggestionError(isAppleRoom ? t('errors.appleMusicRoom') : t('suggest.error'));
       return;
     }
 
     setSuggestionError("");
+    setAnswerError("");
     setInfoMessage("");
     setIsSubmittingSuggestion(true);
 
-    // Delegate everything to server (Validation, Search, Metadata)
-    onSongSuggested(input);
+    // Delegate everything to server (Validation, Search, Metadata). The room
+    // answers false when it did not send the entry (it says why itself): then
+    // no answer will come.
+    if (onSongSuggested(input) === false) {
+      setIsSubmittingSuggestion(false);
+    }
 
     // Optimistic Success REMOVED.
     // We now rely entirely on server messages ("success" or "info" or "error")
     // to drive the UI state. This ensures we don't auto-close on errors (duplicates etc).
 
 
-  }, [songSuggestion, onSongSuggested, isConnected, t]);
+  }, [songSuggestion, onSongSuggested, isConnected, isAppleRoom, t]);
 
   const handleKeyPress = useCallback(
     (event) => {
@@ -90,6 +106,11 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
     }
     // Mark as processed
     processedMessageRef.current = serverMessage;
+
+    // Docked: an error that arrives while an entry is on its way answers it.
+    if (serverMessage?.type === "error" && isSubmittingRef.current) {
+      setAnswerError(serverError || serverMessage.message || "");
+    }
 
     if (serverError) {
       setSubmissionSuccess(false);
@@ -123,50 +144,86 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
         onShowSuggest(false); // Auto-minimize fast
       }, 1500);
     }
-  }, [serverError, serverMessage, onShowSuggest]);
+  }, [serverError, serverMessage, onShowSuggest, isSubmittingRef]);
 
-  const activeError = suggestionError || serverError;
+  // Docked, the bar never opens or closes. "Open" then means: an entry is on
+  // its way or its answer is showing, and the room holds back its own notices
+  // for that long, as it does while the desktop bar is open.
+  useEffect(() => {
+    if (docked) onShowSuggest(isSubmittingSuggestion || submissionSuccess);
+  }, [docked, isSubmittingSuggestion, submissionSuccess, onShowSuggest]);
+
+  const isDisabled = !suggestionsEnabled && !isOwner;
+  const activeError = suggestionError || (docked ? answerError : serverError);
+  const successColor = infoMessage ? "bg-blue-600 hover:bg-blue-500" : "bg-green-600 hover:bg-green-500";
+  const submitColor = submissionSuccess ? successColor : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500";
 
   return (
-    <div className="keep-open w-full max-w-5xl mx-auto mt-3 animate-fadeIn space-y-2">
+    <div className={`keep-open w-full max-w-5xl mx-auto ${docked ? "" : "mt-3 animate-fadeIn space-y-2"}`}>
       <div className="keep-open flex items-center gap-2">
         <input
           type="text"
           value={songSuggestion}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
-
-          placeholder={!suggestionsEnabled && !isOwner ? t('suggest.disabledPlaceholder') : t('suggest.placeholder')}
-          disabled={isSubmittingSuggestion || (!suggestionsEnabled && !isOwner)}
-          className="keep-open flex-1 px-5 py-2 rounded-full bg-[#121212] text-white border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-orange-500 text-base disabled:opacity-60 disabled:cursor-not-allowed"
-        />              <button
-          onClick={(event) => {
-            event.stopPropagation();
-            handleSubmitSuggestion();
-          }}
-          disabled={isSubmittingSuggestion || (!suggestionsEnabled && !isOwner)}
-          className={`keep-open px-5 py-2 rounded-full text-white transition-all flex items-center gap-2 text-base disabled:cursor-not-allowed disabled:opacity-70 whitespace-nowrap ${submissionSuccess
-            ? (infoMessage ? "bg-blue-600 hover:bg-blue-500" : "bg-green-600 hover:bg-green-500")
-            : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500"
-            }`}
-        >
-          {submissionSuccess ? (
-            <>
-              {infoMessage ? <Clock size={18} /> : <CheckCircle size={18} />}
-              {infoMessage || t('suggest.added')}
-            </>
-          ) : (
-            <>
-              <Send size={18} /> {isSubmittingSuggestion ? t('suggest.adding') : t('suggest.submit')}
-            </>
-          )}
-        </button>
+          enterKeyHint={docked ? "send" : undefined}
+          aria-label={docked ? t('header.suggest') : undefined}
+          placeholder={isDisabled ? t('suggest.disabledPlaceholder') : t('suggest.placeholder')}
+          disabled={isSubmittingSuggestion || isDisabled}
+          className={`keep-open flex-1 min-w-0 px-5 rounded-full bg-[#121212] text-white border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-orange-500 text-base disabled:opacity-60 disabled:cursor-not-allowed ${docked ? "h-11" : "py-2"}`}
+        />
+        {docked ? (
+          <button
+            type="button"
+            aria-label={t('suggest.submit')}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleSubmitSuggestion();
+            }}
+            disabled={isSubmittingSuggestion || isDisabled}
+            className={`keep-open flex h-11 w-11 flex-none items-center justify-center rounded-full text-white shadow-lg transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${submitColor}`}
+          >
+            {isSubmittingSuggestion ? (
+              <span className="h-[18px] w-[18px] animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
+            ) : submissionSuccess ? (
+              infoMessage ? <Clock size={18} /> : <CheckCircle size={18} />
+            ) : (
+              <Send size={18} />
+            )}
+          </button>
+        ) : (
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              handleSubmitSuggestion();
+            }}
+            disabled={isSubmittingSuggestion || isDisabled}
+            className={`keep-open px-5 py-2 rounded-full text-white transition-all flex items-center gap-2 text-base disabled:cursor-not-allowed disabled:opacity-70 whitespace-nowrap ${submitColor}`}
+          >
+            {submissionSuccess ? (
+              <>
+                {infoMessage ? <Clock size={18} /> : <CheckCircle size={18} />}
+                {infoMessage || t('suggest.added')}
+              </>
+            ) : (
+              <>
+                <Send size={18} /> {isSubmittingSuggestion ? t('suggest.adding') : t('suggest.submit')}
+              </>
+            )}
+          </button>
+        )}
       </div>
-      {
+      {docked ? (
+        (activeError || submissionSuccess) && (
+          <p role="status" className={`keep-open px-3 pt-1.5 text-sm ${activeError ? "text-red-400" : "text-neutral-300"}`}>
+            {activeError || infoMessage || t('suggest.added')}
+          </p>
+        )
+      ) : (
         activeError && (
           <p className="keep-open text-sm text-red-400">{activeError}</p>
         )
-      }
+      )}
 
     </div >
   );
@@ -179,5 +236,7 @@ SuggestSongForm.propTypes = {
   isOwner: PropTypes.bool,
   suggestionsEnabled: PropTypes.bool,
   suggestionMode: PropTypes.string,
-  isConnected: PropTypes.bool
+  isConnected: PropTypes.bool,
+  isAppleRoom: PropTypes.bool,
+  docked: PropTypes.bool,
 };
