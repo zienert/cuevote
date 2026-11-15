@@ -1753,6 +1753,7 @@ function RoomBody() {
                 suggestionsEnabled={suggestionsEnabled}
                 suggestionMode={suggestionMode}
                 isConnected={isConnected}
+                isAppleRoom={isAppleRoom}
                 currentTrack={currentTrack}
                 onRecommend={isAppleRoom ? undefined : handleFetchSuggestions}
                 suggestions={manualSuggestions}
