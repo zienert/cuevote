@@ -11,6 +11,9 @@
 //   ?create      open the create dialog right away
 //   ?apple=0     a server without Apple Music: the dialog offers YouTube only
 //   ?signedOut   a first visit: not signed in, cookies not accepted
+//   ?conn=...    the connection: connecting, or problem (it does not come: the
+//                card shows after 12 s). "Retry" connects.
+//   ?offline     the device has no internet
 //
 // Thumbnails are generated SVGs, so the page loads nothing from YouTube or
 // Apple, and the cookie banner stays closed without anything being accepted.
@@ -22,6 +25,10 @@ import { Consent } from '../contexts/ConsentContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 
 const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null };
+// Before the lobby renders: it asks navigator.onLine while rendering.
+if (new URLSearchParams(window.location.search).has('offline')) {
+	Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false });
+}
 // What the lobby gives every channel it creates.
 const COLOR = 'from-gray-700 to-black';
 
@@ -82,10 +89,12 @@ export default function LobbyPreview() {
 	const signedOut = params.has('signedOut');
 	const appleOn = params.get('apple') !== '0';
 	const openCreate = params.has('create');
+	const connection = params.get('conn') || (params.has('offline') ? 'connecting' : '');
 
 	const [channels, setChannels] = useState(CHANNELS);
 	const [listType, setListType] = useState(null);
 	const [lastMessage, setLastMessage] = useState(null);
+	const [connected, setConnected] = useState(!connection);
 
 	useEffect(() => {
 		if (listType) setLastMessage({ type: 'ROOM_LIST', payload: listFor(channels, listType) });
@@ -112,7 +121,7 @@ export default function LobbyPreview() {
 
 	const socket = useMemo(() => ({
 		state: null,
-		isConnected: true,
+		isConnected: connected,
 		sendMessage,
 		lastError: null,
 		lastErrorCode: null,
@@ -123,13 +132,13 @@ export default function LobbyPreview() {
 		handleLoginSuccess: () => {},
 		handleLogout: () => {},
 		clearMessage: () => setLastMessage(null),
-		reconnectAttempt: 0,
-		forceReconnect: () => {},
+		reconnectAttempt: connected ? 0 : (connection === 'problem' ? 5 : 0),
+		forceReconnect: () => { setTimeout(() => setConnected(true), 1200); },
 		connectionQuality: 'good',
 		progressRef: { current: 0 },
 		progressAtRef: { current: 0 },
 		applePlayerLease: null,
-	}), [sendMessage, lastMessage, signedOut]);
+	}), [sendMessage, lastMessage, signedOut, connected, connection]);
 
 	// The cookie banner belongs to the real page around this one: keep it
 	// closed. Nothing is accepted; the lobby below gets its own consent value.
