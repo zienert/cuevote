@@ -172,6 +172,37 @@ function loadRooms() {
 
 loadRooms();
 
+// The room a JOIN_ROOM names, loaded or asleep in the DB, as far as the join
+// needs it before letting anyone in. Ids match in any case, for typed links.
+function findRoom(roomId) {
+    const loaded = rooms.get(roomId) || rooms.get(roomId.toLowerCase()) || rooms.get(roomId.toUpperCase());
+    if (loaded) return { id: loaded.id, ownerId: loaded.metadata.owner_id, passwordHash: loaded.metadata.password };
+    try {
+        const row = db.getRoom(roomId) || db.getRoom(roomId.toLowerCase()) || db.getRoom(roomId.toUpperCase());
+        if (row) return { id: row.id, ownerId: row.owner_id, passwordHash: row.password };
+    } catch (e) {
+        logger.error({ err: e }, 'DB Lookup failed');
+    }
+    return null;
+}
+
+// Loads a sleeping room so it runs again: its timer starts and a queue saved
+// while playing plays on. Only for someone who is let in. Null if it is gone.
+function wakeRoom(roomId) {
+    let row;
+    try {
+        row = db.getRoom(roomId);
+    } catch (e) {
+        logger.error({ err: e }, 'DB Lookup failed');
+        return null;
+    }
+    if (!row) return null;
+    logger.info(`Waking up idle room: ${row.name} (${row.id})`);
+    const room = new Room(row.id, row.name, YOUTUBE_API_KEY, row);
+    rooms.set(row.id, room);
+    return room;
+}
+
 // Localhost-only admin API for ops tooling (no-op unless ADMIN_TOKEN is set).
 adminApi.start({ rooms });
 
@@ -609,62 +640,55 @@ wss.on("connection", (ws, req) => {
                         }
                     }
 
-                    // Try to resolve room
-                    let room = rooms.get(roomId) || rooms.get(roomId.toLowerCase()) || rooms.get(roomId.toUpperCase());
-
-                    if (!room) {
-                        try {
-                            const roomData = db.getRoom(roomId) || db.getRoom(roomId.toLowerCase()) || db.getRoom(roomId.toUpperCase());
-                            if (roomData) {
-                                const resolvedId = roomData.id;
-                                logger.info(`Waking up idle room: ${roomData.name} (${resolvedId})`);
-                                room = new Room(resolvedId, roomData.name, YOUTUBE_API_KEY, roomData);
-                                rooms.set(resolvedId, room);
-                            }
-                        } catch (e) {
-                            logger.error("DB Lookup failed", e);
-                        }
-                    }
-
-                    if (room) {
-                        // Password Check
-                        const isOwner = ws.user && ws.user.id === room.metadata.owner_id;
-                        if (room.metadata.password && !isOwner) {
-                            if (!password) {
-                                ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
-                                return;
-                            }
-                            // The guess is paid for before bcrypt runs: past the
-                            // budget an attempt costs nothing and reveals nothing.
-                            const attempt = roomPasswordBudget.spend(ws.netKey, room.id);
-                            if (!attempt.ok) {
-                                refusePasswordAttempt(ws, room.id, attempt);
-                                return;
-                            }
-                            let match;
-                            try {
-                                match = bcrypt.compareSync(password, room.metadata.password);
-                            } catch (err) {
-                                attempt.refund(); // our failure, not the guest's guess
-                                throw err;
-                            }
-                            if (match) {
-                                attempt.refund();
-                            } else {
-                                logger.warn({ event: 'room_password_wrong', roomId: room.id, netKey: ws.netKey }, '[JoinRoom] Wrong room password');
-                                ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
-                                return;
-                            }
-                        }
-
-                        logger.info(`Client ${ws.id} joining room: ${room.id}`);
-                        ws.roomId = room.id;
-                        room.addClient(ws);
-                        db.updateRoomActivity(room.id);
-                        sendAck();
-                    } else {
+                    // A sleeping room is only read here, not woken: waking it
+                    // restarts its queue, which is for whoever gets in, not for
+                    // anyone who knows the id.
+                    const target = findRoom(roomId);
+                    if (!target) {
                         ws.send(JSON.stringify({ type: "error", code: "ROOM_NOT_FOUND", message: "Room not found" }));
+                        return;
                     }
+
+                    // Password Check
+                    const isOwner = ws.user && ws.user.id === target.ownerId;
+                    if (target.passwordHash && !isOwner) {
+                        if (!password) {
+                            ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
+                            return;
+                        }
+                        // The guess is paid for before bcrypt runs: past the
+                        // budget an attempt costs nothing and reveals nothing.
+                        const attempt = roomPasswordBudget.spend(ws.netKey, target.id);
+                        if (!attempt.ok) {
+                            refusePasswordAttempt(ws, target.id, attempt);
+                            return;
+                        }
+                        let match;
+                        try {
+                            match = bcrypt.compareSync(password, target.passwordHash);
+                        } catch (err) {
+                            attempt.refund(); // our failure, not the guest's guess
+                            throw err;
+                        }
+                        if (match) {
+                            attempt.refund();
+                        } else {
+                            logger.warn({ event: 'room_password_wrong', roomId: target.id, netKey: ws.netKey }, '[JoinRoom] Wrong room password');
+                            ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
+                            return;
+                        }
+                    }
+
+                    const room = rooms.get(target.id) || wakeRoom(target.id);
+                    if (!room) {
+                        ws.send(JSON.stringify({ type: "error", code: "ROOM_NOT_FOUND", message: "Room not found" }));
+                        return;
+                    }
+                    logger.info(`Client ${ws.id} joining room: ${room.id}`);
+                    ws.roomId = room.id;
+                    room.addClient(ws);
+                    db.updateRoomActivity(room.id);
+                    sendAck();
                     return;
                 }
                 case "CREATE_ROOM": {
