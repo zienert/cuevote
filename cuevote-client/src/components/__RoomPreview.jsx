@@ -16,9 +16,10 @@
 //                     real device)
 //   ?apple=...        what Apple Music does for the host of an Apple channel:
 //                     signed-out (default), cancel (the sign-in window is
-//                     closed), ready, needs-start, problem, subscription,
-//                     other-device, standby, loading, error
+//                     closed), signin-failed, ready, needs-start, problem,
+//                     subscription, other-device, standby, loading, error
 //   ?code=...         the error code of ?apple=problem (default MEDIA_PLAYBACK)
+//                     and of ?apple=signin-failed (default NETWORK_ERROR)
 //   ?stuck            the problem comes back on every retry
 //   ?auto=connect     press "Connect Apple Music" right away
 //   ?suggest          open the suggest field
@@ -166,7 +167,7 @@ function fakeMusicKit(scenario, { code, stuck }) {
 		emit('playbackStateDidChange');
 	};
 	const instance = {
-		isAuthorized: scenario !== 'signed-out' && scenario !== 'cancel',
+		isAuthorized: !['signed-out', 'cancel', 'signin-failed'].includes(scenario),
 		autoplayEnabled: false,
 		previewOnly: false,
 		playbackState: PlaybackStates.none,
@@ -187,6 +188,10 @@ function fakeMusicKit(scenario, { code, stuck }) {
 			setTimeout(() => {
 				if (scenario === 'cancel') {
 					reject(Object.assign(new Error('The sign-in window was closed'), { errorCode: 'AUTHORIZATION_ERROR' }));
+					return;
+				}
+				if (scenario === 'signin-failed') {
+					reject(Object.assign(new Error('The sign-in failed'), { errorCode: code }));
 					return;
 				}
 				instance.isAuthorized = true;
@@ -269,7 +274,7 @@ export default function RoomPreview() {
 	const provider = PARAMS.get('provider') === 'apple' ? 'apple' : 'youtube';
 	const isOwner = PARAMS.get('role') === 'owner';
 	const scenario = PARAMS.get('apple') || 'signed-out';
-	const problemCode = PARAMS.get('code') || 'MEDIA_PLAYBACK';
+	const problemCode = PARAMS.get('code') || (scenario === 'signin-failed' ? 'NETWORK_ERROR' : 'MEDIA_PLAYBACK');
 	const stuck = PARAMS.has('stuck');
 	const lang = PARAMS.get('lang');
 
