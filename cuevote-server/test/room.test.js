@@ -711,6 +711,107 @@ describe('Room', () => {
       assert.equal(ws._messages[0].payload.queue[0].myVote, 'up');
       room.destroy();
     });
+
+    // ownerId is the owner's Google account id. Anyone who opens the room
+    // gets the state, signed in or not; only the owner may see the id.
+    it('never sends the owner\'s id to a socket that is not the owner', () => {
+      const room = roomWithVotes('project-owner-anon-room');
+      const anonymous = mockWs(null); // only sent JOIN_ROOM
+      const guest = mockWs({ id: 'guest:abc123', name: 'Guest 4F2A', guestTag: '4F2A', isGuest: true });
+      const account = mockWs({ id: 'guest-1', name: 'Guest User' });
+      for (const ws of [anonymous, guest, account]) {
+        room.addClient(ws);
+        const msg = ws._messages[0];
+        assert.equal(msg.type, 'state');
+        assert.equal('ownerId' in msg.payload, false);
+        assert.equal(msg.payload.isOwner, false);
+        assert.ok(!JSON.stringify(msg).includes('owner-1'));
+      }
+      assert.equal(room.state.ownerId, 'owner-1', 'the server keeps it');
+      room.destroy();
+    });
+
+    it('tells the owner that they own the room', () => {
+      const room = roomWithVotes('project-owner-room');
+      const owner = mockWs({ id: 'owner-1', name: 'Room Owner' });
+      room.addClient(owner);
+
+      const state = owner._messages[0].payload;
+      assert.equal(state.isOwner, true);
+      assert.equal(state.ownerId, 'owner-1', 'clients from before isOwner still compare ids');
+      room.destroy();
+    });
+
+    it('projects ownership per viewer in a broadcast', () => {
+      const room = roomWithVotes('project-owner-broadcast-room');
+      const owner = mockWs({ id: 'owner-1', name: 'Room Owner' });
+      const anonymous = mockWs(null);
+      const guest = mockWs({ id: 'guest:abc123', name: 'Guest 4F2A', isGuest: true });
+      for (const ws of [owner, anonymous, guest]) room.addClient(ws);
+      for (const ws of [owner, anonymous, guest]) ws._messages.length = 0;
+
+      room.broadcastState();
+
+      assert.equal(owner._messages[0].payload.isOwner, true);
+      assert.equal(owner._messages[0].payload.ownerId, 'owner-1');
+      for (const ws of [anonymous, guest]) {
+        assert.equal(ws._messages[0].payload.isOwner, false);
+        assert.equal('ownerId' in ws._messages[0].payload, false);
+      }
+      room.destroy();
+    });
+
+    it('leaves a delta without ownerId as it is', () => {
+      const room = roomWithVotes('project-owner-delta-room');
+      const owner = mockWs({ id: 'owner-1', name: 'Room Owner' });
+      const anonymous = mockWs(null);
+      room.addClient(owner);
+      room.addClient(anonymous);
+      owner._messages.length = 0;
+      anonymous._messages.length = 0;
+
+      room.updateState({ suggestionsEnabled: false });
+
+      for (const ws of [owner, anonymous]) {
+        assert.equal(ws._messages[0].type, 'state_delta');
+        assert.deepEqual(ws._messages[0].payload, { suggestionsEnabled: false });
+      }
+      room.destroy();
+    });
+
+    it('re-projects ownership when the socket signs in and out', () => {
+      const room = roomWithVotes('project-owner-resend-room');
+      const ws = mockWs(null);
+      room.addClient(ws);
+      assert.equal(ws._messages[0].payload.isOwner, false);
+
+      ws.user = { id: 'owner-1', name: 'Room Owner' }; // LOGIN / RESUME_SESSION
+      ws._messages.length = 0;
+      room.sendStateTo(ws);
+      assert.equal(ws._messages[0].payload.isOwner, true);
+      assert.equal(ws._messages[0].payload.ownerId, 'owner-1');
+
+      ws.user = null; // LOGOUT
+      ws._messages.length = 0;
+      room.sendStateTo(ws);
+      assert.equal(ws._messages[0].payload.isOwner, false);
+      assert.equal('ownerId' in ws._messages[0].payload, false);
+      room.destroy();
+    });
+
+    it('makes nobody the owner of a room without an owner', () => {
+      const room = new Room('project-ownerless-room', 'Ownerless', null, {});
+      const anonymous = mockWs(null);
+      const account = mockWs({ id: 'guest-1', name: 'Guest User' });
+      room.addClient(anonymous);
+      room.addClient(account);
+
+      for (const ws of [anonymous, account]) {
+        assert.equal(ws._messages[0].payload.isOwner, false);
+        assert.equal('ownerId' in ws._messages[0].payload, false);
+      }
+      room.destroy();
+    });
   });
 
   describe('Metadata Rehydration', () => {
