@@ -1855,7 +1855,12 @@ function RoomBody() {
         {appleHostEnabled && (
           <div className={!isAnyPlaylistView && !showPendingPage && !showBannedPage ? "absolute inset-0" : "hidden"}>
             <PlayerErrorBoundary>
-              <AppleMusicHostPlayer apple={apple} currentTrack={currentTrack} />
+              <AppleMusicHostPlayer
+                apple={apple}
+                currentTrack={currentTrack}
+                // Playing again loads the track afresh (useAppleMusicHost).
+                onRetry={() => sendMessage({ type: "PLAY_PAUSE", payload: true })}
+              />
             </PlayerErrorBoundary>
           </div>
         )}
