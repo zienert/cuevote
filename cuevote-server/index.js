@@ -25,6 +25,7 @@ const dbAsync = require('./db-async');
 const gdpr = require('./gdpr');
 const guest = require('./guest');
 const clientIp = require('./client-ip');
+const roomPassword = require('./room-password');
 const adminApi = require('./admin');
 const appleMusic = require('./apple-music');
 const backupScheduler = require('./backup_scheduler');
@@ -235,6 +236,29 @@ setInterval(() => {
 // edge server's or a header a direct client made up. See client-ip.js.
 const getClientIp = clientIp.resolverFromEnv();
 
+// Room password guesses, per network and per room, paid for before bcrypt
+// runs (room-password.js). Budgets that have refilled are dropped every minute.
+const roomPasswordBudget = roomPassword.createAttemptBudget();
+setInterval(() => roomPasswordBudget.prune(), 60 * 1000).unref();
+
+// Turns away a password attempt that is over its budget. The log line comes
+// once per run of refusals, so a script hammering the limit cannot flood it.
+function refusePasswordAttempt(ws, roomId, denial) {
+    if (denial.firstDenial) {
+        logger.warn(
+            { event: 'room_password_limited', roomId, netKey: ws.netKey, scope: denial.scope, retryAfter: denial.retryAfter },
+            '[JoinRoom] Room password attempts over budget'
+        );
+    }
+    const seconds = denial.retryAfter === 1 ? '1 second' : `${denial.retryAfter} seconds`;
+    ws.send(JSON.stringify({
+        type: "error",
+        code: "RATE_LIMITED",
+        retryAfter: denial.retryAfter,
+        message: `Too many password attempts. Please try again in ${seconds}.`
+    }));
+}
+
 logger.info("WebSocket server started on port", process.env.PORT || 8080);
 
 wss.on("connection", (ws, req) => {
@@ -251,6 +275,7 @@ wss.on("connection", (ws, req) => {
     }
     ipSocketCount.set(ip, ipCount + 1);
     ws.ip = ip; // marker that this socket is counted
+    ws.netKey = clientIp.netKey(ip); // what per-network budgets count under
 
     // Country of the connection as Cloudflare sees it ("XX" unknown, "T1" Tor).
     // Only ever a default: the storefront of the owner's own Apple room until
@@ -603,9 +628,30 @@ wss.on("connection", (ws, req) => {
 
                     if (room) {
                         // Password Check
-                        if (room.metadata.password) {
-                            const isOwner = ws.user && ws.user.id === room.metadata.owner_id;
-                            if (!isOwner && (!password || !bcrypt.compareSync(password, room.metadata.password))) {
+                        const isOwner = ws.user && ws.user.id === room.metadata.owner_id;
+                        if (room.metadata.password && !isOwner) {
+                            if (!password) {
+                                ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
+                                return;
+                            }
+                            // The guess is paid for before bcrypt runs: past the
+                            // budget an attempt costs nothing and reveals nothing.
+                            const attempt = roomPasswordBudget.spend(ws.netKey, room.id);
+                            if (!attempt.ok) {
+                                refusePasswordAttempt(ws, room.id, attempt);
+                                return;
+                            }
+                            let match;
+                            try {
+                                match = bcrypt.compareSync(password, room.metadata.password);
+                            } catch (err) {
+                                attempt.refund(); // our failure, not the guest's guess
+                                throw err;
+                            }
+                            if (match) {
+                                attempt.refund();
+                            } else {
+                                logger.warn({ event: 'room_password_wrong', roomId: room.id, netKey: ws.netKey }, '[JoinRoom] Wrong room password');
                                 ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
                                 return;
                             }
