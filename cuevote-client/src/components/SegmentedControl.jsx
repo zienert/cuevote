@@ -23,7 +23,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 		>
 			<span
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent transition-transform duration-[250ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
 				style={{
 					width: `calc((100% - 0.5rem) / ${options.length})`,
 					transform: `translateX(${selectedIndex * 100}%)`,

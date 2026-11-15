@@ -1530,7 +1530,7 @@ function RoomBody() {
       <div className="flex flex-col h-screen w-full bg-black items-center justify-center p-6 text-center z-[100] relative overflow-hidden">
         <div className="absolute inset-0 bg-neutral-900/50" />
         <div className="relative z-10 max-w-sm space-y-6">
-          <div className="mx-auto w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 animate-bounce">
+          <div className="mx-auto w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
             <Maximize2 size={32} />
           </div>
           <h2 className="text-2xl font-bold text-white">{t('app.windowTooSmall')}</h2>
@@ -1620,13 +1620,13 @@ function RoomBody() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="flex-1 px-4 py-3 rounded-xl border border-neutral-700 text-neutral-300 font-medium hover:bg-neutral-800 transition-all"
+              className="cv-btn cv-btn-quiet h-12 flex-1"
             >
               {t('lobby.cancel')}
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold hover:from-orange-400 hover:to-orange-500 transition-all"
+              className="cv-btn cv-btn-accent h-12 flex-1 font-semibold"
             >
               {t('app.unlock')}
             </button>
@@ -1723,14 +1723,14 @@ function RoomBody() {
               <button
                 autoFocus
                 onClick={() => window.location.reload()}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg active:scale-[0.97] transition-[background-color,transform] duration-150 ease-cv focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
               >
                 <RefreshCw size={18} />
                 {t('player.ipBlockRetry', 'Reload')}
               </button>
               <button
                 onClick={() => { dismissThrottle(); setIpBlockDetected(false); }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium active:scale-[0.97] transition-[background-color,transform] duration-150 ease-cv focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
               >
                 {t('player.ipBlockDismiss', 'Dismiss')}
               </button>
@@ -2081,7 +2081,7 @@ function RoomBody() {
                   ) : (
                     <Skeleton className="h-4 w-32 max-w-full bg-green-700/60" />
                   )}
-                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold uppercase animate-pulse flex-shrink-0">{t('track.preview')}</span>
+                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold flex-shrink-0">{t('track.preview')}</span>
                 </div>
                 {previewTrack.artist ? (
                   <p className="text-green-200 text-xs sm:text-sm truncate">{previewTrack.artist}</p>
@@ -2203,13 +2203,11 @@ function RoomBody() {
                 handlePlayPause();
               }
             }}
-            className="group relative bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full px-12 py-6 text-3xl font-bold flex items-center gap-6 shadow-2xl hover:from-orange-400 hover:to-orange-500 hover:scale-105 transition-all duration-300"
+            className="group relative bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full px-12 py-6 text-3xl font-bold flex items-center gap-6 shadow-2xl hover:from-orange-400 hover:to-orange-500 active:scale-[0.97] transition-transform duration-150 ease-cv"
           >
             <div className="absolute inset-0 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <VolumeX size={48} className="animate-pulse" />
+            <VolumeX size={48} />
             {t('app.tapToUnmute')}
-            <div className="absolute -inset-4 rounded-full border border-white/20 animate-ping opacity-20" />
-            <div className="absolute -inset-8 rounded-full border border-white/10 animate-ping opacity-10 animation-delay-300" />
           </button>
         </div>
       )}

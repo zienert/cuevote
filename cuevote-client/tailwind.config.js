@@ -32,22 +32,12 @@ export default {
         },
       },
       transitionTimingFunction: {
-        // The one curve for everything that moves.
-        cv: "cubic-bezier(0.22, 1, 0.36, 1)",
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0", transform: "translateY(-4px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        fadeOut: {
-          "0%": { opacity: "1", transform: "translateY(0)" },
-          "100%": { opacity: "0", transform: "translateY(-4px)" },
-        },
-      },
-      animation: {
-        fadeIn: "fadeIn 0.25s ease-out",
-        fadeOut: "fadeOut 0.25s ease-in forwards",
+        // The curves of index.css as classes: ease-cv for what enters or
+        // answers a press, ease-cv-move for what changes place on screen,
+        // ease-cv-drawer for sheets.
+        cv: "cubic-bezier(0.23, 1, 0.32, 1)",
+        "cv-move": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "cv-drawer": "cubic-bezier(0.32, 0.72, 0, 1)",
       },
     },
   },

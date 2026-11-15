@@ -45,7 +45,7 @@ export function PrelistenOverlay({ hasConsent, playbackError, playerContainerRef
 			>
 				{isTooSmall ? (
 					<div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black p-4 text-center animate-fadeIn">
-						<div className="mx-auto w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 animate-bounce mb-3">
+						<div className="mx-auto w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-3">
 							<Maximize2 size={20} />
 						</div>
 						<h2 className="text-sm font-bold text-white mb-1">Window Too Small</h2>

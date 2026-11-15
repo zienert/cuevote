@@ -20,6 +20,13 @@
   --cv-ink-3: 145 140 133;
   --cv-accent: 249 115 22;
   --cv-accent-ink: 26 13 3;
+
+  /* Motion: three curves, used by name everywhere. Things that enter or
+     answer a press ease out, things that change place on screen ease in and
+     out, a sheet follows the curve of an iOS drawer. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html {
@@ -102,33 +109,12 @@ body,
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.animate-fadeOut {
-  animation: fadeOut 0.3s ease-out forwards;
+  animation: fadeIn 0.25s var(--ease-out) both;
 }
 
 @keyframes pulse-slow {
@@ -145,24 +131,6 @@ body,
 
 .animate-pulse-slow {
   animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes bounce-subtle {
-
-  0%,
-  100% {
-    transform: translateY(-3%);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-  }
-
-  50% {
-    transform: none;
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-.animate-bounce-subtle {
-  animation: bounce-subtle 2s infinite;
 }
 
 /* Placeholders for content that is on its way (Skeletons.jsx): a soft light
@@ -200,6 +168,10 @@ body,
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn {
+    animation-name: cover-in;
+  }
+
   .skeleton {
     animation: none;
     background-image: none;
