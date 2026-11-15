@@ -199,16 +199,28 @@ body,
 
   60%,
   100% {
-    background-position: -50% 0;
+    transform: translateX(100%);
   }
 }
 
-.skeleton {
+@layer components {
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+/* The light is a layer of its own that only moves, so nothing is painted
+   again while it passes. --skeleton-delay staggers a group (Skeletons.jsx). */
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   background-image: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
-  background-size: 200% 100%;
-  background-repeat: no-repeat;
-  background-position: 150% 0;
+  transform: translateX(-100%);
   animation: skeleton-light 1.8s ease-in-out infinite;
+  animation-delay: var(--skeleton-delay, 0ms);
 }
 
 /* A picture that has just loaded takes the place of its placeholder
@@ -232,9 +244,8 @@ body,
     transition: none;
   }
 
-  .skeleton {
-    animation: none;
-    background-image: none;
+  .skeleton::after {
+    display: none;
   }
 
   .cover-in {

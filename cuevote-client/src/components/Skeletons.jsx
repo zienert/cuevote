@@ -13,7 +13,7 @@ const STEP_MS = 110;
 
 function Bone({ className = "", order = 0, children }) {
 	return (
-		<div className={`skeleton ${className}`} style={order ? { animationDelay: `${order * STEP_MS}ms` } : undefined}>
+		<div className={`skeleton ${className}`} style={order ? { '--skeleton-delay': `${order * STEP_MS}ms` } : undefined}>
 			{children}
 		</div>
 	);
