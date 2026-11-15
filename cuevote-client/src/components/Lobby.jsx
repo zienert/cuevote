@@ -692,8 +692,11 @@ export function Lobby() {
                     />
                 </div>
 
-                {/* Mobile User Profile (Visible only on small screens) */}
-                <div className="flex-none sm:hidden">
+                {/* Mobile User Profile (Visible only on small screens). The
+                    sign-in button gives way when its words are long (Polish,
+                    Hungarian, Arabic): it shortens instead of pushing the page
+                    wider than the screen. */}
+                <div className={`sm:hidden ${isSignedIn(user) ? 'flex-none' : 'min-w-0'}`}>
                     {isSignedIn(user) ? (
                         <button
                             onClick={() => setShowProfileModal(true)}
@@ -715,10 +718,10 @@ export function Lobby() {
                                         performLogin();
                                     }}
                                     onClick={performLogin}
-                                    className={`cv-hit flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-2.5 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
+                                    className={`cv-hit flex h-9 max-w-full items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-2.5 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
                                 >
-                                    <GoogleGIcon className="h-3.5 w-3.5" />
-                                    <span>{t('lobby.signInGoogle')}</span>
+                                    <GoogleGIcon className="h-3.5 w-3.5 flex-none" />
+                                    <span className="truncate">{t('lobby.signInGoogle')}</span>
                                 </button>
                             )}
                         />
@@ -848,9 +851,9 @@ export function Lobby() {
                                 {/* The lobby's one lit tile: an orange outline, the icon in
                                     orange, the words in ink. Without consent it asks for the
                                     cookies and shows a cookie. */}
-                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-3 sm:gap-4 sm:p-5">
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-2 py-3 sm:gap-4 sm:p-5">
                                     <CreateIcon className="h-7 w-7 flex-none text-accent sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden="true" />
-                                    <span className="text-center text-sm font-medium text-ink sm:text-base">
+                                    <span className="max-w-full hyphens-auto text-center text-sm font-medium text-ink [overflow-wrap:anywhere] sm:text-base">
                                         {createLabel}
                                     </span>
                                 </div>
