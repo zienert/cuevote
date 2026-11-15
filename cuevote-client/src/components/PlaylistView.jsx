@@ -63,8 +63,11 @@ export function PlaylistView({
                 setShowJumpToNow(!isVisible);
 
                 if (!isVisible) {
-                    const { top } = entry.boundingClientRect;
-                    setJumpDirection(top < 0 ? "up" : "down");
+                    // Above or below the list, not the screen: the list starts
+                    // under the room's header and notices, and a track hidden
+                    // behind those still has a positive top.
+                    const list = entry.rootBounds || scrollRef.current?.getBoundingClientRect();
+                    setJumpDirection(entry.boundingClientRect.top < (list?.top ?? 0) ? "up" : "down");
                 }
             },
             {
@@ -79,6 +82,29 @@ export function PlaylistView({
             observer.disconnect();
         };
     }, [currentTrack?.id, activeTab]);
+
+    // The arrow follows the list while the button shows. The observer above
+    // reports only when the current track enters or leaves the list, not when
+    // one fast scroll carries it from above the list to below it.
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (activeTab !== "playlist" || !showJumpToNow || !container) return undefined;
+        let frame = 0;
+        const update = () => {
+            frame = 0;
+            const currentEl = document.getElementById("playlist-current-track");
+            if (!currentEl) return;
+            setJumpDirection(currentEl.getBoundingClientRect().top < container.getBoundingClientRect().top ? "up" : "down");
+        };
+        const onScroll = () => {
+            if (!frame) frame = requestAnimationFrame(update);
+        };
+        container.addEventListener("scroll", onScroll, { passive: true });
+        return () => {
+            container.removeEventListener("scroll", onScroll);
+            if (frame) cancelAnimationFrame(frame);
+        };
+    }, [currentTrack?.id, activeTab, showJumpToNow]);
 
     useEffect(() => {
         if (activeTab !== "playlist") return;
@@ -216,9 +242,13 @@ export function PlaylistView({
 
             {/* Back to Now Button - only in playlist tab.
                 When the Android app footer is present, bottom-20 lifts this clear of
-                AppPromoFooter (~52px tall) — keep in sync if that footer's height changes. */}
+                AppPromoFooter (~52px tall) — keep in sync if that footer's height changes.
+                The margin keeps it clear of the room's bar at the bottom of a phone. */}
             {!isLibrary && showJumpToNow && currentTrack && !disableFloatingUI && createPortal(
-                <div className={`fixed ${appFooterPresent ? 'bottom-20' : 'bottom-8'} right-8 z-[100] animate-fadeIn`}>
+                <div
+                    className={`fixed ${appFooterPresent ? 'bottom-20' : 'bottom-8'} right-8 z-[100] animate-fadeIn`}
+                    style={{ marginBottom: 'var(--bottom-bar-h, 0px)' }}
+                >
                     <button
                         onClick={() => scrollToCurrent(true)}
                         className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 hover:shadow-xl transition-all hover:-translate-y-0.5 active:translate-y-0 font-medium text-sm"

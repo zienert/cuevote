@@ -8,6 +8,7 @@ import { Consent } from '../contexts/ConsentContext';
 import { Suggestions } from "./Suggestions";
 import { MarqueeText } from "./MarqueeText";
 import { Skeleton } from "./Skeleton";
+import { CoverImage } from "./CoverImage";
 import { suggesterLabel } from "../utils/participation";
 import { isAppleKey } from "../utils/trackKeys";
 
@@ -73,18 +74,14 @@ export function Track({
           {!track.title ? (
             // Metadata still loading — cleared by the 28-day cleanup, refilled on
             // join. Don't show YouTube imagery until we have fresh metadata.
-            <div className="w-16 h-16 rounded-3xl bg-neutral-700/50 animate-pulse flex-shrink-0" aria-hidden="true" />
+            <div className="skeleton w-16 h-16 rounded-3xl bg-neutral-800 flex-shrink-0" aria-hidden="true" />
           ) : (isApple ? hasAppleConsent : hasConsent) && thumbnailSrc ? (
-            <img
+            <CoverImage
               src={thumbnailSrc}
+              fallbackSrc={isApple ? undefined : buildThumbnailUrl(track.videoId)}
               alt={track.title}
-              className="w-16 h-16 rounded-3xl object-cover shadow-md flex-shrink-0"
+              className="w-16 h-16 rounded-3xl shadow-md flex-shrink-0"
               loading="lazy"
-              onError={(e) => {
-                if (isApple) return;
-                const fallback = buildThumbnailUrl(track.videoId);
-                if (e.target.src !== fallback) e.target.src = fallback;
-              }}
             />
           ) : (
             <div className="w-16 h-16 rounded-3xl bg-neutral-800 flex items-center justify-center flex-shrink-0 shadow-inner">

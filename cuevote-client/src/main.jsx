@@ -7,6 +7,7 @@ import { WebSocketProvider } from './contexts/WebSocketProvider.jsx';
 import './index.css'
 import { Lobby } from './components/Lobby.jsx'
 import ErrorBoundary from './ErrorBoundary.jsx'
+import { SpinnerScreen } from './components/Spinner.jsx'
 
 const App = lazy(() => import('./App.jsx'))
 const LegalPage = lazy(() => import('./components/LegalPage.jsx').then(m => ({ default: m.LegalPage })))
@@ -17,6 +18,8 @@ const AndroidVenuePreview = import.meta.env.DEV ? lazy(() => import('./component
 const AppleMusicLab = import.meta.env.DEV ? lazy(() => import('./components/__AppleMusicLab.jsx')) : null;
 // DEV-only: the lobby with mock YouTube and Apple Music channels, no backend needed.
 const LobbyPreview = import.meta.env.DEV ? lazy(() => import('./components/__LobbyPreview.jsx')) : null;
+// DEV-only: a room with mock data (YouTube or Apple Music, guest or host), no backend needed.
+const RoomPreview = import.meta.env.DEV ? lazy(() => import('./components/__RoomPreview.jsx')) : null;
 
 import { Consent } from './contexts/ConsentContext.jsx';
 import { Language } from './contexts/LanguageContext.jsx';
@@ -43,9 +46,12 @@ createRoot(document.getElementById('root')).render(
                   {import.meta.env.DEV && LobbyPreview ? (
                     <Route path="/__lobby-preview" element={<Suspense fallback={null}><LobbyPreview /></Suspense>} />
                   ) : null}
-                  <Route path="/room/:roomId" element={<Suspense fallback={<div className="min-h-screen bg-[#050505] flex items-center justify-center"><span className="text-neutral-500">Loading…</span></div>}><App /></Suspense>} />
-                  <Route path="/legal" element={<Suspense fallback={<div className="min-h-screen bg-[#050505]" />}><LegalPage /></Suspense>} />
-                  <Route path="/connect-ai" element={<Suspense fallback={<div className="min-h-screen bg-[#050505]" />}><ConnectAI /></Suspense>} />
+                  {import.meta.env.DEV && RoomPreview ? (
+                    <Route path="/__room-preview" element={<Suspense fallback={null}><RoomPreview /></Suspense>} />
+                  ) : null}
+                  <Route path="/room/:roomId" element={<Suspense fallback={<SpinnerScreen />}><App /></Suspense>} />
+                  <Route path="/legal" element={<Suspense fallback={<SpinnerScreen />}><LegalPage /></Suspense>} />
+                  <Route path="/connect-ai" element={<Suspense fallback={<SpinnerScreen />}><ConnectAI /></Suspense>} />
                   <Route path="/" element={<Lobby />} />
                 </Routes>
               </WebSocketProvider>

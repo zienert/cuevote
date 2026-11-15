@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { Consent } from './contexts/ConsentContext';
 import { useWebSocketContext } from './hooks/useWebSocketContext';
 import { JoinWelcome } from './components/JoinWelcome';
+import { RoomSkeleton } from './components/Skeletons';
 
 const RoomBody = lazy(() => import('./RoomBody'));
 
@@ -54,11 +55,7 @@ function App() {
   }
 
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-        <span className="text-neutral-500">Loading…</span>
-      </div>
-    }>
+    <Suspense fallback={<RoomSkeleton />}>
       <RoomBody />
     </Suspense>
   );
