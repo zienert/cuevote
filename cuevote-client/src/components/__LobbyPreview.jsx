@@ -14,15 +14,21 @@
 //   ?conn=...    the connection: connecting, or problem (it does not come: the
 //                card shows after 12 s). "Retry" connects.
 //   ?offline     the device has no internet
+//   ?design=b    the design proposal "Neu" (src/redesign-b) in place of the
+//                lobby; its channels open the room preview of the same draft
 //
 // Thumbnails are generated SVGs, so the page loads nothing from YouTube or
 // Apple, and the cookie banner stays closed without anything being accepted.
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Lobby } from './Lobby';
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
 import { Consent } from '../contexts/ConsentContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
+
+// The design proposal "Neu": the same mock channels, drawn by the draft.
+const LobbyB = lazy(() => import('../redesign-b/LobbyB'));
+const roomPreviewOf = (room) => `/__room-preview?design=b${room.provider === 'apple' ? '&provider=apple' : ''}`;
 
 const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null };
 // Before the lobby renders: it asks navigator.onLine while rendering.
@@ -45,7 +51,7 @@ function thumbnail(base, glowA, glowB) {
 // track there, so they never have a thumbnail.
 function channel(id, name, {
 	provider = 'youtube', listeners = 0, active = listeners > 0, thumb = null, flag = 'international',
-	isPublic = true, password = false, mine = false, host = 'Alex',
+	isPublic = true, password = false, mine = false, host = 'Alex', track = ['Preview', 'Preview'],
 } = {}) {
 	return {
 		id,
@@ -53,7 +59,7 @@ function channel(id, name, {
 		description: `Hosted by ${host}`,
 		color: COLOR,
 		listeners,
-		currentTrack: thumb && provider !== 'apple' ? { thumbnail: thumb, title: 'Preview', artist: 'Preview' } : null,
+		currentTrack: thumb && provider !== 'apple' ? { thumbnail: thumb, title: track[0], artist: track[1] } : null,
 		is_protected: password,
 		isActive: active,
 		language_flag: flag,
@@ -64,16 +70,16 @@ function channel(id, name, {
 }
 
 const CHANNELS = [
-	channel('yt-rooftop', 'Rooftop Saturday', { listeners: 14, thumb: thumbnail('#1a0b2e', '#ff6a3d', '#6b2bd9'), flag: 'de', host: 'Mia' }),
+	channel('yt-rooftop', 'Rooftop Saturday', { listeners: 14, thumb: thumbnail('#1a0b2e', '#ff6a3d', '#6b2bd9'), flag: 'de', host: 'Mia', track: ['Blinding Lights', 'The Weeknd'] }),
 	channel('am-late', 'Late Night Vibes', { provider: 'apple', listeners: 6, mine: true }),
-	channel('yt-kitchen', 'WG-Party Küche', { listeners: 9, thumb: thumbnail('#120d0a', '#ef4444', '#f97316'), flag: 'at', host: 'Lukas', mine: true }),
-	channel('yt-indie', 'Indie Dinner Party', { listeners: 3, thumb: thumbnail('#0b1d2e', '#2dd4bf', '#1e3a8a'), flag: 'fr', host: 'Léa' }),
-	channel('yt-lofi', 'Lo-fi Study Session with Friends', { listeners: 2, thumb: thumbnail('#10151f', '#f59e0b', '#be185d'), flag: 'nl', host: 'Noor' }),
+	channel('yt-kitchen', 'WG-Party Küche', { listeners: 9, thumb: thumbnail('#120d0a', '#ef4444', '#f97316'), flag: 'at', host: 'Lukas', mine: true, track: ['As It Was', 'Harry Styles'] }),
+	channel('yt-indie', 'Indie Dinner Party', { listeners: 3, thumb: thumbnail('#0b1d2e', '#2dd4bf', '#1e3a8a'), flag: 'fr', host: 'Léa', track: ['Dance Monkey', 'Tones and I'] }),
+	channel('yt-lofi', 'Lo-fi Study Session with Friends', { listeners: 2, thumb: thumbnail('#10151f', '#f59e0b', '#be185d'), flag: 'nl', host: 'Noor', track: ['Sunflower', 'Post Malone & Swae Lee'] }),
 	channel('am-brunch', 'Sunday Brunch Jazz', { provider: 'apple', listeners: 1, flag: 'it', host: 'Giulia' }),
 	channel('am-abiball', 'Abiball Afterparty 2026', { provider: 'apple', active: false, flag: 'de', host: 'Jonas' }),
 	channel('yt-90s', '90s Throwback', { active: false, flag: 'gb', host: 'Sam' }),
 	channel('am-birthday', 'Birthday Surprise', { provider: 'apple', isPublic: false, password: true, flag: 'de', mine: true }),
-	channel('yt-office', 'Office Friday', { listeners: 4, thumb: thumbnail('#0a1410', '#22c55e', '#0ea5e9'), isPublic: false, password: true, host: 'Kim' }),
+	channel('yt-office', 'Office Friday', { listeners: 4, thumb: thumbnail('#0a1410', '#22c55e', '#0ea5e9'), isPublic: false, password: true, host: 'Kim', track: ['Levitating', 'Dua Lipa'] }),
 	channel('am-pregame', 'Pregame', { provider: 'apple', isPublic: false, password: true, flag: 'ch', host: 'Nico' }),
 ];
 
@@ -90,6 +96,7 @@ export default function LobbyPreview() {
 	const appleOn = params.get('apple') !== '0';
 	const openCreate = params.has('create');
 	const connection = params.get('conn') || (params.has('offline') ? 'connecting' : '');
+	const design = params.get('design');
 
 	const [channels, setChannels] = useState(CHANNELS);
 	const [listType, setListType] = useState(null);
@@ -168,15 +175,17 @@ export default function LobbyPreview() {
 	}, [appleOn]);
 
 	useEffect(() => {
-		if (!openCreate || signedOut) return undefined;
+		if (!openCreate || signedOut || design === 'b') return undefined;
 		const timer = setTimeout(() => document.getElementById('lobby-item-0')?.click(), 150);
 		return () => clearTimeout(timer);
-	}, [openCreate, signedOut]);
+	}, [openCreate, signedOut, design]);
 
 	return (
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
-				<Lobby />
+				{design === 'b'
+					? <Suspense fallback={null}><LobbyB roomHref={roomPreviewOf} startCreating={openCreate && !signedOut} /></Suspense>
+					: <Lobby />}
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>
 	);
