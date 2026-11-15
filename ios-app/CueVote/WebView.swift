@@ -239,6 +239,9 @@ struct WebView: UIViewRepresentable {
 
         context.coordinator.observers.append(contentsOf: [tokenObserver, resumeObserver])
 
+        // Apple Music plays on when the app leaves the front; nothing else does.
+        context.coordinator.backgroundPlayback = BackgroundPlayback(webView: webView)
+
         // WKWebsiteDataStore.default().removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), modifiedSince: Date(timeIntervalSince1970: 0)) { }
 
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
@@ -261,6 +264,7 @@ struct WebView: UIViewRepresentable {
         var webAuthSession: ASWebAuthenticationSession?
         var codeVerifier: String?
         var observers: [NSObjectProtocol] = []
+        var backgroundPlayback: BackgroundPlayback?
 
         init(parent: WebView) { self.parent = parent }
 
