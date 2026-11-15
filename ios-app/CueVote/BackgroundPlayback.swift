@@ -11,11 +11,10 @@ import WebKit
 /// the background, and CueVote's access to the YouTube API depends on keeping
 /// them.
 ///
-/// So each time the scene leaves the front, the page is asked what it is doing.
-/// Only MusicKit JS plays Apple Music, and only it gets to go on:
-///   * MusicKit is playing: the page is left alone.
-///   * MusicKit is on the page but silent: it gets a few seconds, enough to
-///     start the next title, and is left alone if it does.
+/// So while the scene is not in front, the page is asked once a second what it
+/// holds. Only MusicKit JS plays Apple Music:
+///   * MusicKit, and no YouTube player: the page is left alone. Its player may
+///     pause and start again, from the lock screen or when the channel says so.
 ///   * anything else: all media in the page is suspended on the spot. WebKit
 ///     then refuses every play(), from the page, from a frame and from the lock
 ///     screen's play button, until the scene is back in front.
@@ -25,33 +24,30 @@ import WebKit
 /// frame could call to claim that Apple Music is playing.
 @MainActor
 final class BackgroundPlayback: NSObject {
-    private enum Playing: String {
-        /// MusicKit is playing, or loading what it was told to play.
+    private enum Holding: String {
+        /// MusicKit is on the page, and no YouTube player.
         case appleMusic
-        /// MusicKit is on the page and silent: between two titles, or paused.
-        case appleMusicSilent
         /// No MusicKit on the page, or a YouTube player next to it.
         case other
     }
 
-    /// How long a silent MusicKit may take to start its next title. WebKit keeps
-    /// a page that stopped playing awake for 10 seconds for the same purpose.
-    private static let secondsForNextTitle = 8
+    private enum Phase {
+        case inFront
+        /// Not in front: the page is asked what it holds, again and again.
+        case watching(Task<Void, Never>)
+        /// Not in front: all media stays suspended until the scene is back.
+        case suspended
+    }
 
     /// Runs in the main frame, in the page's own world. A YouTube player on the
-    /// page always answers "other", whatever MusicKit says.
+    /// page always answers "other", whatever else is there.
     private static let question = """
     (function () {
         try {
             if (document.querySelector('iframe[src*="youtube"]')) return 'other';
             var kit = window.MusicKit;
             var music = kit && typeof kit.getInstance === 'function' ? kit.getInstance() : null;
-            if (!music) return 'other';
-            var states = kit.PlaybackStates || {};
-            var state = music.playbackState;
-            var loading = typeof state === 'number'
-                && [states.loading, states.waiting, states.seeking, states.stalled].indexOf(state) !== -1;
-            return music.isPlaying || loading ? 'appleMusic' : 'appleMusicSilent';
+            return music ? 'appleMusic' : 'other';
         } catch (e) {
             return 'other';
         }
@@ -60,25 +56,17 @@ final class BackgroundPlayback: NSObject {
 
     private weak var webView: WKWebView?
     private let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "CueVote", category: "BackgroundPlayback")
-
-    /// Whether MusicKit was playing when the scene stopped being in front.
-    /// WebKit pauses a video the moment the scene is in the background, so by
-    /// then a music video no longer counts as playing.
-    private var playingWhenLeft = false
-    /// Goes up each time the scene is back in front. An answer from the page
-    /// that belongs to an earlier absence is dropped.
-    private var absence = 0
-    private var suspended = false
+    private var phase = Phase.inFront
+    /// Held from entering the background until the first answer is in.
     private var backgroundTask = UIBackgroundTaskIdentifier.invalid
 
     init(webView: WKWebView) {
         self.webView = webView
         super.init()
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(sceneWillDeactivate), name: UIScene.willDeactivateNotification, object: nil)
         center.addObserver(self, selector: #selector(sceneDidEnterBackground), name: UIScene.didEnterBackgroundNotification, object: nil)
-        center.addObserver(self, selector: #selector(sceneWillEnterForeground), name: UIScene.willEnterForegroundNotification, object: nil)
-        center.addObserver(self, selector: #selector(sceneDidActivate), name: UIScene.didActivateNotification, object: nil)
+        center.addObserver(self, selector: #selector(sceneIsBack), name: UIScene.willEnterForegroundNotification, object: nil)
+        center.addObserver(self, selector: #selector(sceneIsBack), name: UIScene.didActivateNotification, object: nil)
     }
 
     /// WebKit goes by the scene its view is in; so does this.
@@ -87,103 +75,72 @@ final class BackgroundPlayback: NSObject {
         return notification.object as AnyObject? === scene
     }
 
-    /// Asks the page what it is playing. The question is on its way before this
-    /// returns, and answers come back in the order the questions were asked.
-    private func ask(_ answer: @escaping @MainActor (Playing) -> Void) {
-        guard let webView, CueVoteOrigin.isTrusted(webView.url) else {
-            answer(.other)
-            return
-        }
-        webView.evaluateJavaScript(Self.question) { result, _ in
-            answer((result as? String).flatMap(Playing.init(rawValue:)) ?? .other)
-        }
-    }
-
-    // About to leave the front: Home, the app switcher, Control Center, a lock.
-    @objc private func sceneWillDeactivate(_ notification: Notification) {
-        guard concerns(notification) else { return }
-        let absence = self.absence
-        playingWhenLeft = false
-        ask { [weak self] playing in
-            guard let self, absence == self.absence else { return }
-            self.playingWhenLeft = playing == .appleMusic
-        }
-    }
-
     @objc private func sceneDidEnterBackground(_ notification: Notification) {
-        guard concerns(notification) else { return }
-        // iOS suspends an app that plays nothing within seconds. The decision
-        // has to be made first: a page left as it is could be started again
+        guard concerns(notification), case .inFront = phase else { return }
+        // iOS suspends an app that plays nothing within seconds. The first
+        // answer has to be in before that: a page left as it is could be started
         // from the lock screen. Out of time without one, nothing plays on.
-        endBackgroundTask()
         backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "Background playback") { [weak self] in
             self?.suspendMedia()
             self?.endBackgroundTask()
         }
-        decide(absence: absence, waited: 0)
+        phase = .watching(Task { [weak self] in
+            var answered = false
+            while !Task.isCancelled {
+                guard let self else { return }
+                let holding = await self.ask()
+                // Back in front, or suspended, while the page was answering.
+                guard !Task.isCancelled else { return }
+                guard holding == .appleMusic else {
+                    self.suspendMedia()
+                    return
+                }
+                if !answered {
+                    answered = true
+                    self.log.info("Apple Music on the page: it is left to play")
+                    self.endBackgroundTask()
+                }
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+            }
+        })
     }
 
-    private func decide(absence: Int, waited: Int) {
-        ask { [weak self] playing in
-            guard let self, absence == self.absence, !self.suspended else { return }
-            switch playing {
-            case .other:
-                self.suspendMedia()
-            case .appleMusic:
-                self.leaveToPlay()
-            case .appleMusicSilent where self.playingWhenLeft:
-                self.leaveToPlay()
-            case .appleMusicSilent where waited < Self.secondsForNextTitle:
-                Task { @MainActor [weak self] in
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self?.decide(absence: absence, waited: waited + 1)
-                }
-            case .appleMusicSilent:
-                self.suspendMedia()
+    @objc private func sceneIsBack(_ notification: Notification) {
+        guard concerns(notification) else { return }
+        switch phase {
+        case .inFront:
+            break
+        case .watching(let watch):
+            watch.cancel()
+        case .suspended:
+            // WebKit starts again what was playing when it was suspended.
+            log.info("Back in front: the page's media is resumed")
+            webView?.setAllMediaPlaybackSuspended(false, completionHandler: nil)
+        }
+        phase = .inFront
+        endBackgroundTask()
+    }
+
+    /// Asks the page what it holds. A page that is not CueVote's, or does not
+    /// answer, holds nothing that may play on.
+    private func ask() async -> Holding {
+        guard let webView, CueVoteOrigin.isTrusted(webView.url) else { return .other }
+        return await withCheckedContinuation { continuation in
+            webView.evaluateJavaScript(Self.question) { answer, _ in
+                continuation.resume(returning: (answer as? String).flatMap(Holding.init(rawValue:)) ?? .other)
             }
         }
     }
 
-    private func leaveToPlay() {
-        log.info("Apple Music is playing: the page is left to play on")
-        endBackgroundTask()
-    }
-
-    /// Stops all media in the page and keeps it stopped until resumeMedia().
+    /// Stops all media in the page and keeps it stopped until the scene is back.
     private func suspendMedia() {
-        guard let webView, !suspended else {
-            endBackgroundTask()
-            return
+        guard case .watching(let watch) = phase else { return }
+        watch.cancel()
+        phase = .suspended
+        log.info("No Apple Music on the page: its media is suspended")
+        webView?.setAllMediaPlaybackSuspended(true) { [weak self] in
+            self?.endBackgroundTask()
         }
-        suspended = true
-        log.info("No Apple Music playing: the page's media is suspended")
-        let absence = self.absence
-        webView.setAllMediaPlaybackSuspended(true) { [weak self] in
-            guard let self, absence == self.absence else { return }
-            self.endBackgroundTask()
-        }
-    }
-
-    @objc private func sceneWillEnterForeground(_ notification: Notification) {
-        guard concerns(notification) else { return }
-        absence += 1
-        playingWhenLeft = false
-        endBackgroundTask()
-        resumeMedia()
-    }
-
-    @objc private func sceneDidActivate(_ notification: Notification) {
-        guard concerns(notification) else { return }
-        absence += 1
-        playingWhenLeft = false
-    }
-
-    /// WebKit starts again what was playing when it was suspended.
-    private func resumeMedia() {
-        guard suspended else { return }
-        suspended = false
-        log.info("Back in front: the page's media is resumed")
-        webView?.setAllMediaPlaybackSuspended(false, completionHandler: nil)
     }
 
     private func endBackgroundTask() {
