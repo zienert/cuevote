@@ -83,3 +83,20 @@ StatusLine.propTypes = {
 	spin: PropTypes.bool,
 	children: PropTypes.node,
 };
+
+/** A slim bar above the playlist: one line everyone in the room should know. */
+export function StatusBar({ icon: Icon, children }) {
+	return (
+		<div role="status" className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2">
+			<p className="mx-auto flex max-w-3xl items-center justify-center gap-2 text-xs leading-snug text-neutral-300">
+				{Icon && <Icon size={14} className="shrink-0 text-orange-400" aria-hidden="true" />}
+				<span>{children}</span>
+			</p>
+		</div>
+	);
+}
+
+StatusBar.propTypes = {
+	icon: PropTypes.elementType,
+	children: PropTypes.node,
+};

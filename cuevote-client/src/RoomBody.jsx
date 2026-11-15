@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { deviceDetection } from './utils/deviceDetection';
-import { Volume2, VolumeX, ArrowLeft, Lock, X, Maximize2, WifiOff, RefreshCw, AlertTriangle } from "lucide-react";
+import { Volume2, VolumeX, ArrowLeft, Lock, X, Maximize2, WifiOff, RefreshCw, AlertTriangle, CirclePause, Monitor } from "lucide-react";
 import { Consent } from './contexts/ConsentContext';
 import { ConsentContext } from './contexts/ConsentContextValue.js';
 import { Language } from './contexts/LanguageContext';
@@ -13,6 +13,7 @@ import { Player } from "./components/Player";
 import { AppleMusicHostPlayer } from "./components/AppleMusicHostPlayer";
 import { AppleContentNotice } from "./components/AppleContentNotice";
 import { ApplePreviewOverlay } from "./components/ApplePreviewOverlay";
+import { StatusBar } from "./components/PlayerStatus";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
 import { useApplePreview } from "./hooks/useApplePreview";
 import { parseTrackKey } from "./utils/trackKeys";
@@ -1870,14 +1871,10 @@ function RoomBody() {
             {isAppleRoom && !appleConsent && <AppleContentNotice onAccept={giveAppleConsent} />}
             {/* An owner on a phone: nothing plays here, and nothing said so. */}
             {isAppleRoom && isOwner && isForcedVenueMode && (
-              <p className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2 text-center text-xs text-neutral-300 leading-snug">
-                {t('appleMusic.playsOnComputer')}
-              </p>
+              <StatusBar icon={Monitor}>{t('appleMusic.playsOnComputer')}</StatusBar>
             )}
             {isAppleRoom && waitingForHost && !(isOwner && isForcedVenueMode) && (
-              <p className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2 text-center text-xs text-amber-300 leading-snug">
-                {t('appleMusic.waitingForHost')}
-              </p>
+              <StatusBar icon={CirclePause}>{t('appleMusic.waitingForHost')}</StatusBar>
             )}
             <div className="flex-1 min-h-0 overflow-hidden">
             <PlaylistView
