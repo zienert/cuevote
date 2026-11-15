@@ -322,9 +322,9 @@ export function Lobby() {
     const handleCreateRoomClick = () => {
         if (!isSignedIn(user)) {
             if (!hasConsent) {
-                alert(t('lobby.acceptCookies') + "!");
+                alert(t('lobby.acceptCookies'));
             } else {
-                alert(t('lobby.loginToCreate') + "!");
+                alert(t('lobby.loginToCreate'));
             }
             return;
         }

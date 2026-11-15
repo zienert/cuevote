@@ -90,7 +90,7 @@ export function RoomSkeleton({ label = "Loading" }) {
 				<div className="mx-auto max-w-3xl space-y-1 px-3 py-4">
 					<Bone className="mb-3 ml-3 h-3 w-28 rounded-full bg-card" />
 					{[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-						<Bone key={i} order={i + 1} className="flex items-center gap-3 rounded-xl bg-card px-3 py-2.5">
+						<Bone key={i} order={i + 1} className="flex items-center gap-3 rounded-xl bg-card px-3 py-2">
 							<div className="h-12 w-12 flex-none rounded-lg bg-white/[0.06]" />
 							<div className="min-w-0 flex-1 space-y-2.5">
 								<div className="h-3.5 w-3/5 rounded-full bg-white/[0.07]" />

@@ -62,7 +62,7 @@ export function Track({
   return (
     <div
       onClick={() => onToggleExpand(track.id)}
-      className={`cursor-pointer overflow-hidden rounded-xl px-3 py-2.5 transition-colors duration-150 ${isActive || isExpanded
+      className={`cursor-pointer overflow-hidden rounded-xl px-3 py-2 transition-colors duration-150 ${isActive || isExpanded
         ? "bg-raised"
         : "bg-card hover:bg-raised"
         } ${isActive
