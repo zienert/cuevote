@@ -207,7 +207,9 @@ export default {
 		"delete": "Obriši",
 		"watch": "Gledaj na YouTube-u",
 		"recommend": "Преузми предлоге",
-		"guest": "Гост"
+		"guest": "Гост",
+		"voteUp": "Glasaj za",
+		"voteDown": "Glasaj protiv"
 	},
 	"library": {
 		"searchPlaceholder": "Traži u biblioteci...",

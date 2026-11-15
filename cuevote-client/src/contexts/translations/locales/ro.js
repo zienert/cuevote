@@ -207,7 +207,9 @@ export default {
 		"delete": "Șterge",
 		"watch": "Vezi pe YouTube",
 		"recommend": "Obține sugestii",
-		"guest": "Invitat"
+		"guest": "Invitat",
+		"voteUp": "Votează pentru",
+		"voteDown": "Votează împotrivă"
 	},
 	"library": {
 		"searchPlaceholder": "Caută în bibliotecă...",

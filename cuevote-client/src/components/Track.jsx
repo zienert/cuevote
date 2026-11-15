@@ -56,7 +56,8 @@ export function Track({
   // Next to the person icon a guest's tag says enough.
   const suggesterShort = track.suggestedByIsGuest && track.suggestedByGuestTag ? track.suggestedByGuestTag : suggester;
   const showVotes = !readOnly && votesEnabled && !isActive;
-  const voteButton = "flex h-10 w-10 items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 sm:h-9 sm:w-9";
+  // A fingertip needs 44 px; a mouse pointer gets by with less.
+  const voteButton = "flex h-11 w-11 items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 sm:h-9 sm:w-9";
   const actionButton = "cv-btn h-11 w-full";
 
   return (
@@ -75,6 +76,18 @@ export function Track({
         }`}
     >
       <div className="flex items-center gap-3">
+        {/* The cover and the title are the button that opens the row: a
+            keyboard, a screen reader and a TV remote reach it. A click
+            anywhere else in the row does the same. */}
+        <button
+          type="button"
+          aria-expanded={isExpanded}
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleExpand(track.id);
+          }}
+          className="-my-2 flex min-w-0 flex-1 items-center gap-3 rounded-lg py-2 text-left focus-visible:-outline-offset-2"
+        >
         {!track.title ? (
           // Metadata still loading — cleared by the 28-day cleanup, refilled on
           // join. Don't show YouTube imagery until we have fresh metadata.
@@ -93,19 +106,19 @@ export function Track({
           </div>
         )}
 
-        <div className="min-w-0 flex-1">
+        <span className="block min-w-0 flex-1">
           {track.title ? (
             // One line in the list; the whole title once the row is open.
-            <h3 className={`text-[15px] font-medium leading-5 text-ink ${isExpanded ? "break-words" : "truncate"}`}>
+            <span className={`block text-[15px] font-medium leading-5 text-ink ${isExpanded ? "break-words" : "truncate"}`}>
               {track.title}
-            </h3>
+            </span>
           ) : (
             // Title cleared after YouTube's 28-day metadata limit — re-fetched
             // on join. Skeleton bridges the brief gap instead of showing "null".
             <Skeleton className="h-4 w-40 max-w-full" />
           )}
           {track.artist ? (
-            <p className="mt-0.5 flex min-w-0 items-center gap-2 text-[13px] leading-5 text-ink-2">
+            <span className="mt-0.5 flex min-w-0 items-center gap-2 text-[13px] leading-5 text-ink-2">
               <span className={isExpanded ? "min-w-0 break-words" : "truncate"}>{track.artist}</span>
               {/* Phones: who suggested it sits here, where a row with votes
                   has no room for it on the right. */}
@@ -115,17 +128,18 @@ export function Track({
                   <span className="max-w-[5.5rem] truncate">{suggesterShort}</span>
                 </span>
               )}
-            </p>
+            </span>
           ) : isActive ? null : (
             <Skeleton className="mt-1.5 h-3.5 w-24 max-w-full" />
           )}
-        </div>
+        </span>
 
         {suggester && (
           <span className={`max-w-[6.5rem] flex-shrink-0 truncate text-xs text-ink-3 ${showVotes ? "max-sm:hidden" : ""}`}>
             {suggester}
           </span>
         )}
+        </button>
 
         {showVotes && (
           <div className="flex flex-shrink-0 items-center">
@@ -135,12 +149,15 @@ export function Track({
                 onVote(track.id, "up");
               }}
               aria-pressed={vote === "up"}
+              aria-label={t('track.voteUp')}
+              title={t('track.voteUp')}
               className={`${voteButton} ${vote === "up"
                 ? "bg-accent text-accent-ink"
                 : "text-ink-2 hover:bg-page hover:text-ink"
                 }`}
             >
-              <ThumbsUp size={18} strokeWidth={1.75} />
+              {/* A vote given shows in the shape too, not in colour alone. */}
+              <ThumbsUp size={18} strokeWidth={1.75} fill={vote === "up" ? "currentColor" : "none"} fillOpacity={0.35} />
             </button>
 
             <span className={`w-6 text-center text-sm font-semibold tabular-nums sm:w-7 ${vote === "up" ? "text-accent" : score > 0 ? "text-ink" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
@@ -153,12 +170,14 @@ export function Track({
                 onVote(track.id, "down");
               }}
               aria-pressed={vote === "down"}
+              aria-label={t('track.voteDown')}
+              title={t('track.voteDown')}
               className={`${voteButton} ${vote === "down"
                 ? "bg-ink text-page"
                 : "text-ink-2 hover:bg-page hover:text-ink"
                 }`}
             >
-              <ThumbsDown size={18} strokeWidth={1.75} />
+              <ThumbsDown size={18} strokeWidth={1.75} fill={vote === "down" ? "currentColor" : "none"} fillOpacity={0.35} />
             </button>
           </div>
         )}

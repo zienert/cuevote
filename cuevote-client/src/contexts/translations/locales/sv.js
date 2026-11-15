@@ -207,7 +207,9 @@ export default {
 		"delete": "Ta bort",
 		"watch": "Titta på YouTube",
 		"recommend": "Hämta förslag",
-		"guest": "Gäst"
+		"guest": "Gäst",
+		"voteUp": "Rösta upp",
+		"voteDown": "Rösta ned"
 	},
 	"library": {
 		"searchPlaceholder": "Sök i biblioteket...",

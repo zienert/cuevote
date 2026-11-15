@@ -207,7 +207,9 @@ export default {
 		"delete": "删除",
 		"watch": "在 YouTube 观看",
 		"recommend": "获取推荐",
-		"guest": "访客"
+		"guest": "访客",
+		"voteUp": "投赞成票",
+		"voteDown": "投反对票"
 	},
 	"library": {
 		"searchPlaceholder": "搜索媒体库...",

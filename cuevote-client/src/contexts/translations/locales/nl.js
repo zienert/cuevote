@@ -214,7 +214,9 @@ export default {
 		"delete": "Verwijder",
 		"watch": "Op YouTube",
 		"recommend": "Krijg Suggesties",
-		"guest": "Gast"
+		"guest": "Gast",
+		"voteUp": "Omhoog stemmen",
+		"voteDown": "Omlaag stemmen"
 	},
 	"library": {
 		"searchPlaceholder": "Zoek in bibliotheek...",

@@ -207,7 +207,9 @@ export default {
 		"delete": "Sil",
 		"watch": "YouTube'da İzle",
 		"recommend": "Önerileri al",
-		"guest": "Misafir"
+		"guest": "Misafir",
+		"voteUp": "Olumlu oy ver",
+		"voteDown": "Olumsuz oy ver"
 	},
 	"library": {
 		"searchPlaceholder": "Kütüphanede ara...",

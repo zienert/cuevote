@@ -207,7 +207,9 @@ export default {
 		"delete": "刪除",
 		"watch": "在 YouTube 觀看",
 		"recommend": "獲取推薦",
-		"guest": "訪客"
+		"guest": "訪客",
+		"voteUp": "投贊成票",
+		"voteDown": "投反對票"
 	},
 	"library": {
 		"searchPlaceholder": "搜尋媒體庫...",

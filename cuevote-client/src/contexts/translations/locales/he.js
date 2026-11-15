@@ -207,7 +207,9 @@ export default {
 		"delete": "מחק",
 		"watch": "צפה ב-YouTube",
 		"recommend": "קבל הצעות",
-		"guest": "אורח"
+		"guest": "אורח",
+		"voteUp": "הצבעה בעד",
+		"voteDown": "הצבעה נגד"
 	},
 	"library": {
 		"searchPlaceholder": "חפש בספרייה...",

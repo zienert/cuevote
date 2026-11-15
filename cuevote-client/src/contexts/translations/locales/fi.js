@@ -207,7 +207,9 @@ export default {
 		"delete": "Poista",
 		"watch": "Katso YouTubessa",
 		"recommend": "Hae ehdotuksia",
-		"guest": "Vieras"
+		"guest": "Vieras",
+		"voteUp": "Äänestä puolesta",
+		"voteDown": "Äänestä vastaan"
 	},
 	"library": {
 		"searchPlaceholder": "Etsi kirjastosta...",

@@ -207,7 +207,9 @@ export default {
 		"delete": "हटाएं",
 		"watch": "YouTube पर देखें",
 		"recommend": "सुझाव प्राप्त करें",
-		"guest": "मेहमान"
+		"guest": "मेहमान",
+		"voteUp": "पक्ष में वोट करें",
+		"voteDown": "विपक्ष में वोट करें"
 	},
 	"library": {
 		"searchPlaceholder": "लाइब्रेरी खोजें...",

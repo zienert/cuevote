@@ -207,7 +207,9 @@ export default {
 		"delete": "ลบ",
 		"watch": "ดูบน YouTube",
 		"recommend": "รับคำแนะนำ",
-		"guest": "แขก"
+		"guest": "แขก",
+		"voteUp": "โหวตเห็นด้วย",
+		"voteDown": "โหวตไม่เห็นด้วย"
 	},
 	"library": {
 		"searchPlaceholder": "ค้นหาคลังวิดีโอ...",

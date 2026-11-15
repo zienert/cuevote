@@ -207,7 +207,9 @@ export default {
 		"delete": "Hapus",
 		"watch": "Tonton di YouTube",
 		"recommend": "Dapatkan saran",
-		"guest": "Tamu"
+		"guest": "Tamu",
+		"voteUp": "Beri suara setuju",
+		"voteDown": "Beri suara tidak setuju"
 	},
 	"library": {
 		"searchPlaceholder": "Cari pustaka...",

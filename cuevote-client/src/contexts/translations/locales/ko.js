@@ -207,7 +207,9 @@ export default {
 		"delete": "삭제",
 		"watch": "YouTube에서 보기",
 		"recommend": "추천 받기",
-		"guest": "게스트"
+		"guest": "게스트",
+		"voteUp": "찬성 투표",
+		"voteDown": "반대 투표"
 	},
 	"library": {
 		"searchPlaceholder": "라이브러리 검색...",

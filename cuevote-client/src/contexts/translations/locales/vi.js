@@ -207,7 +207,9 @@ export default {
 		"delete": "Xóa",
 		"watch": "Xem trên YouTube",
 		"recommend": "Nhận gợi ý",
-		"guest": "Khách"
+		"guest": "Khách",
+		"voteUp": "Bỏ phiếu thuận",
+		"voteDown": "Bỏ phiếu chống"
 	},
 	"library": {
 		"searchPlaceholder": "Tìm kiếm thư viện...",

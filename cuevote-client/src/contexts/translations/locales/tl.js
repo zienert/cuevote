@@ -207,7 +207,9 @@ export default {
 		"delete": "Tanggalin",
 		"watch": "Panoorin sa YouTube",
 		"recommend": "Kumuha ng mga mungkahi",
-		"guest": "Bisita"
+		"guest": "Bisita",
+		"voteUp": "Bumoto pabor",
+		"voteDown": "Bumoto laban"
 	},
 	"library": {
 		"searchPlaceholder": "Maghanap sa library...",

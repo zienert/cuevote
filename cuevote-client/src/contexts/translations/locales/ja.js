@@ -207,7 +207,9 @@ export default {
 		"delete": "削除",
 		"watch": "YouTubeで見る",
 		"recommend": "おすすめを取得",
-		"guest": "ゲスト"
+		"guest": "ゲスト",
+		"voteUp": "賛成に投票",
+		"voteDown": "反対に投票"
 	},
 	"library": {
 		"searchPlaceholder": "ライブラリを検索...",

@@ -207,7 +207,9 @@ export default {
 		"delete": "Törlés",
 		"watch": "Megtekintés YouTube-on",
 		"recommend": "Javaslatok kérése",
-		"guest": "Vendég"
+		"guest": "Vendég",
+		"voteUp": "Szavazás mellette",
+		"voteDown": "Szavazás ellene"
 	},
 	"library": {
 		"searchPlaceholder": "Keresés a könyvtárban...",

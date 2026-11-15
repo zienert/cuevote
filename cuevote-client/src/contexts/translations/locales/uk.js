@@ -207,7 +207,9 @@ export default {
 		"delete": "Видалити",
 		"watch": "Дивитися на YouTube",
 		"recommend": "Отримати рекомендації",
-		"guest": "Гість"
+		"guest": "Гість",
+		"voteUp": "Голосувати за",
+		"voteDown": "Голосувати проти"
 	},
 	"library": {
 		"searchPlaceholder": "Пошук у бібліотеці...",

@@ -207,7 +207,9 @@ export default {
 		"delete": "Slet",
 		"watch": "Se på YouTube",
 		"recommend": "Hent forslag",
-		"guest": "Gæst"
+		"guest": "Gæst",
+		"voteUp": "Stem op",
+		"voteDown": "Stem ned"
 	},
 	"library": {
 		"searchPlaceholder": "Søg i bibliotek...",

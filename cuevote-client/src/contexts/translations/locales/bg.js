@@ -207,7 +207,9 @@ export default {
 		"delete": "Изтрий",
 		"watch": "Гледай в YouTube",
 		"recommend": "Получи препоръки",
-		"guest": "Гост"
+		"guest": "Гост",
+		"voteUp": "Гласувай за",
+		"voteDown": "Гласувай против"
 	},
 	"library": {
 		"searchPlaceholder": "Търсене в библиотеката...",

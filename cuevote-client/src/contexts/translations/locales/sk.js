@@ -207,7 +207,9 @@ export default {
 		"delete": "Zmazať",
 		"watch": "Sledovať na YouTube",
 		"recommend": "Získať návrhy",
-		"guest": "Hosť"
+		"guest": "Hosť",
+		"voteUp": "Hlasovať za",
+		"voteDown": "Hlasovať proti"
 	},
 	"library": {
 		"searchPlaceholder": "Hľadať v knižnici...",

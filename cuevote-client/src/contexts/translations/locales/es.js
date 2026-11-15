@@ -214,7 +214,9 @@ export default {
 		"delete": "Eliminar",
 		"watch": "En YouTube",
 		"recommend": "Obtener Sugerencias",
-		"guest": "Invitado"
+		"guest": "Invitado",
+		"voteUp": "Votar a favor",
+		"voteDown": "Votar en contra"
 	},
 	"library": {
 		"searchPlaceholder": "Buscar en biblioteca...",

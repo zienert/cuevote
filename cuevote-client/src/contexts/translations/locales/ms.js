@@ -207,7 +207,9 @@ export default {
 		"delete": "Padam",
 		"watch": "Tonton di YouTube",
 		"recommend": "Dapatkan cadangan",
-		"guest": "Tetamu"
+		"guest": "Tetamu",
+		"voteUp": "Undi sokong",
+		"voteDown": "Undi bantah"
 	},
 	"library": {
 		"searchPlaceholder": "Cari pustaka...",

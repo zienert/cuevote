@@ -207,7 +207,9 @@ export default {
 		"delete": "Διαγραφή",
 		"watch": "Δείτε στο YouTube",
 		"recommend": "Λήψη προτάσεων",
-		"guest": "Επισκέπτης"
+		"guest": "Επισκέπτης",
+		"voteUp": "Ψήφος υπέρ",
+		"voteDown": "Ψήφος κατά"
 	},
 	"library": {
 		"searchPlaceholder": "Αναζήτηση βιβλιοθήκης...",
