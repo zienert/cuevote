@@ -1,0 +1,100 @@
+/* Design proposal B ("Neu"): a light look for the lobby and a room.
+   Loaded only by the DEV previews (see main.jsx), never by the live app.
+
+   The colour classes are the app's own (page, card, raised, ink, accent):
+   inside .b-root their variables carry light values. */
+
+html[data-design="b"],
+html[data-design="b"] body,
+html[data-design="b"] #root {
+  background-color: #fff;
+}
+
+.b-root {
+  /* Paper, two steps of cool grey, ink. */
+  --cv-page: 255 255 255;
+  --cv-card: 244 244 246;
+  --cv-raised: 232 232 236;
+  --cv-ink: 20 20 24;
+  --cv-ink-2: 62 62 72;
+  --cv-ink-3: 104 104 116;
+  /* One hot orange: fills carry black text (6.7 : 1). */
+  --cv-accent: 255 90 0;
+  --cv-accent-ink: 20 8 0;
+  /* The same orange as text on paper (5 : 1). */
+  --b-accent-text: 199 68 0;
+  /* The only dark surface: a screen (the video, a QR code's frame). */
+  --b-stage: 17 15 21;
+
+  color-scheme: light;
+  color: rgb(var(--cv-ink));
+  background-color: rgb(var(--cv-page));
+  font-family: 'Sofia Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: lining-nums;
+}
+
+/* Headlines and the chart's numerals: narrow and heavy, so that a long German
+   word still fits a phone at a large size. */
+.b-display {
+  font-family: 'Sofia Sans Extra Condensed Variable', 'Sofia Sans Variable', 'Arial Narrow', sans-serif;
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+.b-accent-text {
+  color: rgb(var(--b-accent-text));
+}
+
+.b-stage {
+  background-color: rgb(var(--b-stage));
+  color: #fff;
+}
+
+/* A still frame in place of the video, as in the app's own previews. */
+.b-video-still {
+  background:
+    radial-gradient(120% 90% at 20% 15%, #3b1d5e 0%, transparent 60%),
+    radial-gradient(110% 90% at 85% 90%, #7c2d12 0%, transparent 55%),
+    #0b0b10;
+}
+
+.b-root :where(button, a, [role="button"]):focus-visible {
+  outline: 2px solid rgb(var(--cv-ink));
+  outline-offset: 2px;
+}
+
+/* The page arrives once: a short rise, the parts a moment apart. */
+@keyframes b-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.b-rise {
+  animation: b-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* A number that has just changed. */
+@keyframes b-tick {
+  from {
+    transform: translateY(35%);
+    opacity: 0;
+  }
+}
+
+.b-tick {
+  display: inline-block;
+  animation: b-tick 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .b-rise,
+  .b-tick {
+    animation: none;
+  }
+}
