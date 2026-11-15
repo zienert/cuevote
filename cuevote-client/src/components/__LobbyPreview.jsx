@@ -174,10 +174,11 @@ export default function LobbyPreview() {
 	}, [outerConsent]);
 	const consent = useMemo(() => ({
 		...outerConsent,
-		hasConsent: !signedOut,
+		// ?signedOut&consent: cookies accepted, not signed in yet.
+		hasConsent: !signedOut || params.has('consent'),
 		showBanner: false,
 		askForConsent: () => {},
-	}), [outerConsent, signedOut]);
+	}), [outerConsent, signedOut, params]);
 
 	// The dialog offers Apple Music when the token route answers JSON.
 	useLayoutEffect(() => {
