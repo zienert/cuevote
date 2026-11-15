@@ -2,13 +2,30 @@
 // Copyright (c) 2026 Julian Zienert
 import React from "react";
 import PropTypes from "prop-types";
+import { Spinner } from "./Spinner";
 
-// What a player shows in place of playback, and the lobby in place of its
-// channels. Two weights: a card when there is something to do (sign in, start,
-// try again), a quiet line when there is not (loading, nothing queued).
+// What the app shows in place of what belongs there: a player that cannot
+// play, a lobby or a channel that has no connection. Three weights:
+// - waiting, for what passes on its own: the ring over one quiet line;
+// - a card, when there is something to do (sign in, start, try again);
+// - a slim bar, when the page is there and one line is worth knowing.
+
+/** Something that passes on its own: the ring over one quiet line. */
+export function StatusWaiting({ children }) {
+	return (
+		<div className="flex flex-col items-center gap-4 text-center">
+			<Spinner />
+			{children && <p className="text-sm text-neutral-400">{children}</p>}
+		</div>
+	);
+}
+
+StatusWaiting.propTypes = {
+	children: PropTypes.node,
+};
 
 /**
- * A card over the player: a symbol, what is going on, what to do about it.
+ * A card: a symbol, what is going on, what to do about it.
  * `tone="attention"` marks a problem.
  */
 export function StatusCard({ icon: Icon, tone = "neutral", title, text, children }) {
@@ -65,11 +82,11 @@ StatusButton.propTypes = {
 	children: PropTypes.node,
 };
 
-/** One quiet line, for states that pass on their own or need nothing. */
-export function StatusLine({ icon: Icon, spin = false, children }) {
+/** One quiet line, for a state that needs nothing. */
+export function StatusLine({ icon: Icon, children }) {
 	return (
 		<p className="flex items-center justify-center gap-2.5 text-sm text-neutral-400">
-			{Icon && <Icon size={18} className={spin ? "animate-spin" : ""} aria-hidden="true" />}
+			{Icon && <Icon size={18} aria-hidden="true" />}
 			<span>{children}</span>
 		</p>
 	);
@@ -77,23 +94,48 @@ export function StatusLine({ icon: Icon, spin = false, children }) {
 
 StatusLine.propTypes = {
 	icon: PropTypes.elementType,
-	spin: PropTypes.bool,
 	children: PropTypes.node,
 };
 
-/** A slim bar above the playlist: one line everyone in the room should know. */
-export function StatusBar({ icon: Icon, children }) {
+/**
+ * A slim bar under the header or above the playlist: one line everyone in the
+ * room should know. `busy` shows the ring in place of the symbol; `action` is
+ * a small button at the end of the line.
+ */
+export function StatusBar({ icon: Icon, busy = false, action, children }) {
 	return (
 		<div role="status" className="flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2">
-			<p className="mx-auto flex max-w-3xl items-center justify-center gap-2 text-xs leading-snug text-neutral-300">
-				{Icon && <Icon size={14} className="shrink-0 text-orange-400" aria-hidden="true" />}
+			<div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs leading-snug text-neutral-300">
+				{busy
+					? <Spinner className="h-3.5 w-3.5" />
+					: Icon && <Icon size={14} className="shrink-0 text-orange-400" aria-hidden="true" />}
 				<span>{children}</span>
-			</p>
+				{action}
+			</div>
 		</div>
 	);
 }
 
 StatusBar.propTypes = {
 	icon: PropTypes.elementType,
+	busy: PropTypes.bool,
+	action: PropTypes.node,
+	children: PropTypes.node,
+};
+
+/** The action of a status bar. */
+export function StatusBarButton({ children, ...props }) {
+	return (
+		<button
+			type="button"
+			className="shrink-0 rounded-full bg-white/10 px-2.5 py-0.5 font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+			{...props}
+		>
+			{children}
+		</button>
+	);
+}
+
+StatusBarButton.propTypes = {
 	children: PropTypes.node,
 };

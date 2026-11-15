@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (c) 2026 Julian Zienert
 import React from 'react';
-import { Loader2, Music, PlayCircle } from 'lucide-react';
+import { Music, PlayCircle } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
+import { Spinner } from './Spinner';
 
 // The first screen of a YouTube channel for someone who has not agreed yet:
 // what the channel loads from YouTube and the button to agree and join.
@@ -34,7 +35,7 @@ export function JoinWelcome({ provider, onAccept }) {
 						</div>
 					) : (
 						<p className="flex items-center justify-center gap-2 text-neutral-400 text-sm" role="status">
-							<Loader2 size={16} className="animate-spin" />
+							<Spinner className="h-4 w-4" />
 							{t('join.checking')}
 						</p>
 					)}

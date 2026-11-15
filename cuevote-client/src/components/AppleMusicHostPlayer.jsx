@@ -2,11 +2,11 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { CircleAlert, CloudOff, Link2, ListMusic, Loader2, MonitorSmartphone, Play, RotateCw } from "lucide-react";
+import { CircleAlert, CloudOff, Link2, ListMusic, MonitorSmartphone, Play, RotateCw } from "lucide-react";
 import { Language } from "../contexts/LanguageContext";
 import { useLatestRef } from "../hooks/useLatestRef";
 import { parseTrackKey } from "../utils/trackKeys";
-import { StatusButton, StatusCard, StatusLine } from "./PlayerStatus";
+import { StatusButton, StatusCard, StatusLine, StatusWaiting } from "./PlayerStatus";
 
 // Problems the host can do something about, by MusicKit error code.
 const SUBSCRIPTION_CODES = new Set(['SUBSCRIPTION_ERROR', 'STREAM_UPSELL']);
@@ -92,7 +92,7 @@ export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
 			</StatusCard>
 		);
 	} else if (status === 'loading' || status === 'off') {
-		line = <StatusLine icon={Loader2} spin>{t('appleMusic.loading')}</StatusLine>;
+		line = <StatusWaiting>{t('appleMusic.loading')}</StatusWaiting>;
 	} else if (status === 'error') {
 		card = (
 			<StatusCard icon={CloudOff} tone="attention" title={t('appleMusic.loadFailed')}>

@@ -7,6 +7,7 @@ import { WebSocketProvider } from './contexts/WebSocketProvider.jsx';
 import './index.css'
 import { Lobby } from './components/Lobby.jsx'
 import ErrorBoundary from './ErrorBoundary.jsx'
+import { SpinnerScreen } from './components/Spinner.jsx'
 
 const App = lazy(() => import('./App.jsx'))
 const LegalPage = lazy(() => import('./components/LegalPage.jsx').then(m => ({ default: m.LegalPage })))
@@ -48,9 +49,9 @@ createRoot(document.getElementById('root')).render(
                   {import.meta.env.DEV && RoomPreview ? (
                     <Route path="/__room-preview" element={<Suspense fallback={null}><RoomPreview /></Suspense>} />
                   ) : null}
-                  <Route path="/room/:roomId" element={<Suspense fallback={<div className="min-h-screen bg-[#050505] flex items-center justify-center"><span className="text-neutral-500">Loading…</span></div>}><App /></Suspense>} />
-                  <Route path="/legal" element={<Suspense fallback={<div className="min-h-screen bg-[#050505]" />}><LegalPage /></Suspense>} />
-                  <Route path="/connect-ai" element={<Suspense fallback={<div className="min-h-screen bg-[#050505]" />}><ConnectAI /></Suspense>} />
+                  <Route path="/room/:roomId" element={<Suspense fallback={<SpinnerScreen />}><App /></Suspense>} />
+                  <Route path="/legal" element={<Suspense fallback={<SpinnerScreen />}><LegalPage /></Suspense>} />
+                  <Route path="/connect-ai" element={<Suspense fallback={<SpinnerScreen />}><ConnectAI /></Suspense>} />
                   <Route path="/" element={<Lobby />} />
                 </Routes>
               </WebSocketProvider>
