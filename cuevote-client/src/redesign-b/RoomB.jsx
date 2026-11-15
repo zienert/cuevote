@@ -150,8 +150,9 @@ SuggestField.propTypes = {
 	problem: PropTypes.string,
 };
 
-/** The code and the link that let the next guest in. */
-function JoinCode({ size, className }) {
+/** The code and the link that let the next guest in. `plain`: without its
+    own headline, where a sheet's title already says what it is. */
+function JoinCode({ size, plain = false, className }) {
 	const c = useCopy();
 	const url = window.location.href;
 	const copy = async () => {
@@ -168,15 +169,15 @@ function JoinCode({ size, className }) {
 				<QRCodeSVG value={url} size={size} fgColor="#15151a" bgColor="#ffffff" level="M" />
 			</span>
 			<div className="min-w-0">
-				<p className="b-display text-[1.625rem] text-ink">{c('room.join')}</p>
-				<p className="mt-1 truncate text-[0.9375rem] text-ink-2">{window.location.host}{window.location.pathname}</p>
+				{plain ? null : <p className="b-display text-[1.625rem] text-ink">{c('room.join')}</p>}
+				<p className={clsx('truncate text-[0.9375rem] text-ink-2', !plain && 'mt-1')}>{window.location.host}{window.location.pathname}</p>
 				<Button size="sm" className="mt-3" onClick={copy}><Copy size={16} /> {c('room.copy')}</Button>
 			</div>
 		</div>
 	);
 }
 
-JoinCode.propTypes = { size: PropTypes.number.isRequired, className: PropTypes.string };
+JoinCode.propTypes = { size: PropTypes.number.isRequired, plain: PropTypes.bool, className: PropTypes.string };
 
 /** What can be done with one title: opened from its row. */
 function TrackSheet({ track, rank, cover, isOwner, onDelete, onAdd, similar, onSimilar, onClose }) {
@@ -422,7 +423,7 @@ export default function RoomB({ homeHref }) {
 				/>
 			) : null}
 			<Sheet open={sharing} onOpenChange={setSharing} title={c('room.share')} description={c('room.shareText')}>
-				<JoinCode size={132} />
+				<JoinCode size={132} plain />
 			</Sheet>
 			<Sheet open={account} onOpenChange={setAccount} title={c('account.title')} description={isSignedIn(user) ? [displayName(user, t), user.email].filter(Boolean).join(', ') : undefined}>
 				<Button wide onClick={() => { handleLogout(); setAccount(false); }}>{t('lobby.signOut')}</Button>

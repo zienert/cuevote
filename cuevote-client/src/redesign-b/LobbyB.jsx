@@ -65,7 +65,7 @@ function Example() {
 					<img src={EXAMPLE_PLAYING.thumbnail} alt="" className="absolute inset-0 h-full w-full scale-125 object-cover opacity-70 blur-2xl" />
 					<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 					<p className="absolute left-5 top-4 text-[0.8125rem] font-medium text-white/75 sm:left-7 sm:top-6">{c('hero.screen')}</p>
-					<div className="absolute inset-x-0 bottom-0 p-5 pb-20 sm:p-7 sm:pb-7 sm:pr-[20rem]">
+					<div className="absolute inset-x-0 bottom-0 p-5 pb-20 sm:p-7 sm:pb-7 sm:pr-[22rem]">
 						<p className="text-[0.8125rem] font-semibold text-white/80">{t('playlist.nowPlaying')}</p>
 						<p className="b-display mt-1 text-[2.5rem] text-white sm:text-[3.5rem]">{EXAMPLE_PLAYING.title}</p>
 						<p className="mt-2 flex items-baseline gap-2 text-[0.9375rem] text-white/85">
@@ -87,7 +87,7 @@ function Example() {
 				</div>
 
 				{/* The ranking, as a room has it: it works. */}
-				<div className="relative z-10 -mt-14 ml-auto w-[calc(100%-1.5rem)] rounded-[1.5rem] bg-page p-2 shadow-[0_16px_48px_-12px_rgba(21,21,26,0.28),0_0_0_1px_rgba(21,21,26,0.06)] sm:absolute sm:-bottom-10 sm:-right-4 sm:mt-0 sm:w-[21rem] lg:-right-8">
+				<div className="relative z-10 -mt-14 ml-auto w-[calc(100%-1.5rem)] rounded-[1.5rem] bg-page p-2 shadow-[0_16px_48px_-12px_rgba(21,21,26,0.28),0_0_0_1px_rgba(21,21,26,0.06)] sm:absolute sm:-bottom-10 sm:-right-4 sm:mt-0 sm:w-[23rem] lg:-right-8">
 					<Chart
 						tracks={room.tracks}
 						coverOf={(track) => ({ src: track.thumbnail, allowed: true })}
