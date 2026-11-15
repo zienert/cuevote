@@ -1,5 +1,7 @@
 package com.cuevote.wrapper
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -71,6 +73,8 @@ private fun isApplePage(uri: android.net.Uri?): Boolean {
 // How often the page is asked whether its Apple Music channel is playing.
 private const val PLAYBACK_PROBE_MS = 1000L
 
+private const val REQUEST_NOTIFICATIONS = 1
+
 // Asks MusicKit what it is playing: the title of an Apple Music channel that
 // plays here in full, or null. A guest's preview (previewOnly) is not the
 // channel, and a YouTube channel has no MusicKit at all.
@@ -135,6 +139,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     // The page the channel was last found playing on. The service's grace
     // period belongs to that page; on any other one the channel has been left.
     private var playingUrl: String? = null
+    private var askedForNotifications = false
 
     // The service gave up while the app is in the background: from here on the
     // page is paused like any other.
@@ -422,6 +427,9 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             webView.onResume()
             webView.evaluateJavascript("window.cuevoteReconnect && window.cuevoteReconnect()", null)
             startPlaybackProbe()
+            // Back from the system settings, where notifications may just have
+            // been switched on: one posted before that was dropped.
+            PlaybackService.refreshNotification()
         }
     }
 
@@ -476,6 +484,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             if (!resumed && !PlaybackService.isActive) return@evaluateJavascript
             playingUrl = url
             PlaybackService.playing(this, item.first, item.second)
+            askForNotificationsOnce()
         }
     }
 
@@ -498,6 +507,26 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     // Text from the page, on its way into a notification: one plain, short line.
     private fun notificationText(text: String): String =
         text.filterNot { it.isISOControl() }.trim().take(120)
+
+    // Android 13 and later show no notification until the user has allowed it.
+    // The service runs either way, but its notification is how the user sees
+    // what plays and gets back to the app, so it is asked for: once per start,
+    // at the moment an Apple Music channel plays here, and never again after a
+    // "no" (which Android reports as wanting an explanation).
+    private fun askForNotificationsOnce() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || askedForNotifications || !resumed) return
+        askedForNotifications = true
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) return
+        if (shouldShowRequestPermissionRationale(permission)) return
+        requestPermissions(arrayOf(permission), REQUEST_NOTIFICATIONS)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // Posted before the permission was there, the notification was dropped.
+        if (requestCode == REQUEST_NOTIFICATIONS) PlaybackService.refreshNotification()
+    }
 
     override fun onDestroy() {
         // The page that played goes with the activity.

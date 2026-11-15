@@ -9,6 +9,9 @@
     <!-- An Apple Music channel keeps playing in the background (PlaybackService). -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <!-- For that service's notification. Asked for once per start, when an Apple
+         Music channel plays on the device; the service works without it. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Android TV support. Everything is required="false" so phone/tablet Play Store
          visibility is unchanged. The CAMERA permission implicitly requires camera hardware,
