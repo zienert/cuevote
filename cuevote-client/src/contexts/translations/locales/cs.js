@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nebyly nalezeny žádné kanály pro",
 		"live": "Živě",
 		"hostedBy": "Hostitel: {name}",
+		"wrongPassword": "Nesprávné heslo",
 		"createNewChannel": "Vytvořit Nový Kanál",
 		"channelName": "Název Kanálu",
 		"channelNamePlaceholder": "např. Noční Atmosféra",

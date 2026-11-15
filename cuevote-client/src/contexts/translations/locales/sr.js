@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nema pronađenih kanala za",
 		"live": "Uživo",
 		"hostedBy": "Domaćin: {name}",
+		"wrongPassword": "Pogrešna lozinka",
 		"createNewChannel": "Napravi Novi Kanal",
 		"channelName": "Ime Kanala",
 		"channelNamePlaceholder": "npr. Noćne Vibracije",

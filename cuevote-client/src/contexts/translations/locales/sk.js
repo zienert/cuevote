@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Neboli nájdené žiadne kanály pre",
 		"live": "Živo",
 		"hostedBy": "Hostiteľ: {name}",
+		"wrongPassword": "Nesprávne heslo",
 		"createNewChannel": "Vytvoriť Nový Kanál",
 		"channelName": "Názov Kanála",
 		"channelNamePlaceholder": "napr. Nočná Pohoda",

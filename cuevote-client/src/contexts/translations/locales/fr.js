@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Aucune chaîne trouvée pour",
 		"live": "En direct",
 		"hostedBy": "Hôte : {name}",
+		"wrongPassword": "Mot de passe incorrect",
 		"createNewChannel": "Créer une Nouvelle Chaîne",
 		"channelName": "Nom de la Chaîne",
 		"channelNamePlaceholder": "ex. Ambiance Nocturne",

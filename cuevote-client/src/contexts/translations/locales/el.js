@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Δεν βρέθηκαν κανάλια για",
 		"live": "Ζωντανά",
 		"hostedBy": "Οικοδεσπότης: {name}",
+		"wrongPassword": "Λάθος κωδικός",
 		"createNewChannel": "Δημιουργία Νέου Καναλιού",
 		"channelName": "Όνομα Καναλιού",
 		"channelNamePlaceholder": "π.χ. Late Night Vibes",

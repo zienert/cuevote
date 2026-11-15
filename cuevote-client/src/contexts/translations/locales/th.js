@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "ไม่พบช่อง",
 		"live": "สด",
 		"hostedBy": "โฮสต์: {name}",
+		"wrongPassword": "รหัสผ่านไม่ถูกต้อง",
 		"createNewChannel": "สร้างช่องใหม่",
 		"channelName": "ชื่อช่อง",
 		"channelNamePlaceholder": "เช่น วิดีโอฟังสบาย",

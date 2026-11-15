@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nessun canale trovato per",
 		"live": "Live",
 		"hostedBy": "Organizzato da {name}",
+		"wrongPassword": "Password errata",
 		"createNewChannel": "Crea Nuovo Canale",
 		"channelName": "Nome Canale",
 		"channelNamePlaceholder": "es. Late Night Vibes",

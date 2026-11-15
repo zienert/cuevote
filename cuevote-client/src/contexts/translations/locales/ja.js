@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "チャンネルが見つかりません:",
 		"live": "ライブ",
 		"hostedBy": "ホスト: {name}",
+		"wrongPassword": "パスワードが違います",
 		"createNewChannel": "新規チャンネル作成",
 		"channelName": "チャンネル名",
 		"channelNamePlaceholder": "例: 深夜のバイブス",

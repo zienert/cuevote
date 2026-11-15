@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nu s-au găsit canale pentru",
 		"live": "Live",
 		"hostedBy": "Gazdă: {name}",
+		"wrongPassword": "Parolă greșită",
 		"createNewChannel": "Creează Canal Nou",
 		"channelName": "Nume Canal",
 		"channelNamePlaceholder": "ex. Vibe de Noapte",

@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Каналы не найдены по запросу",
 		"live": "Эфир",
 		"hostedBy": "Ведущий: {name}",
+		"wrongPassword": "Неверный пароль",
 		"createNewChannel": "Создать новый канал",
 		"channelName": "Название канала",
 		"channelNamePlaceholder": "напр., Ночные ритмы",

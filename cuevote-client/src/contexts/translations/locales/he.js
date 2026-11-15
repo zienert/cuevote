@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "לא נמצאו ערוצים עבור",
 		"live": "חי",
 		"hostedBy": "מארח: {name}",
+		"wrongPassword": "סיסמה שגויה",
 		"createNewChannel": "צור ערוץ חדש",
 		"channelName": "שם הערוץ",
 		"channelNamePlaceholder": "למשל, לילה רגוע",

@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nenhum canal encontrado para",
 		"live": "Ao vivo",
 		"hostedBy": "Anfitrião: {name}",
+		"wrongPassword": "Palavra-passe incorreta",
 		"createNewChannel": "Criar Novo Canal",
 		"channelName": "Nome do Canal",
 		"channelNamePlaceholder": "ex. Vibe da Noite",

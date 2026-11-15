@@ -597,7 +597,7 @@ export function Lobby() {
     useEffect(() => {
         if (lastErrorCode === "PASSWORD_REQUIRED") {
             if (showPasswordModal) {
-                setPasswordError("Incorrect password");
+                setPasswordError("wrong");
             }
         }
     }, [lastErrorCode, showPasswordModal]);
@@ -1162,7 +1162,7 @@ export function Lobby() {
                                     />
                                     {passwordError && (
                                         <div className="text-red-500 text-sm mt-2 font-medium animate-in slide-in-from-top-1">
-                                            {passwordError}
+                                            {t('lobby.wrongPassword')}
                                         </div>
                                     )}
                                 </div>

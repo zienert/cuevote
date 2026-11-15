@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Không tìm thấy kênh",
 		"live": "Trực tiếp",
 		"hostedBy": "Chủ phòng: {name}",
+		"wrongPassword": "Sai mật khẩu",
 		"createNewChannel": "Tạo Kênh Mới",
 		"channelName": "Tên Kênh",
 		"channelNamePlaceholder": "vd. Nhạc Thư Giãn",

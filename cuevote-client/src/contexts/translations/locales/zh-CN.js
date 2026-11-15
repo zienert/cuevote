@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "未找到频道",
 		"live": "直播",
 		"hostedBy": "主持人：{name}",
+		"wrongPassword": "密码错误",
 		"createNewChannel": "创建新频道",
 		"channelName": "频道名称",
 		"channelNamePlaceholder": "例如：深夜氛围",

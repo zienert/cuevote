@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nem található csatorna ehhez",
 		"live": "Élő",
 		"hostedBy": "Házigazda: {name}",
+		"wrongPassword": "Hibás jelszó",
 		"createNewChannel": "Új Csatorna Létrehozása",
 		"channelName": "Csatorna Neve",
 		"channelNamePlaceholder": "pl. Késő Esti Hangulat",

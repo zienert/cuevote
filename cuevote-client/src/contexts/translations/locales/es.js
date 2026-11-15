@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "No se encontraron canales para",
 		"live": "En vivo",
 		"hostedBy": "Anfitrión: {name}",
+		"wrongPassword": "Contraseña incorrecta",
 		"createNewChannel": "Crear Nuevo Canal",
 		"channelName": "Nombre del Canal",
 		"channelNamePlaceholder": "ej. Vibras Nocturnas",

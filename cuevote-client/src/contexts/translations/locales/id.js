@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Kanal tidak ditemukan",
 		"live": "Live",
 		"hostedBy": "Tuan rumah: {name}",
+		"wrongPassword": "Kata sandi salah",
 		"createNewChannel": "Buat Kanal Baru",
 		"channelName": "Nama Kanal",
 		"channelNamePlaceholder": "cth. Santai Malam",

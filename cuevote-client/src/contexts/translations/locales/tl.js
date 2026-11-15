@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Walang channel na nahanap",
 		"live": "Live",
 		"hostedBy": "Host: {name}",
+		"wrongPassword": "Maling password",
 		"createNewChannel": "Gumawa ng Bagong Channel",
 		"channelName": "Pangalan ng Channel",
 		"channelNamePlaceholder": "hal. Late Night Vibes",

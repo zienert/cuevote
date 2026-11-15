@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Kanal bulunamadı:",
 		"live": "Canlı",
 		"hostedBy": "Ev sahibi: {name}",
+		"wrongPassword": "Yanlış şifre",
 		"createNewChannel": "Yeni Kanal Oluştur",
 		"channelName": "Kanal Adı",
 		"channelNamePlaceholder": "ör. Gece Modu",

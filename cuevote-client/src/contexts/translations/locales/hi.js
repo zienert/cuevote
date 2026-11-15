@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "कोई चैनल नहीं मिला",
 		"live": "लाइव",
 		"hostedBy": "मेज़बान: {name}",
+		"wrongPassword": "गलत पासवर्ड",
 		"createNewChannel": "नया चैनल बनाएं",
 		"channelName": "चैनल का नाम",
 		"channelNamePlaceholder": "उदा. देर रात की धुन",

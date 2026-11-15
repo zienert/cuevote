@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Няма намерени канали за",
 		"live": "На живо",
 		"hostedBy": "Домакин: {name}",
+		"wrongPassword": "Грешна парола",
 		"createNewChannel": "Създай нов канал",
 		"channelName": "Име на канала",
 		"channelNamePlaceholder": "напр. Нощни вибрации",

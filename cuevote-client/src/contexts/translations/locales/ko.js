@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "채널을 찾을 수 없음:",
 		"live": "라이브",
 		"hostedBy": "호스트: {name}",
+		"wrongPassword": "비밀번호가 틀렸습니다",
 		"createNewChannel": "새 채널 만들기",
 		"channelName": "채널 이름",
 		"channelNamePlaceholder": "예: 늦은 밤 감성",

@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Tiada saluran dijumpai",
 		"live": "Langsung",
 		"hostedBy": "Hos: {name}",
+		"wrongPassword": "Kata laluan salah",
 		"createNewChannel": "Cipta Saluran Baru",
 		"channelName": "Nama Saluran",
 		"channelNamePlaceholder": "cth. Rentak Malam",

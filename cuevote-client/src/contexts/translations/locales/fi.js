@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Kanavia ei löytynyt haulla",
 		"live": "Live",
 		"hostedBy": "Isäntä: {name}",
+		"wrongPassword": "Väärä salasana",
 		"createNewChannel": "Luo uusi kanava",
 		"channelName": "Kanavan nimi",
 		"channelNamePlaceholder": "esim. Yöfiilikset",

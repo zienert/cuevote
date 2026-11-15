@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Nie znaleziono kanałów dla",
 		"live": "Na żywo",
 		"hostedBy": "Gospodarz: {name}",
+		"wrongPassword": "Nieprawidłowe hasło",
 		"createNewChannel": "Utwórz nowy kanał",
 		"channelName": "Nazwa kanału",
 		"channelNamePlaceholder": "np. Nocne wibracje",

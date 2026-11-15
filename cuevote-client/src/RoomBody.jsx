@@ -421,7 +421,7 @@ function RoomBody() {
     if (lastErrorCode === "PASSWORD_REQUIRED") {
       setShowPasswordModal(true);
       if (lastPasswordAttemptRef.current) {
-        setPasswordError("Incorrect password");
+        setPasswordError("wrong");
       } else {
         setPasswordError("");
       }
@@ -1611,7 +1611,7 @@ function RoomBody() {
             />
             {passwordError && (
               <div className="text-red-500 text-sm mt-2 font-medium animate-in slide-in-from-top-1">
-                {passwordError}
+                {t('lobby.wrongPassword')}
               </div>
             )}
           </div>

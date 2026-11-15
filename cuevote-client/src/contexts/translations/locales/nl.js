@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Geen kanalen gevonden voor",
 		"live": "Live",
 		"hostedBy": "Host: {name}",
+		"wrongPassword": "Onjuist wachtwoord",
 		"createNewChannel": "Nieuw Kanaal Maken",
 		"channelName": "Kanaalnaam",
 		"channelNamePlaceholder": "bijv. Laatavond Sfeer",

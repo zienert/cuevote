@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "Ingen kanaler fundet for",
 		"live": "Live",
 		"hostedBy": "Vært: {name}",
+		"wrongPassword": "Forkert adgangskode",
 		"createNewChannel": "Opret ny kanal",
 		"channelName": "Kanalnavn",
 		"channelNamePlaceholder": "f.eks. Late Night Vibes",

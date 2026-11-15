@@ -47,6 +47,7 @@ export default {
 		"noChannelsFound": "لم يتم العثور على قنوات لـ",
 		"live": "مباشر",
 		"hostedBy": "يستضيفها {name}",
+		"wrongPassword": "كلمة المرور غير صحيحة",
 		"createNewChannel": "إنشاء قناة جديدة",
 		"channelName": "اسم القناة",
 		"channelNamePlaceholder": "مثلاً: أجواء ليلية",
