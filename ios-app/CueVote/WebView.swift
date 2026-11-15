@@ -187,6 +187,9 @@ struct WebView: UIViewRepresentable {
         
         config.mediaTypesRequiringUserActionForPlayback = []
         config.allowsInlineMediaPlayback = true
+        // Picture in Picture stays off. The audio background mode would
+        // otherwise offer it for every video in the page, YouTube's included.
+        config.allowsPictureInPictureMediaPlayback = false
         config.preferences.javaScriptCanOpenWindowsAutomatically = true
         config.applicationNameForUserAgent = "CueVoteWrapper"
         
