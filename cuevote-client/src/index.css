@@ -123,77 +123,12 @@ body,
   }
 }
 
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -20px) scale(0.9);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translate(-50%, 5px) scale(1.02);
-  }
-
-  100% {
-    transform: translate(-50%, 0) scale(1);
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  display: inline-block;
-  white-space: nowrap;
-  animation: marquee 20s linear infinite;
-}
-
-/* Pause animation on hover if desired */
-/* .animate-marquee:hover {
-  animation-play-state: paused;
-} */
-
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
 .animate-fadeOut {
   animation: fadeOut 0.3s ease-out forwards;
-}
-
-.animate-bounceIn {
-  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes billboard {
-
-  0%,
-  5% {
-    transform: translateX(0);
-  }
-
-  85%,
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-billboard {
-  display: inline-block;
-  white-space: nowrap;
-  animation: billboard 15s linear infinite;
-}
-
-.mask-linear-fade {
-  mask-image: linear-gradient(to right, black 0px, black calc(100% - 24px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 0px, black calc(100% - 24px), transparent 100%);
 }
 
 @keyframes pulse-slow {
