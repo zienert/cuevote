@@ -9,10 +9,9 @@ import PropTypes from "prop-types";
 
 /**
  * A card over the player: a symbol, what is going on, what to do about it.
- * `tone="attention"` marks a problem. `code` is a technical code for support,
- * shown small below everything else.
+ * `tone="attention"` marks a problem.
  */
-export function StatusCard({ icon: Icon, tone = "neutral", title, text, code, children }) {
+export function StatusCard({ icon: Icon, tone = "neutral", title, text, children }) {
 	return (
 		<div className="w-full max-w-sm rounded-3xl border border-white/10 bg-neutral-950/80 p-6 text-center shadow-2xl md:max-w-md md:p-8">
 			{Icon && (
@@ -27,7 +26,6 @@ export function StatusCard({ icon: Icon, tone = "neutral", title, text, code, ch
 			{title && <p className="text-base font-semibold leading-snug text-white text-balance md:text-lg">{title}</p>}
 			{text && <p className={`text-sm leading-relaxed text-neutral-300 text-balance md:text-base ${title ? "mt-1.5" : ""}`}>{text}</p>}
 			{children && <div className="mt-5 flex flex-col gap-2">{children}</div>}
-			{code && <p className="mt-4 select-all font-mono text-[11px] tracking-wide text-neutral-500">{code}</p>}
 		</div>
 	);
 }
@@ -37,7 +35,6 @@ StatusCard.propTypes = {
 	tone: PropTypes.oneOf(["neutral", "attention"]),
 	title: PropTypes.node,
 	text: PropTypes.node,
-	code: PropTypes.string,
 	children: PropTypes.node,
 };
 
