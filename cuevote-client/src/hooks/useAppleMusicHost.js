@@ -17,6 +17,9 @@ import { parseTrackKey } from '../utils/trackKeys';
 // whether it can play (APPLE_PLAYER_STATUS); a room holds still while it
 // cannot.
 //
+// The device's own controls (a phone's lock screen and Control Center, media
+// keys, a headset) are the host's: they act on the room, see hostPlay.
+//
 // status: off | loading | signed-out | ready | needs-start | standby | error
 
 const DRIFT_CHECK_MS = 5000;
@@ -25,6 +28,18 @@ const SIGN_IN_POLL_MS = 2000;
 const START_CHECK_MS = 3000;
 const STATUS_HEARTBEAT_MS = 10000;
 const SONG_ASK_AGAIN_MS = 10000;
+// The host's own controls (hostPlay): how often the room is asked again until
+// it has followed, and for how long.
+const ASK_AGAIN_MS = 3000;
+const ASK_GIVE_UP_MS = 30000;
+// A socket that just came back joins the room first; the server refuses a
+// room message ahead of that.
+const JOIN_FIRST_MS = 1500;
+// The step of the system's skip buttons where it names none.
+const SEEK_STEP_S = 15;
+// A seek this soon after a track change was aimed at the previous track,
+// whose bar was still showing. The server drops it as well.
+const SEEK_AFTER_CHANGE_MS = 2000;
 // A page whose developer token runs out within this reloads at the next track
 // change; MusicKit takes its token once, at configure (24 h, renewed by the
 // server below 12 h).
@@ -67,7 +82,7 @@ function trackIdOf(entry) {
 	return id || undefined;
 }
 
-export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRef, progressAtRef, sendMessage, lease }) {
+export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRef, progressAtRef, sendMessage, lease, connected = true }) {
 	const [music, setMusic] = useState(null);
 	const [status, setStatus] = useState('off');
 	const [problem, setProblem] = useState(null);
@@ -95,6 +110,16 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	// Bumped whenever this player may no longer play (switched off, standby,
 	// signed out): async work started before checks it after every await.
 	const generationRef = useRef(0);
+	// What the host asked for on this device's own controls and the room has
+	// not followed yet: 'play' | 'pause' (hostPlay). The ref is set with the
+	// state: the checks below must see it before the next render.
+	const askedRef = useRef(null);
+	const [asked, setAskedState] = useState(null);
+	const setAsked = useCallback((want) => {
+		askedRef.current = want;
+		setAskedState(want);
+	}, []);
+	const entrySinceRef = useRef(0);
 
 	const currentKey = currentTrack?.videoId || null;
 	const currentEntry = entryOf(currentTrack);
@@ -102,6 +127,10 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	const currentEntryRef = useLatestRef(currentEntry);
 	const isPlayingRef = useLatestRef(isPlaying);
 	const sendRef = useLatestRef(sendMessage);
+	const connectedRef = useLatestRef(connected);
+	useEffect(() => {
+		entrySinceRef.current = Date.now();
+	}, [currentEntry]);
 
 	const isPlayer = lease === true;
 	const canPlay = enabled && isPlayer && !!music && (status === 'ready' || status === 'needs-start');
@@ -305,7 +334,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		// resolves play() all the same (13.11.2026). Check that it really plays.
 		await new Promise(resolve => setTimeout(resolve, START_CHECK_MS));
 		if (generation !== generationRef.current) return;
-		if (isPlayingRef.current && music.playbackState !== window.MusicKit?.PlaybackStates?.playing) {
+		if (isPlayingRef.current && askedRef.current !== 'pause' && music.playbackState !== window.MusicKit?.PlaybackStates?.playing) {
 			setStatus(prev => (prev === 'ready' ? 'needs-start' : prev));
 		}
 	}, [music, isPlayingRef]);
@@ -403,9 +432,11 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			return;
 		}
 		const playing = window.MusicKit?.PlaybackStates?.playing;
+		// Not against what the host just asked for on this device: the room is
+		// about to follow (hostPlay).
 		if (isPlaying) {
-			if (music.playbackState !== playing) play().catch(() => { /* reported by the error event */ });
-		} else {
+			if (askedRef.current !== 'pause' && music.playbackState !== playing) play().catch(() => { /* reported by the error event */ });
+		} else if (askedRef.current !== 'play') {
 			try { music.pause(); } catch { /* nothing loaded */ }
 		}
 	}, [canPlay, isPlaying, music, play, currentEntryRef]);
@@ -444,9 +475,11 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			const duration = music.currentPlaybackDuration || 0;
 			const nearEnd = duration && expected > duration - 2;
 			if (state !== states.playing) {
-				// Stopped under a playing room (a media key, headphones pulled,
-				// the browser): start it again. Not near or past the end, where
-				// MusicKit stops before the server moves on, and not while it loads.
+				// Paused on this device's own controls: the room is being told.
+				if (askedRef.current === 'pause') return;
+				// Stopped under a playing room (headphones pulled, the browser):
+				// start it again. Not near or past the end, where MusicKit stops
+				// before the server moves on, and not while it loads.
 				const settling = state === states.loading || state === states.waiting || state === states.seeking || state === states.stalled;
 				const finishedItem = state === states.ended || state === states.completed;
 				if (!nearEnd && !settling && !finishedItem && status === 'ready') {
@@ -461,6 +494,106 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		}, DRIFT_CHECK_MS);
 		return () => clearInterval(timer);
 	}, [canPlay, music, status, play, progressRef, progressAtRef, isPlayingRef, currentEntryRef, currentKeyRef, sendRef, holdsCurrentItem]);
+
+	// Play, pause and seek on this device's own controls: the lock screen and
+	// Control Center of a phone, a keyboard's media keys, a headset. MusicKit
+	// wires them to its local player, and the room, which plays by the server's
+	// say, took none of it: a pause came back on within seconds, a seek jumped
+	// back, a seek to the end left the player silent on a finished item (iPhone
+	// app, 15.11.2026). They are the host's controls, so they act on the room
+	// like the buttons on the page.
+	const tellRoom = useCallback((want) => {
+		if (!connectedRef.current) return; // sent once the socket is back, see below
+		if (want === 'play') {
+			// Play pressed here means play here, also when another owner device
+			// took the room over while this one slept.
+			sendRef.current({ type: 'APPLE_PLAYER_CLAIM' });
+			sendRef.current({ type: 'PLAY_PAUSE', payload: true });
+		} else {
+			sendRef.current({ type: 'PLAY_PAUSE', payload: false });
+		}
+	}, [connectedRef, sendRef]);
+
+	const hostPause = useCallback(() => {
+		if (!music) return;
+		setAsked('pause');
+		try { music.pause(); } catch { /* nothing loaded */ }
+		tellRoom('pause');
+	}, [music, setAsked, tellRoom]);
+
+	const hostPlay = useCallback(() => {
+		if (!music) return;
+		setAsked('play');
+		// Only what the room is on: after a long sleep MusicKit may hold an
+		// item that is over, and the room's track loads once the socket is back.
+		const states = window.MusicKit?.PlaybackStates || {};
+		const finishedItem = music.playbackState === states.ended || music.playbackState === states.completed;
+		if (readyEntryRef.current && readyEntryRef.current === currentEntryRef.current && !finishedItem && holdsCurrentItem()) {
+			play().catch(() => { /* reported by the error event */ });
+		}
+		tellRoom('play');
+	}, [music, setAsked, tellRoom, play, currentEntryRef, holdsCurrentItem]);
+
+	const hostSeek = useCallback((seconds) => {
+		if (!music || !Number.isFinite(seconds)) return;
+		if (readyEntryRef.current !== currentEntryRef.current) return;
+		if (Date.now() - entrySinceRef.current < SEEK_AFTER_CHANGE_MS) return;
+		const duration = music.currentPlaybackDuration || 0;
+		const target = Math.max(0, duration ? Math.min(seconds, duration) : seconds);
+		// The end of the bar moves the room on to the next track, as on the page.
+		sendRef.current({ type: 'SEEK_TO', payload: target });
+		Promise.resolve(music.seekToTime(target)).catch(() => { /* the drift check corrects it */ });
+	}, [music, sendRef, currentEntryRef]);
+
+	// An ask stands until the room has followed. tellRoom sends it at once
+	// over an open socket; this sends it again: after a reconnect (the phone
+	// slept through its pause) or when a message got lost.
+	useEffect(() => {
+		if (!asked) return undefined;
+		if (!enabled || (asked === 'play') === !!isPlaying) {
+			setAsked(null);
+			return undefined;
+		}
+		if (!connected) return undefined;
+		const since = Date.now();
+		let timer = setTimeout(function again() {
+			if (Date.now() - since > ASK_GIVE_UP_MS) {
+				setAsked(null);
+				return;
+			}
+			tellRoom(asked);
+			timer = setTimeout(again, ASK_AGAIN_MS);
+		}, JOIN_FIRST_MS);
+		return () => clearTimeout(timer);
+	}, [asked, enabled, isPlaying, connected, setAsked, tellRoom]);
+
+	// The system's media controls, while this device plays the room.
+	useEffect(() => {
+		const session = typeof navigator !== 'undefined' ? navigator.mediaSession : null;
+		if (!canPlay || !session) return undefined;
+		const set = (action, handler) => {
+			try { session.setActionHandler(action, handler); } catch { /* an action this browser does not know */ }
+		};
+		const seekBy = (step) => hostSeek((music.currentPlaybackTime || 0) + step);
+		const apply = () => {
+			set('play', hostPlay);
+			set('pause', hostPause);
+			set('stop', hostPause);
+			set('seekto', (details) => hostSeek(details?.seekTime));
+			set('seekforward', (details) => seekBy(details?.seekOffset || SEEK_STEP_S));
+			set('seekbackward', (details) => seekBy(-(details?.seekOffset || SEEK_STEP_S)));
+			// MusicKit's own would skip within its one-item queue: the end of it.
+			set('nexttrack', null);
+			set('previoustrack', null);
+		};
+		apply();
+		// MusicKit puts its handlers back whenever what it can do changes.
+		music.addEventListener('capabilitiesChanged', apply);
+		return () => {
+			music.removeEventListener('capabilitiesChanged', apply);
+			['play', 'pause', 'stop', 'seekto', 'seekforward', 'seekbackward'].forEach(action => set(action, null));
+		};
+	}, [canPlay, music, hostPlay, hostPause, hostSeek]);
 
 	// Sign-in opens Apple's window. Its answer does not always reach this page
 	// (Chrome, 13.11.2026), although MusicKit has stored the user token: then a

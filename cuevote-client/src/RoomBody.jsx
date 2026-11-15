@@ -262,6 +262,7 @@ function RoomBody() {
     progressAtRef,
     sendMessage,
     lease: applePlayerLease,
+    connected: isConnected,
   });
   // The server paused the room over a problem on the host's side.
   const reportAppleProblem = apple.reportProblem;
