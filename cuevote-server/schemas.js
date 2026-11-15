@@ -124,6 +124,13 @@ const ApplePlayerStatusPayload = z.object({
   state: z.enum(['playing', 'ready', 'blocked', 'standby']),
 });
 
+// The owner's Apple player cannot play the current music video (MusicKit JS
+// plays none on Android) and asks for the song instead.
+const ApplePlayAsSongPayload = z.object({
+  videoId: z.string().min(1).max(50),
+  trackId: z.string().min(1).max(100).optional(),
+});
+
 // Remote DJ MCP: the web consent page sends this (over the user's authenticated
 // socket) to approve an OAuth authorization. The server adds the user id and
 // finalizes with the MCP server-to-server, so the finalize secret never reaches
@@ -167,6 +174,7 @@ module.exports = {
   UpdateDurationPayload,
   PlaybackErrorPayload,
   ApplePlayerStatusPayload,
+  ApplePlayAsSongPayload,
   PlayPausePayload,
   McpAuthorizePayload,
   GuestSessionPayload,

@@ -430,7 +430,42 @@ function createAppleCatalog({ getToken, fetchImpl = (...args) => fetch(...args) 
         return found;
     }
 
-    return { search, lookup, equivalents };
+    /**
+     * The song of a music video, for a player that cannot play videos: MusicKit
+     * JS plays none on Android, phones and TVs alike (checked 14.11.2026).
+     * Apple links a video to its songs, mostly compilation tracks of the same
+     * recording ("Yellow" on "Billion Stream Hits"); a song search for the
+     * video's artist and title finds the album version among them by the
+     * recording's ISRC. Videos Apple links to no song (live recordings, some
+     * older videos) get the best match of that search, if there is one.
+     * Returns track fields or null.
+     */
+    async function songForVideo(storefront, key, { title = '', artist = '' } = {}) {
+        if (!isStorefront(storefront)) throw new AppleCatalogError(`Invalid storefront: ${storefront}`, { code: 'APPLE_CATALOG_BAD_STOREFRONT' });
+        const parsed = parseTrackKey(key);
+        if (!parsed || parsed.provider !== 'apple' || parsed.kind !== 'musicVideo') return null;
+        let related = [];
+        try {
+            const body = await request(`${storefront}/music-videos/${parsed.id}/songs`);
+            related = (body && body.data) || [];
+        } catch (err) {
+            if (err.status !== 404) throw err; // 404: no linked song
+        }
+        const isrcs = new Set(related.map(song => song && song.attributes && song.attributes.isrc).filter(Boolean));
+        const term = `${artist} ${title}`.trim();
+        let found = [];
+        if (term) {
+            const body = await request(`${storefront}/search`, { term: term.slice(0, 200), types: 'songs', limit: '10' });
+            found = (body && body.results && body.results.songs && body.results.songs.data) || [];
+        }
+        const sameRecording = found.find(song => isrcs.has(song && song.attributes && song.attributes.isrc) && toTrack(song));
+        const linked = related.find(song => toTrack(song));
+        const pick = sameRecording || linked;
+        if (pick) return toTrack(pick);
+        return bestMatch(term, { songs: found.map(toTrack).filter(Boolean) });
+    }
+
+    return { search, lookup, equivalents, songForVideo };
 }
 
 module.exports = {

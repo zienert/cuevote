@@ -95,6 +95,17 @@ export function configureMusicKit({ developerToken, appName = 'CueVote', build }
 	return instancePromise;
 }
 
+/**
+ * Whether MusicKit JS plays music videos here. It switches its video player
+ * off on Android, phones and TVs alike: a music video ends at once and nothing
+ * plays, previews included (checked in the Android app, 14.11.2026). Songs
+ * play. MusicKit goes by the user agent, and so does this.
+ */
+export function musicKitPlaysVideos() {
+	if (typeof navigator === 'undefined') return true;
+	return !/android/i.test(navigator.userAgent || '');
+}
+
 /** "CODE: message" for whatever MusicKit or the browser throws. */
 export function describeMusicKitError(err) {
 	if (!err) return 'unknown error';

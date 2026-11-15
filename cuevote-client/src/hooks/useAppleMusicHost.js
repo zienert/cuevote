@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLatestRef } from './useLatestRef';
-import { configureMusicKit, describeMusicKitError, fetchDeveloperToken } from '../utils/musicKit';
+import { configureMusicKit, describeMusicKitError, fetchDeveloperToken, musicKitPlaysVideos } from '../utils/musicKit';
 import { parseTrackKey } from '../utils/trackKeys';
 
 // The Apple Music player of an Apple room. MusicKit plays on one signed-in
@@ -24,6 +24,7 @@ const MAX_DRIFT_S = 3;
 const SIGN_IN_POLL_MS = 2000;
 const START_CHECK_MS = 3000;
 const STATUS_HEARTBEAT_MS = 10000;
+const SONG_ASK_AGAIN_MS = 10000;
 // A page whose developer token runs out within this reloads at the next track
 // change; MusicKit takes its token once, at configure (24 h, renewed by the
 // server below 12 h).
@@ -83,6 +84,8 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 	// One report per failed load: MusicKit may both reject play() and fire
 	// its error event for the same failure.
 	const errorSentForRef = useRef(null);
+	// The entry a song was asked for, in place of its music video (Android).
+	const songAskedForRef = useRef(null);
 	const storefrontSentRef = useRef(null);
 	const reloadedForSignInRef = useRef(false);
 	const tokenExpiresAtRef = useRef(0);
@@ -320,6 +323,21 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			return undefined;
 		}
 		if (loadedEntryRef.current === currentEntry) return undefined;
+		// MusicKit plays no music videos here (Android): the server makes the
+		// entry its song (Room.playAppleVideoAsSong), which then loads like any
+		// other. Meanwhile nothing of the previous track may go on.
+		if (parsed.kind === 'musicVideo' && !musicKitPlaysVideos()) {
+			if (loadedEntryRef.current) {
+				loadedEntryRef.current = null;
+				readyEntryRef.current = null;
+				try { music.stop(); } catch { /* nothing playing */ }
+			}
+			if (songAskedForRef.current?.entry !== currentEntry) {
+				songAskedForRef.current = { entry: currentEntry, at: Date.now() };
+				sendRef.current({ type: 'APPLE_PLAY_AS_SONG', payload: { videoId: currentKey, trackId: trackIdOf(currentEntry) } });
+			}
+			return undefined;
+		}
 		// The developer token runs out soon: reload now, between two tracks,
 		// rather than fail every load once it has.
 		if (tokenExpiresAtRef.current && tokenExpiresAtRef.current - Date.now() < TOKEN_RENEW_BEFORE_MS) {
@@ -398,7 +416,17 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		if (!canPlay) return undefined;
 		const timer = setInterval(() => {
 			const entry = currentEntryRef.current;
-			if (!entry || readyEntryRef.current !== entry) return;
+			if (!entry || readyEntryRef.current !== entry) {
+				// Still waiting for the song of a music video (Android): a message
+				// lost to a reconnect would leave the room on an item this device
+				// cannot play, so ask again now and then.
+				const asked = songAskedForRef.current;
+				if (entry && asked?.entry === entry && Date.now() - asked.at > SONG_ASK_AGAIN_MS) {
+					asked.at = Date.now();
+					sendRef.current({ type: 'APPLE_PLAY_AS_SONG', payload: { videoId: currentKeyRef.current, trackId: trackIdOf(entry) } });
+				}
+				return;
+			}
 			const states = window.MusicKit?.PlaybackStates || {};
 			const state = music.playbackState;
 			if (music.nowPlayingItem && !holdsCurrentItem() && mismatchReloadedRef.current !== entry) {
@@ -432,7 +460,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			}
 		}, DRIFT_CHECK_MS);
 		return () => clearInterval(timer);
-	}, [canPlay, music, status, play, progressRef, progressAtRef, isPlayingRef, currentEntryRef, holdsCurrentItem]);
+	}, [canPlay, music, status, play, progressRef, progressAtRef, isPlayingRef, currentEntryRef, currentKeyRef, sendRef, holdsCurrentItem]);
 
 	// Sign-in opens Apple's window. Its answer does not always reach this page
 	// (Chrome, 13.11.2026), although MusicKit has stored the user token: then a
