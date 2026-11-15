@@ -119,7 +119,7 @@ export function PlaylistView({
     const isLibrary = activeTab === "library";
 
     return (
-        <div className="flex flex-col h-full bg-[#0a0a0a] text-white relative">
+        <div className="flex flex-col h-full bg-page text-ink relative">
             {isLibrary ? (
                 <div className="flex-1 min-h-0">
                     <ChannelLibrary
@@ -139,13 +139,13 @@ export function PlaylistView({
                     className="flex-1 overflow-y-auto pb-24 custom-scrollbar scroll-smooth relative"
                     ref={scrollRef}
                 >
-                    <div className="max-w-3xl mx-auto space-y-4 py-4 px-4">
+                    <div className="max-w-3xl mx-auto space-y-6 py-4 px-3 sm:px-4">
                         {/* History */}
                         {history.length > 0 && (
-                            <div className="space-y-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
-                                <div className="flex items-center gap-2 px-2 pb-2 border-b border-neutral-800">
-                                    <span className="text-xs font-bold text-neutral-600 uppercase tracking-widest">{t('playlist.history')}</span>
-                                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-neutral-900 text-neutral-600 font-mono">
+                            <div className="space-y-1 opacity-60 transition-opacity duration-200 hover:opacity-100">
+                                <div className="flex items-baseline gap-2 px-3 pb-1">
+                                    <span className="text-[13px] font-medium text-ink-2">{t('playlist.history')}</span>
+                                    <span className="text-[13px] tabular-nums text-ink-3">
                                         {history.length > 50 ? t('playlist.last50', { count: history.length }) : history.length}
                                     </span>
                                 </div>
@@ -175,10 +175,9 @@ export function PlaylistView({
 
                         {/* Current Track */}
                         {currentTrack && (
-                            <div id="playlist-current-track" className="space-y-2 py-4">
-                                <div className="flex items-center gap-2 px-2 pb-2">
-                                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                                    <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">{t('playlist.nowPlaying')}</span>
+                            <div id="playlist-current-track" className="space-y-1">
+                                <div className="px-3 pb-1">
+                                    <span className="text-[13px] font-medium text-accent">{t('playlist.nowPlaying')}</span>
                                 </div>
                                 <Track
                                     track={currentTrack}
@@ -202,10 +201,10 @@ export function PlaylistView({
 
                         {/* Queue */}
                         {filteredQueue.length > 0 ? (
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2 px-2 pb-2 border-b border-neutral-800 mt-4">
-                                    <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">{t('playlist.upNext')}</span>
-                                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-neutral-800 text-neutral-400 font-mono">{filteredQueue.length}</span>
+                            <div className="space-y-1">
+                                <div className="flex items-baseline gap-2 px-3 pb-1">
+                                    <span className="text-[13px] font-medium text-ink-2">{t('playlist.upNext')}</span>
+                                    <span className="text-[13px] tabular-nums text-ink-3">{filteredQueue.length}</span>
                                 </div>
                                 {filteredQueue.map((track) => (
                                     <Track
@@ -231,8 +230,8 @@ export function PlaylistView({
                             </div>
                         ) : (
                             !currentTrack && (
-                                <div className="flex h-64 w-full items-center justify-center text-neutral-500 bg-[#0a0a0a]">
-                                    <span className="text-lg">{t('playlist.queueEmpty')}</span>
+                                <div className="flex h-64 w-full items-center justify-center text-ink-2">
+                                    <span className="text-base">{t('playlist.queueEmpty')}</span>
                                 </div>
                             )
                         )}
@@ -246,12 +245,12 @@ export function PlaylistView({
                 The margin keeps it clear of the room's bar at the bottom of a phone. */}
             {!isLibrary && showJumpToNow && currentTrack && !disableFloatingUI && createPortal(
                 <div
-                    className={`fixed ${appFooterPresent ? 'bottom-20' : 'bottom-8'} right-8 z-[100] animate-fadeIn`}
+                    className={`fixed ${appFooterPresent ? 'bottom-20' : 'bottom-6'} right-4 z-[100] animate-fadeIn sm:right-8`}
                     style={{ marginBottom: 'var(--bottom-bar-h, 0px)' }}
                 >
                     <button
                         onClick={() => scrollToCurrent(true)}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 hover:shadow-xl transition-all hover:-translate-y-0.5 active:translate-y-0 font-medium text-sm"
+                        className="cv-btn cv-btn-accent rounded-full shadow-lg shadow-black/40"
                     >
                         <span>{t('playlist.backToNow')}</span>
                         {jumpDirection === 'up' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}

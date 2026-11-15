@@ -2,11 +2,10 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { ThumbsUp, ThumbsDown, Headphones, Trash2, Sparkles, Loader2, Check } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Headphones, Trash2, Loader2, UserRound } from "lucide-react";
 import { Language } from '../contexts/LanguageContext';
 import { Consent } from '../contexts/ConsentContext';
 import { Suggestions } from "./Suggestions";
-import { MarqueeText } from "./MarqueeText";
 import { Skeleton } from "./Skeleton";
 import { CoverImage } from "./CoverImage";
 import { suggesterLabel } from "../utils/participation";
@@ -15,6 +14,8 @@ import { isAppleKey } from "../utils/trackKeys";
 const buildWatchUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 const buildThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
+// One row of a list: the cover, the title over the artist, who suggested it,
+// and the vote. A tap opens what can be done with the track.
 export function Track({
   track,
   isActive,
@@ -50,157 +51,152 @@ export function Track({
   const isApple = isAppleKey(track.videoId);
   const thumbnailSrc = track.thumbnail ?? (isApple ? null : buildThumbnailUrl(track.videoId));
 
+  const score = track.score || 0;
+  const suggester = suggesterLabel(track, t);
+  // Next to the person icon a guest's tag says enough.
+  const suggesterShort = track.suggestedByIsGuest && track.suggestedByGuestTag ? track.suggestedByGuestTag : suggester;
+  const showVotes = !readOnly && votesEnabled && !isActive;
+  const voteButton = "flex h-10 w-10 items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 sm:h-9 sm:w-9";
+  const actionButton = "cv-btn h-11 w-full";
+
   return (
     <div
       onClick={() => onToggleExpand(track.id)}
-      className={`transition-all duration-500 ease-in-out p-4 rounded-3xl shadow-lg backdrop-blur-sm cursor-pointer overflow-hidden border ${isActive
-        ? "border-green-500 bg-[#0a0a0a] shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-        : isPriority
-          ? "border-red-500/50 bg-[#1a1a1a] shadow-[0_0_10px_rgba(239,68,68,0.15)] ring-1 ring-red-500/30"
-          : vote === "up"
-            ? "border-transparent bg-gradient-to-br from-orange-500/70 to-orange-600/60 shadow-[0_0_15px_#fb923c]/60"
-            : "border-transparent bg-[#1e1e1e]/80 hover:bg-[#222]"
-        } ${isExpanded
-          ? isActive
-            ? "scale-[1.02] ring-2 ring-green-500/60"
-            : isPriority
-              ? "scale-[1.02] ring-2 ring-red-500/60"
-              : "scale-[1.02] ring-2 ring-orange-500/60"
-          : ""
-        } ${readOnly ? "opacity-90" : ""}`}
+      className={`cursor-pointer overflow-hidden rounded-xl px-3 py-2.5 transition-colors duration-150 ${isActive || isExpanded
+        ? "bg-raised"
+        : "bg-card hover:bg-raised"
+        } ${isActive
+          ? "ring-1 ring-inset ring-accent/50"
+          : isPriority
+            ? "ring-1 ring-inset ring-accent/30"
+            : isExpanded
+              ? "ring-1 ring-inset ring-line"
+              : ""
+        }`}
     >
-      <div className="flex justify-between items-center gap-3">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          {!track.title ? (
-            // Metadata still loading — cleared by the 28-day cleanup, refilled on
-            // join. Don't show YouTube imagery until we have fresh metadata.
-            <div className="skeleton w-16 h-16 rounded-3xl bg-neutral-800 flex-shrink-0" aria-hidden="true" />
-          ) : (isApple ? hasAppleConsent : hasConsent) && thumbnailSrc ? (
-            <CoverImage
-              src={thumbnailSrc}
-              fallbackSrc={isApple ? undefined : buildThumbnailUrl(track.videoId)}
-              alt={track.title}
-              className="w-16 h-16 rounded-3xl shadow-md flex-shrink-0"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-3xl bg-neutral-800 flex items-center justify-center flex-shrink-0 shadow-inner">
-              <Headphones size={24} className="text-neutral-600" />
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            {track.title ? (
-              <MarqueeText as="h3" className="text-lg font-semibold tracking-tight">
-                {track.title}
-              </MarqueeText>
-            ) : (
-              // Title cleared after YouTube's 28-day metadata limit — re-fetched
-              // on join. Skeleton bridges the brief gap instead of showing "null".
-              <Skeleton className="h-5 w-40 max-w-full" />
-            )}
-            {track.artist ? (
-              <MarqueeText as="p" className="text-sm text-neutral-400">
-                {track.artist}
-                {isActive ? " • " + t('track.playing') : ""}
-              </MarqueeText>
-            ) : isActive ? (
-              <MarqueeText as="p" className="text-sm text-neutral-400">
-                {t('track.playing')}
-              </MarqueeText>
-            ) : (
-              <Skeleton className="h-3.5 w-24 max-w-full mt-1.5" />
-            )}
+      <div className="flex items-center gap-3">
+        {!track.title ? (
+          // Metadata still loading — cleared by the 28-day cleanup, refilled on
+          // join. Don't show YouTube imagery until we have fresh metadata.
+          <div className="skeleton h-12 w-12 flex-shrink-0 rounded-lg bg-raised" aria-hidden="true" />
+        ) : (isApple ? hasAppleConsent : hasConsent) && thumbnailSrc ? (
+          <CoverImage
+            src={thumbnailSrc}
+            fallbackSrc={isApple ? undefined : buildThumbnailUrl(track.videoId)}
+            alt={track.title}
+            className="h-12 w-12 flex-shrink-0 rounded-lg"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-raised">
+            <Headphones size={20} className="text-ink-3" />
           </div>
+        )}
+
+        <div className="min-w-0 flex-1">
+          {track.title ? (
+            // One line in the list; the whole title once the row is open.
+            <h3 className={`text-[15px] font-medium leading-5 text-ink ${isExpanded ? "break-words" : "truncate"}`}>
+              {track.title}
+            </h3>
+          ) : (
+            // Title cleared after YouTube's 28-day metadata limit — re-fetched
+            // on join. Skeleton bridges the brief gap instead of showing "null".
+            <Skeleton className="h-4 w-40 max-w-full" />
+          )}
+          {track.artist ? (
+            <p className="mt-0.5 flex min-w-0 items-center gap-2 text-[13px] leading-5 text-ink-2">
+              <span className={isExpanded ? "min-w-0 break-words" : "truncate"}>{track.artist}</span>
+              {/* Phones: who suggested it sits here, where a row with votes
+                  has no room for it on the right. */}
+              {suggester && showVotes && (
+                <span className="flex flex-shrink-0 items-center gap-1 text-xs text-ink-3 sm:hidden">
+                  <UserRound size={12} aria-hidden="true" />
+                  <span className="max-w-[5.5rem] truncate">{suggesterShort}</span>
+                </span>
+              )}
+            </p>
+          ) : isActive ? null : (
+            <Skeleton className="mt-1.5 h-3.5 w-24 max-w-full" />
+          )}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-4 flex-shrink-0">
-          {suggesterLabel(track, t) && (
-            <span className="text-xs text-neutral-500 font-medium whitespace-nowrap order-2 sm:order-1 sm:mr-2 max-w-[8rem] truncate">
-              {suggesterLabel(track, t)}
+        {suggester && (
+          <span className={`max-w-[6.5rem] flex-shrink-0 truncate text-xs text-ink-3 ${showVotes ? "max-sm:hidden" : ""}`}>
+            {suggester}
+          </span>
+        )}
+
+        {showVotes && (
+          <div className="flex flex-shrink-0 items-center">
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                onVote(track.id, "up");
+              }}
+              aria-pressed={vote === "up"}
+              className={`${voteButton} ${vote === "up"
+                ? "bg-accent text-accent-ink"
+                : "text-ink-2 hover:bg-page hover:text-ink"
+                }`}
+            >
+              <ThumbsUp size={18} strokeWidth={1.75} />
+            </button>
+
+            <span className={`w-6 text-center text-sm font-semibold tabular-nums sm:w-7 ${vote === "up" ? "text-accent" : score > 0 ? "text-ink" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
+              {score}
             </span>
-          )}
 
-          {!readOnly && votesEnabled && !isActive && (
-            <div className="flex items-center gap-1 sm:gap-4 order-1 sm:order-2">
-              <button
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onVote(track.id, "up");
-                }}
-                className={`transition-transform duration-300 ease-out drop-shadow-md transform relative rounded-full p-1.5 ${vote === "up"
-                  ? "scale-125 bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg"
-                  : "text-orange-400 hover:scale-125 hover:bg-orange-500/20"
-                  }`}
-              >
-                <ThumbsUp size={20} />
-              </button>
-
-              <span className={`text-sm font-bold w-5 sm:w-6 text-center ${(track.score || 0) > 0 ? "text-orange-400" :
-                (track.score || 0) < 0 ? "text-neutral-500" : "text-neutral-600"
-                }`}>
-                {track.score || 0}
-              </span>
-
-              <button
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onVote(track.id, "down");
-                }}
-                className={`transition-transform duration-300 ease-out transform relative rounded-full p-1.5 ${vote === "down"
-                  ? "scale-125 bg-gradient-to-br from-neutral-600 to-neutral-800 text-white shadow-lg"
-                  : "text-neutral-500 hover:scale-125 hover:bg-neutral-700/20"
-                  }`}
-              >
-                <ThumbsDown size={20} />
-              </button>
-            </div>
-          )}
-
-          {(isActive || (readOnly && isActive)) && (
-            <div className="flex items-center gap-2 order-1 sm:order-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs font-bold text-green-500 uppercase tracking-wider">{t('track.now')}</span>
-            </div>
-          )}
-        </div>
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                onVote(track.id, "down");
+              }}
+              aria-pressed={vote === "down"}
+              className={`${voteButton} ${vote === "down"
+                ? "bg-ink text-page"
+                : "text-ink-2 hover:bg-page hover:text-ink"
+                }`}
+            >
+              <ThumbsDown size={18} strokeWidth={1.75} />
+            </button>
+          </div>
+        )}
       </div>
 
       {isExpanded && (
-        <div className="p-4 bg-[#1a1a1a] rounded-2xl border border-neutral-800 text-neutral-300 mt-4 space-y-4">
+        <div className="mt-3 space-y-3 border-t border-line pt-3 text-ink">
 
           {/* Inline Suggestions Accordion (Moved to Top) */}
           {isActiveSuggestion && (
-            <div className="border-b border-neutral-800 pb-4 animate-fadeIn">
-              <div className="flex items-center justify-between mb-2 px-1">
-                <h4 className="text-sm font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles size={14} className="text-purple-400" />
-                  {t('suggestions.title', 'Similar Songs')}
-                </h4>
-              </div>
+            <div className="animate-fadeIn border-b border-line pb-3">
+              <h4 className="mb-2 px-1 text-[13px] font-medium text-ink-2">
+                {t('suggestions.title', 'Similar Songs')}
+              </h4>
 
               {isFetchingSuggestions ? (
-                <div className="flex flex-col items-center justify-center py-8 text-neutral-500 gap-3">
-                  <Loader2 className="animate-spin text-orange-500" size={24} />
+                <div className="flex flex-col items-center justify-center gap-3 py-8 text-ink-2">
+                  <Loader2 className="animate-spin text-ink-2" size={22} />
                   <p className="text-xs font-medium">{t('suggestions.loading', 'Finding similar videos...')}</p>
                 </div>
               ) : suggestions && suggestions.length > 0 ? (
                 <Suggestions suggestions={suggestions} onAdd={onAddSuggestion || onAdd} onPreview={onPreview} queueVideoIds={queueVideoIds} />
               ) : (
-                <div className="text-center py-4 text-neutral-500 text-sm">
+                <div className="py-4 text-center text-sm text-ink-2">
                   {t('suggestions.empty', 'No suggestions found.')}
                 </div>
               )}
             </div>
           )}
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {onAdd && !queueVideoIds?.has(track.videoId) && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onAdd(track.videoId);
                 }}
-                className="flex-1 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all shadow-lg shadow-orange-900/20 active:scale-95"
+                className={`${actionButton} cv-btn-accent font-semibold`}
               >
                 {t('track.add')}
               </button>
@@ -211,9 +207,8 @@ export function Track({
                   e.stopPropagation();
                   onRecommend(track);
                 }}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all shadow-lg shadow-purple-900/20"
+                className={`${actionButton} cv-btn-quiet`}
               >
-                <Sparkles size={20} className="text-yellow-300" />
                 {t('track.recommend', 'Get Suggestions')}
               </button>
             )}
@@ -223,21 +218,21 @@ export function Track({
                   e.stopPropagation();
                   onPreview(track);
                 }}
-                className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-colors"
+                className={`${actionButton} cv-btn-quiet`}
               >
-                <Headphones size={20} className="text-green-400" />
+                <Headphones size={18} className="text-ink-2" />
                 {t('track.preview')}
               </button>
             )}
             {onDelete && (
               showDeleteConfirm ? (
-                <div className="flex gap-3 animate-fadeIn">
+                <div className="flex animate-fadeIn gap-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowDeleteConfirm(false);
                     }}
-                    className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white py-3 rounded-xl font-semibold transition-colors"
+                    className="cv-btn cv-btn-quiet h-11 flex-1"
                   >
                     {t('track.cancel')}
                   </button>
@@ -246,7 +241,7 @@ export function Track({
                       e.stopPropagation();
                       onDelete(track.id);
                     }}
-                    className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/50 py-3 rounded-xl font-semibold transition-colors"
+                    className="cv-btn h-11 flex-1 border border-red-500/50 bg-red-500/10 text-red-400 hover:bg-red-500/20"
                   >
                     {t('track.confirmDelete')}
                   </button>
@@ -257,9 +252,9 @@ export function Track({
                     e.stopPropagation();
                     setShowDeleteConfirm(true);
                   }}
-                  className="flex-1 bg-neutral-800 hover:bg-red-900/30 text-red-500 hover:text-red-400 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-colors border border-transparent hover:border-red-500/30"
+                  className={`${actionButton} text-red-400 hover:bg-red-500/10`}
                 >
-                  <Trash2 size={20} />
+                  <Trash2 size={18} />
                   {t('track.delete')}
                 </button>
               )
@@ -271,7 +266,7 @@ export function Track({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(event) => event.stopPropagation()}
-              className="inline-flex items-center gap-2 text-orange-400 text-sm hover:text-orange-300 transition-colors"
+              className="inline-flex items-center gap-2 px-1 text-sm text-ink-2 underline decoration-ink-3 underline-offset-4 transition-colors duration-150 hover:text-ink"
             >
               {t('track.watch')}
             </a>
