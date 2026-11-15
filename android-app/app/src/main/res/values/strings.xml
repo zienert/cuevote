@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CueVote</string>
+    <!-- Name of the notification category in the system settings, and the second
+         line of the playback notification when a title has no artist. A name,
+         the same in every language: the wrapper has no translations. -->
+    <string name="playback_channel_name" translatable="false">Apple Music</string>
 </resources>
