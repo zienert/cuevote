@@ -214,10 +214,15 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
         )}
       </div>
       {docked ? (
-        (activeError || submissionSuccess) && (
+        // A plain "added" shows in the button alone: a line of text here would
+        // push the whole bar up for a moment. Errors and "waits for approval"
+        // say something the button cannot, so they keep their line.
+        (activeError || infoMessage) ? (
           <p role="status" className={`keep-open px-3 pt-1.5 text-sm ${activeError ? "text-red-400" : "text-neutral-300"}`}>
-            {activeError || infoMessage || t('suggest.added')}
+            {activeError || infoMessage}
           </p>
+        ) : submissionSuccess && (
+          <span role="status" className="sr-only">{t('suggest.added')}</span>
         )
       ) : (
         activeError && (
