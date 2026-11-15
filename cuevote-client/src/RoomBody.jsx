@@ -1374,12 +1374,14 @@ function RoomBody() {
 
 
 
+  // Returns false when nothing was sent, so the form does not wait for an answer.
   const handleSongSuggested = useCallback((query) => {
     if (!canParticipate(user, requireLogin)) {
       setToast({ message: t(user ? 'errors.loginRequired' : 'errors.sessionNotReady'), type: 'error' });
-      return;
+      return false;
     }
     sendMessage({ type: "SUGGEST_SONG", payload: { query, userId: user?.id } });
+    return true;
   }, [user, requireLogin, sendMessage, t]);
 
   const handleLibraryAdd = useCallback((videoId) => {

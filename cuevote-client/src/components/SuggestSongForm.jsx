@@ -72,8 +72,12 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
     setInfoMessage("");
     setIsSubmittingSuggestion(true);
 
-    // Delegate everything to server (Validation, Search, Metadata)
-    onSongSuggested(input);
+    // Delegate everything to server (Validation, Search, Metadata). The room
+    // answers false when it did not send the entry (it says why itself): then
+    // no answer will come.
+    if (onSongSuggested(input) === false) {
+      setIsSubmittingSuggestion(false);
+    }
 
     // Optimistic Success REMOVED.
     // We now rely entirely on server messages ("success" or "info" or "error")
