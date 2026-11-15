@@ -7,6 +7,7 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { Language } from '../contexts/LanguageContext';
 import { Track } from "./Track";
 import { ChannelLibrary } from "./ChannelLibrary";
+import { ReorderList } from "./ReorderList";
 
 export function PlaylistView({
     history,
@@ -136,7 +137,7 @@ export function PlaylistView({
                 </div>
             ) : (
                 <div
-                    className="flex-1 overflow-y-auto pb-24 custom-scrollbar scroll-smooth relative"
+                    className="flex-1 overflow-y-auto overscroll-contain pb-24 custom-scrollbar scroll-smooth relative"
                     ref={scrollRef}
                 >
                     <div className="max-w-3xl mx-auto space-y-6 py-4 px-3 sm:px-4">
@@ -201,14 +202,14 @@ export function PlaylistView({
 
                         {/* Queue */}
                         {filteredQueue.length > 0 ? (
-                            <div className="space-y-1">
+                            <ReorderList className="relative space-y-1" order={filteredQueue.map(track => track.id).join(' ')}>
                                 <div className="flex items-baseline gap-2 px-3 pb-1">
                                     <span className="text-[13px] font-medium text-ink-2">{t('playlist.upNext')}</span>
                                     <span className="text-[13px] tabular-nums text-ink-3">{filteredQueue.length}</span>
                                 </div>
                                 {filteredQueue.map((track) => (
+                                    <div key={track.id} data-reorder-id={track.id} className="relative">
                                     <Track
-                                        key={track.id}
                                         track={track}
                                         isActive={false}
                                         isExpanded={expandedTrackId === track.id}
@@ -226,8 +227,9 @@ export function PlaylistView({
                                         isFetchingSuggestions={isFetchingSuggestions}
                                         queueVideoIds={queueVideoIds}
                                     />
+                                    </div>
                                 ))}
-                            </div>
+                            </ReorderList>
                         ) : (
                             !currentTrack && (
                                 <div className="flex h-64 w-full items-center justify-center text-ink-2">
