@@ -91,7 +91,7 @@ function LanguageSwitcher({ minimized = false, compact = false, className = "", 
 					if (isControlled) controlledOnToggle && controlledOnToggle(!isOpen);
 					else setInternalIsOpen(!internalIsOpen);
 				}}
-				className={`flex h-9 items-center gap-1.5 rounded-lg px-2 transition-colors duration-150 hover:bg-raised ${isOpen ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${focused ? 'ring-2 ring-accent text-ink z-20 bg-raised' : ''}`}
+				className={`cv-hit flex h-9 items-center gap-1.5 rounded-lg px-2 transition-colors duration-150 hover:bg-raised ${isOpen ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${focused ? 'ring-2 ring-accent text-ink z-20 bg-raised' : ''}`}
 				title={t('header.changeLanguage')}
 			>
 				<Globe size={18} />
@@ -101,7 +101,7 @@ function LanguageSwitcher({ minimized = false, compact = false, className = "", 
 			{isOpen && (
 				<div
 					ref={listRef}
-					className="absolute right-0 top-full mt-2 w-48 origin-top-right bg-card border border-line rounded-xl shadow-xl overflow-hidden py-1 z-[100] animate-in fade-in zoom-in-95 duration-150 max-h-80 overflow-y-auto"
+					className="absolute right-0 top-full mt-2 w-48 origin-top-right bg-card border border-line rounded-xl shadow-xl overflow-hidden py-1 z-[100] animate-in fade-in zoom-in-95 duration-150 ease-cv max-h-80 overflow-y-auto overscroll-contain"
 				>
 					{languages.map((lang, index) => (
 						<button
@@ -112,7 +112,7 @@ function LanguageSwitcher({ minimized = false, compact = false, className = "", 
 								if (isControlled) controlledOnToggle && controlledOnToggle(false);
 								else setInternalIsOpen(false);
 							}}
-							className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-raised transition-colors duration-150 ${language === lang.code ? 'text-accent font-medium bg-accent/10' : 'text-ink'} ${focusedLanguageIndex === index ? 'bg-raised text-ink ring-1 ring-inset ring-ink/20' : ''}`}
+							className={`w-full min-h-11 sm:min-h-0 text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-raised transition-colors duration-150 ${language === lang.code ? 'text-accent font-medium bg-accent/10' : 'text-ink'} ${focusedLanguageIndex === index ? 'bg-raised text-ink ring-1 ring-inset ring-ink/20' : ''}`}
 						>
 							<span>{lang.label}</span>
 							{language === lang.code && <Check size={16} />}

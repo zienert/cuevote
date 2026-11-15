@@ -646,7 +646,7 @@ export function Lobby() {
     };
     const createLabel = isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'));
     const tabClass = (active, index) =>
-        `flex h-9 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors duration-150 sm:flex-none ${active ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${isFocused(index) ? 'relative z-10 text-ink ring-2 ring-accent' : ''}`;
+        `cv-hit flex h-9 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors duration-150 sm:flex-none ${active ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${isFocused(index) ? 'relative z-10 text-ink ring-2 ring-accent' : ''}`;
     const avatar = (size) => (user.picture ? (
         <img src={user.picture} referrerPolicy="no-referrer" className={`${size} rounded-full border border-line`} alt={user.name} />
     ) : (
@@ -686,7 +686,7 @@ export function Lobby() {
                     {isSignedIn(user) ? (
                         <button
                             onClick={() => setShowProfileModal(true)}
-                            className={`flex items-center rounded-full transition-transform duration-150 ease-cv active:scale-95 ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
+                            className={`cv-hit flex items-center rounded-full transition-transform duration-150 ease-cv active:scale-95 ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
                             aria-label={t('header.profileSettings')}
                         >
                             {avatar('h-9 w-9')}
@@ -704,7 +704,7 @@ export function Lobby() {
                                         performLogin();
                                     }}
                                     onClick={performLogin}
-                                    className={`flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-2.5 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
+                                    className={`cv-hit flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-2.5 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
                                 >
                                     <GoogleGIcon className="h-3.5 w-3.5" />
                                     <span>{t('lobby.signInGoogle')}</span>
@@ -775,20 +775,20 @@ export function Lobby() {
                             <input
                                 id="channel-search"
                                 type="text"
-                                className={`block h-10 w-full rounded-xl border bg-card pl-14 pr-3 text-base text-ink placeholder:text-ink-3 transition-[border-color,box-shadow] duration-150 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-accent/70 sm:text-sm ${filterFlagOpen ? 'border-accent/50' : 'border-line'}`}
+                                className={`block h-11 w-full rounded-xl border bg-card pl-14 pr-3 text-base text-ink sm:h-10 placeholder:text-ink-3 transition-[border-color,box-shadow] duration-150 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-accent/70 sm:text-sm ${filterFlagOpen ? 'border-accent/50' : 'border-line'}`}
                                 placeholder={filterFlagOpen ? t('lobby.searchCountries') : t('lobby.searchPlaceholder')}
                                 value={filterFlagOpen ? filterFlagSearch : searchQuery}
                                 onChange={(e) => filterFlagOpen ? setFilterFlagSearch(e.target.value) : setSearchQuery(e.target.value)}
                             />
                             {filterFlagOpen && (
-                                <div className="absolute left-0 top-full z-50 mt-1 w-full origin-top overflow-y-auto rounded-xl border border-line bg-card py-1 shadow-xl animate-in fade-in zoom-in-95 duration-150" style={{ maxHeight: '20rem' }}>
+                                <div className="absolute left-0 top-full z-50 mt-1 w-full origin-top-left overflow-y-auto overscroll-contain rounded-xl border border-line bg-card py-1 shadow-xl animate-in fade-in zoom-in-95 duration-150 ease-cv" style={{ maxHeight: '20rem' }}>
                                     {localizedCountries.filter(lang =>
                                         lang.code === 'international' || lang.search.includes(filterFlagSearch.toLowerCase())
                                     ).map(lang => (
                                         <button
                                             key={lang.code}
                                             onClick={() => { setFilterLanguageFlag(lang.code); setFilterFlagOpen(false); setFilterFlagSearch(""); }}
-                                            className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors duration-150 hover:bg-raised ${filterLanguageFlag === lang.code ? 'bg-accent/10 font-medium text-accent' : 'text-ink'}`}
+                                            className={`flex min-h-11 w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors duration-150 hover:bg-raised sm:min-h-0 ${filterLanguageFlag === lang.code ? 'bg-accent/10 font-medium text-accent' : 'text-ink'}`}
                                         >
                                             <span className="flex w-5 justify-center text-base leading-none">
                                                 {lang.code === 'international' ? <Globe size={16} className="text-ink-2" /> : lang.emoji}
@@ -1269,7 +1269,7 @@ export function Lobby() {
             }
 
             <footer className="mt-12 flex w-full max-w-5xl justify-center border-t border-line py-6">
-                <Link to="/legal" className="flex items-center gap-2 text-sm font-medium text-ink-2 transition-colors duration-150 hover:text-ink">
+                <Link to="/legal" className="cv-hit flex items-center gap-2 text-sm font-medium text-ink-2 transition-colors duration-150 hover:text-ink">
                     <Scale size={16} />
                     <span>{t('lobby.terms')}</span>
                 </Link>

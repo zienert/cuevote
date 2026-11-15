@@ -23,7 +23,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 		>
 			<span
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent transition-transform duration-[250ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent transition-transform duration-[250ms] ease-cv-drawer motion-reduce:transition-none"
 				style={{
 					width: `calc((100% - 0.5rem) / ${options.length})`,
 					transform: `translateX(${selectedIndex * 100}%)`,
@@ -38,7 +38,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 						type="button"
 						aria-pressed={selected}
 						onClick={() => onChange(option.value)}
-						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/80 ${size === 'sm' ? 'h-9 px-1.5 text-[13px]' : 'h-10 px-3 text-sm'} ${selected ? 'text-accent-ink' : 'text-ink-2 hover:text-ink'}`}
+						className={`cv-hit relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/80 ${size === 'sm' ? 'h-9 px-1.5 text-[13px]' : 'h-10 px-3 text-sm'} ${selected ? 'text-accent-ink' : 'text-ink-2 hover:text-ink'}`}
 					>
 						{Icon ? <Icon size={16} className="shrink-0" /> : null}
 						<span className="truncate">{option.label}</span>

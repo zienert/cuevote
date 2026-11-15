@@ -45,14 +45,50 @@ a,
 
 button,
 [role="button"] {
-  /* A long press on a control does not select its label. */
+  /* A long press on a control does not select its label or open the
+     system's menu for it. */
   -webkit-user-select: none;
   user-select: none;
+  -webkit-touch-callout: none;
 }
 
 :where(button, a, [role="button"]):focus-visible {
   outline: 2px solid rgb(var(--cv-accent));
   outline-offset: 2px;
+}
+
+/* Touch: a control smaller than a fingertip keeps its look and gets an
+   invisible area of 44 px to hit. Phones and tablets only, a mouse pointer is
+   precise enough. In the components layer, so that a control placed with
+   `absolute` or `fixed` stays where it is. */
+@layer components {
+  @media (pointer: coarse) {
+    .cv-hit {
+      position: relative;
+    }
+
+    .cv-hit::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+@media (pointer: coarse) {
+  /* A field with text under 16 px makes iOS zoom into the page on focus. */
+  input.text-sm,
+  input.text-xs,
+  textarea.text-sm,
+  textarea.text-xs,
+  select.text-sm,
+  select.text-xs {
+    font-size: 16px;
+  }
 }
 
 @layer components {

@@ -272,7 +272,7 @@ export function Header({
           askToLeave();
         }
       }}
-      className="flex h-8 w-8 items-center justify-center text-ink-2 hover:text-ink transition-colors duration-150 rounded-lg hover:bg-raised flex-shrink-0"
+      className="cv-hit flex h-8 w-8 items-center justify-center text-ink-2 hover:text-ink transition-colors duration-150 rounded-lg hover:bg-raised flex-shrink-0"
       title={isPlaylistMode && onClosePlaylist ? t('playlist.close') : t('header.leave')}
     >
       <ChevronLeft size={20} />
@@ -284,7 +284,7 @@ export function Header({
   const leaveButton = (
     <button
       onClick={askToLeave}
-      className="flex h-8 w-8 items-center justify-center text-ink-2 hover:text-ink transition-colors duration-150 rounded-lg hover:bg-raised flex-shrink-0"
+      className="cv-hit flex h-8 w-8 items-center justify-center text-ink-2 hover:text-ink transition-colors duration-150 rounded-lg hover:bg-raised flex-shrink-0"
       title={t('header.leave')}
       aria-label={t('header.leave')}
     >
@@ -304,7 +304,7 @@ export function Header({
     else if (view === "playlist") onPlaylist();
     else onLibrary();
   };
-  const phoneIconButton = "keep-open flex h-9 w-9 flex-none items-center justify-center rounded-lg transition-[background-color,color,transform] duration-150 ease-cv active:scale-90";
+  const phoneIconButton = "keep-open cv-hit flex h-9 w-9 flex-none items-center justify-center rounded-lg transition-[background-color,color,transform] duration-150 ease-cv active:scale-90";
 
   const userIdentity = isSignedIn(user) ? (
     <button
@@ -327,7 +327,7 @@ export function Header({
         // Without the cookie consent performLogin asks for it.
         <button
           onClick={() => performLogin()}
-          className={`flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-line bg-raised transition-[opacity,transform] duration-150 ease-cv ${disabled ? 'opacity-50' : 'active:scale-90'}`}
+          className={`cv-hit flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-line bg-raised transition-[opacity,transform] duration-150 ease-cv ${disabled ? 'opacity-50' : 'active:scale-90'}`}
           title={disabled ? t('header.acceptCookies') : t('header.signIn')}
         >
           <GoogleGIcon className="w-4 h-4" />
@@ -493,7 +493,7 @@ export function Header({
                       })
                       .catch(() => { /* Clipboard denied or unavailable */ });
                   }}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${copied
+                  className={`cv-hit flex h-8 w-8 items-center justify-center rounded-lg transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${copied
                     ? "bg-accent/15 text-accent"
                     : "bg-raised text-ink-2 hover:text-ink"
                     }`}
