@@ -40,7 +40,7 @@ const Row = forwardRef(function Row({ track, rank, onVote }, ref) {
 					{change > 0 ? `▲ ${change}` : change < 0 ? `▼ ${-change}` : ''}
 				</span>
 			</span>
-			<Cover src={track.cover} />
+			<Cover src={track.thumbnail} />
 			<div className="min-w-0 flex-1">
 				<p className="truncate font-semibold leading-6 text-ink">{track.title}</p>
 				<p className="truncate text-[0.9375rem] leading-5 text-ink-2">{track.artist}</p>
@@ -48,24 +48,24 @@ const Row = forwardRef(function Row({ track, rank, onVote }, ref) {
 			<div className="flex flex-none items-center">
 				<button
 					type="button"
-					aria-pressed={track.mine === 'up'}
+					aria-pressed={track.myVote === 'up'}
 					aria-label={`Nach oben stimmen: ${track.title}`}
 					onClick={() => onVote(track.id, 'up')}
-					className={`${arrow} ${track.mine === 'up' ? 'bg-accent text-accent-ink' : 'text-ink-2 hover:bg-card hover:text-ink'}`}
+					className={`${arrow} ${track.myVote === 'up' ? 'bg-accent text-accent-ink' : 'text-ink-2 hover:bg-card hover:text-ink'}`}
 				>
-					<ArrowBigUp size={24} strokeWidth={1.75} fill={track.mine === 'up' ? 'currentColor' : 'none'} />
+					<ArrowBigUp size={24} strokeWidth={1.75} fill={track.myVote === 'up' ? 'currentColor' : 'none'} />
 				</button>
-				<span className={`min-w-7 text-center font-semibold tabular-nums ${track.mine === 'up' ? 'b-accent-text' : 'text-ink'}`}>
+				<span className={`min-w-7 text-center font-semibold tabular-nums ${track.myVote === 'up' ? 'b-accent-text' : 'text-ink'}`}>
 					<NumberFlow value={track.score} />
 				</span>
 				<button
 					type="button"
-					aria-pressed={track.mine === 'down'}
+					aria-pressed={track.myVote === 'down'}
 					aria-label={`Nach unten stimmen: ${track.title}`}
 					onClick={() => onVote(track.id, 'down')}
-					className={`${arrow} ${track.mine === 'down' ? 'bg-ink text-page' : 'text-ink-2 hover:bg-card hover:text-ink'}`}
+					className={`${arrow} ${track.myVote === 'down' ? 'bg-ink text-page' : 'text-ink-2 hover:bg-card hover:text-ink'}`}
 				>
-					<ArrowBigDown size={24} strokeWidth={1.75} fill={track.mine === 'down' ? 'currentColor' : 'none'} />
+					<ArrowBigDown size={24} strokeWidth={1.75} fill={track.myVote === 'down' ? 'currentColor' : 'none'} />
 				</button>
 			</div>
 		</Motion.li>

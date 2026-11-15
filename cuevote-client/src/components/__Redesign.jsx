@@ -2,8 +2,10 @@
 // Copyright (c) 2026 Julian Zienert
 // DEV-ONLY (route /__redesign, gated by import.meta.env.DEV in main.jsx, not
 // bundled in production). The way into the two design proposals of November
-// 2026: A, the revised lobby and room (this branch's own components). B, the
-// new draft, is being set up again. Everything runs on the previews' mock data.
+// 2026: A, the revised lobby and room (this branch's own components), and B,
+// the new draft (src/redesign-b), with the three variants its voting list was
+// chosen from and the stress test of both. Everything runs on the previews'
+// mock data.
 import React, { useEffect } from 'react';
 import { Consent } from '../contexts/ConsentContext';
 
@@ -19,6 +21,38 @@ const VIEWS = [
 			['Raum am Computer, Host', '/__room-preview?device=desktop&lang=de&role=owner'],
 			['Raum am Handy, Gast', '/__room-preview?device=phone&lang=de'],
 			['Raum am Handy, Apple Music', '/__room-preview?device=phone&lang=de&provider=apple'],
+		],
+	},
+	{
+		title: 'B Neu',
+		note: 'Neuer Entwurf, hell. Zeigt Lobby und Raum, nicht jede Funktion.',
+		links: [
+			['Lobby', '/__lobby-preview?design=b'],
+			['Lobby, erster Besuch', '/__lobby-preview?design=b&signedOut'],
+			['Kanal erstellen', '/__lobby-preview?design=b&create'],
+			['Raum am Computer, Gast', '/__room-preview?design=b&device=desktop&lang=de'],
+			['Raum am Computer, Host', '/__room-preview?design=b&device=desktop&lang=de&role=owner'],
+			['Raum am Handy, Gast', '/__room-preview?design=b&device=phone&lang=de'],
+			['Raum am Handy, Apple Music', '/__room-preview?design=b&device=phone&lang=de&provider=apple'],
+		],
+	},
+	{
+		title: 'Drei Varianten der Abstimm-Liste',
+		note: 'Daraus entstand die Liste von B. Umschalten oben, oder mit den Tasten 1 bis 3.',
+		links: [
+			['Rangliste (gewählt)', '/__prototype?v=1'],
+			['Wischen', '/__prototype?v=2'],
+			['Wettlauf', '/__prototype?v=3'],
+		],
+	},
+	{
+		title: 'Härtetest',
+		note: 'Schwierige, aber echte Daten: lange Namen, andere Schriften, leere und sehr volle Listen. Umschalten unten.',
+		links: [
+			['A, Raum am Handy', '/__room-preview?device=phone&lang=de&data=worst'],
+			['A, Lobby', '/__lobby-preview?data=worst'],
+			['B, Raum am Handy', '/__room-preview?design=b&device=phone&lang=de&data=worst'],
+			['B, Lobby', '/__lobby-preview?design=b&data=worst'],
 		],
 	},
 ];

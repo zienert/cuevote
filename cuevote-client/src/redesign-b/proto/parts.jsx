@@ -48,7 +48,7 @@ export function RoomFrame({ room, children }) {
 			<header className="flex-none px-5 pb-3 pt-[calc(4.25rem+env(safe-area-inset-top))]">
 				<p className="b-display truncate text-[1.75rem] text-ink">WG-Party Küche</p>
 				<div className="mt-3 flex items-center gap-3 rounded-2xl bg-card p-2 pr-4">
-					<Cover src={EXAMPLE_PLAYING.cover} size="h-14 w-14" />
+					<Cover src={EXAMPLE_PLAYING.thumbnail} size="h-14 w-14" />
 					<div className="min-w-0 flex-1">
 						<p className="text-[0.8125rem] font-semibold leading-4 b-accent-text">Läuft gerade</p>
 						<p className="truncate font-semibold leading-6 text-ink">{EXAMPLE_PLAYING.title}</p>

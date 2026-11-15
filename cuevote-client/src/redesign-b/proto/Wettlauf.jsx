@@ -32,7 +32,7 @@ const Row = forwardRef(function Row({ track, share, leads, onVote }, ref) {
 				transition={SPRING}
 				className={`absolute inset-0 origin-left ${leads ? 'bg-accent/40' : 'bg-accent/[0.16]'}`}
 			/>
-			<Cover src={track.cover} />
+			<Cover src={track.thumbnail} />
 			<div className="relative min-w-0 flex-1">
 				<p className="truncate font-semibold leading-6 text-ink">{track.title}</p>
 				<p className="truncate text-[0.9375rem] leading-5 text-ink-2">{track.artist}</p>
@@ -42,19 +42,19 @@ const Row = forwardRef(function Row({ track, share, leads, onVote }, ref) {
 			</span>
 			<button
 				type="button"
-				aria-pressed={track.mine === 'down'}
+				aria-pressed={track.myVote === 'down'}
 				aria-label={`Eine Stimme dagegen: ${track.title}`}
 				onClick={() => onVote(track.id, 'down')}
-				className={`cv-hit relative flex h-9 w-9 flex-none items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${track.mine === 'down' ? 'bg-ink text-page' : 'bg-page/70 text-ink-2 hover:text-ink'}`}
+				className={`cv-hit relative flex h-9 w-9 flex-none items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${track.myVote === 'down' ? 'bg-ink text-page' : 'bg-page/70 text-ink-2 hover:text-ink'}`}
 			>
 				<Minus size={18} strokeWidth={2.5} />
 			</button>
 			<button
 				type="button"
-				aria-pressed={track.mine === 'up'}
+				aria-pressed={track.myVote === 'up'}
 				aria-label={`Eine Stimme dafür: ${track.title}`}
 				onClick={() => onVote(track.id, 'up')}
-				className={`relative flex h-11 w-11 flex-none items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${track.mine === 'up' ? 'bg-ink text-page' : 'bg-accent text-accent-ink'}`}
+				className={`relative flex h-11 w-11 flex-none items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${track.myVote === 'up' ? 'bg-ink text-page' : 'bg-accent text-accent-ink'}`}
 			>
 				<Plus size={22} strokeWidth={2.75} />
 			</button>

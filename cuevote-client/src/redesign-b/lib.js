@@ -93,7 +93,7 @@ const EXAMPLE = [
 	['99 Luftballons', 'Nena', 2, 'Lukas'], ['Uptown Funk', 'Mark Ronson ft. Bruno Mars', 2, 'P2MX'], ['Dance Monkey', 'Tones and I', 1, 'Alex'],
 	['Shape of You', 'Ed Sheeran', 0, 'Mia'],
 ];
-export const EXAMPLE_PLAYING = { id: 'now', title: 'As It Was', artist: 'Harry Styles', cover: exampleCover(8) };
+export const EXAMPLE_PLAYING = { id: 'now', title: 'As It Was', artist: 'Harry Styles', thumbnail: exampleCover(8) };
 
 /**
  * An example room that answers like the real one: one vote per person and
@@ -101,15 +101,17 @@ export const EXAMPLE_PLAYING = { id: 'now', title: 'As It Was', artist: 'Harry S
  * order of arrival between equals.
  */
 export function useExampleRoom(size = EXAMPLE.length) {
-	const [tracks, setTracks] = useState(() => EXAMPLE.slice(0, size).map(([title, artist, score, by], i) => ({ id: `t${i}`, title, artist, score, by, cover: exampleCover(i), arrived: i })));
+	const [tracks, setTracks] = useState(() => EXAMPLE.slice(0, size).map(([title, artist, score, by], i) => ({ id: `t${i}`, title, artist, score, suggestedByUsername: by, thumbnail: exampleCover(i), arrived: i })));
 	const sort = (list) => [...list].sort((a, b) => (b.score - a.score) || (a.arrived - b.arrived));
 	const vote = (id, direction) => setTracks((current) => sort(current.map((track) => {
 		if (track.id !== id) return track;
-		const before = track.mine === 'up' ? 1 : track.mine === 'down' ? -1 : 0;
-		const mine = track.mine === direction ? undefined : direction;
-		const after = mine === 'up' ? 1 : mine === 'down' ? -1 : 0;
-		return { ...track, mine, score: track.score - before + after };
+		const before = track.myVote === 'up' ? 1 : track.myVote === 'down' ? -1 : 0;
+		const myVote = track.myVote === direction ? undefined : direction;
+		const after = myVote === 'up' ? 1 : myVote === 'down' ? -1 : 0;
+		return { ...track, myVote, score: track.score - before + after };
 	})));
-	const add = (title) => setTracks((current) => sort([...current, { id: `t${Date.now()}`, title, artist: 'CueVote', score: 0, by: 'Du', cover: exampleCover(current.length), arrived: Date.now() }]));
-	return { tracks, vote, add };
+	const add = (title) => setTracks((current) => sort([...current, { id: `t${Date.now()}`, title, artist: 'CueVote', score: 0, thumbnail: exampleCover(current.length), arrived: Date.now() }]));
+	// A vote from somebody else at the party.
+	const nudge = (id) => setTracks((current) => sort(current.map((track) => (track.id === id ? { ...track, score: track.score + 1 } : track))));
+	return { tracks, vote, add, nudge };
 }

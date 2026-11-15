@@ -68,15 +68,15 @@ const Row = forwardRef(function Row({ track, onVote }, ref) {
 				style={{ x, touchAction: 'pan-y' }}
 				className="relative flex cursor-grab items-center gap-3 bg-page py-2 pl-2 pr-4 active:cursor-grabbing"
 			>
-				<span aria-hidden="true" className={`absolute inset-y-2 left-0 w-1 rounded-full ${track.mine === 'up' ? 'bg-accent' : track.mine === 'down' ? 'bg-ink' : 'bg-transparent'}`} />
-				<Cover src={track.cover} />
+				<span aria-hidden="true" className={`absolute inset-y-2 left-0 w-1 rounded-full ${track.myVote === 'up' ? 'bg-accent' : track.myVote === 'down' ? 'bg-ink' : 'bg-transparent'}`} />
+				<Cover src={track.thumbnail} />
 				<div className="min-w-0 flex-1">
 					<p className="truncate font-semibold leading-6 text-ink">{track.title}</p>
 					<p className="truncate text-[0.9375rem] leading-5 text-ink-2">{track.artist}</p>
 				</div>
-				<span className={`flex flex-none items-center gap-1 font-semibold tabular-nums ${track.mine === 'up' ? 'b-accent-text' : 'text-ink'}`}>
-					{track.mine === 'up' ? <ArrowBigUp size={18} fill="currentColor" aria-hidden="true" /> : null}
-					{track.mine === 'down' ? <ArrowBigDown size={18} fill="currentColor" aria-hidden="true" /> : null}
+				<span className={`flex flex-none items-center gap-1 font-semibold tabular-nums ${track.myVote === 'up' ? 'b-accent-text' : 'text-ink'}`}>
+					{track.myVote === 'up' ? <ArrowBigUp size={18} fill="currentColor" aria-hidden="true" /> : null}
+					{track.myVote === 'down' ? <ArrowBigDown size={18} fill="currentColor" aria-hidden="true" /> : null}
 					<NumberFlow value={track.score} />
 				</span>
 			</Motion.div>
@@ -84,10 +84,10 @@ const Row = forwardRef(function Row({ track, onVote }, ref) {
 			{/* For a keyboard and a screen reader: the same two votes as buttons,
 			    out of sight until they have the focus. */}
 			<div className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:inset-y-0 focus-within:right-2 focus-within:z-10 focus-within:flex focus-within:items-center focus-within:gap-1">
-				<button type="button" aria-pressed={track.mine === 'up'} onClick={() => onVote(track.id, 'up')} className="h-11 rounded-full bg-accent px-4 font-semibold text-accent-ink">
+				<button type="button" aria-pressed={track.myVote === 'up'} onClick={() => onVote(track.id, 'up')} className="h-11 rounded-full bg-accent px-4 font-semibold text-accent-ink">
 					Dafür<span className="sr-only">: {track.title}</span>
 				</button>
-				<button type="button" aria-pressed={track.mine === 'down'} onClick={() => onVote(track.id, 'down')} className="h-11 rounded-full bg-ink px-4 font-semibold text-page">
+				<button type="button" aria-pressed={track.myVote === 'down'} onClick={() => onVote(track.id, 'down')} className="h-11 rounded-full bg-ink px-4 font-semibold text-page">
 					Dagegen<span className="sr-only">: {track.title}</span>
 				</button>
 			</div>

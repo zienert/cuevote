@@ -8,9 +8,8 @@ export const trackShape = PropTypes.shape({
 	title: PropTypes.string.isRequired,
 	artist: PropTypes.string,
 	score: PropTypes.number.isRequired,
-	mine: PropTypes.string,
-	cover: PropTypes.string,
-	by: PropTypes.string,
+	myVote: PropTypes.string,
+	thumbnail: PropTypes.string,
 });
 
 export const roomShape = PropTypes.shape({
