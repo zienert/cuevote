@@ -22,12 +22,12 @@
 //                     and of ?apple=signin-failed (default NETWORK_ERROR)
 //   ?stuck            the problem comes back on every retry
 //   ?auto=connect     press "Connect Apple Music" right away
-//   ?suggest          open the suggest field
+//   ?suggest          open the suggest field (on a phone: put the cursor in it)
 //   ?waiting          an Apple channel paused until the host plays again
 //   ?appleConsent=0   a guest who has not turned Apple content on
 //   ?empty            nothing queued
 //   ?lang=de          the language
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
@@ -76,7 +76,7 @@ function cover(index) {
 }
 
 const SONGS = [
-	['Blinding Lights', 'The Weeknd'], ['Levitating', 'Dua Lipa'], ['Major Tom (Völlig losgelöst)', 'Peter Schilling'],
+	['Blinding Lights', 'The Weeknd'], ['Levitating', 'Dua Lipa'], ['Major Tom', 'Peter Schilling'],
 	['As It Was', 'Harry Styles'], ['Flowers', 'Miley Cyrus'], ['Mr. Brightside', 'The Killers'],
 	['Bad Guy', 'Billie Eilish'], ['99 Luftballons', 'Nena'], ['Uptown Funk', 'Mark Ronson ft. Bruno Mars'],
 	['Dance Monkey', 'Tones and I'], ['Shape of You', 'Ed Sheeran'], ['Wonderwall', 'Oasis'],
@@ -280,6 +280,7 @@ export default function RoomPreview() {
 
 	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting') }));
 	const [lastMessage, setLastMessage] = useState(null);
+	const [lastError, setLastError] = useState(null); // { message, code, at }
 	const [lease, setLease] = useState(scenario === 'standby' ? false : true);
 	const progressRef = useRef(47);
 	const progressAtRef = useRef(Date.now());
@@ -300,24 +301,33 @@ export default function RoomPreview() {
 					})),
 				}));
 				break;
-			case 'SUGGEST_SONG': {
-				added.current += 1;
-				const index = 11 + added.current;
-				const isLink = /^https?:/.test(payload.query);
-				const entry = track(provider, index, {
-					id: `added-${added.current}`,
-					...(isLink ? {} : { title: payload.query, artist: 'CueVote Preview' }),
-					suggestedByUsername: isOwner ? OWNER.name : undefined,
-					suggestedByIsGuest: !isOwner,
-					suggestedByGuestTag: isOwner ? undefined : GUEST.guestTag,
-				});
-				setRoom(current => {
-					const queue = [...current.queue, entry];
-					return { ...current, queue, currentTrack: queue[0], isPlaying: true };
-				});
-				setLastMessage({ type: 'success', message: 'Added' });
+			case 'SUGGEST_SONG':
+				// The server takes a moment, as the real one does.
+				setTimeout(() => {
+					// Its answer to a YouTube link in an Apple Music channel.
+					if (provider === 'apple' && /youtu\.?be/i.test(payload.query)) {
+						const message = 'This channel plays Apple Music. Paste a music.apple.com link or search by name.';
+						setLastError({ message, code: 'APPLE_MUSIC_ROOM', at: Date.now() });
+						setLastMessage({ type: 'error', code: 'APPLE_MUSIC_ROOM', message });
+						return;
+					}
+					added.current += 1;
+					const index = 11 + added.current;
+					const isLink = /^https?:/.test(payload.query);
+					const entry = track(provider, index, {
+						id: `added-${added.current}`,
+						...(isLink ? {} : { title: payload.query, artist: 'CueVote Preview' }),
+						suggestedByUsername: isOwner ? OWNER.name : undefined,
+						suggestedByIsGuest: !isOwner,
+						suggestedByGuestTag: isOwner ? undefined : GUEST.guestTag,
+					});
+					setRoom(current => {
+						const queue = [...current.queue, entry];
+						return { ...current, queue, currentTrack: queue[0], isPlaying: true };
+					});
+					setLastMessage({ type: 'success', message: 'Added' });
+				}, 400);
 				break;
-			}
 			case 'DELETE_SONG':
 				setRoom(current => {
 					const queue = current.queue.filter(entry => entry.id !== payload.trackId);
@@ -364,9 +374,9 @@ export default function RoomPreview() {
 		state: room,
 		isConnected: true,
 		sendMessage,
-		lastError: null,
-		lastErrorCode: null,
-		lastErrorTimestamp: 0,
+		lastError: lastError?.message || null,
+		lastErrorCode: lastError?.code || null,
+		lastErrorTimestamp: lastError?.at || 0,
 		lastMessage,
 		clientId: 'preview',
 		user: isOwner ? OWNER : GUEST,
@@ -379,7 +389,7 @@ export default function RoomPreview() {
 		progressRef,
 		progressAtRef,
 		applePlayerLease: provider === 'apple' && isOwner ? lease : null,
-	}), [room, sendMessage, lastMessage, isOwner, provider, lease]);
+	}), [room, sendMessage, lastMessage, lastError, isOwner, provider, lease]);
 
 	// The cookie banner belongs to the real page around this one: keep it
 	// closed. The room below gets its own consent value.
@@ -397,13 +407,15 @@ export default function RoomPreview() {
 		giveAppleConsent: () => setAppleConsent(true),
 	}), [outerConsent, appleConsent]);
 
-	// Stand-ins for everything the room would load from YouTube and Apple. In
-	// place before the room's own effects ask for them.
-	useLayoutEffect(() => {
-		const realFetch = window.fetch;
+	// Stand-ins for everything the room would load from YouTube and Apple. Put
+	// in place while this component renders for the first time, before the
+	// room below mounts: the room asks for the YouTube player as soon as its
+	// container is in the page, earlier than any effect up here would run.
+	const [realFetch] = useState(() => {
+		const original = window.fetch;
 		window.fetch = (input, init) => {
 			const url = typeof input === 'string' ? input : input?.url || '';
-			if (!url.endsWith(DEVELOPER_TOKEN_URL)) return realFetch.call(window, input, init);
+			if (!url.endsWith(DEVELOPER_TOKEN_URL)) return original.call(window, input, init);
 			if (scenario === 'loading') return new Promise(() => {});
 			if (scenario === 'error') return Promise.resolve(new Response('{}', { status: 500, headers: { 'Content-Type': 'application/json' } }));
 			const body = JSON.stringify({ token: 'preview', expiresAt: Date.now() + 24 * 60 * 60 * 1000 });
@@ -411,8 +423,9 @@ export default function RoomPreview() {
 		};
 		window.MusicKit = fakeMusicKit(scenario, { code: problemCode, stuck });
 		window.YT = fakeYouTube(progressRef);
-		return () => { window.fetch = realFetch; };
-	}, [scenario, problemCode, stuck]);
+		return original;
+	});
+	useEffect(() => () => { window.fetch = realFetch; }, [realFetch]);
 
 	const { setLanguage } = Language.useLanguage();
 	useEffect(() => {
@@ -432,7 +445,13 @@ export default function RoomPreview() {
 		};
 		const timers = [];
 		if (PARAMS.has('suggest')) {
-			timers.push(press(() => [...document.querySelectorAll('header button[aria-label]')].find(button => button.offsetParent)));
+			// A phone has the field at the bottom already; elsewhere the
+			// header's suggest button opens it.
+			timers.push(press(() => {
+				const field = document.querySelector('input.keep-open');
+				if (field) return { click: () => field.focus() };
+				return [...document.querySelectorAll('header button:has(svg.lucide-send)')].find(button => button.offsetParent);
+			}));
 		}
 		if (PARAMS.get('auto') === 'connect') {
 			// The only button of the host's player while signed out.
