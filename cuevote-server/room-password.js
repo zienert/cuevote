@@ -7,8 +7,19 @@
 // attempt is turned away at no cost, whether its password is right or not.
 // A right password gets its guess back, so guests who know it never use up the
 // budget, however many of them join or reconnect from one router.
+//
+// bcryptjs computes on the event loop, about 70 ms per check at cost 10. Run
+// asynchronously it hands the loop back between checks (and between 100 ms
+// slices of a slow one), and a semaphore keeps at most two under way, so other
+// rooms' messages and timers never wait behind more than that, even when many
+// networks guess at once.
 
+const bcrypt = require('bcryptjs');
 const { BUDGETS, createTokenBuckets } = require('./limits');
+
+// bcrypt cost for new room passwords; existing hashes keep their own.
+const BCRYPT_COST = 10;
+const MAX_CONCURRENT_BCRYPT = 2;
 
 function createAttemptBudget({
     perNet = BUDGETS.roomPasswordPerNet,
@@ -71,4 +82,95 @@ function createAttemptBudget({
     };
 }
 
-module.exports = { createAttemptBudget };
+/** Runs at most `limit` tasks at a time; the others wait their turn in order. */
+function createSemaphore(limit) {
+    let running = 0;
+    const waiting = [];
+
+    const next = () => {
+        while (running < limit && waiting.length > 0) {
+            const { task, resolve, reject } = waiting.shift();
+            running++;
+            // The slot is free again before the caller hears the outcome.
+            const finish = (settle) => (outcome) => {
+                running--;
+                next();
+                settle(outcome);
+            };
+            Promise.resolve().then(task).then(finish(resolve), finish(reject));
+        }
+    };
+
+    return {
+        run(task) {
+            return new Promise((resolve, reject) => {
+                waiting.push({ task, resolve, reject });
+                next();
+            });
+        },
+        get running() {
+            return running;
+        },
+        get waiting() {
+            return waiting.length;
+        },
+    };
+}
+
+/**
+ * Room password work for the server: the attempt budget first, then bcrypt,
+ * asynchronously and at most `concurrency` at a time.
+ */
+function createRoomPasswordGuard({
+    budget = createAttemptBudget(),
+    compare = (password, passwordHash) => bcrypt.compare(password, passwordHash),
+    hash = (password) => bcrypt.hash(password, BCRYPT_COST),
+    concurrency = MAX_CONCURRENT_BCRYPT,
+} = {}) {
+    const gate = createSemaphore(concurrency);
+
+    return {
+        /**
+         * Checks a guest's password for a room. Resolves with { ok: true },
+         * { ok: false, reason: 'wrong' }, or the budget's denial ({ ok: false,
+         * reason: 'limited', ... }), in which case bcrypt did not run.
+         */
+        async verify({ password, passwordHash, netKey, roomId }) {
+            // Out of guesses already: say so now, not after a wait in line.
+            const refused = budget.denial(netKey, roomId);
+            if (refused) return refused;
+
+            return gate.run(async () => {
+                // Attempts from the same network queued ahead of this one may
+                // have used its guesses up meanwhile, so the budget decides
+                // again now that bcrypt would run. Only checks under way hold
+                // a guess: a crowd that knows the password queues up freely.
+                const attempt = budget.spend(netKey, roomId);
+                if (!attempt.ok) return attempt;
+                let match;
+                try {
+                    match = await compare(password, passwordHash);
+                } catch (err) {
+                    attempt.refund(); // our failure, not the guest's guess
+                    throw err;
+                }
+                if (match) {
+                    attempt.refund();
+                    return { ok: true };
+                }
+                return { ok: false, reason: 'wrong' };
+            });
+        },
+
+        /** A bcrypt hash for a new room password, in line with the checks. */
+        hash(password) {
+            return gate.run(() => hash(password));
+        },
+
+        prune() {
+            budget.prune();
+        },
+    };
+}
+
+module.exports = { createAttemptBudget, createSemaphore, createRoomPasswordGuard };

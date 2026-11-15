@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { createAttemptBudget } = require('../room-password');
+const { createAttemptBudget, createSemaphore, createRoomPasswordGuard } = require('../room-password');
 
 function clock(start = 1_000_000) {
   let t = start;
@@ -93,5 +93,147 @@ describe('room password attempt budget', () => {
     now.advance(60_000);
     budget.prune();
     for (let i = 0; i < 5; i++) assert.equal(budget.spend('203.0.113.7', 'room-a').ok, true);
+  });
+});
+
+// A stand-in for bcrypt that answers after a timer tick, like the real one
+// hands the event loop back, and records how many checks overlap.
+function fakeBcrypt(rightPassword) {
+  const fake = { compares: 0, hashes: 0, inFlight: 0, maxInFlight: 0 };
+  const work = (result) => {
+    fake.inFlight++;
+    fake.maxInFlight = Math.max(fake.maxInFlight, fake.inFlight);
+    return new Promise((resolve) => setTimeout(() => {
+      fake.inFlight--;
+      resolve(result);
+    }, 2));
+  };
+  fake.compare = (password) => {
+    fake.compares++;
+    return work(password === rightPassword);
+  };
+  fake.hash = (password) => {
+    fake.hashes++;
+    return work(`hashed:${password}`);
+  };
+  return fake;
+}
+
+describe('semaphore', () => {
+  it('runs at most the limit at once, in the order asked', async () => {
+    const gate = createSemaphore(2);
+    const started = [];
+    let running = 0;
+    let maxRunning = 0;
+    const task = (n) => async () => {
+      started.push(n);
+      running++;
+      maxRunning = Math.max(maxRunning, running);
+      await new Promise((resolve) => setTimeout(resolve, 2));
+      running--;
+      return n;
+    };
+    const results = await Promise.all([1, 2, 3, 4, 5].map((n) => gate.run(task(n))));
+    assert.deepEqual(results, [1, 2, 3, 4, 5]);
+    assert.deepEqual(started, [1, 2, 3, 4, 5]);
+    assert.equal(maxRunning, 2);
+    assert.equal(gate.running, 0);
+    assert.equal(gate.waiting, 0);
+  });
+
+  it('passes a failure on and frees the slot', async () => {
+    const gate = createSemaphore(1);
+    await assert.rejects(gate.run(async () => { throw new Error('boom'); }), /boom/);
+    assert.equal(await gate.run(async () => 'next'), 'next');
+    assert.equal(gate.running, 0);
+  });
+});
+
+describe('room password guard', () => {
+  const ROOM = { netKey: '203.0.113.7', roomId: 'room-a', passwordHash: 'stored-hash' };
+
+  it('tells right from wrong passwords', async () => {
+    const bcrypt = fakeBcrypt('secret');
+    const guard = createRoomPasswordGuard({ compare: bcrypt.compare, hash: bcrypt.hash });
+    assert.deepEqual(await guard.verify({ ...ROOM, password: 'secret' }), { ok: true });
+    assert.deepEqual(await guard.verify({ ...ROOM, password: 'nope' }), { ok: false, reason: 'wrong' });
+  });
+
+  it('refuses the sixth wrong password of a network without running bcrypt', async () => {
+    const bcrypt = fakeBcrypt('secret');
+    const guard = createRoomPasswordGuard({ compare: bcrypt.compare, hash: bcrypt.hash });
+    for (let i = 0; i < 5; i++) {
+      assert.equal((await guard.verify({ ...ROOM, password: `nope-${i}` })).reason, 'wrong');
+    }
+    const sixth = await guard.verify({ ...ROOM, password: 'nope-5' });
+    assert.equal(sixth.reason, 'limited');
+    assert.equal(sixth.scope, 'net');
+    assert.equal(bcrypt.compares, 5);
+
+    const right = await guard.verify({ ...ROOM, password: 'secret' });
+    assert.equal(right.reason, 'limited', 'over budget, even the right password is not checked');
+    assert.equal(bcrypt.compares, 5);
+    assert.deepEqual(await guard.verify({ ...ROOM, netKey: '198.51.100.1', password: 'secret' }), { ok: true });
+  });
+
+  it('runs bcrypt five times for ten wrong passwords sent at once', async () => {
+    const bcrypt = fakeBcrypt('secret');
+    const guard = createRoomPasswordGuard({ compare: bcrypt.compare, hash: bcrypt.hash });
+    const results = await Promise.all(
+      Array.from({ length: 10 }, (_, i) => guard.verify({ ...ROOM, password: `nope-${i}` })),
+    );
+    assert.equal(results.filter((r) => r.reason === 'wrong').length, 5);
+    assert.equal(results.filter((r) => r.reason === 'limited').length, 5);
+    assert.equal(bcrypt.compares, 5);
+    assert.ok(bcrypt.maxInFlight <= 2, `at most two at once, saw ${bcrypt.maxInFlight}`);
+  });
+
+  it('lets a crowd behind one router in at once when they know the password', async () => {
+    const bcrypt = fakeBcrypt('secret');
+    const guard = createRoomPasswordGuard({ compare: bcrypt.compare, hash: bcrypt.hash });
+    const results = await Promise.all(
+      Array.from({ length: 30 }, () => guard.verify({ ...ROOM, password: 'secret' })),
+    );
+    assert.ok(results.every((r) => r.ok), 'nobody is refused');
+    assert.equal(bcrypt.compares, 30);
+    assert.equal(bcrypt.maxInFlight, 2);
+  });
+
+  it('does not charge a guess when bcrypt itself fails', async () => {
+    let calls = 0;
+    const guard = createRoomPasswordGuard({
+      compare: async () => {
+        calls++;
+        throw new Error('Invalid salt version');
+      },
+    });
+    for (let i = 0; i < 7; i++) {
+      await assert.rejects(guard.verify({ ...ROOM, password: 'x' }), /Invalid salt/);
+    }
+    assert.equal(calls, 7, 'failures of ours are not counted against the network');
+  });
+
+  it('hashes new passwords in line with the checks', async () => {
+    const bcrypt = fakeBcrypt('secret');
+    const guard = createRoomPasswordGuard({ compare: bcrypt.compare, hash: bcrypt.hash });
+    const work = [
+      guard.hash('one'),
+      guard.verify({ ...ROOM, password: 'secret' }),
+      guard.hash('two'),
+      guard.verify({ ...ROOM, password: 'nope' }),
+    ];
+    const [one, , two] = await Promise.all(work);
+    assert.equal(one, 'hashed:one');
+    assert.equal(two, 'hashed:two');
+    assert.equal(bcrypt.maxInFlight, 2);
+  });
+
+  it('uses bcrypt by default', async () => {
+    const bcryptjs = require('bcryptjs');
+    const guard = createRoomPasswordGuard();
+    const passwordHash = await guard.hash('party-4711');
+    assert.equal(bcryptjs.getRounds(passwordHash), 10);
+    assert.deepEqual(await guard.verify({ ...ROOM, passwordHash, password: 'party-4711' }), { ok: true });
+    assert.deepEqual(await guard.verify({ ...ROOM, passwordHash, password: 'party-4712' }), { ok: false, reason: 'wrong' });
   });
 });

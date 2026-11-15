@@ -18,7 +18,6 @@ process.on('uncaughtException', (error) => {
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
-const bcrypt = require('bcryptjs');
 const { slugify } = require('transliteration');
 const db = require('./db');
 const dbAsync = require('./db-async');
@@ -267,27 +266,38 @@ setInterval(() => {
 // edge server's or a header a direct client made up. See client-ip.js.
 const getClientIp = clientIp.resolverFromEnv();
 
-// Room password guesses, per network and per room, paid for before bcrypt
-// runs (room-password.js). Budgets that have refilled are dropped every minute.
-const roomPasswordBudget = roomPassword.createAttemptBudget();
-setInterval(() => roomPasswordBudget.prune(), 60 * 1000).unref();
+// Room passwords: guesses per network and per room are paid for before bcrypt
+// runs, and bcrypt runs asynchronously, at most two at a time
+// (room-password.js). Budgets that have refilled are dropped every minute.
+const roomPasswords = roomPassword.createRoomPasswordGuard();
+setInterval(() => roomPasswords.prune(), 60 * 1000).unref();
 
-// Turns away a password attempt that is over its budget. The log line comes
-// once per run of refusals, so a script hammering the limit cannot flood it.
-function refusePasswordAttempt(ws, roomId, denial) {
-    if (denial.firstDenial) {
+// Logs a refused room password attempt, never the password: every wrong one,
+// and a run of attempts over the budget once, so a script hammering the limit
+// cannot flood the log.
+function logPasswordRefusal(ws, roomId, check) {
+    if (check.reason === 'wrong') {
+        logger.warn({ event: 'room_password_wrong', roomId, netKey: ws.netKey }, '[JoinRoom] Wrong room password');
+    } else if (check.reason === 'limited' && check.firstDenial) {
         logger.warn(
-            { event: 'room_password_limited', roomId, netKey: ws.netKey, scope: denial.scope, retryAfter: denial.retryAfter },
+            { event: 'room_password_limited', roomId, netKey: ws.netKey, scope: check.scope, retryAfter: check.retryAfter },
             '[JoinRoom] Room password attempts over budget'
         );
     }
-    const seconds = denial.retryAfter === 1 ? '1 second' : `${denial.retryAfter} seconds`;
-    ws.send(JSON.stringify({
+}
+
+// What the client is told when its password attempt was refused.
+function passwordRefusal(check) {
+    if (check.reason !== 'limited') {
+        return { type: "error", code: "PASSWORD_REQUIRED", message: "Password required" };
+    }
+    const seconds = check.retryAfter === 1 ? '1 second' : `${check.retryAfter} seconds`;
+    return {
         type: "error",
         code: "RATE_LIMITED",
-        retryAfter: denial.retryAfter,
+        retryAfter: check.retryAfter,
         message: `Too many password attempts. Please try again in ${seconds}.`
-    }));
+    };
 }
 
 logger.info("WebSocket server started on port", process.env.PORT || 8080);
@@ -307,6 +317,7 @@ wss.on("connection", (ws, req) => {
     ipSocketCount.set(ip, ipCount + 1);
     ws.ip = ip; // marker that this socket is counted
     ws.netKey = clientIp.netKey(ip); // what per-network budgets count under
+    ws.joinSeq = 0; // numbers this socket's JOIN_ROOMs; the latest one wins
 
     // Country of the connection as Cloudflare sees it ("XX" unknown, "T1" Tor).
     // Only ever a default: the storefront of the owner's own Apple room until
@@ -630,6 +641,7 @@ wss.on("connection", (ws, req) => {
                         return;
                     }
                     const { roomId, password } = joinResult.data;
+                    const joinSeq = ++ws.joinSeq;
                     logger.info(`[SERVER TRACE] Client ${ws.id} requesting to join room: ${roomId}`);
 
                     // Leave ALL rooms to ensure no duplicate subscriptions
@@ -658,23 +670,24 @@ wss.on("connection", (ws, req) => {
                         }
                         // The guess is paid for before bcrypt runs: past the
                         // budget an attempt costs nothing and reveals nothing.
-                        const attempt = roomPasswordBudget.spend(ws.netKey, target.id);
-                        if (!attempt.ok) {
-                            refusePasswordAttempt(ws, target.id, attempt);
+                        let check;
+                        try {
+                            check = await roomPasswords.verify({ password, passwordHash: target.passwordHash, netKey: ws.netKey, roomId: target.id });
+                        } catch (err) {
+                            logger.error({ err, roomId: target.id }, '[JoinRoom] Room password check failed');
+                            if (ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ type: "error", message: "Could not check the password. Please try again." }));
+                            }
                             return;
                         }
-                        let match;
-                        try {
-                            match = bcrypt.compareSync(password, target.passwordHash);
-                        } catch (err) {
-                            attempt.refund(); // our failure, not the guest's guess
-                            throw err;
-                        }
-                        if (match) {
-                            attempt.refund();
-                        } else {
-                            logger.warn({ event: 'room_password_wrong', roomId: target.id, netKey: ws.netKey }, '[JoinRoom] Wrong room password');
-                            ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
+                        if (!check.ok) logPasswordRefusal(ws, target.id, check);
+                        // Other messages ran during the check. A socket that has
+                        // closed or asked for another room since is past this
+                        // join: an answer would land in the wrong screen, and a
+                        // closed socket added to a room would keep it loaded.
+                        if (ws.readyState !== WebSocket.OPEN || ws.joinSeq !== joinSeq) return;
+                        if (!check.ok) {
+                            ws.send(JSON.stringify(passwordRefusal(check)));
                             return;
                         }
                     }
@@ -711,6 +724,30 @@ wss.on("connection", (ws, req) => {
                         return;
                     }
 
+                    // Hashed once, not once per id attempt, and in line with the
+                    // password checks so it cannot hold up the event loop either.
+                    const ownerId = ws.user.id;
+                    let passwordHash = null;
+                    if (isPrivate && password) {
+                        try {
+                            passwordHash = await roomPasswords.hash(password);
+                        } catch (err) {
+                            logger.error({ err }, '[Create Room] Hashing the room password failed');
+                            if (ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ type: "error", message: "Failed to create room." }));
+                            }
+                            return;
+                        }
+                        // Other messages ran while hashing. A creator who has
+                        // gone would never hear of the room, and one who signed
+                        // out no longer has the account it would belong to.
+                        if (ws.readyState !== WebSocket.OPEN) return;
+                        if (!ws.user || ws.user.id !== ownerId) {
+                            ws.send(JSON.stringify({ type: "error", code: "ACCOUNT_REQUIRED", message: "You must be logged in to create a room." }));
+                            return;
+                        }
+                    }
+
                     let attempts = 0;
                     let success = false;
                     while (attempts < 3 && !success) {
@@ -722,10 +759,10 @@ wss.on("connection", (ws, req) => {
                                 id,
                                 name,
                                 description: description || "Community Station",
-                                owner_id: ws.user.id,
+                                owner_id: ownerId,
                                 color: color || "from-gray-700 to-black",
                                 is_public: isPrivate ? 0 : 1,
-                                password: (isPrivate && password) ? bcrypt.hashSync(password, 10) : null,
+                                password: passwordHash,
                                 captions_enabled: captionsEnabled ? 1 : 0,
                                 language_flag: languageFlag || 'international',
                                 provider: provider === 'apple' ? 'apple' : 'youtube'
