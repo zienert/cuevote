@@ -37,12 +37,10 @@
 //                     link asks for the password (any password opens it).
 //   ?offline          the device has no internet
 //   ?lang=de          the language
-//   ?design=b         the design proposal "Neu" (src/redesign-b) in place of the
-//                     room; it shows the two main views only
 //   ?data=...         a stress test (see __previewData.js): worst (the
 //                     realistic worst case for every value), empty, one, many
 //                     (300 titles); a switch at the bottom changes it
-import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
@@ -54,8 +52,6 @@ import { DATA, WORST_CHANNEL_NAME, WORST_SCORES, WORST_SONGS, WORST_SUGGESTERS, 
 import { DataToggle } from './__PreviewDataToggle';
 
 const PARAMS = new URLSearchParams(window.location.search);
-// The design proposal "Neu": the same mock room, drawn by the draft.
-const RoomB = PARAMS.get('design') === 'b' ? lazy(() => import('../redesign-b/RoomB')) : null;
 const CONNECTION = PARAMS.get('conn') || '';
 // Before the room renders: it asks navigator.onLine while rendering.
 if (PARAMS.has('offline')) {
@@ -507,7 +503,7 @@ export default function RoomPreview() {
 	return (
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
-				{RoomB ? <Suspense fallback={null}><RoomB /></Suspense> : <RoomBody />}
+				<RoomBody />
 				<DataToggle many="300 rows" />
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>
