@@ -170,6 +170,7 @@ class PlaybackService : Service() {
         // no words of its own either: names only.
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_playing)
+            .setColor(ACCENT_COLOR)
             .setContentTitle(title.ifEmpty { getString(R.string.app_name) })
             .setContentText(artist.ifEmpty { getString(R.string.playback_channel_name) })
             .setContentIntent(tap)
@@ -195,6 +196,8 @@ class PlaybackService : Service() {
         private const val CHANNEL_ID = "playback"
         private const val NOTIFICATION_ID = 1
         private const val LOCK_TAG = "CueVote:playback"
+        // CueVote's orange (colorPrimary in themes.xml), behind the icon.
+        private const val ACCENT_COLOR = 0xFFF97316.toInt()
 
         // How long the service outlives the last report of a playing channel.
         // Long enough for what happens inside a playing channel: the gap
