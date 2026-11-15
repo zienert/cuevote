@@ -38,7 +38,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 						type="button"
 						aria-pressed={selected}
 						onClick={() => onChange(option.value)}
-						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:text-white ${size === 'sm' ? 'px-2 py-2 text-[13px]' : 'px-3 py-2.5 text-sm'} ${selected ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
+						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:text-white ${size === 'sm' ? 'px-1.5 py-2 text-[13px] tracking-tight' : 'px-3 py-2.5 text-sm'} ${selected ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
 					>
 						{Icon ? <Icon size={16} className="shrink-0" /> : null}
 						<span className="truncate">{option.label}</span>
