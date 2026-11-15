@@ -26,6 +26,7 @@
 //   ?waiting          an Apple channel paused until the host plays again
 //   ?appleConsent=0   a guest who has not turned Apple content on
 //   ?empty            nothing queued
+//   ?requireLogin     a channel where only signed-in users vote and suggest
 //   ?lang=de          the language
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
@@ -109,7 +110,7 @@ function track(provider, index, extra = {}) {
 }
 
 // queue[0] mirrors currentTrack, as in a live room.
-function initialRoom(provider, { empty, waiting }) {
+function initialRoom(provider, { empty, waiting, requireLogin }) {
 	const now = Date.now();
 	const history = empty ? [] : [0, 1, 2].map(i => track(provider, i, { id: `played-${i}`, playedAt: now - (30 - i * 8) * 60000 }));
 	const scores = [6, 4, 3, 2, 1, 0, 0];
@@ -137,6 +138,7 @@ function initialRoom(provider, { empty, waiting }) {
 		bannedVideos: [],
 		appleStorefront: provider === 'apple' ? 'de' : null,
 		waitingForHost: !!waiting,
+		requireLogin: !!requireLogin,
 	};
 }
 
@@ -278,7 +280,7 @@ export default function RoomPreview() {
 	const stuck = PARAMS.has('stuck');
 	const lang = PARAMS.get('lang');
 
-	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting') }));
+	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty'), waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin') }));
 	const [lastMessage, setLastMessage] = useState(null);
 	const [lastError, setLastError] = useState(null); // { message, code, at }
 	const [lease, setLease] = useState(scenario === 'standby' ? false : true);
