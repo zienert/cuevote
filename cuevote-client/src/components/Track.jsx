@@ -75,18 +75,25 @@ export function Track({
   // Next to the person icon a guest's tag says enough.
   const suggesterShort = track.suggestedByIsGuest && track.suggestedByGuestTag ? track.suggestedByGuestTag : suggester;
   const showVotes = !readOnly && votesEnabled && !isActive;
-  // A fingertip needs 44 px; a mouse pointer gets by with less.
-  const voteButton = "flex h-11 w-11 items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 sm:h-9 sm:w-9";
+  // A fingertip needs 44 px; a mouse pointer gets by with less. The hand is
+  // always drawn as a line; a vote given puts a disc behind it, and the disc
+  // is smaller than the area that takes the tap.
+  const voteButton = "group/vote flex h-11 w-11 items-center justify-center rounded-full sm:h-9 sm:w-9";
+  const voteDisc = "flex h-8 w-8 items-center justify-center rounded-full transition-[background-color,color,box-shadow,transform] duration-150 ease-cv group-active/vote:scale-90";
+  const voteGiven = "scale-110 text-white shadow-[0_4px_10px_-2px_rgb(0_0_0/0.55)]";
   const actionButton = "cv-btn h-11 w-full";
 
   return (
     <div
       onClick={() => onToggleExpand(track.id)}
-      className={`cursor-pointer overflow-hidden rounded-xl px-3 py-2 transition-colors duration-150 ${isActive || isExpanded
+      className={`cursor-pointer overflow-hidden rounded-xl px-3 py-2 transition-colors duration-150 ${isExpanded
         ? "bg-raised"
-        : "bg-card hover:bg-raised"
+        : isActive
+          ? "bg-card"
+          : "bg-card hover:bg-raised"
         } ${isActive
-          ? "ring-1 ring-inset ring-accent/50"
+          // What plays now: a green outline with a little light around it.
+          ? "ring-1 ring-inset ring-green-500 shadow-[0_0_14px_rgb(34_197_94/0.3)]"
           : isPriority
             ? "ring-1 ring-inset ring-accent/30"
             : isExpanded
@@ -171,18 +178,19 @@ export function Track({
               aria-pressed={vote === "up"}
               aria-label={t('track.voteUp')}
               title={t('track.voteUp')}
-              className={`${voteButton} ${vote === "up"
-                ? "bg-accent text-accent-ink"
-                : "text-ink-2 hover:bg-page hover:text-ink"
-                }`}
+              className={voteButton}
             >
-              {/* A vote given shows in the shape too, not in colour alone. */}
-              <ThumbsUp size={18} strokeWidth={1.75} fill={vote === "up" ? "currentColor" : "none"} fillOpacity={0.35} />
+              <span className={`${voteDisc} ${vote === "up"
+                ? `${voteGiven} bg-gradient-to-br from-orange-500 to-orange-600`
+                : "text-orange-400 group-hover/vote:bg-accent/15"
+                }`}>
+                <ThumbsUp size={20} />
+              </span>
             </button>
 
             {/* As wide as its digits: a big count takes room from the title,
                 never from the thumb next to it. */}
-            <span className={`min-w-6 flex-none whitespace-nowrap text-center text-sm font-semibold tabular-nums sm:min-w-7 ${vote === "up" ? "text-accent" : score > 0 ? "text-ink" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
+            <span className={`min-w-6 flex-none whitespace-nowrap text-center text-sm font-bold tabular-nums sm:min-w-7 ${score > 0 ? "text-orange-400" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
               <span key={tick.count} className={tick.count === 0 ? undefined : tick.grew ? "cv-tick" : "cv-tick cv-tick-down"}>{formatCount(score, language)}</span>
             </span>
 
@@ -194,12 +202,14 @@ export function Track({
               aria-pressed={vote === "down"}
               aria-label={t('track.voteDown')}
               title={t('track.voteDown')}
-              className={`${voteButton} ${vote === "down"
-                ? "bg-ink text-page"
-                : "text-ink-2 hover:bg-page hover:text-ink"
-                }`}
+              className={voteButton}
             >
-              <ThumbsDown size={18} strokeWidth={1.75} fill={vote === "down" ? "currentColor" : "none"} fillOpacity={0.35} />
+              <span className={`${voteDisc} ${vote === "down"
+                ? `${voteGiven} bg-gradient-to-br from-neutral-600 to-neutral-800`
+                : "text-ink-3 group-hover/vote:bg-ink/10 group-hover/vote:text-ink-2"
+                }`}>
+                <ThumbsDown size={20} />
+              </span>
             </button>
           </div>
         )}
