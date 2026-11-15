@@ -42,13 +42,14 @@ function exampleCover(base, glowA, glowB) {
 }
 
 const EXAMPLE = [
-	{ id: 'x1', title: 'Flowers', artist: 'Miley Cyrus', score: 5, thumbnail: exampleCover('#0a1410', '#22c55e', '#0ea5e9') },
-	{ id: 'x2', title: 'Mr. Brightside', artist: 'The Killers', score: 4, thumbnail: exampleCover('#1f1021', '#ec4899', '#8b5cf6') },
-	{ id: 'x3', title: '99 Luftballons', artist: 'Nena', score: 4, thumbnail: exampleCover('#1c1917', '#facc15', '#ea580c') },
-	{ id: 'x4', title: 'Bad Guy', artist: 'Billie Eilish', score: 2, thumbnail: exampleCover('#0f172a', '#38bdf8', '#f472b6') },
+	{ id: 'x1', title: 'Flowers', artist: 'Miley Cyrus', score: 4, thumbnail: exampleCover('#0a1410', '#22c55e', '#0ea5e9') },
+	{ id: 'x2', title: 'Mr. Brightside', artist: 'The Killers', score: 3, thumbnail: exampleCover('#1f1021', '#ec4899', '#8b5cf6') },
+	{ id: 'x3', title: '99 Luftballons', artist: 'Nena', score: 3, thumbnail: exampleCover('#1c1917', '#facc15', '#ea580c') },
+	{ id: 'x4', title: 'Bad Guy', artist: 'Billie Eilish', score: 3, thumbnail: exampleCover('#0f172a', '#38bdf8', '#f472b6') },
 ];
 
-// The highest count first; equal counts keep their order.
+// The room's own rule: the highest count first, equal counts keep their
+// order. So a title climbs when a vote lifts it above the one before it.
 function ranked(tracks) {
 	return tracks.map((track, index) => ({ track, index }))
 		.sort((a, b) => (b.track.score - a.track.score) || (a.index - b.index))
@@ -433,9 +434,9 @@ export default function LobbyB({ roomHref, startCreating = false }) {
 					</div>
 				</header>
 
-				<section className="grid items-center gap-8 pb-10 pt-6 sm:pt-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12 lg:pb-14">
+				<section className="grid items-center gap-8 pb-10 pt-6 sm:pt-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-12 lg:pb-14">
 					<div className="b-rise">
-						<h1 className="b-display text-[clamp(3.25rem,9.2vw,7rem)] text-ink">{c('heroTitle')}</h1>
+						<h1 className="b-display text-[clamp(3.25rem,8.2vw,6.5rem)] text-ink">{c('heroTitle')}</h1>
 						<p className="mt-5 max-w-[34rem] text-[18px] leading-7 text-ink sm:text-[20px] sm:leading-8">{c('heroText')}</p>
 						<div className="mt-7 flex flex-wrap items-center gap-3">
 							{createButton('accent', 'lg', 'max-sm:w-full')}
