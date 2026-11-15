@@ -278,7 +278,8 @@ function ChannelRow({ channel, href, onOpen, allowed, language }) {
 			>
 				<Cover src={track?.thumbnail} allowed={allowed && !isApple} size="h-14 w-14" radius="rounded-2xl" />
 				<span className="min-w-0 flex-1">
-					<span dir="auto" className="b-display cv-bidi block truncate pb-0.5 text-[1.625rem] text-ink">{channel.name}</span>
+					{/* The name says which party it is: up to two lines rather than cut short. */}
+					<span dir="auto" className="b-display cv-bidi line-clamp-2 break-words pb-0.5 text-[1.625rem] text-ink">{channel.name}</span>
 					<span className="block truncate text-[0.9375rem] leading-5 text-ink-2">
 						{/* Apple's guidelines: the name in words, the same in every language. */}
 						{isApple ? <span className="b-accent-text font-semibold">Apple Music</span>
@@ -393,7 +394,8 @@ export default function LobbyB({ roomHref, startCreating = false }) {
 			onLoginSuccess={handleLoginSuccess}
 			render={(performLogin) => (
 				<Button kind={kind} size={size} className={className} onClick={() => performLogin()}>
-					<Plus size={size === 'lg' ? 22 : 18} strokeWidth={2.5} /> {hasConsent ? t('lobby.loginToCreate') : t('lobby.acceptCookies')}
+					{/* The same words for everyone: the press leads through consent and sign-in. */}
+					<Plus size={size === 'lg' ? 22 : 18} strokeWidth={2.5} /> {t('lobby.createChannel')}
 				</Button>
 			)}
 		/>
@@ -427,7 +429,7 @@ export default function LobbyB({ roomHref, startCreating = false }) {
 								<p className="max-w-[34rem] text-[1.1875rem] leading-7 text-ink-2">{c('hero.text')}</p>
 								<div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
 									{createButton('primary', 'lg')}
-									<a href="#kanaele" className="font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition-colors duration-150 hover:decoration-ink">{c('hero.channels')}</a>
+									<a href="#kanaele" className="cv-hit font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition-colors duration-150 hover:decoration-ink">{c('hero.channels')}</a>
 								</div>
 							</div>
 							<Example />

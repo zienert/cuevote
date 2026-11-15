@@ -65,15 +65,15 @@ export const WORST_USER = { name: 'Christopher Alexander Montgomery III', pictur
 
 // [name, options] for the lobby's channel(): see __LobbyPreview.jsx.
 export const WORST_CHANNELS = [
-	[WORST_CHANNEL_NAME, { listeners: 1284, thumb: 0, flag: 'de', mine: true }],
+	[WORST_CHANNEL_NAME, { listeners: 1284, thumb: 0, flag: 'de', mine: true, track: WORST_SONGS[0] }],
 	['Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz', { provider: 'apple', listeners: 1, flag: 'de', mine: true }],
 	['Jo', { active: false, flag: 'zz' }],
-	['週末カラオケパーティー！みんなで歌おう', { listeners: 12, thumb: 1, flag: 'jp' }],
-	['سهرة الخميس مع الأصدقاء', { listeners: 3, thumb: 2, flag: 'sa' }],
-	['<b>Bold</b> &amp; **Beautiful** <script>alert(1)</script>', { listeners: 2, thumb: 3 }],
+	['週末カラオケパーティー！みんなで歌おう', { listeners: 12, thumb: 1, flag: 'jp', track: WORST_SONGS[4] }],
+	['سهرة الخميس مع الأصدقاء', { listeners: 3, thumb: 2, flag: 'sa', track: WORST_SONGS[5] }],
+	['<b>Bold</b> &amp; **Beautiful** <script>alert(1)</script>', { listeners: 2, thumb: 3, track: WORST_SONGS[6] }],
 	['🦊🔥🎉', { provider: 'apple', listeners: 7 }],
-	['Party', { listeners: 5, thumb: 4, flag: 'gb' }],
-	['Party', { listeners: 5, thumb: 4, flag: 'gb' }],
+	['Party', { listeners: 5, thumb: 4, flag: 'gb', track: WORST_SONGS[2] }],
+	['Party', { listeners: 5, thumb: 4, flag: 'gb', track: WORST_SONGS[2] }],
 	['Đêm Nhạc Trẻ Sài Gòn', { listeners: 12345, thumb: 5, flag: 'vn', isPublic: false, password: true, mine: true }],
 	['  Sam   Lee ', { provider: 'apple', isPublic: false, password: true, flag: 'us' }],
 ];

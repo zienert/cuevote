@@ -77,6 +77,19 @@
   color: #fff;
 }
 
+/* The ranking measures itself: where it is narrow (a small phone, the
+   example on the start page) the covers step aside and the titles keep
+   their room. */
+.b-chart {
+  container-type: inline-size;
+}
+
+@container (max-width: 20.5rem) {
+  .b-chart-cover {
+    display: none;
+  }
+}
+
 /* On the light page the focus ring is ink: orange on white is too faint. */
 :root[data-design="b"] :where(button, a, input, select, textarea, [role="button"], [role="tab"], [tabindex]):focus-visible {
   outline: 2px solid rgb(var(--cv-ink));
@@ -104,6 +117,16 @@
   filter: blur(36px) saturate(1.6);
   transform: scale(1.6);
   opacity: 0.55;
+}
+
+/* "Reduce motion": a sheet is there at once instead of sliding up; its
+   dragging by hand stays, that is the person's own movement. */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-design="b"] [data-vaul-drawer],
+  :root[data-design="b"] [data-vaul-overlay] {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {

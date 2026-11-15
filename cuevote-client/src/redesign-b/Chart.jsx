@@ -15,6 +15,7 @@ import NumberFlow from '@number-flow/react';
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 import { Skeleton } from '../components/Skeleton';
+import { formatCount } from '../utils/numbers';
 import { SPRING, useRankChange } from './lib';
 import { useCopy } from './copy';
 import { Cover } from './ui';
@@ -23,10 +24,11 @@ import { Cover } from './ui';
 // far down move, and measuring hundreds of them costs every vote.
 const ANIMATED_ROWS = 40;
 
-const arrow = 'cv-hit flex h-10 w-10 flex-none items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90';
+// 36 px to look at, 44 px to hit (cv-hit).
+const arrow = 'cv-hit flex h-9 w-9 flex-none items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv active:scale-90';
 
 const Row = forwardRef(function Row({ track, rank, animated, cover, canVote, onVote, onOpen, locale }, ref) {
-	const { t } = Language.useLanguage();
+	const { t, language } = Language.useLanguage();
 	const c = useCopy();
 	const change = useRankChange(rank);
 	const leads = rank === 1;
@@ -34,10 +36,11 @@ const Row = forwardRef(function Row({ track, rank, animated, cover, canVote, onV
 
 	const text = (
 		<>
-			<Cover src={cover.src} allowed={cover.allowed} />
+			<Cover src={cover.src} allowed={cover.allowed} className="b-chart-cover" />
 			<span className="block min-w-0 flex-1">
 				{track.title ? (
-					<span dir="auto" className="cv-bidi block truncate font-semibold leading-6 text-ink">{track.title}</span>
+					// The title says which song it is: up to two lines rather than cut short.
+					<span dir="auto" className="cv-bidi line-clamp-2 break-words font-semibold leading-[1.3] text-ink">{track.title}</span>
 				) : (
 					// The title is on its way (cleared after YouTube's 28 days).
 					<Skeleton className="h-4 w-36 max-w-full bg-raised" />
@@ -63,7 +66,7 @@ const Row = forwardRef(function Row({ track, rank, animated, cover, canVote, onV
 			style={{ zIndex: change > 0 ? 2 : 1 }}
 			className={clsx('relative flex items-center gap-2.5 rounded-2xl py-2 pl-1 pr-1', leads ? 'bg-[#fff1ea]' : 'bg-page')}
 		>
-			<span className="relative flex w-9 flex-none flex-col items-center" aria-label={`${c('room.place')} ${rank}`}>
+			<span className="relative flex w-8 flex-none flex-col items-center" aria-label={`${c('room.place')} ${rank}`}>
 				<span aria-hidden="true" className={clsx('b-num text-[2.25rem]', leads ? 'b-accent-text' : 'text-ink')}>{rank}</span>
 				{/* By how many places it has just moved; gone again after a moment. */}
 				<span
@@ -105,7 +108,8 @@ const Row = forwardRef(function Row({ track, rank, animated, cover, canVote, onV
 					</button>
 				) : null}
 				<span className={clsx('min-w-7 flex-none whitespace-nowrap text-center font-semibold tabular-nums', track.myVote === 'up' ? 'b-accent-text' : 'text-ink', !canVote && 'pr-3')}>
-					<NumberFlow value={score} locales={locale} format={{ numberingSystem: 'latn' }} />
+					{/* Digits that roll, where a row can be seen; plain digits far down. */}
+					{animated ? <NumberFlow value={score} locales={locale} format={{ numberingSystem: 'latn' }} /> : formatCount(score, language)}
 				</span>
 				{canVote ? (
 					<button
@@ -145,7 +149,7 @@ export function Chart({ tracks, coverOf, canVote = true, onVote, onOpen, label, 
 	return (
 		// The browser may not hold on to one of these rows while it scrolls: it
 		// would scroll the list along with a row that changes place.
-		<ol aria-label={label} className={clsx('relative space-y-1 [overflow-anchor:none]', className)}>
+		<ol aria-label={label} className={clsx('b-chart relative space-y-1 [overflow-anchor:none]', className)}>
 			<AnimatePresence initial={false} mode="popLayout">
 				{tracks.map((track, index) => (
 					<Row
