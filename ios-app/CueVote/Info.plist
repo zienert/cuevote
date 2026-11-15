@@ -4,5 +4,9 @@
 <dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera access to scan QR codes for joining voting rooms.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>
