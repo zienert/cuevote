@@ -541,6 +541,15 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             cm.unregisterNetworkCallback(it)
         }
+        // End the page with the activity. A WebView that is only dropped lives
+        // on as long as the process does, and plays on. That used to be moot:
+        // swiping the app away killed the process on the spot. With the
+        // playback service running at that moment Android lets the process
+        // live, and the channel was heard for seconds after the app was gone.
+        if (::webView.isInitialized) {
+            (webView.parent as? ViewGroup)?.removeView(webView)
+            webView.destroy()
+        }
         super.onDestroy()
     }
 
