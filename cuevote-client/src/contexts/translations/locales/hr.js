@@ -106,6 +106,7 @@ export default {
 		"signIn": "Prijavi se putem Googlea",
 		"acceptCookies": "Prihvatite kolačiće za prijavu",
 		"legal": "Pravne Informacije",
+		"player": "Reprodukcija",
 		"playlist": "Popis Pjesama",
 		"library": "Knjižnica",
 		"share": "Podijeli",

@@ -106,6 +106,7 @@ export default {
 		"signIn": "Google के साथ साइन इन करें",
 		"acceptCookies": "साइन इन करने के लिए कुकीज़ स्वीकार करें",
 		"legal": "कानूनी जानकारी",
+		"player": "प्लेयर",
 		"playlist": "प्लेलिस्ट",
 		"library": "लाइब्रेरी",
 		"share": "शेयर करें",

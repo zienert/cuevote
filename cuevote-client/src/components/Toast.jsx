@@ -22,7 +22,8 @@ export function Toast({ message, type = 'info', onClose, duration = 3000 }) {
 	}
 
 	return (
-		<div className={`fixed top-24 right-4 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md border ${bgClass} animate-in fade-in slide-in-from-right-5 duration-300 max-w-sm`}>
+		// Below the room's header, which is taller on phones (tabs under the bar).
+		<div className={`fixed top-24 max-md:top-36 right-4 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md border ${bgClass} animate-in fade-in slide-in-from-right-5 duration-300 max-w-sm`}>
 			<Icon size={20} className="flex-shrink-0" />
 			<span className="text-sm font-medium">{message}</span>
 			<button onClick={onClose} className="ml-2 hover:opacity-70 transition-opacity">

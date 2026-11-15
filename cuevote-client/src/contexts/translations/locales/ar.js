@@ -106,6 +106,7 @@ export default {
 		"signIn": "تسجيل الدخول باستخدام Google",
 		"acceptCookies": "قبول ملفات تعريف الارتباط لتسجيل الدخول",
 		"legal": "معلومات قانونية",
+		"player": "المشغّل",
 		"playlist": "قائمة التشغيل",
 		"library": "المكتبة",
 		"share": "مشاركة",

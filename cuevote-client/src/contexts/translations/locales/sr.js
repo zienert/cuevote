@@ -106,6 +106,7 @@ export default {
 		"signIn": "Prijavi se putem Google-a",
 		"acceptCookies": "Prihvatite kolačiće za prijavu",
 		"legal": "Pravne Informacije",
+		"player": "Reprodukcija",
 		"playlist": "Plejlista",
 		"library": "Biblioteka",
 		"share": "Podeli",

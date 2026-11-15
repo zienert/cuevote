@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 
 /**
  * One choice out of a few, drawn as a single control with a sliding marker:
- * the create dialog's music source and privacy.
+ * the create dialog's music source and privacy, and the views of a room on a
+ * phone (`size="sm"` where three have to fit).
  *
  * Plain toggle buttons rather than a radio group: a radio group takes the
  * arrow keys for itself, and a TV remote needs them to move on to the next
  * field of the dialog.
  */
-export function SegmentedControl({ labelledBy, options, value, onChange }) {
+export function SegmentedControl({ labelledBy, options, value, onChange, size = 'md' }) {
 	const selectedIndex = Math.max(0, options.findIndex((option) => option.value === value));
 
 	return (
@@ -37,7 +38,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange }) {
 						type="button"
 						aria-pressed={selected}
 						onClick={() => onChange(option.value)}
-						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:text-white ${selected ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
+						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:text-white ${size === 'sm' ? 'px-2 py-2 text-[13px]' : 'px-3 py-2.5 text-sm'} ${selected ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
 					>
 						{Icon ? <Icon size={16} className="shrink-0" /> : null}
 						<span className="truncate">{option.label}</span>
@@ -57,4 +58,5 @@ SegmentedControl.propTypes = {
 	})).isRequired,
 	value: PropTypes.string.isRequired,
 	onChange: PropTypes.func.isRequired,
+	size: PropTypes.oneOf(['md', 'sm']),
 };

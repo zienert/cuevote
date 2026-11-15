@@ -106,6 +106,7 @@ export default {
 		"signIn": "Zaloguj się przez Google",
 		"acceptCookies": "Zaakceptuj pliki cookie, aby się zalogować",
 		"legal": "Informacje prawne",
+		"player": "Odtwarzacz",
 		"playlist": "Playlista",
 		"library": "Biblioteka",
 		"share": "Udostępnij",

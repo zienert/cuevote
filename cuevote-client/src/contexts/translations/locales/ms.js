@@ -106,6 +106,7 @@ export default {
 		"signIn": "Log masuk dengan Google",
 		"acceptCookies": "Terima kuki untuk log masuk",
 		"legal": "Info Undang-undang",
+		"player": "Pemain",
 		"playlist": "Senarai Main",
 		"library": "Pustaka",
 		"share": "Kongsi",

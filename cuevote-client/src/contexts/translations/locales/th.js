@@ -106,6 +106,7 @@ export default {
 		"signIn": "เข้าสู่ระบบด้วย Google",
 		"acceptCookies": "ยอมรับคุกกี้เพื่อเข้าสู่ระบบ",
 		"legal": "ข้อมูลทางกฎหมาย",
+		"player": "เครื่องเล่น",
 		"playlist": "เพลย์ลิสต์",
 		"library": "คลังวิดีโอ",
 		"share": "แชร์",

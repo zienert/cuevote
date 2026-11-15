@@ -106,6 +106,7 @@ export default {
 		"signIn": "Войти через Google",
 		"acceptCookies": "Примите куки для входа",
 		"legal": "Юридическая информация",
+		"player": "Плеер",
 		"playlist": "Плейлист",
 		"library": "Библиотека",
 		"share": "Поделиться",

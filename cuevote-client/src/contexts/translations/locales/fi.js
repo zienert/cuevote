@@ -106,6 +106,7 @@ export default {
 		"signIn": "Kirjaudu Googlella",
 		"acceptCookies": "Hyväksy evästeet kirjautuaksesi",
 		"legal": "Oikeudelliset tiedot",
+		"player": "Soitin",
 		"playlist": "Soittolista",
 		"library": "Kirjasto",
 		"share": "Jaa",

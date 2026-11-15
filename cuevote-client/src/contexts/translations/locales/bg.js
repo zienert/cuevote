@@ -106,6 +106,7 @@ export default {
 		"signIn": "Вход с Google",
 		"acceptCookies": "Приемете бисквитки за вход",
 		"legal": "Правна информация",
+		"player": "Плейър",
 		"playlist": "Плейлист",
 		"library": "Библиотека",
 		"share": "Сподели",

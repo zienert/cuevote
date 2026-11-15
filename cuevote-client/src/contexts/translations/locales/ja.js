@@ -106,6 +106,7 @@ export default {
 		"signIn": "Googleでログイン",
 		"acceptCookies": "ログインしてCookieを許可",
 		"legal": "法的情報",
+		"player": "プレーヤー",
 		"playlist": "プレイリスト",
 		"library": "ライブラリ",
 		"share": "共有",

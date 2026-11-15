@@ -106,6 +106,7 @@ export default {
 		"signIn": "通过 Google 登录",
 		"acceptCookies": "接受 Cookie 以登录",
 		"legal": "法律信息",
+		"player": "播放器",
 		"playlist": "播放列表",
 		"library": "媒体库",
 		"share": "分享频道",

@@ -106,6 +106,7 @@ export default {
 		"signIn": "Google로 로그인",
 		"acceptCookies": "로그인하려면 쿠키 허용",
 		"legal": "법적 정보",
+		"player": "플레이어",
 		"playlist": "재생목록",
 		"library": "라이브러리",
 		"share": "공유",

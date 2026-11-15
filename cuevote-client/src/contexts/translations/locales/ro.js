@@ -106,6 +106,7 @@ export default {
 		"signIn": "Autentificare cu Google",
 		"acceptCookies": "Acceptă cookie-uri pentru autentificare",
 		"legal": "Informații Legale",
+		"player": "Player",
 		"playlist": "Listă de Redare",
 		"library": "Bibliotecă",
 		"share": "Partajează",

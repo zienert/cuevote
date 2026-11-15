@@ -11,6 +11,7 @@ import { Language } from '../contexts/LanguageContext';
 import { deviceDetection } from '../utils/deviceDetection';
 import { dangerousHtml } from '../utils/sanitizeHtml';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
+import { SegmentedControl } from './SegmentedControl';
 import { displayName, isSignedIn } from '../utils/participation';
 
 
@@ -40,6 +41,10 @@ export function Header({
   onFullscreenOverlay,
   // An Apple Music room plays nothing from YouTube, so it carries no YouTube attribution.
   showYouTubeAttribution = true,
+  // Phones: the channel's name, and whether this device has a player view
+  // besides the playlist and the library.
+  channelName,
+  hasPlayerView = false,
 }) {
   const headerRef = React.useRef(null);
   const [showExitConfirm, setShowExitConfirm] = React.useState(false);
@@ -243,29 +248,17 @@ export function Header({
     </button>
   );
 
-  // Tall variant of the Suggest button — anchors the right edge of the
-  // mobile two-row header, spanning both rows via a CSS-grid row-span.
-  const suggestButtonTall = (
-    <button
-      onClick={onSuggest}
-      disabled={suggestDisabled}
-      className={`keep-open flex flex-col items-center justify-center gap-1 px-4 rounded-2xl font-semibold whitespace-nowrap transition-all active:scale-95 h-full border ${
-        showSuggest
-          ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/30"
-          : "bg-orange-500/15 text-orange-500 border-orange-500/30 hover:bg-orange-500/25"
-      } ${suggestDisabled ? "opacity-40" : ""}`}
-      aria-label={t('header.suggest')}
-    >
-      <Send size={20} />
-      <span className="text-[11px] leading-none">{t('header.suggest')}</span>
-    </button>
-  );
-
   const wordmark = (
     <h1 className="text-lg font-bold text-orange-500 tracking-tight whitespace-nowrap flex-shrink-0">
       CueVote
     </h1>
   );
+
+  const askToLeave = () => {
+    setShowExitConfirm(true);
+    setExitConfirmIndex(0);
+    if (onCloseSettings) onCloseSettings();
+  };
 
   const backButton = (
     <button
@@ -273,9 +266,7 @@ export function Header({
         if (isPlaylistMode && onClosePlaylist) {
           onClosePlaylist();
         } else {
-          setShowExitConfirm(true);
-          setExitConfirmIndex(0);
-          if (onCloseSettings) onCloseSettings();
+          askToLeave();
         }
       }}
       className="p-1.5 text-orange-500/70 hover:text-orange-400 transition-colors rounded-full hover:bg-orange-500/10 flex-shrink-0"
@@ -284,6 +275,33 @@ export function Header({
       <ChevronLeft size={20} />
     </button>
   );
+
+  // Phones switch between the room's views with tabs, so the arrow there only
+  // ever leaves the channel.
+  const leaveButton = (
+    <button
+      onClick={askToLeave}
+      className="p-1.5 text-orange-500/70 hover:text-orange-400 transition-colors rounded-full hover:bg-orange-500/10 flex-shrink-0"
+      title={t('header.leave')}
+      aria-label={t('header.leave')}
+    >
+      <ChevronLeft size={20} />
+    </button>
+  );
+
+  // The views of the room on a phone: the player where this device has one
+  // (three tabs get no icons, they would not fit), the playlist, the library.
+  const phoneTabs = [
+    ...(hasPlayerView ? [{ value: "default", label: t('header.player') }] : []),
+    { value: "playlist", label: t('header.playlist'), icon: hasPlayerView ? undefined : List },
+    { value: "library", label: t('header.library'), icon: hasPlayerView ? undefined : Library },
+  ];
+  const selectPhoneTab = (view) => {
+    if (view === "default") onClosePlaylist?.();
+    else if (view === "playlist") onPlaylist();
+    else onLibrary();
+  };
+  const phoneIconButton = "keep-open flex h-9 w-9 flex-none items-center justify-center rounded-full transition-colors";
 
   const userIdentity = isSignedIn(user) ? (
     <button
@@ -342,22 +360,49 @@ export function Header({
         {showYouTubeAttribution && <YouTubeBrandSubtitle className="flex-shrink-0 whitespace-nowrap" />}
       </div>
 
-      {/* Mobile (< md): grid layout with two left-column rows + a tall
-          right-column Suggest button spanning both rows. Top-left row
-          groups branding, identity and the YouTube text attribution;
-          bottom-left row is the scrollable pills strip with full width. */}
-      <div className="md:hidden grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-1.5 items-stretch">
-        <div className="flex items-center gap-2 min-w-0">
+      {/* Phones (< md): one slim row (leave, wordmark, the channel's name over
+          its music source, share, settings, account) and the room's views as
+          tabs below it. Suggesting lives at the bottom of the screen there,
+          see RoomBody. */}
+      <div className="md:hidden">
+        <div className="flex items-center gap-1.5 min-w-0">
+          {leaveButton}
           {wordmark}
-          {backButton}
+          <div className="h-5 w-px bg-neutral-800 flex-shrink-0 mx-0.5" />
+          <div className="min-w-0 flex-1 leading-tight">
+            <p id="room-channel-name" className="truncate text-sm font-semibold text-white">{channelName}</p>
+            {showYouTubeAttribution
+              ? <YouTubeBrandSubtitle className="max-w-full truncate align-top" />
+              : <span className="block truncate text-[10px] font-semibold text-orange-400">Apple Music</span>}
+          </div>
+          <button
+            onClick={onShare}
+            title={t('header.share')}
+            aria-label={t('header.share')}
+            className={`${phoneIconButton} text-orange-500/80 hover:bg-orange-500/10 hover:text-orange-400`}
+          >
+            <QrCode size={18} />
+          </button>
+          {isOwner && (
+            <button
+              onClick={onToggleSettings}
+              title={t('header.settings')}
+              aria-label={t('header.settings')}
+              className={`${phoneIconButton} ${showSettings ? "bg-orange-500/15 text-orange-500" : "text-orange-500/80 hover:bg-orange-500/10 hover:text-orange-400"}`}
+            >
+              <Settings size={18} />
+            </button>
+          )}
           {userIdentity}
-          {showYouTubeAttribution && <YouTubeBrandSubtitle className="leading-tight text-center" />}
         </div>
-        <div className="row-span-2 flex items-stretch">
-          {suggestButtonTall}
-        </div>
-        <div className="overflow-x-auto no-scrollbar overscroll-x-contain touch-pan-x touch-pan-y flex items-center gap-1.5 min-w-0 py-0.5">
-          {renderPills({ includeSuggest: false })}
+        <div className="mt-2 mb-0.5">
+          <SegmentedControl
+            labelledBy="room-channel-name"
+            options={phoneTabs}
+            value={mode || "default"}
+            onChange={selectPhoneTab}
+            size={phoneTabs.length > 2 ? "sm" : "md"}
+          />
         </div>
       </div>
 
@@ -601,4 +646,6 @@ Header.propTypes = {
   playlistViewMode: PropTypes.bool,
   showYouTubeAttribution: PropTypes.bool,
   onFullscreenOverlay: PropTypes.func,
+  channelName: PropTypes.string,
+  hasPlayerView: PropTypes.bool,
 };

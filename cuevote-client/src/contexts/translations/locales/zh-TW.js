@@ -106,6 +106,7 @@ export default {
 		"signIn": "透過 Google 登入",
 		"acceptCookies": "接受 Cookie 以登入",
 		"legal": "法律資訊",
+		"player": "播放器",
 		"playlist": "播放清單",
 		"library": "媒體庫",
 		"share": "分享頻道",

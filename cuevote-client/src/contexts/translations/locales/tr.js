@@ -106,6 +106,7 @@ export default {
 		"signIn": "Google ile Giriş Yap",
 		"acceptCookies": "Giriş yapmak için çerezleri kabul et",
 		"legal": "Yasal Bilgiler",
+		"player": "Oynatıcı",
 		"playlist": "Oynatma Listesi",
 		"library": "Kütüphane",
 		"share": "Paylaş",

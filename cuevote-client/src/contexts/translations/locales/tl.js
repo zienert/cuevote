@@ -106,6 +106,7 @@ export default {
 		"signIn": "Mag-sign in gamit ang Google",
 		"acceptCookies": "Tanggapin ang cookies upang mag-sign in",
 		"legal": "Legal na Impormasyon",
+		"player": "Player",
 		"playlist": "Playlist",
 		"library": "Library",
 		"share": "Ibahagi",

@@ -106,6 +106,7 @@ export default {
 		"signIn": "Σύνδεση με Google",
 		"acceptCookies": "Αποδεχτείτε cookies για σύνδεση",
 		"legal": "Νομικές Πληροφορίες",
+		"player": "Αναπαραγωγή",
 		"playlist": "Λίστα Αναπαραγωγής",
 		"library": "Βιβλιοθήκη",
 		"share": "Κοινοποίηση",

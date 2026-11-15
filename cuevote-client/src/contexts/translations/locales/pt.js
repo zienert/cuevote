@@ -110,6 +110,7 @@ export default {
 		"signIn": "Entrar com Google",
 		"acceptCookies": "Aceitar cookies para entrar",
 		"legal": "Informações Legais",
+		"player": "Player",
 		"playlist": "Playlist",
 		"library": "Biblioteca",
 		"share": "Compartilhar",

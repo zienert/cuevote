@@ -106,6 +106,7 @@ export default {
 		"signIn": "התחבר עם Google",
 		"acceptCookies": "קבל עוגיות כדי להתחבר",
 		"legal": "מידע משפטי",
+		"player": "נגן",
 		"playlist": "פלייליסט",
 		"library": "ספרייה",
 		"share": "שתף",

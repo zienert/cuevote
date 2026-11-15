@@ -106,6 +106,7 @@ export default {
 		"signIn": "Đăng nhập với Google",
 		"acceptCookies": "Chấp nhận cookie để đăng nhập",
 		"legal": "Thông tin pháp lý",
+		"player": "Trình phát",
 		"playlist": "Danh sách phát",
 		"library": "Thư viện",
 		"share": "Chia sẻ",

@@ -106,6 +106,7 @@ export default {
 		"signIn": "Přihlásit přes Google",
 		"acceptCookies": "Přijmout cookies pro přihlášení",
 		"legal": "Právní Informace",
+		"player": "Přehrávač",
 		"playlist": "Seznam Skladeb",
 		"library": "Knihovna",
 		"share": "Sdílet",

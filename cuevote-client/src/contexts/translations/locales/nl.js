@@ -110,6 +110,7 @@ export default {
 		"signIn": "Inloggen met Google",
 		"acceptCookies": "Accepteer cookies om in te loggen",
 		"legal": "Juridische Informatie",
+		"player": "Speler",
 		"playlist": "Afspeellijst",
 		"library": "Bibliotheek",
 		"share": "Deel Kanaal",

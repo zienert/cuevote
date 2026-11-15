@@ -106,6 +106,7 @@ export default {
 		"signIn": "Logga in med Google",
 		"acceptCookies": "Acceptera cookies för att logga in",
 		"legal": "Juridisk information",
+		"player": "Spelare",
 		"playlist": "Spellista",
 		"library": "Bibliotek",
 		"share": "Dela",

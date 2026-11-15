@@ -106,6 +106,7 @@ export default {
 		"signIn": "Bejelentkezés Google-lel",
 		"acceptCookies": "A bejelentkezéshez fogadd el a sütiket",
 		"legal": "Jogi Információk",
+		"player": "Lejátszó",
 		"playlist": "Lejátszási Lista",
 		"library": "Könyvtár",
 		"share": "Megosztás",
