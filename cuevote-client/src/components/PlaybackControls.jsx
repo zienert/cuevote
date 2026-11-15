@@ -183,15 +183,12 @@ export function PlaybackControls({
           onMouseMove={isOwner ? handleMouseMove : undefined}
           onMouseLeave={() => setDragPercent(null)}
         >
+          {/* Scaled, not resized: a width that changes every second would
+              lay the bar out again each time. */}
           <div
-            className={`h-1.5 rounded-full bg-accent relative ${dragPercent === null ? 'transition-[width] duration-300 ease-linear' : ''}`}
-            style={{ width: `${dragPercent ?? progress}%` }}
-          >
-            {/* Handle for owners */}
-            {isOwner && (
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-ink rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
-            )}
-          </div>
+            className={`h-1.5 w-full origin-left bg-accent ${dragPercent === null ? 'transition-transform duration-300 ease-linear' : ''}`}
+            style={{ transform: `scaleX(${Math.max(0, Math.min(100, dragPercent ?? progress)) / 100})` }}
+          />
         </div>
 
         <div className="flex items-center justify-between gap-3">
