@@ -92,6 +92,15 @@ button,
 }
 
 @layer components {
+  /* Text that people wrote (titles, names), used with dir="auto": its own
+     writing direction decides at which end it is cut off, the page's
+     direction where it is aligned. */
+  .cv-bidi {
+    text-align: left;
+    text-align: -webkit-match-parent;
+    text-align: match-parent;
+  }
+
   /* The buttons of the lobby and the room: one height, one radius, a small
      step down when pressed. */
   .cv-btn {

@@ -207,12 +207,12 @@ export function PlaybackControls({
             <div className="flex-1 min-w-0">
               {/* The title leads. That it is playing shows in the bar itself:
                   the pause button and the line that fills. */}
-              <h3 className="truncate text-[15px] font-medium leading-5 text-ink" title={currentTrack?.title || undefined}>
+              <h3 dir="auto" className="cv-bidi truncate text-[15px] font-medium leading-5 text-ink" title={currentTrack?.title || undefined}>
                 {currentTrack
                   ? (currentTrack.title || t('playlist.nowPlaying'))
                   : t('playlist.queueEmpty')}
               </h3>
-              <p className="truncate text-[13px] leading-5 text-ink-2">
+              <p dir="auto" className="cv-bidi truncate text-[13px] leading-5 text-ink-2">
                 {currentTrack
                   ? [currentTrack.artist, activeChannel].filter(Boolean).join(' · ')
                   : t('playlist.addVideos')}

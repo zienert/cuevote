@@ -9,6 +9,7 @@ import { Suggestions } from "./Suggestions";
 import { Skeleton } from "./Skeleton";
 import { CoverImage } from "./CoverImage";
 import { suggesterLabel } from "../utils/participation";
+import { formatCount } from "../utils/numbers";
 import { isAppleKey } from "../utils/trackKeys";
 
 const buildWatchUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
@@ -42,7 +43,7 @@ export function Track({
   const isActiveSuggestion = activeSuggestionId === track.id; // Check if active
 
 
-  const { t } = Language.useLanguage();
+  const { t, language } = Language.useLanguage();
   const { hasConsent, hasAppleConsent } = Consent.useConsent();
 
   // Apple Music artwork may appear with playback or playlists (current track,
@@ -127,7 +128,7 @@ export function Track({
         <span className="block min-w-0 flex-1">
           {track.title ? (
             // One line in the list; the whole title once the row is open.
-            <span className={`block text-[15px] font-medium leading-5 text-ink ${isExpanded ? "break-words" : "truncate"}`}>
+            <span dir="auto" className={`cv-bidi block text-[15px] font-medium leading-5 text-ink ${isExpanded ? "break-words" : "truncate"}`}>
               {track.title}
             </span>
           ) : (
@@ -136,14 +137,15 @@ export function Track({
             <Skeleton className="h-4 w-40 max-w-full" />
           )}
           {track.artist ? (
-            <span className="mt-0.5 flex min-w-0 items-center gap-2 text-[13px] leading-5 text-ink-2">
-              <span className={isExpanded ? "min-w-0 break-words" : "truncate"}>{track.artist}</span>
+            <span className={`mt-0.5 flex min-w-0 items-center gap-x-2 text-[13px] leading-5 text-ink-2 ${isExpanded ? "flex-wrap" : ""}`}>
+              <span dir="auto" className={`cv-bidi min-w-0 ${isExpanded ? "break-words" : "truncate"}`}>{track.artist}</span>
               {/* Phones: who suggested it sits here, where a row with votes
-                  has no room for it on the right. */}
+                  has no room for it on the right. When both are long, the
+                  artist keeps its room and this name gives way first. */}
               {suggester && showVotes && (
-                <span className="flex flex-shrink-0 items-center gap-1 text-xs text-ink-3 sm:hidden">
-                  <UserRound size={12} aria-hidden="true" />
-                  <span className="max-w-[5.5rem] truncate">{suggesterShort}</span>
+                <span className="flex min-w-[3rem] max-w-[6.5rem] shrink-[100] items-center gap-1 text-xs text-ink-3 sm:hidden">
+                  <UserRound size={12} className="flex-none" aria-hidden="true" />
+                  <span dir="auto" className="cv-bidi truncate">{suggesterShort}</span>
                 </span>
               )}
             </span>
@@ -153,7 +155,7 @@ export function Track({
         </span>
 
         {suggester && (
-          <span className={`max-w-[6.5rem] flex-shrink-0 truncate text-xs text-ink-3 ${showVotes ? "max-sm:hidden" : ""}`}>
+          <span dir="auto" className={`cv-bidi max-w-[6.5rem] flex-shrink-0 truncate text-xs text-ink-3 ${showVotes ? "max-sm:hidden" : ""}`}>
             {suggester}
           </span>
         )}
@@ -178,8 +180,10 @@ export function Track({
               <ThumbsUp size={18} strokeWidth={1.75} fill={vote === "up" ? "currentColor" : "none"} fillOpacity={0.35} />
             </button>
 
-            <span className={`w-6 text-center text-sm font-semibold tabular-nums sm:w-7 ${vote === "up" ? "text-accent" : score > 0 ? "text-ink" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
-              <span key={tick.count} className={tick.count === 0 ? undefined : tick.grew ? "cv-tick" : "cv-tick cv-tick-down"}>{score}</span>
+            {/* As wide as its digits: a big count takes room from the title,
+                never from the thumb next to it. */}
+            <span className={`min-w-6 flex-none whitespace-nowrap text-center text-sm font-semibold tabular-nums sm:min-w-7 ${vote === "up" ? "text-accent" : score > 0 ? "text-ink" : score < 0 ? "text-ink-2" : "text-ink-3"}`}>
+              <span key={tick.count} className={tick.count === 0 ? undefined : tick.grew ? "cv-tick" : "cv-tick cv-tick-down"}>{formatCount(score, language)}</span>
             </span>
 
             <button

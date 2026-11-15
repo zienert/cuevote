@@ -12,7 +12,9 @@ const { LanguageSwitcher, languages } = LanguageSwitcherExports;
 import { GoogleAuthButton } from './GoogleAuthButton';
 import { GoogleGIcon } from './GoogleGIcon';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
-import { channelLanguages, getFlagEmoji } from '../constants/channelLanguages';
+import { channelLanguages, getFlagEmoji, hasFlag } from '../constants/channelLanguages';
+import { formatCount } from '../utils/numbers';
+import { Avatar } from './Avatar';
 
 import { LoadingScreen } from './LoadingScreen';
 import { SegmentedControl } from './SegmentedControl';
@@ -647,13 +649,13 @@ export function Lobby() {
     const createLabel = isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'));
     const tabClass = (active, index) =>
         `cv-hit flex h-9 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors duration-150 sm:flex-none ${active ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${isFocused(index) ? 'relative z-10 text-ink ring-2 ring-accent' : ''}`;
-    const avatar = (size) => (user.picture ? (
-        <img src={user.picture} referrerPolicy="no-referrer" className={`${size} rounded-full border border-line`} alt={user.name} />
-    ) : (
-        <div className={`${size} flex items-center justify-center rounded-full border border-line bg-raised text-xs font-semibold text-ink-2`}>
-            {displayName(user, t).charAt(0)}
-        </div>
-    ));
+    const avatar = (size) => <Avatar picture={user.picture} name={displayName(user, t)} className={size} />;
+    // A channel is created with the line "Hosted by <name>"; say it in the
+    // reader's language. Anything else a channel carries there shows as it is.
+    const hostLine = (description) => {
+        const host = /^Hosted by (.+)$/.exec(description || '');
+        return host ? t('lobby.hostedBy', { name: host[1] }) : description;
+    };
 
     return (
         <div className="min-h-screen bg-page text-ink flex flex-col items-center px-4 sm:px-8 pt-[calc(1.5rem+env(safe-area-inset-top))] sm:pt-[calc(2rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
@@ -715,16 +717,16 @@ export function Lobby() {
                 </div>
 
                 {/* Desktop User Profile */}
-                <div className="hidden flex-none sm:block" id="lobby-profile-section">
+                <div className="hidden min-w-0 sm:block" id="lobby-profile-section">
                     {isSignedIn(user) ? (
                         <button
                             id="lobby-auth-button"
                             onClick={() => setShowProfileModal(true)}
-                            className={`group flex h-10 cursor-pointer items-center gap-2.5 rounded-full pl-1 pr-3.5 transition-colors duration-150 hover:bg-raised ${isFocused(INDEX_PROFILE) ? 'bg-raised ring-2 ring-accent' : ''}`}
+                            className={`group flex h-10 max-w-full cursor-pointer items-center gap-2.5 rounded-full pl-1 pr-3.5 transition-colors duration-150 hover:bg-raised ${isFocused(INDEX_PROFILE) ? 'bg-raised ring-2 ring-accent' : ''}`}
                             title={t('header.profileSettings')}
                         >
                             {avatar('h-8 w-8')}
-                            <span className="text-sm font-medium text-ink-2 transition-colors duration-150 group-hover:text-ink">{t('lobby.welcome')}, {displayName(user, t)}</span>
+                            <span dir="auto" className="cv-bidi min-w-0 truncate text-sm font-medium text-ink-2 transition-colors duration-150 group-hover:text-ink">{t('lobby.welcome')}, {displayName(user, t)}</span>
                         </button>
                     ) : (
                         <GoogleAuthButton
@@ -912,23 +914,24 @@ export function Lobby() {
 
                                         <div className="mt-auto min-w-0">
                                             {/* The whole name, on up to two lines. */}
-                                            <h3 className="line-clamp-2 break-words text-base font-semibold leading-snug text-ink sm:text-lg sm:leading-6">
+                                            <h3 dir="auto" className="cv-bidi line-clamp-2 break-words text-base font-semibold leading-snug text-ink sm:text-lg sm:leading-6">
                                                 {channel.name}
                                             </h3>
                                             {/* One line, and none on a phone, where the card has no room
                                                 for it: the name and the source label keep theirs. */}
-                                            <p className="mt-0.5 line-clamp-1 text-sm text-ink-2 max-sm:hidden">{channel.description}</p>
+                                            <p dir="auto" className="cv-bidi mt-0.5 line-clamp-1 text-sm text-ink-2 max-sm:hidden">{hostLine(channel.description)}</p>
 
                                             <div className="mt-2 flex items-center justify-between gap-2 text-xs font-medium text-ink-2 sm:mt-3">
                                                 <div className="flex items-center gap-1.5 tabular-nums">
-                                                    <Users size={14} className="text-ink-3" /> <span>{channel.listeners || 0} {t('lobby.live')}</span>
+                                                    <Users size={14} className="text-ink-3" /> <span>{formatCount(channel.listeners, language)} {t('lobby.live')}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     {channel.is_protected && <Lock size={14} className="text-ink-2" />}
                                                     <span className="flex h-4 items-center text-sm leading-none" title={localizedCountries.find(l => l.code === channel.language_flag)?.label || 'International'}>
-                                                        {!channel.language_flag || channel.language_flag === 'international'
-                                                            ? <Globe size={14} className="text-ink-3" />
-                                                            : getFlagEmoji(channel.language_flag)}
+                                                        {/* The globe also for a country the lobby has no flag for. */}
+                                                        {hasFlag(channel.language_flag)
+                                                            ? getFlagEmoji(channel.language_flag)
+                                                            : <Globe size={14} className="text-ink-3" />}
                                                     </span>
                                                 </div>
                                             </div>
@@ -1188,13 +1191,7 @@ export function Lobby() {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex flex-col items-center mb-6">
-                                {user?.picture ? (
-                                    <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-20 h-20 rounded-full border border-line mb-4" />
-                                ) : (
-                                    <div className="w-20 h-20 rounded-full bg-raised flex items-center justify-center text-3xl font-semibold text-ink-2 mb-4 border border-line">
-                                        {displayName(user, t).charAt(0)}
-                                    </div>
-                                )}
+                                <Avatar picture={user?.picture} name={displayName(user, t)} className="mb-4 h-20 w-20" textClassName="text-3xl" />
                                 <h3 className="text-xl font-semibold text-ink">{displayName(user, t)}</h3>
                                 <p className="text-sm text-ink-2">{user?.email}</p>
                             </div>

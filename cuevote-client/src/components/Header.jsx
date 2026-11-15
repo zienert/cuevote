@@ -13,6 +13,7 @@ import { dangerousHtml } from '../utils/sanitizeHtml';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 import { SegmentedControl } from './SegmentedControl';
 import { displayName, isSignedIn } from '../utils/participation';
+import { Avatar } from "./Avatar";
 
 
 export function Header({
@@ -309,16 +310,11 @@ export function Header({
   const userIdentity = isSignedIn(user) ? (
     <button
       onClick={() => setShowProfileModal(true)}
-      className="flex-shrink-0 rounded-full transition-transform duration-150 ease-cv active:scale-90"
+      className="cv-hit flex-shrink-0 rounded-full transition-transform duration-150 ease-cv active:scale-90"
       title={t('header.profileSettings')}
+      aria-label={t('header.profileSettings')}
     >
-      {user.picture ? (
-        <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-7 h-7 rounded-full border border-line" />
-      ) : (
-        <div className="w-7 h-7 rounded-full bg-raised flex items-center justify-center text-xs font-semibold text-ink-2 border border-line">
-          {displayName(user, t).charAt(0)}
-        </div>
-      )}
+      <Avatar picture={user.picture} name={displayName(user, t)} className="h-7 w-7" />
     </button>
   ) : (
     <GoogleAuthButton
@@ -372,7 +368,7 @@ export function Header({
           {leaveButton}
           {wordmark}
           <div className="ml-2 min-w-0 flex-1 leading-tight">
-            <p id="room-channel-name" className="truncate text-sm font-semibold text-ink">{channelName}</p>
+            <p id="room-channel-name" dir="auto" title={channelName} className="cv-bidi truncate text-sm font-semibold text-ink">{channelName}</p>
             {showYouTubeAttribution
               ? <YouTubeBrandSubtitle className="max-w-full truncate align-top" />
               : <span className="block truncate text-[11px] font-semibold leading-4 text-orange-400">Apple Music</span>}
@@ -528,13 +524,7 @@ export function Header({
             >
 
               <div className="flex flex-col items-center mb-6">
-                {user?.picture ? (
-                  <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-20 h-20 rounded-full border border-line mb-4" />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-raised flex items-center justify-center text-3xl font-semibold text-ink-2 mb-4 border border-line">
-                    {displayName(user, t).charAt(0)}
-                  </div>
-                )}
+                <Avatar picture={user?.picture} name={displayName(user, t)} className="mb-4 h-20 w-20" textClassName="text-3xl" />
                 <h3 className="text-xl font-semibold text-ink">{displayName(user, t)}</h3>
                 <p className="text-sm text-ink-2">{user?.email}</p>
               </div>
