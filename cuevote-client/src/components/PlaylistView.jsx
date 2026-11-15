@@ -63,8 +63,11 @@ export function PlaylistView({
                 setShowJumpToNow(!isVisible);
 
                 if (!isVisible) {
-                    const { top } = entry.boundingClientRect;
-                    setJumpDirection(top < 0 ? "up" : "down");
+                    // Above or below the list, not the screen: the list starts
+                    // under the room's header and notices, and a track hidden
+                    // behind those still has a positive top.
+                    const list = entry.rootBounds || scrollRef.current?.getBoundingClientRect();
+                    setJumpDirection(entry.boundingClientRect.top < (list?.top ?? 0) ? "up" : "down");
                 }
             },
             {
@@ -79,6 +82,29 @@ export function PlaylistView({
             observer.disconnect();
         };
     }, [currentTrack?.id, activeTab]);
+
+    // The arrow follows the list while the button shows. The observer above
+    // reports only when the current track enters or leaves the list, not when
+    // one fast scroll carries it from above the list to below it.
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (activeTab !== "playlist" || !showJumpToNow || !container) return undefined;
+        let frame = 0;
+        const update = () => {
+            frame = 0;
+            const currentEl = document.getElementById("playlist-current-track");
+            if (!currentEl) return;
+            setJumpDirection(currentEl.getBoundingClientRect().top < container.getBoundingClientRect().top ? "up" : "down");
+        };
+        const onScroll = () => {
+            if (!frame) frame = requestAnimationFrame(update);
+        };
+        container.addEventListener("scroll", onScroll, { passive: true });
+        return () => {
+            container.removeEventListener("scroll", onScroll);
+            if (frame) cancelAnimationFrame(frame);
+        };
+    }, [currentTrack?.id, activeTab, showJumpToNow]);
 
     useEffect(() => {
         if (activeTab !== "playlist") return;
