@@ -197,7 +197,7 @@ export default {
 		"connecting": "Verbinde mit Server...",
 		"connectionIssue": "Verbindungsproblem",
 		"takingTooLong": "Dauert länger als gewöhnlich...",
-		"checkConnection": "Bitte überprüfen Sie Ihre Internetverbindung.",
+		"checkConnection": "Bitte überprüfe deine Internetverbindung.",
 		"networkThrottle": "YouTube hat die IP-Adresse dieses Netzwerks gesperrt. Wiedergabe pausiert. Versuche, zu einem mobilen Hotspot zu wechseln.",
 		"retryPlayback": "Erneut versuchen",
 		"reconnecting": "Verbinde neu",
