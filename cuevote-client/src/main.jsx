@@ -17,6 +17,8 @@ const AndroidVenuePreview = import.meta.env.DEV ? lazy(() => import('./component
 const AppleMusicLab = import.meta.env.DEV ? lazy(() => import('./components/__AppleMusicLab.jsx')) : null;
 // DEV-only: the lobby with mock YouTube and Apple Music channels, no backend needed.
 const LobbyPreview = import.meta.env.DEV ? lazy(() => import('./components/__LobbyPreview.jsx')) : null;
+// DEV-only: a room with mock data (YouTube or Apple Music, guest or host), no backend needed.
+const RoomPreview = import.meta.env.DEV ? lazy(() => import('./components/__RoomPreview.jsx')) : null;
 
 import { Consent } from './contexts/ConsentContext.jsx';
 import { Language } from './contexts/LanguageContext.jsx';
@@ -42,6 +44,9 @@ createRoot(document.getElementById('root')).render(
                   ) : null}
                   {import.meta.env.DEV && LobbyPreview ? (
                     <Route path="/__lobby-preview" element={<Suspense fallback={null}><LobbyPreview /></Suspense>} />
+                  ) : null}
+                  {import.meta.env.DEV && RoomPreview ? (
+                    <Route path="/__room-preview" element={<Suspense fallback={null}><RoomPreview /></Suspense>} />
                   ) : null}
                   <Route path="/room/:roomId" element={<Suspense fallback={<div className="min-h-screen bg-[#050505] flex items-center justify-center"><span className="text-neutral-500">Loading…</span></div>}><App /></Suspense>} />
                   <Route path="/legal" element={<Suspense fallback={<div className="min-h-screen bg-[#050505]" />}><LegalPage /></Suspense>} />
