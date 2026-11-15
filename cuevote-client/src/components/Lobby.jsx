@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import { Users, Plus, UserRound, AlertCircle, X, LogOut, Search, Lock, Globe, Scale, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { Users, Sparkles, Cookie, UserRound, AlertCircle, X, LogOut, Search, Lock, Globe, Scale, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { useWebSocketContext } from "../hooks/useWebSocketContext";
 import { Consent } from '../contexts/ConsentContext';
 import { Language } from '../contexts/LanguageContext';
@@ -647,6 +647,15 @@ export function Lobby() {
         if (focusedIndex !== index) setFocusedIndex(index);
     };
     const createLabel = isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'));
+    const CreateIcon = !isSignedIn(user) && !hasConsent ? Cookie : Sparkles;
+    // "Everywhere": on a phone a quiet line icon, so that the cards keep the
+    // eye; from a tablet up the blue globe, a little light on the black page.
+    const worldMark = (size, className = '') => (
+        <>
+            <Globe size={size} className={`sm:hidden ${className}`} />
+            <span className="max-sm:hidden">{getFlagEmoji('international')}</span>
+        </>
+    );
     const tabClass = (active, index) =>
         `cv-hit flex h-9 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors duration-150 sm:flex-none ${active ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${isFocused(index) ? 'relative z-10 text-ink ring-2 ring-accent' : ''}`;
     const avatar = (size) => <Avatar picture={user.picture} name={displayName(user, t)} className={size} />;
@@ -769,9 +778,9 @@ export function Lobby() {
                                 className={`absolute inset-y-0 left-0 z-10 flex items-center gap-1 rounded-l-xl pl-3 pr-2 transition-colors duration-150 ${filterLanguageFlag !== 'international' ? 'text-ink' : 'text-ink-3 hover:text-ink-2'}`}
                                 title={t('lobby.videoLanguage')}
                             >
-                                {filterLanguageFlag === 'international'
-                                    ? <Globe size={16} />
-                                    : <span className="text-base leading-none">{getFlagEmoji(filterLanguageFlag)}</span>}
+                                <span className="flex items-center text-base leading-none">
+                                    {filterLanguageFlag === 'international' ? worldMark(16) : getFlagEmoji(filterLanguageFlag)}
+                                </span>
                                 <ChevronDown size={12} className={`transition-transform duration-150 ${filterFlagOpen ? 'rotate-180' : ''}`} />
                             </button>
                             <input
@@ -793,7 +802,7 @@ export function Lobby() {
                                             className={`flex min-h-11 w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors duration-150 hover:bg-raised sm:min-h-0 ${filterLanguageFlag === lang.code ? 'bg-accent/10 font-medium text-accent' : 'text-ink'}`}
                                         >
                                             <span className="flex w-5 justify-center text-base leading-none">
-                                                {lang.code === 'international' ? <Globe size={16} className="text-ink-2" /> : lang.emoji}
+                                                {lang.code === 'international' ? worldMark(16, 'text-ink-2') : lang.emoji}
                                             </span>
                                             <span>{lang.label}</span>
                                         </button>
@@ -833,19 +842,15 @@ export function Lobby() {
                                 }}
                                 onMouseEnter={() => pointAt(0)}
                                 onMouseMove={() => pointAt(0)}
-                                className={`group order-first relative aspect-[4/3] w-full scroll-mb-24 scroll-mt-56 rounded-2xl border border-dashed transition-[background-color,border-color,transform] duration-150 ease-cv active:scale-[0.98] ${isFocused(0)
-                                    ? "border-transparent bg-card ring-2 ring-accent"
-                                    : isSignedIn(user)
-                                        ? "cursor-pointer border-ink/20 hover:border-ink/40 hover:bg-card"
-                                        : "cursor-not-allowed border-ink/15"
-                                    }`}
+                                className={`group order-first relative aspect-[4/3] w-full scroll-mb-24 scroll-mt-56 rounded-2xl border border-accent bg-card ring-2 transition-[background-color,box-shadow,transform] duration-150 ease-cv active:scale-[0.98] ${isFocused(0) ? "ring-accent" : "ring-accent/50"} ${isSignedIn(user) ? "cursor-pointer hover:bg-raised" : "cursor-not-allowed"}`}
                                 title={createLabel}
                             >
-                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-3 sm:p-5">
-                                    <span className={`flex h-10 w-10 items-center justify-center rounded-full ${isSignedIn(user) ? 'bg-accent text-accent-ink' : 'bg-raised text-ink-2'}`}>
-                                        <Plus size={20} strokeWidth={2.25} />
-                                    </span>
-                                    <span className={`text-center text-sm font-medium sm:text-base ${isSignedIn(user) ? 'text-ink' : 'text-ink-2'}`}>
+                                {/* The lobby's one lit tile: an orange outline, the icon in
+                                    orange, the words in ink. Without consent it asks for the
+                                    cookies and shows a cookie. */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-3 sm:gap-4 sm:p-5">
+                                    <CreateIcon className="h-7 w-7 flex-none text-accent sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden="true" />
+                                    <span className="text-center text-sm font-medium text-ink sm:text-base">
                                         {createLabel}
                                     </span>
                                 </div>
@@ -931,7 +936,7 @@ export function Lobby() {
                                                         {/* The globe also for a country the lobby has no flag for. */}
                                                         {hasFlag(channel.language_flag)
                                                             ? getFlagEmoji(channel.language_flag)
-                                                            : <Globe size={14} className="text-ink-3" />}
+                                                            : worldMark(14, 'text-ink-3')}
                                                     </span>
                                                 </div>
                                             </div>
