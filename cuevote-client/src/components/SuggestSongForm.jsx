@@ -155,8 +155,8 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
 
   const isDisabled = !suggestionsEnabled && !isOwner;
   const activeError = suggestionError || (docked ? answerError : serverError);
-  const successColor = infoMessage ? "bg-blue-600 hover:bg-blue-500" : "bg-green-600 hover:bg-green-500";
-  const submitColor = submissionSuccess ? successColor : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500";
+  // One colour in every state: the icon and the words say what happened.
+  const submitColor = "bg-accent text-accent-ink hover:bg-[#fb8b3c]";
 
   return (
     <div className={`keep-open w-full max-w-5xl mx-auto ${docked ? "" : "mt-3 animate-fadeIn space-y-2"}`}>
@@ -170,7 +170,7 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
           aria-label={docked ? t('header.suggest') : undefined}
           placeholder={isDisabled ? t('suggest.disabledPlaceholder') : t('suggest.placeholder')}
           disabled={isSubmittingSuggestion || isDisabled}
-          className={`keep-open flex-1 min-w-0 px-5 rounded-full bg-[#121212] text-white border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-orange-500 text-base disabled:opacity-60 disabled:cursor-not-allowed ${docked ? "h-11" : "py-2"}`}
+          className={`keep-open flex-1 min-w-0 px-4 rounded-full bg-card text-ink placeholder:text-ink-3 border border-line transition-[border-color,box-shadow] duration-150 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-accent/70 text-base disabled:opacity-60 disabled:cursor-not-allowed ${docked ? "h-11" : "h-10"}`}
         />
         {docked ? (
           <button
@@ -181,10 +181,10 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
               handleSubmitSuggestion();
             }}
             disabled={isSubmittingSuggestion || isDisabled}
-            className={`keep-open flex h-11 w-11 flex-none items-center justify-center rounded-full text-white shadow-lg transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${submitColor}`}
+            className={`keep-open flex h-11 w-11 flex-none items-center justify-center rounded-full transition-[background-color,opacity,transform] duration-150 ease-cv active:scale-90 disabled:cursor-not-allowed disabled:opacity-60 ${submitColor}`}
           >
             {isSubmittingSuggestion ? (
-              <span className="h-[18px] w-[18px] animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
+              <span className="h-[18px] w-[18px] animate-spin rounded-full border-2 border-accent-ink/30 border-t-accent-ink" aria-hidden="true" />
             ) : submissionSuccess ? (
               infoMessage ? <Clock size={18} /> : <CheckCircle size={18} />
             ) : (
@@ -198,7 +198,7 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
               handleSubmitSuggestion();
             }}
             disabled={isSubmittingSuggestion || isDisabled}
-            className={`keep-open px-5 py-2 rounded-full text-white transition-all flex items-center gap-2 text-base disabled:cursor-not-allowed disabled:opacity-70 whitespace-nowrap ${submitColor}`}
+            className={`keep-open flex h-10 items-center gap-2 whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-[background-color,opacity,transform] duration-150 ease-cv active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-70 ${submitColor}`}
           >
             {submissionSuccess ? (
               <>
@@ -215,7 +215,7 @@ export function SuggestSongForm({ onSongSuggested, onShowSuggest, serverError, s
       </div>
       {docked ? (
         (activeError || submissionSuccess) && (
-          <p role="status" className={`keep-open px-3 pt-1.5 text-sm ${activeError ? "text-red-400" : "text-neutral-300"}`}>
+          <p role="status" className={`keep-open px-3 pt-1.5 text-sm ${activeError ? "text-red-400" : "text-ink"}`}>
             {activeError || infoMessage || t('suggest.added')}
           </p>
         )

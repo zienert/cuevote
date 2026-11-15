@@ -1694,7 +1694,7 @@ function RoomBody() {
   return (
     <ConsentContext.Provider value={roomConsent}>
     <div
-      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isPhoneLayout || (isQueueMinimized && !isCinemaMode) ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
+      className={`text-ink flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-page pb-0" : (isPhoneLayout || (isQueueMinimized && !isCinemaMode) ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-page" : "min-h-screen bg-page pb-32")}`}
       // On phones the room is exactly the visible part of the screen and its
       // parts share that height; elsewhere the playback controls float over
       // the bottom edge and the room leaves them room.
@@ -1742,10 +1742,10 @@ function RoomBody() {
       {/* The room is there, the connection is not: one line under the header.
           Without a header (cinema mode) it lies over the top edge. */}
       {connectionBar && isCinemaMode && (
-        <div className="fixed inset-x-0 top-0 z-[100] bg-[#050505]">{connectionBar}</div>
+        <div className="fixed inset-x-0 top-0 z-[100] bg-page">{connectionBar}</div>
       )}
       {!isCinemaMode && (
-        <div className="sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out">
+        <div className="sticky top-0 z-[55] bg-page/95 backdrop-blur-md border-b border-line">
           <Header
             showYouTubeAttribution={!isAppleRoom}
             onGoHome={() => navigate("/")}
@@ -1905,10 +1905,10 @@ function RoomBody() {
 
       <div
         className={isCinemaMode
-          ? "fixed inset-0 z-40 bg-black transition-all duration-500 ease-in-out"
+          ? "fixed inset-0 z-40 bg-black"
           : (isAnyPlaylistView
-            ? "flex-1 w-full relative group transition-all duration-500 ease-in-out min-h-0"
-            : `w-full relative group transition-all duration-500 ease-in-out min-w-[200px] min-h-[200px] ${isQueueMinimized ? "flex-1 min-h-0" : "flex-shrink-0 aspect-video max-h-[60vh]"}`
+            ? "flex-1 w-full relative group min-h-0"
+            : `w-full relative group min-w-[200px] min-h-[200px] bg-black ${isQueueMinimized ? "flex-1 min-h-0" : "flex-shrink-0 aspect-video max-h-[60vh]"}`
           )
         }
         style={{
@@ -2029,7 +2029,7 @@ function RoomBody() {
                         )}
                       </PlayerErrorBoundary>
                     </div>
-                    {!(currentTrack || previewTrack) && <div className="flex h-full w-full items-center justify-center text-neutral-500 bg-neutral-900">{t('playlist.queueEmpty')}</div>}
+                    {!(currentTrack || previewTrack) && <div className="flex h-full w-full items-center justify-center text-ink-2 bg-card">{t('playlist.queueEmpty')}</div>}
                   </>
                 )}
               </div>
@@ -2040,7 +2040,7 @@ function RoomBody() {
       </div>
 
       {!isAnyPlaylistView && !isCinemaMode && (
-        <div className={`min-h-0 transition-all duration-700 ease-in-out ${isQueueMinimized ? "flex-none" : `pb-4 flex-1 ${isPhoneLayout ? "overflow-y-auto" : ""}`}`}>
+        <div className={`min-h-0 ${isQueueMinimized ? "flex-none" : `pb-4 flex-1 ${isPhoneLayout ? "overflow-y-auto" : ""}`}`}>
           <Queue
             tracks={queue}
             currentTrack={currentTrack}
@@ -2144,7 +2144,7 @@ function RoomBody() {
       {isPhoneLayout && (
         <div
           ref={setBottomBar}
-          className={`flex-none z-[55] border-t border-neutral-900 bg-[#050505]/95 px-2 pt-2 backdrop-blur-md ${previewTrack ? "hidden" : ""}`}
+          className={`flex-none z-[55] border-t border-line bg-page/95 px-3 pt-2 backdrop-blur-md ${previewTrack ? "hidden" : ""}`}
           style={{ paddingBottom: 'calc(0.5rem + var(--bar-safe-bottom, var(--sab)))' }}
         >
           {suggestForm(true)}
