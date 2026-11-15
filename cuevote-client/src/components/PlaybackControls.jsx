@@ -200,6 +200,8 @@ export function PlaybackControls({
               }}
               className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink transition-[background-color,transform,opacity] duration-150 ease-cv hover:bg-[#fb8b3c] active:scale-95 disabled:opacity-50"
               disabled={!currentTrack}
+              aria-label={isPlaying ? t('playlist.pause') : t('playlist.play')}
+              title={isPlaying ? t('playlist.pause') : t('playlist.play')}
             >
               {isPlaying ? <Pause size={20} fill="currentColor" strokeWidth={0} /> : <Play size={20} fill="currentColor" strokeWidth={0} className="translate-x-px" />}
             </button>
@@ -226,8 +228,10 @@ export function PlaybackControls({
                 event.stopPropagation();
                 onMuteToggle();
               }}
-              className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
+              className="cv-hit flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
               disabled={!currentTrack}
+              aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+              title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
             >
               {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
             </button>
@@ -239,6 +243,7 @@ export function PlaybackControls({
                 step="1"
                 value={volume}
                 onChange={onVolumeChange}
+                aria-label={t('playlist.volume')}
                 className={`mr-1 w-24 accent-[rgb(var(--cv-accent))] ${isMuted ? "opacity-50" : ""}`}
                 onClick={(event) => event.stopPropagation()}
                 disabled={!currentTrack}
@@ -270,8 +275,9 @@ export function PlaybackControls({
                   event.stopPropagation();
                   onToggleCinemaMode();
                 }}
-                className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
-                title={isCinemaMode ? "Exit Cinema Mode" : "Cinema Mode"}
+                className="cv-hit flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
+                aria-label={isCinemaMode ? t('playlist.exitCinemaMode') : t('playlist.cinemaMode')}
+                title={isCinemaMode ? t('playlist.exitCinemaMode') : t('playlist.cinemaMode')}
               >
                 {isCinemaMode ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
               </button>
