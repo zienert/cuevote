@@ -3,9 +3,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// What a player shows in place of playback. Two weights: a card when there is
-// something to do (sign in, start, try again), a quiet line when there is not
-// (loading, nothing queued).
+// What a player shows in place of playback, and the lobby in place of its
+// channels. Two weights: a card when there is something to do (sign in, start,
+// try again), a quiet line when there is not (loading, nothing queued).
 
 /**
  * A card over the player: a symbol, what is going on, what to do about it.

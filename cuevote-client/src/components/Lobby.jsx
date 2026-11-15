@@ -59,8 +59,9 @@ export function Lobby() {
     }, []);
 
     // Debounce the LoadingScreen — brief mobile disconnects (< 2.5 s) shouldn't flash the overlay
-    // and steal the rooms grid mid-scroll. Starts true so the initial mount shows the spinner immediately.
-    const [showConnectingOverlay, setShowConnectingOverlay] = useState(true);
+    // and steal the rooms grid mid-scroll. A page that opens without a connection shows it at
+    // once; coming back from a channel the connection is there, and so is the grid.
+    const [showConnectingOverlay, setShowConnectingOverlay] = useState(!isConnected);
     useEffect(() => {
         if (isConnected) {
             setShowConnectingOverlay(false);
@@ -802,9 +803,7 @@ export function Lobby() {
                 </div>
 
                 {showConnectingOverlay ? (
-                    <div className="col-span-full py-12">
-                        <LoadingScreen embedded isOnline={isOnline} message={t('lobby.connecting')} reconnectAttempt={reconnectAttempt} onForceReconnect={forceReconnect} />
-                    </div>
+                    <LoadingScreen embedded isOnline={isOnline} message={t('lobby.connecting')} reconnectAttempt={reconnectAttempt} onForceReconnect={forceReconnect} />
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                         {/* Create Room Button - Only on First Page */}

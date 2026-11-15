@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { WifiOff, RefreshCw, Loader2, ServerCrash } from "lucide-react";
 import { Language } from "../contexts/LanguageContext";
+import { StatusButton, StatusCard } from "./PlayerStatus";
 
 export function LoadingScreen({ isOnline, embedded = false, message, reconnectAttempt = 0, onForceReconnect }) {
 	const { t } = Language.useLanguage();
@@ -97,10 +98,32 @@ export function LoadingScreen({ isOnline, embedded = false, message, reconnectAt
 		</div>
 	);
 
+	// In the lobby, where the channel list will be. Connecting usually takes a
+	// moment: one quiet line over placeholders for the channels. Only a
+	// connection that does not come gets a card, with the way to try again.
 	if (embedded) {
+		if (state === 'loading') {
+			return (
+				<div role="status">
+					<p className="mb-4 flex items-center gap-2 text-sm text-neutral-500">
+						<Loader2 size={16} className="shrink-0 animate-spin text-orange-500" aria-hidden="true" />
+						<span>{config.title}</span>
+					</p>
+					<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" aria-hidden="true">
+						{[0, 1, 2, 3, 4, 5].map((i) => (
+							<div key={i} className="aspect-[4/3] rounded-2xl border border-neutral-900 bg-neutral-900/50 animate-pulse" />
+						))}
+					</div>
+				</div>
+			);
+		}
 		return (
-			<div className="flex flex-col items-center justify-center p-8 w-full h-full min-h-[300px]">
-				{content}
+			<div role="status" className="flex justify-center py-6">
+				<StatusCard icon={state === 'offline' ? WifiOff : ServerCrash} tone="attention" title={config.title} text={config.sub}>
+					<StatusButton variant="secondary" icon={RefreshCw} busy={isRetrying} onClick={handleRetry}>
+						{t('app.retry', "Retry Connection")}
+					</StatusButton>
+				</StatusCard>
 			</div>
 		);
 	}
