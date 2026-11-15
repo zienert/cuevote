@@ -193,9 +193,25 @@ body,
   animation: skeleton-light 1.8s ease-in-out infinite;
 }
 
+/* A picture that has just loaded takes the place of its placeholder
+   (CoverImage.jsx). */
+@keyframes cover-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.cover-in {
+  animation: cover-in 0.25s ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;
     background-image: none;
+  }
+
+  .cover-in {
+    animation: none;
   }
 }
