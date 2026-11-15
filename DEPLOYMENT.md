@@ -468,7 +468,7 @@ npm run lint && npm test   # cuevote-server (it has no build step)
 npm test && npm run build  # cuevote-mcp
 ```
 
-Commit the resulting `package-lock.json`, merge, then deploy with `bash update_server.sh` as usual. Run the audit on a schedule (monthly works) and/or enable GitHub Dependabot alerts on the repository, so new advisories reach you instead of waiting to be discovered.
+Commit the resulting `package-lock.json`, merge, then deploy with `bash update_server.sh` as usual. Run the audit on a schedule (monthly works), and keep Dependabot alerts and Dependabot security updates enabled on the repository (Settings → Code security), so new advisories reach you instead of waiting to be discovered. `.github/dependabot.yml` points Dependabot at all three npm projects and limits it to security updates.
 
 ### Use SSH Keys (Best Practice)
 For maximum security, disable password login entirely and use SSH keys.
