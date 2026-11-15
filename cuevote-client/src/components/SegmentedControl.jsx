@@ -4,7 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * One choice out of a few, drawn as a single control with a sliding marker:
+ * One choice out of a few, drawn as a single control with a sliding marker
+ * that throws a little orange light under itself:
  * the create dialog's music source and privacy, and the views of a room on a
  * phone (`size="sm"` where three have to fit).
  *
@@ -23,7 +24,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 		>
 			<span
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent transition-transform duration-[250ms] ease-cv-drawer motion-reduce:transition-none"
+				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] transition-transform duration-[250ms] ease-cv-drawer motion-reduce:transition-none"
 				style={{
 					width: `calc((100% - 0.5rem) / ${options.length})`,
 					transform: `translateX(${selectedIndex * 100}%)`,
