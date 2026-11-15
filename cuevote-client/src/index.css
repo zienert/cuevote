@@ -252,3 +252,25 @@ body,
     animation: none;
   }
 }
+
+/* "Reduce transparency" on the device: bars are solid and nothing behind a
+   layer is blurred. */
+@media (prefers-reduced-transparency: reduce) {
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .bg-page\/95 {
+    background-color: rgb(var(--cv-page));
+  }
+}
+
+/* "Increase contrast" on the device: brighter secondary text, firmer lines. */
+@media (prefers-contrast: more) {
+  :root {
+    --cv-ink-2: 214 209 202;
+    --cv-ink-3: 190 185 178;
+    --cv-line-alpha: 0.32;
+  }
+}

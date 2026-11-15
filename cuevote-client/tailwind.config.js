@@ -20,7 +20,8 @@ export default {
         page: "rgb(var(--cv-page) / <alpha-value>)",
         card: "rgb(var(--cv-card) / <alpha-value>)",
         raised: "rgb(var(--cv-raised) / <alpha-value>)",
-        line: "rgb(var(--cv-ink) / 0.09)",
+        // A hairline; firmer when the device asks for more contrast (index.css).
+        line: "rgb(var(--cv-ink) / var(--cv-line-alpha, 0.09))",
         ink: {
           DEFAULT: "rgb(var(--cv-ink) / <alpha-value>)",
           2: "rgb(var(--cv-ink-2) / <alpha-value>)",
