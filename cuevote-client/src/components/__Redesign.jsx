@@ -4,7 +4,8 @@
 // bundled in production). The way into the two design proposals of November
 // 2026: A, the revised lobby and room (this branch's own components), and B,
 // the new draft (src/redesign-b). Both run on the previews' mock data.
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Consent } from '../contexts/ConsentContext';
 
 const VIEWS = [
 	{
@@ -35,6 +36,13 @@ const VIEWS = [
 ];
 
 export default function Redesign() {
+	// The cookie banner belongs to the real page: keep it closed here, as the
+	// previews do. Nothing is accepted.
+	const consent = Consent.useConsent();
+	useEffect(() => {
+		if (consent.showBanner) consent.setShowBanner(false);
+	}, [consent]);
+
 	return (
 		<div className="min-h-screen bg-white px-6 py-10 text-neutral-900" style={{ colorScheme: 'light' }}>
 			<div className="mx-auto max-w-3xl">
