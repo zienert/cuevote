@@ -49,7 +49,9 @@ const languages = [
 	{ code: 'he', label: 'עברית' }
 ];
 
-function LanguageSwitcher({ minimized = false, className = "", isOpen: controlledIsOpen, onToggle: controlledOnToggle, focused = false, focusedLanguageIndex = -1 }) {
+// `compact`: on a phone only the globe shows, where the header has to hold
+// the sign-in button as well.
+function LanguageSwitcher({ minimized = false, compact = false, className = "", isOpen: controlledIsOpen, onToggle: controlledOnToggle, focused = false, focusedLanguageIndex = -1 }) {
 	const { language, setLanguage, t } = Language.useLanguage();
 	const [internalIsOpen, setInternalIsOpen] = useState(false);
 	const dropdownRef = useRef(null);
@@ -93,7 +95,7 @@ function LanguageSwitcher({ minimized = false, className = "", isOpen: controlle
 				title={t('header.changeLanguage')}
 			>
 				<Globe size={18} />
-				{!minimized && <span className="text-[13px] font-medium uppercase">{language}</span>}
+				{!minimized && <span className={`text-[13px] font-medium uppercase ${compact ? "max-sm:hidden" : ""}`}>{language}</span>}
 			</button>
 
 			{isOpen && (

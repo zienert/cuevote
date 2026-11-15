@@ -659,13 +659,13 @@ export function Lobby() {
         <div className="min-h-screen bg-page text-ink flex flex-col items-center px-4 sm:px-8 pt-[calc(1.5rem+env(safe-area-inset-top))] sm:pt-[calc(2rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
 
 
-            <header className="relative z-50 mb-8 flex w-full max-w-5xl items-center justify-between gap-4 sm:mb-10">
-                <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <header className="relative z-50 mb-8 flex w-full max-w-5xl items-center justify-between gap-2 sm:mb-10 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                     <div className="flex flex-col">
                         <h1 className="text-[1.75rem] font-bold leading-8 tracking-tight text-accent">
                             CueVote
                         </h1>
-                        <YouTubeBrandSubtitle className="mt-0.5" />
+                        <YouTubeBrandSubtitle className="mt-0.5 whitespace-nowrap" />
                     </div>
 
                     {/* Language Switcher */}
@@ -677,6 +677,7 @@ export function Lobby() {
                         }}
                         focused={isFocused(INDEX_LANGUAGE)}
                         focusedLanguageIndex={languageMenuIndex}
+                        compact={!isSignedIn(user)}
                     />
                 </div>
 
@@ -703,7 +704,7 @@ export function Lobby() {
                                         performLogin();
                                     }}
                                     onClick={performLogin}
-                                    className={`flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-3 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
+                                    className={`flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-2.5 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
                                 >
                                     <GoogleGIcon className="h-3.5 w-3.5" />
                                     <span>{t('lobby.signInGoogle')}</span>
