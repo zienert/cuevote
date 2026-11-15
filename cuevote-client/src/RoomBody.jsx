@@ -176,6 +176,7 @@ function RoomBody() {
     progress: _serverProgress = 0,
     activeChannel = "Synthwave",
     ownerId = null,
+    isOwner: isOwnerFromServer = null,
     suggestionsEnabled = true,
     musicOnly = false,
     maxDuration = 600,
@@ -225,7 +226,12 @@ function RoomBody() {
     }
   }, [upcomingCount]);
 
-  const isOwner = user && ownerId && user.id === ownerId;
+  // The server tells each viewer whether it owns the room and sends the owner's
+  // id to the owner alone. A server from before `isOwner` sent the id to
+  // everyone, and the client compared it.
+  const isOwner = !!user && (typeof isOwnerFromServer === 'boolean'
+    ? isOwnerFromServer
+    : !!ownerId && user.id === ownerId);
   // The owner of an Apple Music channel asked for Apple Music by creating it:
   // MusicKit and Apple's cover art need no further consent on their side.
   // Guests load nothing from Apple until they turn it on (AppleContentNotice).
