@@ -1581,8 +1581,10 @@ function RoomBody() {
     userVotes[currentTrack.id] = currentTrack.myVote;
   }
 
+  // Above the loading screen (z-100): a protected channel opened by its link
+  // has no room yet, and the prompt has to show over the placeholders.
   const passwordModalContent = showPasswordModal ? (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-200">
       <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
