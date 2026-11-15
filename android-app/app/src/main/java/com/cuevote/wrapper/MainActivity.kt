@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.view.WindowManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -73,6 +74,12 @@ private fun isApplePage(uri: android.net.Uri?): Boolean {
 // How often the page is asked whether its Apple Music channel is playing.
 private const val PLAYBACK_PROBE_MS = 1000L
 
+// How long a page has to be open before what plays on it counts. Leaving a
+// channel changes the address at once, while MusicKit takes a moment to stop:
+// without this, the last second of the channel just left would start the
+// service again on the page after it.
+private const val PAGE_SETTLE_MS = 3000L
+
 private const val REQUEST_NOTIFICATIONS = 1
 
 // Asks MusicKit what it is playing: the title of an Apple Music channel that
@@ -136,9 +143,10 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             probePlayback()
         }
     }
-    // The page the channel was last found playing on. The service's grace
-    // period belongs to that page; on any other one the channel has been left.
-    private var playingUrl: String? = null
+    // The page being watched, and since when. Playback belongs to one page:
+    // when the address changes, the channel has been left.
+    private var watchedUrl: String? = null
+    private var watchedSince = 0L
     private var askedForNotifications = false
 
     // The service gave up while the app is in the background: from here on the
@@ -464,33 +472,26 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
     private fun probePlayback() {
         val url = webView.url
-        if (!isCueVoteUrl(url)) {
-            playbackLeft()
-            return
+        if (url != watchedUrl) {
+            // Another page: whatever played has been left. No grace period.
+            watchedUrl = url
+            watchedSince = SystemClock.elapsedRealtime()
+            PlaybackService.stop()
         }
+        if (!isCueVoteUrl(url)) return
         webView.evaluateJavascript(PLAYBACK_PROBE_JS) { result ->
             // Stopped or moved on since it was asked: the next probe looks again.
             if (!probing || webView.url != url) return@evaluateJavascript
-            val item = parsePlayingItem(result)
-            if (item == null) {
-                // Not playing. On the page it played on, the service's grace
-                // period decides (the gap between two titles, a pause); on
-                // another page the channel has been left.
-                if (url != playingUrl) playbackLeft()
-                return@evaluateJavascript
-            }
+            // Not playing: the service's grace period decides (the gap
+            // between two titles, a pause).
+            val item = parsePlayingItem(result) ?: return@evaluateJavascript
+            if (SystemClock.elapsedRealtime() - watchedSince < PAGE_SETTLE_MS) return@evaluateJavascript
             // Started playing while the app is off screen: too late for Android
             // to let the service start.
             if (!resumed && !PlaybackService.isActive) return@evaluateJavascript
-            playingUrl = url
             PlaybackService.playing(this, item.first, item.second)
             askForNotificationsOnce()
         }
-    }
-
-    private fun playbackLeft() {
-        playingUrl = null
-        PlaybackService.stop()
     }
 
     // Title and artist of what MusicKit plays, from the probe's answer.
