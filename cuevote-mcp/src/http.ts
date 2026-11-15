@@ -52,6 +52,8 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 const app = express();
+// No framework banner on a public endpoint.
+app.disable("x-powered-by");
 const issuerUrl = new URL(config.http.publicUrl);
 
 // DNS-rebinding protection: when CUEVOTE_HTTP_ALLOWED_HOSTS is set, reject any
