@@ -550,8 +550,8 @@ hidden, like the apex domain.
 **6. Connect.** In an MCP client (Claude, …) add the remote server
 `https://mcp.cuevote.com/mcp`; it discovers OAuth via
 `/.well-known/oauth-authorization-server`, the user signs in on `/connect-ai`,
-and the `cv_*` DJ tools become available. Re-run `pm2 restart cuevote-mcp-dj`
-after each deploy that rebuilds the MCP.
+and the `cv_*` DJ tools become available. From then on `update_server.sh`
+rebuilds, restarts and health-checks the service on every deploy (section 10).
 
 ---
 
@@ -563,28 +563,35 @@ Routine deploys run from the checkout on the server:
 bash update_server.sh
 ```
 
-The script is not just "pull and restart" — it refuses to leave a broken
-version serving:
+The script is not just "pull and restart": nothing goes live before the tests
+have passed, and it refuses to leave a broken version serving.
 
 | Step | What it does | On failure |
 |---|---|---|
-| 1 | Refuses a checkout with uncommitted changes or with commits `origin/main` lacks, records the deployed commit, then `git reset --hard origin/main` | stops before anything is changed (exit 3) |
-| 2–3 | `npm ci` + client build, `npm ci` for the server | aborts; running server untouched |
-| 4 | **`npm test` on the server** | aborts **before** the restart — the running server never sees the new code |
-| 5 | `pm2 reload` (falls back to `restart`) | — |
-| 5 | `pm2 reload` (falls back to `restart`) | rolls back — a wedged pm2 no longer kills the script before the rollback can run |
-| 6 | **Polls `/health` for up to 15 s** | **rolls back** to the recorded commit, rebuilds, restarts and re-checks |
-| 7 | Rebuilds and restarts the MCP service | aborts |
+| 1 | Refuses a checkout with uncommitted changes or with commits `origin/main` lacks, records the deployed commit, then `git reset --hard origin/main` | stops; nothing changed (3) |
+| 2 | `npm ci` + client build into `cuevote-client/dist.next`; nginx keeps serving `dist` | stops and puts the checkout back on the recorded commit; nothing changed (3) |
+| 3 | `npm ci` + MCP build into `cuevote-mcp/dist.next` | same (3) |
+| 4 | `npm ci` + **`npm test`** for the server | same (3) |
+| 5 | `pm2 reload` of the server (falls back to `restart`) | **rolls back** (1) — a wedged pm2 no longer ends the script before the rollback can run |
+| 6 | **Polls the server's `/health` for up to 15 s** | **rolls back** (1) |
+| 7 | Publishes the client: `dist` becomes `dist.prev`, `dist.next` becomes `dist` | **rolls back** (1) |
+| 8 | Publishes the MCP build the same way, restarts `cuevote-mcp-dj`, polls its `/health` for up to 15 s | **rolls back** (1) if the MCP was serving before the deploy; if it was not, the site stays on the new version (4) |
 
-Exit codes distinguish the two bad outcomes, so monitoring can tell a recovered
-deploy from a dead server:
+A rollback puts everything back on the recorded commit: the checkout, the
+server's and the MCP's dependencies where the deploy changed them, the client
+and the MCP build (from `dist.prev`, no rebuild); then it restarts the server
+and the MCP and checks both again.
+
+Exit codes tell the outcomes apart, so monitoring can tell a recovered deploy
+from a dead server:
 
 | Code | Meaning |
 |---|---|
 | 0 | Deployed and healthy |
-| 1 | Deploy failed, **rolled back — the previous version is serving** |
-| 2 | Rollback failed too, or there was no rollback target: **the site needs you** |
-| 3 | Stopped before anything was changed: not a usable checkout (see below), local work in the way of the reset, `git fetch` failed, or `pm2`/`curl` missing |
+| 1 | Deploy failed after going live, **rolled back — the previous version is serving** |
+| 2 | **The site needs you**: the server is unhealthy after the rollback, there was no rollback target (worktree mode), the checkout could not be put back, or the script stopped unexpectedly |
+| 3 | **Nothing changed**: stopped before anything went live — not a usable checkout (see below), local work in the way of the reset, `git fetch`, an install, a build or the tests failed, or `pm2`/`curl` missing. The running processes and the served client are untouched, and the checkout is back on the recorded commit, so a restart or reboot runs what ran before |
+| 4 | **Partial**: the site is up, the MCP is not — it was already down before the deploy, did not come back after the rollback, or worktree mode has nothing to roll back to |
 
 A rollback restores the server, not the branch: `origin/main` still points at the
 bad commit, and the next run of this script will deploy it again. Revert or fix
@@ -603,18 +610,20 @@ Consequences worth knowing:
   changes to tracked files, or commits that `origin/main` does not have. On the
   server neither exists; anywhere else, commit or move the work first.
 * **The rollback needs the commit it recorded in step 1.** In worktree mode
-  there is none: an unhealthy deploy there stops with an error and leaves the
-  process for you to inspect (`pm2 logs cuevote-server`).
+  there is none: an unhealthy server there stops with exit 2 and leaves the
+  process for you to inspect (`pm2 logs cuevote-server`), an unhealthy MCP
+  with exit 4.
 
 `bash scripts/test-deploy-scripts.sh` runs the script against a throw-away
 sandbox (local bare repo as `origin`, stubs for `npm`, `pm2` and `curl`) and
 checks these cases.
 
-The health check calls `http://127.0.0.1:<PORT>/health` directly (bypassing
-nginx). It resolves `PORT` the same way the server does — an exported `PORT`
-wins over the file, because `dotenv` does not override an existing variable and
-`pm2 --update-env` passes the deployer's environment through — then falls back
-to `cuevote-server/.env` and finally to `8080`. Inline comments, quotes,
+The health checks call `http://127.0.0.1:<port>/health` directly (bypassing
+nginx): `PORT` for the server, `CUEVOTE_HTTP_PORT` for the MCP. Each resolves
+the way its process does — an exported variable wins over the file, because
+`dotenv` does not override an existing variable and `pm2 --update-env` passes
+the deployer's environment through — then falls back to `cuevote-server/.env`
+(`cuevote-mcp/.env`) and finally to `8080` (`8082`). Inline comments, quotes,
 `export` and spaces around `=` are all handled; anything that is not a plain
 number is ignored rather than polled. It needs `curl`, which section 1 already
 installs.

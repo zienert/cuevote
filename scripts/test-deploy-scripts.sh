@@ -14,6 +14,7 @@
 #
 #   bash scripts/test-deploy-scripts.sh
 #   KEEP_SANDBOX=1 bash scripts/test-deploy-scripts.sh       # keep it for a look
+#   VERBOSE=1 bash scripts/test-deploy-scripts.sh            # show every run's output
 #   UPDATE_SERVER_SH=/path/to/update_server.sh bash scripts/test-deploy-scripts.sh
 set -uo pipefail
 unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR PORT CUEVOTE_HTTP_PORT
@@ -197,6 +198,7 @@ run() {
   local cwd="$1"; shift
   (cd "$cwd" && "$@") > "$OUT" 2>&1
   RC=$?
+  if [ -n "${VERBOSE:-}" ]; then echo "   --- exit code $RC, output:"; sed 's/^/   | /' "$OUT"; echo "   ---"; fi
 }
 
 # check DESCRIPTION TEST...: TEST is a command; on the first failure in a case
@@ -219,6 +221,18 @@ calls() { grep -cE -- "$1" "$CALLS"; }
 head_of() { git -C "$1" rev-parse --short HEAD; }
 branch_of() { git -C "$1" symbolic-ref --quiet --short HEAD; }
 served() { cat "$1/cuevote-client/dist/index.html" 2> /dev/null; }
+served_prev() { cat "$1/cuevote-client/dist.prev/index.html" 2> /dev/null; }
+mcp_build() { cat "$1/cuevote-mcp/dist/http.js" 2> /dev/null; }
+health_of() { cat "$PM2_STATE/$1/health" 2> /dev/null; }
+no_staged() { [ ! -e "$1/cuevote-client/dist.next" ] && [ ! -e "$1/cuevote-mcp/dist.next" ]; }
+# after A B: a call matching B comes after the first call matching A.
+after() {
+  local a b
+  a="$(grep -nE -- "$1" "$CALLS" | head -n1 | cut -d: -f1)"
+  b="$(grep -nE -- "$2" "$CALLS" | tail -n1 | cut -d: -f1)"
+  [ -n "$a" ] && [ -n "$b" ] && [ "$b" -gt "$a" ]
+}
+RESTARTS='^pm2 (reload|restart|start|delete|stop) '
 
 # ---- INFRA-02: which checkout the script acts on -------------------------------
 
@@ -298,6 +312,114 @@ check "exit 3" is "$RC" 3
 check "says why" says "origin/main does not"
 check "local commit kept" is "$(head_of "$SB/prod")" "$LOCAL"
 check "no npm or pm2 call" is "$(calls '^(npm|pm2) ')" 0
+
+# ---- INFRA-01: nothing goes live before the tests pass and the server is up ----
+
+case_ "server tests fail"
+deployed prod
+new_commit "$C1" "C2 red tests" TESTS_FAIL=1 cuevote-client/app.txt=v2 > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 3 (nothing changed)" is "$RC" 3
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "still serves the deployed client" is "$(served "$SB/prod")" "client $C1"
+check "no staged build left behind" no_staged "$SB/prod"
+check "nothing restarted" is "$(calls "$RESTARTS")" 0
+check "server dependencies not reinstalled (lockfile unchanged)" is "$(calls '^npm ci .* cuevote-server @')" 1
+
+case_ "server tests fail on a commit that changes the server's dependencies"
+deployed prod
+new_commit "$C1" "C2 red tests, new lockfile" TESTS_FAIL=1 \
+  'cuevote-server/package-lock.json={"lockfileVersion":3,"changed":true}' > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 3 (nothing changed)" is "$RC" 3
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "dependencies reinstalled for the deployed commit" is "$(calls "^npm ci .* cuevote-server @ $C1")" 1
+
+case_ "client build fails"
+deployed prod
+new_commit "$C1" "C2 client does not build" CLIENT_BUILD_FAILS=1 > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 3 (nothing changed)" is "$RC" 3
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "still serves the deployed client" is "$(served "$SB/prod")" "client $C1"
+check "nothing restarted" is "$(calls "$RESTARTS")" 0
+
+case_ "MCP build fails"
+deployed prod
+new_commit "$C1" "C2 MCP does not build" MCP_BUILD_FAILS=1 cuevote-client/app.txt=v2 > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 3 (nothing changed)" is "$RC" 3
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "still serves the deployed client" is "$(served "$SB/prod")" "client $C1"
+check "server not reloaded, nothing restarted" is "$(calls "$RESTARTS")" 0
+check "MCP keeps its deployed build" is "$(mcp_build "$SB/prod")" "mcp $C1 ok"
+check "no staged build left behind" no_staged "$SB/prod"
+
+case_ "everything healthy"
+deployed prod
+C2="$(new_commit "$C1" "C2 all good" cuevote-client/app.txt=v2)"
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 0" is "$RC" 0
+check "deployed origin/main" is "$(head_of "$SB/prod")" "$C2"
+check "serves the new client" is "$(served "$SB/prod")" "client $C2"
+check "keeps the previous client as dist.prev" is "$(served_prev "$SB/prod")" "client $C1"
+check "MCP runs the new build" is "$(mcp_build "$SB/prod")" "mcp $C2 ok"
+check "server health checked after its reload" after '^pm2 reload cuevote-server' 'curl .*:8080/health'
+check "MCP health checked after its restart" after '^pm2 restart cuevote-mcp-dj' 'curl .*:8082/health'
+check "no staged build left behind" no_staged "$SB/prod"
+
+case_ "new server is unhealthy"
+deployed prod
+new_commit "$C1" "C2 server crashes" cuevote-server/index.js=UNHEALTHY cuevote-client/app.txt=v2 > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 1 (rolled back)" is "$RC" 1
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "the new client never went out" is "$(served "$SB/prod")" "client $C1"
+check "server healthy again" is "$(health_of cuevote-server)" up
+check "MCP never restarted" is "$(calls '^pm2 (restart|start|delete).*cuevote-mcp-dj')" 0
+check "MCP keeps its deployed build" is "$(mcp_build "$SB/prod")" "mcp $C1 ok"
+check "no staged build left behind" no_staged "$SB/prod"
+
+case_ "pm2 cannot reload or restart anything"
+deployed prod
+new_commit "$C1" "C2" cuevote-client/app.txt=v2 > /dev/null
+touch "$SB/PM2_FAILS"
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+rm -f "$SB/PM2_FAILS"
+check "exit 2 (needs you)" is "$RC" 2
+check "says so" says "Manual intervention required"
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "the new client never went out" is "$(served "$SB/prod")" "client $C1"
+
+case_ "new MCP is unhealthy, the old one was serving"
+deployed prod
+new_commit "$C1" "C2 MCP crashes" MCP_UNHEALTHY=1 cuevote-client/app.txt=v2 > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 1 (rolled back)" is "$RC" 1
+check "checkout back on the deployed commit" is "$(head_of "$SB/prod")" "$C1"
+check "client back on the deployed build" is "$(served "$SB/prod")" "client $C1"
+check "MCP back on the deployed build" is "$(mcp_build "$SB/prod")" "mcp $C1 ok"
+check "server healthy" is "$(health_of cuevote-server)" up
+check "MCP healthy again" is "$(health_of cuevote-mcp-dj)" up
+
+case_ "new MCP is unhealthy, and it was not serving before either"
+deployed prod
+pm2 stop cuevote-mcp-dj > /dev/null
+C2="$(new_commit "$C1" "C2 MCP crashes" MCP_UNHEALTHY=1 cuevote-client/app.txt=v2)"
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 4 (partial)" is "$RC" 4
+check "says why" says "not serving before"
+check "the site stays on the new version" is "$(head_of "$SB/prod") $(served "$SB/prod")" "$C2 client $C2"
+check "server healthy" is "$(health_of cuevote-server)" up
+
+case_ "worktree: server tests fail"
+with_worktree
+touch "$SB/wt/TESTS_FAIL"
+run "$SB/wt" bash "$SB/wt/update_server.sh"
+check "exit 3 (nothing changed)" is "$RC" 3
+check "branch feature not moved" is "$(git -C "$SB/main" rev-parse --short feature)" "$FEATURE"
+check "uncommitted edit kept" grep -q "uncommitted edit" "$SB/wt/cuevote-client/app.txt"
+check "nothing restarted" is "$(calls "$RESTARTS")" 0
 
 # ---- summary -------------------------------------------------------------------
 
