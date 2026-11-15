@@ -568,7 +568,7 @@ version serving:
 
 | Step | What it does | On failure |
 |---|---|---|
-| 1 | Records the currently deployed commit, then `git reset --hard origin/main` | aborts before anything is built |
+| 1 | Refuses a checkout with uncommitted changes or with commits `origin/main` lacks, records the deployed commit, then `git reset --hard origin/main` | stops before anything is changed (exit 3) |
 | 2–3 | `npm ci` + client build, `npm ci` for the server | aborts; running server untouched |
 | 4 | **`npm test` on the server** | aborts **before** the restart — the running server never sees the new code |
 | 5 | `pm2 reload` (falls back to `restart`) | — |
@@ -584,20 +584,31 @@ deploy from a dead server:
 | 0 | Deployed and healthy |
 | 1 | Deploy failed, **rolled back — the previous version is serving** |
 | 2 | Rollback failed too, or there was no rollback target: **the site needs you** |
+| 3 | Stopped before anything was changed: not a usable checkout (see below), local work in the way of the reset, `git fetch` failed, or `pm2`/`curl` missing |
 
 A rollback restores the server, not the branch: `origin/main` still points at the
 bad commit, and the next run of this script will deploy it again. Revert or fix
 main before re-running.
 
-Two consequences worth knowing:
+Consequences worth knowing:
 
 * **A failing test blocks the deploy.** That is the point — but it means a red
   test suite means no deploys until it is fixed. Run `npm test` in
   `cuevote-server/` locally before pushing.
-* **The rollback needs the commit it recorded in step 1.** In worktree mode the
-  script does not own the checkout, so it skips the git steps and therefore has
-  no rollback target: an unhealthy deploy there stops with an error and leaves
-  the process for you to inspect (`pm2 logs cuevote-server`).
+* **The checkout the script lives in decides what it does**, not the directory
+  you call it from. In a linked git worktree (local testing) it deploys the
+  worktree as it is and leaves git alone, so a worktree's branch is never
+  reset, wherever you run it from. In the main checkout it only runs on `main`,
+  and it refuses (exit 3) when the reset would throw away work: uncommitted
+  changes to tracked files, or commits that `origin/main` does not have. On the
+  server neither exists; anywhere else, commit or move the work first.
+* **The rollback needs the commit it recorded in step 1.** In worktree mode
+  there is none: an unhealthy deploy there stops with an error and leaves the
+  process for you to inspect (`pm2 logs cuevote-server`).
+
+`bash scripts/test-deploy-scripts.sh` runs the script against a throw-away
+sandbox (local bare repo as `origin`, stubs for `npm`, `pm2` and `curl`) and
+checks these cases.
 
 The health check calls `http://127.0.0.1:<PORT>/health` directly (bypassing
 nginx). It resolves `PORT` the same way the server does — an exported `PORT`

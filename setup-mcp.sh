@@ -23,9 +23,10 @@ echo "==> CueVote MCP setup ($ROOT)"
 [ -d "$MCP_DIR" ] || { echo "ERROR: $MCP_DIR not found — run this from the repo root."; exit 1; }
 [ -f "$SERVER_ENV" ] || { echo "ERROR: $SERVER_ENV not found."; exit 1; }
 
-# 1. Build the MCP.
+# 1. Build the MCP. npm ci, not npm install: install may rewrite the tracked
+# package-lock.json, and update_server.sh refuses to reset over that.
 echo "==> Building cuevote-mcp"
-( cd "$MCP_DIR" && npm install --include=dev && npm run build )
+( cd "$MCP_DIR" && npm ci --include=dev && npm run build )
 
 # 2. Ensure ADMIN_TOKEN exists in the server .env (generated once, kept on re-run).
 NEED_RESTART=0

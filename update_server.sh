@@ -16,27 +16,56 @@ MCP_DIR="$ROOT_DIR/cuevote-mcp"
 PM2_PROCESS_NAME="cuevote-server"
 PM2_MCP_NAME="cuevote-mcp-dj"
 
-# ---- Worktree detection ----
+# git must act on the checkout this script lives in. A GIT_DIR or GIT_WORK_TREE
+# inherited from a hook or another tool would aim the reset below at a
+# different repository.
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR
 
-detect_worktree() {
-    local git_dir
-    git_dir="$(git rev-parse --git-dir 2>/dev/null)" || return 1
+# ---- Checkout detection ----
 
-    # In a worktree, the git-dir path contains "/worktrees/"
-    if echo "$git_dir" | grep -q "/worktrees/"; then
-        local toplevel
-        toplevel="$(git rev-parse --show-toplevel 2>/dev/null)" || return 1
-        WORKTREE_NAME="$(basename "$toplevel")"
+# What this script may do to the code depends on the checkout it lives in, so
+# that is what it asks, never the caller's working directory. Asking the
+# working directory made `cd <main checkout> && <worktree>/update_server.sh`
+# take the worktree for the server checkout and reset its branch to
+# origin/main, uncommitted work included.
+#
+#   worktree  a linked git worktree (local testing): deploy the tree as it is
+#             and leave git alone.
+#   server    the main checkout, on main: fetch and reset to origin/main.
+#
+# Anything else (no checkout, the main checkout on another branch) is refused
+# before anything changes.
+detect_checkout() {
+    local top git_dir common_dir
+    top="$(cd "$ROOT_DIR" && git rev-parse --show-toplevel 2>/dev/null)" || top=""
+    if [ -z "$top" ] || [ "$(cd "$top" && pwd -P)" != "$(cd "$ROOT_DIR" && pwd -P)" ]; then
+        echo "Error: $ROOT_DIR is not the top of a git checkout."
+        echo "       update_server.sh deploys the checkout it lives in. Nothing was changed."
+        return 1
+    fi
+    git_dir="$(cd "$ROOT_DIR" && cd "$(git rev-parse --git-dir)" && pwd -P)" || return 1
+    common_dir="$(cd "$ROOT_DIR" && cd "$(git rev-parse --git-common-dir)" && pwd -P)" || return 1
+    BRANCH="$(git -C "$ROOT_DIR" symbolic-ref --quiet --short HEAD)" || BRANCH=""
+
+    # A linked worktree keeps its own git dir under the common one.
+    if [ "$git_dir" != "$common_dir" ]; then
         IS_WORKTREE=true
         echo "  ┌─ Worktree mode ─────────────────────────────"
-        echo "  │ Worktree:  $WORKTREE_NAME"
+        echo "  │ Worktree:  $(basename "$ROOT_DIR")"
+        echo "  │ Branch:    ${BRANCH:-(detached HEAD)}"
         echo "  └─────────────────────────────────────────────"
-    else
-        IS_WORKTREE=false
+        return 0
+    fi
+
+    IS_WORKTREE=false
+    if [ "$BRANCH" != "main" ]; then
+        echo "Error: $ROOT_DIR is on ${BRANCH:+branch }${BRANCH:-a detached HEAD}, not on main."
+        echo "       A deploy resets this checkout to origin/main and would take that"
+        echo "       branch with it. Switch back to main, or test the branch from a"
+        echo "       worktree. Nothing was changed."
+        return 1
     fi
 }
-
-detect_worktree
 
 # ---- Health check ----
 
@@ -138,28 +167,49 @@ rollback_to() {
 do_update() {
     echo "==== CueVote Server — Update & Restart ===="
 
+    # Exit 3: stopped before anything was changed (DEPLOYMENT.md, section 10).
     if ! command -v pm2 &> /dev/null; then
         echo "Error: pm2 is not installed or not in PATH."
-        exit 1
+        exit 3
     fi
     if ! command -v curl &> /dev/null; then
         echo "Error: curl is not installed or not in PATH (needed for the health check)."
-        exit 1
+        exit 3
     fi
+
+    detect_checkout || exit 3
 
     # 1. Sync to latest remote main
     # PREV_SHA is captured *before* the reset — it is the only handle on the
     # version that was known to work, and `git reset --hard` destroys the tree.
     PREV_SHA=""
     if [ "$IS_WORKTREE" = true ]; then
-        echo "[1/7] Skipping git pull (worktree mode — code is managed by the worktree)"
+        echo "[1/7] Skipping git (worktree mode — the worktree is deployed as it is)"
     else
         echo "[1/7] Updating code from git (reset to origin/main)..."
         PREV_SHA="$(git -C "$ROOT_DIR" rev-parse HEAD)"
         echo "  -> Currently deployed: ${PREV_SHA}"
+
+        # The reset throws away whatever this checkout has that origin/main
+        # lacks. On the server that is nothing; anywhere else it is someone's
+        # work, so refuse instead.
+        local changes ahead
+        changes="$(git -C "$ROOT_DIR" status --porcelain --untracked-files=no)" || changes="(git status failed)"
+        if [ -n "$changes" ]; then
+            echo "Error: the checkout has uncommitted changes that the reset would discard:"
+            printf '%s\n' "$changes" | sed 's/^/         /'
+            echo "       Commit or discard them, then run again. Nothing was changed."
+            exit 3
+        fi
         if ! git -C "$ROOT_DIR" fetch origin; then
-            echo "Error: git fetch failed."
-            exit 1
+            echo "Error: git fetch failed. Nothing was changed."
+            exit 3
+        fi
+        ahead="$(git -C "$ROOT_DIR" rev-list --count origin/main..HEAD)" || ahead="?"
+        if [ "$ahead" != 0 ]; then
+            echo "Error: main has ${ahead} commit(s) that origin/main does not; the reset would drop them."
+            echo "       Push them or move them to a branch, then run again. Nothing was changed."
+            exit 3
         fi
         if ! git -C "$ROOT_DIR" reset --hard origin/main; then
             echo "Error: git reset --hard origin/main failed."
@@ -288,13 +338,15 @@ do_start() {
         exit 1
     fi
 
+    # npm ci, not npm install: install may rewrite package-lock.json, and an
+    # update refuses to reset over a modified tracked file.
     if [ -f "$CLIENT_DIR/package.json" ] && [ ! -d "$CLIENT_DIR/node_modules" ]; then
         echo "Installing client dependencies..."
-        cd "$CLIENT_DIR" && npm install --silent && cd ..
+        cd "$CLIENT_DIR" && npm ci --silent && cd ..
     fi
     if [ -f "$SERVER_DIR/package.json" ] && [ ! -d "$SERVER_DIR/node_modules" ]; then
         echo "Installing server dependencies..."
-        cd "$SERVER_DIR" && npm install --silent && cd ..
+        cd "$SERVER_DIR" && npm ci --silent && cd ..
     fi
 
     cd "$SERVER_DIR"
