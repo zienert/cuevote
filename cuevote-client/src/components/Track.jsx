@@ -79,7 +79,7 @@ export function Track({
   // always drawn as a line; a vote given puts a disc behind it, and the disc
   // is smaller than the area that takes the tap.
   const voteButton = "group/vote flex h-11 w-11 items-center justify-center rounded-full sm:h-9 sm:w-9";
-  const voteDisc = "flex h-8 w-8 items-center justify-center rounded-full transition-[background-color,color,box-shadow,transform] duration-150 ease-cv group-active/vote:scale-90";
+  const voteDisc = "flex h-8 w-8 items-center justify-center rounded-full transition-[background-color,color,transform] duration-150 ease-cv group-active/vote:scale-90";
   const voteGiven = "scale-110 text-white shadow-[0_4px_10px_-2px_rgb(0_0_0/0.55)]";
   const actionButton = "cv-btn h-11 w-full";
 
