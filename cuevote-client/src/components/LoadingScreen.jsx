@@ -78,7 +78,7 @@ export function LoadingScreen({ isOnline, embedded = false, message, reconnectAt
 
 	if (!card) return <RoomSkeleton label={connecting} />;
 	return (
-		<div role="status" className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#050505] p-6 text-white">
+		<div role="status" className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-page p-6 text-ink">
 			{card}
 		</div>
 	);
