@@ -845,12 +845,13 @@ export function Lobby() {
                                 }}
                                 onMouseEnter={() => pointAt(0)}
                                 onMouseMove={() => pointAt(0)}
-                                className={`group order-first relative aspect-[4/3] w-full scroll-mb-24 scroll-mt-56 rounded-2xl border border-accent bg-card ring-2 transition-[background-color,box-shadow,transform] duration-150 ease-cv active:scale-[0.98] ${isFocused(0) ? "ring-accent" : "ring-accent/50"} ${isSignedIn(user) ? "cursor-pointer hover:bg-raised" : "cursor-not-allowed"}`}
+                                className={`group order-first relative aspect-[4/3] w-full scroll-mb-24 scroll-mt-56 rounded-2xl border border-accent bg-card transition-[background-color,box-shadow,transform] duration-150 ease-cv active:scale-[0.98] ${isFocused(0) ? "ring-4 ring-accent" : "ring-2 ring-accent/50"} ${isSignedIn(user) ? "cursor-pointer hover:bg-raised" : "cursor-not-allowed"}`}
                                 title={createLabel}
                             >
                                 {/* The lobby's one lit tile: an orange outline, the icon in
                                     orange, the words in ink. Without consent it asks for the
-                                    cookies and shows a cookie. */}
+                                    cookies and shows a cookie. Reached with the arrow keys
+                                    (TV remote) the outline doubles in width. */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-2 py-3 sm:gap-4 sm:p-5">
                                     <CreateIcon className="h-7 w-7 flex-none text-accent sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden="true" />
                                     <span className="max-w-full hyphens-auto text-center text-sm font-medium text-ink [overflow-wrap:anywhere] sm:text-base">
