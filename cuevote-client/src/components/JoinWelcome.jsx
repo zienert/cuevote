@@ -15,26 +15,25 @@ export function JoinWelcome({ provider, onAccept }) {
 	const [agreeBefore, agreeAfter = ''] = t('join.agree').split('{policy}');
 
 	return (
-		<div className="flex flex-col h-[100dvh] bg-[#050505] items-center justify-center p-6 relative overflow-hidden select-none">
-			<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-[#050505] to-[#050505] pointer-events-none" />
-			<div className="relative z-10 max-w-lg text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
+		<div className="flex h-[100dvh] select-none flex-col items-center justify-center bg-page p-6 text-ink">
+			<div className="w-full max-w-md space-y-8 text-center animate-in fade-in duration-200">
 				<div className="space-y-2">
-					<h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">
-						{welcomeBefore}<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">CueVote</span>{welcomeAfter}
+					<h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+						{welcomeBefore}<span className="text-accent">CueVote</span>{welcomeAfter}
 					</h1>
-					<p className="text-xl text-neutral-400 font-medium">{t('mobile.tagline')}</p>
+					<p className="text-lg text-ink-2">{t('mobile.tagline')}</p>
 				</div>
-				<div className="p-8 rounded-3xl bg-neutral-900/50 border border-white/5 backdrop-blur-xl shadow-2xl space-y-6">
-					<div className="mx-auto w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
-						<Music size={32} />
-					</div>
+				{/* The one lit card of the screen, like the tile that creates a
+				    channel in the lobby: an orange outline, the icon as a line. */}
+				<div className="space-y-6 rounded-2xl border border-accent bg-card p-6 ring-2 ring-accent/50 sm:p-8">
+					<Music className="mx-auto h-8 w-8 text-accent" strokeWidth={1.75} aria-hidden="true" />
 					{provider ? (
 						<div className="space-y-2">
-							<h2 className="text-2xl font-bold text-white">{t('join.youtubeTitle')}</h2>
-							<p className="text-neutral-400 text-sm leading-relaxed">{t('join.youtubeBody')}</p>
+							<h2 className="text-xl font-semibold">{t('join.youtubeTitle')}</h2>
+							<p className="text-[15px] leading-relaxed text-ink-2">{t('join.youtubeBody')}</p>
 						</div>
 					) : (
-						<p className="flex items-center justify-center gap-2 text-neutral-400 text-sm" role="status">
+						<p className="flex items-center justify-center gap-2 text-sm text-ink-2" role="status">
 							<Spinner className="h-4 w-4" />
 							{t('join.checking')}
 						</p>
@@ -42,13 +41,13 @@ export function JoinWelcome({ provider, onAccept }) {
 					<button
 						onClick={onAccept}
 						disabled={!provider}
-						className="w-full py-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
+						className="cv-btn cv-btn-accent h-12 w-full text-base font-semibold shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] disabled:shadow-none"
 					>
-						<PlayCircle size={24} className="fill-current" />
+						<PlayCircle size={20} aria-hidden="true" />
 						{t('join.accept')}
 					</button>
-					<p className="text-xs text-neutral-600">
-						{agreeBefore}<a href="/legal" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-400">{t('join.policy')}</a>{agreeAfter}
+					<p className="text-xs leading-relaxed text-ink-3">
+						{agreeBefore}<a href="/legal" target="_blank" rel="noopener noreferrer" className="text-ink-2 underline underline-offset-2 hover:text-ink">{t('join.policy')}</a>{agreeAfter}
 					</p>
 				</div>
 			</div>
