@@ -14,15 +14,13 @@
 //   ?conn=...    the connection: connecting, or problem (it does not come: the
 //                card shows after 12 s). "Retry" connects.
 //   ?offline     the device has no internet
-//   ?design=b    the design proposal "Neu" (src/redesign-b) in place of the
-//                lobby; its channels open the room preview of the same draft
 //   ?data=...    a stress test (see __previewData.js): worst (the realistic
 //                worst case for every value), empty, one, many (200
 //                channels); a switch at the bottom changes it
 //
 // Thumbnails are generated SVGs, so the page loads nothing from YouTube or
 // Apple, and the cookie banner stays closed without anything being accepted.
-import React, { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Lobby } from './Lobby';
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
@@ -30,10 +28,6 @@ import { Consent } from '../contexts/ConsentContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 import { DATA, WORST_CHANNELS, WORST_USER } from './__previewData';
 import { DataToggle } from './__PreviewDataToggle';
-
-// The design proposal "Neu": the same mock channels, drawn by the draft.
-const LobbyB = lazy(() => import('../redesign-b/LobbyB'));
-const roomPreviewOf = (room) => `/__room-preview?design=b&lang=de${room.provider === 'apple' ? '&provider=apple' : ''}`;
 
 const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null, ...(DATA === 'worst' ? WORST_USER : null) };
 // Before the lobby renders: it asks navigator.onLine while rendering.
@@ -115,7 +109,6 @@ export default function LobbyPreview() {
 	const appleOn = params.get('apple') !== '0';
 	const openCreate = params.has('create');
 	const connection = params.get('conn') || (params.has('offline') ? 'connecting' : '');
-	const design = params.get('design');
 
 	const [channels, setChannels] = useState(CHANNELS);
 	const [listType, setListType] = useState(null);
@@ -195,17 +188,15 @@ export default function LobbyPreview() {
 	}, [appleOn]);
 
 	useEffect(() => {
-		if (!openCreate || signedOut || design === 'b') return undefined;
+		if (!openCreate || signedOut) return undefined;
 		const timer = setTimeout(() => document.getElementById('lobby-item-0')?.click(), 150);
 		return () => clearTimeout(timer);
-	}, [openCreate, signedOut, design]);
+	}, [openCreate, signedOut]);
 
 	return (
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
-				{design === 'b'
-					? <Suspense fallback={null}><LobbyB roomHref={roomPreviewOf} startCreating={openCreate && !signedOut} /></Suspense>
-					: <Lobby />}
+				<Lobby />
 				<DataToggle many="200 channels" />
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>

@@ -20,10 +20,6 @@ const AppleMusicLab = import.meta.env.DEV ? lazy(() => import('./components/__Ap
 const LobbyPreview = import.meta.env.DEV ? lazy(() => import('./components/__LobbyPreview.jsx')) : null;
 // DEV-only: a room with mock data (YouTube or Apple Music, guest or host), no backend needed.
 const RoomPreview = import.meta.env.DEV ? lazy(() => import('./components/__RoomPreview.jsx')) : null;
-// DEV-only: the way into the two design proposals (A revised, B new).
-const Redesign = import.meta.env.DEV ? lazy(() => import('./components/__Redesign.jsx')) : null;
-// DEV-only: three variants of proposal B's voting list behind a picker.
-const Prototype = import.meta.env.DEV ? lazy(() => import('./redesign-b/proto/Prototype.jsx')) : null;
 
 import { Consent } from './contexts/ConsentContext.jsx';
 import { Language } from './contexts/LanguageContext.jsx';
@@ -52,12 +48,6 @@ createRoot(document.getElementById('root')).render(
                   ) : null}
                   {import.meta.env.DEV && RoomPreview ? (
                     <Route path="/__room-preview" element={<Suspense fallback={null}><RoomPreview /></Suspense>} />
-                  ) : null}
-                  {import.meta.env.DEV && Redesign ? (
-                    <Route path="/__redesign" element={<Suspense fallback={null}><Redesign /></Suspense>} />
-                  ) : null}
-                  {import.meta.env.DEV && Prototype ? (
-                    <Route path="/__prototype" element={<Suspense fallback={null}><Prototype /></Suspense>} />
                   ) : null}
                   <Route path="/room/:roomId" element={<Suspense fallback={<SpinnerScreen />}><App /></Suspense>} />
                   <Route path="/legal" element={<Suspense fallback={<SpinnerScreen />}><LegalPage /></Suspense>} />
