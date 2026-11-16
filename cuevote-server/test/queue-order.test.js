@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { sortUpcoming } = require('../queue-order');
+const { sortUpcoming, AUTO_DJ } = require('../queue-order');
 
 const track = (id, score = 0, extra = {}) => ({ id, score, ...extra });
 const ids = (queue) => queue.map((t) => t.id);
@@ -36,6 +36,30 @@ describe('sortUpcoming', () => {
   it('keeps arrival order for equal scores, so equal votes stay first-come', () => {
     const queue = [track('playing'), track('first', 3), track('second', 3), track('third', 3)];
     assert.deepEqual(ids(sortUpcoming(queue)), ['playing', 'first', 'second', 'third']);
+  });
+
+  it('plays the songs people asked for before the Auto-DJ picks queued earlier', () => {
+    const queue = [
+      track('playing'),
+      track('mix-1', 0, { suggestedBy: AUTO_DJ }),
+      track('mix-2', 0, { suggestedBy: AUTO_DJ }),
+      track('asked', 0, { suggestedBy: 'user-1' }),
+    ];
+    assert.deepEqual(ids(sortUpcoming(queue)), ['playing', 'asked', 'mix-1', 'mix-2']);
+  });
+
+  it('keeps a voted-up Auto-DJ pick behind a song someone asked for', () => {
+    const queue = [track('playing'), track('mix', 5, { suggestedBy: AUTO_DJ }), track('asked', 0, { suggestedBy: 'user-1' })];
+    assert.deepEqual(ids(sortUpcoming(queue)), ['playing', 'asked', 'mix']);
+  });
+
+  it('orders the Auto-DJ picks among themselves by score', () => {
+    const queue = [
+      track('playing'),
+      track('mix-low', 0, { suggestedBy: AUTO_DJ }),
+      track('mix-high', 2, { suggestedBy: AUTO_DJ }),
+    ];
+    assert.deepEqual(ids(sortUpcoming(queue)), ['playing', 'mix-high', 'mix-low']);
   });
 
   it('treats a missing score as zero', () => {

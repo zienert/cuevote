@@ -1,66 +1,66 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (c) 2026 Julian Zienert
 import React from 'react';
-import { Ban, X, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Ban, ChevronLeft, Undo2 } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 
-export function BannedVideosPage({ bannedVideos, onUnban, onClose }) {
-	const { t } = Language.useLanguage();
+// showYouTubeAttribution: off in Apple Music channels, which play nothing from YouTube.
+export function BannedVideosPage({ bannedVideos, onUnban, onClose, showYouTubeAttribution = true }) {
+	const { t, language } = Language.useLanguage();
+	// Serbian is written in Latin script here; a bare "sr" formats in Cyrillic.
+	const dateLocale = language === 'sr' ? 'sr-Latn' : language;
 	return (
-		<div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex flex-col animate-in fade-in">
-			<div className="p-6 border-b border-neutral-800 flex items-center gap-4 bg-black">
+		<div className="fixed inset-0 z-[60] flex flex-col bg-page text-ink animate-in fade-in duration-200">
+			<div className="flex items-center gap-3 border-b border-line px-3 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-6">
 				<button
 					onClick={onClose}
-					className="p-2 rounded-full hover:bg-neutral-800 text-white transition-colors"
+					className="cv-hit -ml-1 flex h-10 flex-none items-center gap-1 rounded-lg pl-1 pr-3 text-sm font-medium text-ink-2 transition-colors duration-150 hover:bg-raised hover:text-ink"
 				>
-					<ArrowLeft size={24} />
+					<ChevronLeft size={18} aria-hidden="true" />
+					{t('header.back')}
 				</button>
-				<div className="flex flex-col">
-					<h1 className="text-2xl font-bold text-white flex items-center gap-3">
-						<Ban className="text-red-500" />
-						{t('banned.title')}
-						<span className="text-lg font-normal text-neutral-500">
-							({bannedVideos.length})
-						</span>
+				<div className="h-5 w-px flex-none bg-line" aria-hidden="true" />
+				<div className="min-w-0">
+					<h1 className="flex items-baseline gap-2 text-base font-semibold text-ink">
+						<span className="truncate">{t('banned.title')}</span>
+						<span className="font-normal tabular-nums text-ink-3">{bannedVideos.length}</span>
 					</h1>
-					<YouTubeBrandSubtitle className="ml-9" />
+					{showYouTubeAttribution && <YouTubeBrandSubtitle />}
 				</div>
 			</div>
 
-			<div className="flex-1 overflow-y-auto p-6 max-w-6xl mx-auto w-full">
+			<div className="custom-scrollbar flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6">
 				{(!bannedVideos || bannedVideos.length === 0) ? (
-					<div className="text-center text-neutral-500 mt-20">
-						<p className="text-xl">{t('banned.empty')}</p>
-						<p className="text-sm mt-2">{t('banned.emptySubtitle')}</p>
+					<div className="mt-16 text-center">
+						<p className="text-base font-medium text-ink">{t('banned.empty')}</p>
+						<p className="mt-1.5 text-sm text-ink-2">{t('banned.emptySubtitle')}</p>
 					</div>
 				) : (
-					<div className="grid gap-4">
+					<div className="mx-auto w-full max-w-3xl space-y-1">
 						{bannedVideos.map((track) => (
-							<div key={track.videoId} className="bg-neutral-900 border border-neutral-800 rounded-xl p-3 sm:p-4 flex items-start justify-between gap-3 sm:gap-4 hover:border-neutral-700 transition-colors">
-								<div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-									<div className="w-16 h-12 sm:w-24 sm:h-16 rounded-lg bg-neutral-800 flex items-center justify-center flex-shrink-0 shadow-sm border border-neutral-700">
-										<Ban size={24} className="text-neutral-500" />
-									</div>
-
-									<div className="flex-1 min-w-0">
-										<h3 className="text-sm sm:text-lg font-bold text-white line-clamp-2 leading-tight" title={track.title}>{track.title}</h3>
-										<p className="text-xs sm:text-base text-neutral-400 truncate">{track.artist}</p>
-										<p className="text-xs sm:text-sm text-neutral-500 mt-0.5 sm:mt-1">
-												{t('banned.bannedOn', { date: new Date(track.bannedAt).toLocaleDateString() })}
-										</p>
-									</div>
+							<div key={track.videoId} className="flex items-center gap-3 rounded-xl bg-card px-3 py-2.5">
+								<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-raised">
+									<Ban size={20} className="text-ink-3" aria-hidden="true" />
 								</div>
 
-								<div className="flex items-center gap-2 flex-shrink-0 sm:pl-4 pt-1 sm:pt-0">
-									<button
-										onClick={() => onUnban(track.videoId)}
-										className="p-2 sm:px-4 sm:py-2 rounded-lg bg-neutral-800 text-neutral-300 hover:bg-neutral-700 hover:text-white transition-colors font-medium flex items-center gap-2 border border-neutral-700"
-										title={t('banned.unban')}
-									>
-										<CheckCircle size={18} /> <span className="hidden sm:inline">{t('banned.unban')}</span>
-									</button>
+								<div className="min-w-0 flex-1">
+									<h3 dir="auto" className="cv-bidi line-clamp-2 break-words text-[15px] font-medium leading-5 text-ink" title={track.title}>{track.title}</h3>
+									<p dir="auto" className="cv-bidi truncate text-[13px] leading-5 text-ink-2">{track.artist}</p>
+									<p className="text-xs leading-5 text-ink-3">
+										{t('banned.bannedOn', { date: new Date(track.bannedAt).toLocaleDateString(dateLocale) })}
+									</p>
 								</div>
+
+								<button
+									onClick={() => onUnban(track.videoId)}
+									title={t('banned.unban')}
+									aria-label={t('banned.unban')}
+									className="cv-btn cv-btn-quiet cv-hit h-9 flex-none rounded-full px-3 text-[13px] max-sm:w-9 max-sm:px-0"
+								>
+									<Undo2 size={16} aria-hidden="true" />
+									<span className="max-sm:hidden">{t('banned.unban')}</span>
+								</button>
 							</div>
 						))}
 					</div>

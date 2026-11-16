@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Bu kanal oturum açmış bir hesap gerektirir.",
 		"accountRequired": "Bunu yapmak için lütfen giriş yapın.",
 		"sessionNotReady": "Oturumunuz henüz hazır değil. Lütfen sayfayı yenileyin.",
-		"guestLimit": "Bu ağda çok fazla yeni misafir var. Devam etmek için giriş yapın."
+		"guestLimit": "Bu ağda çok fazla yeni misafir var. Devam etmek için giriş yapın.",
+		"appleMusicUnavailable": "Apple Music bu sunucuda kullanılamıyor.",
+		"appleMusicNotConnected": "Ev sahibinin önce Apple Music'i bağlaması gerekiyor.",
+		"appleMusicRoom": "Bu kanalda Apple Music çalıyor. Bir music.apple.com bağlantısı yapıştırın veya adıyla arayın.",
+		"appleMusicNotFound": "Apple Music'te bulunamadı.",
+		"appleMusicLinkUnsupported": "Tek bir şarkının veya müzik videosunun bağlantısını yapıştırın ya da adıyla arayın.",
+		"appleMusicNotInStorefront": "Bu parça, ev sahibinin ülkesinde Apple Music'te mevcut değil.",
+		"appleMusicCatalogError": "Apple Music yanıt vermedi. Lütfen tekrar deneyin."
 	},
 	"connectAi": {
 		"willSendTo": "Onay şu adrese gönderilecek",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Oluşturmak İçin Giriş Yap",
 		"noChannelsFound": "Kanal bulunamadı:",
 		"live": "Canlı",
+		"hostedBy": "Ev sahibi: {name}",
+		"wrongPassword": "Yanlış şifre",
 		"createNewChannel": "Yeni Kanal Oluştur",
 		"channelName": "Kanal Adı",
 		"channelNamePlaceholder": "ör. Gece Modu",
@@ -81,13 +90,25 @@ export default {
 		"description": "Müzik çalmak için YouTube Oynatıcısını yüklememiz gerekiyor. Bu, Google sunucularına bağlanır.",
 		"policy": "Gizlilik Politikamızı okuyun",
 		"accept": "Kabul Et & Müzik Çal",
-		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin."
+		"youtubeConsent": "YouTube Oynatıcısını yüklemek için izninize ihtiyacımız var. Lütfen aşağıdan çerezleri kabul edin.",
+		"signInDescription": "Google ile giriş yapmak için Google girişini yüklüyoruz; bu, Google sunucularına bağlanır. Aynı onay, YouTube kanallarında YouTube oynatıcısını da yükler.",
+		"signInAccept": "Kabul et"
+	},
+	"join": {
+		"welcome": "{brand}'a hoş geldiniz",
+		"youtubeTitle": "Ses ve videoyu etkinleştir",
+		"youtubeBody": "YouTube'dan müzik çalmak ve çalma listesine katılmak için çerez kullanmamız gerekiyor.",
+		"accept": "Etkinleştir ve partiye katıl",
+		"agree": "Katılarak {policy} kabul etmiş olursunuz.",
+		"policy": "Gizlilik Politikamızı",
+		"checking": "Kanal kontrol ediliyor…"
 	},
 	"header": {
 		"profileSettings": "Profil & Ayarlar",
 		"signIn": "Google ile Giriş Yap",
 		"acceptCookies": "Giriş yapmak için çerezleri kabul et",
 		"legal": "Yasal Bilgiler",
+		"player": "Oynatıcı",
 		"playlist": "Oynatma Listesi",
 		"library": "Kütüphane",
 		"share": "Paylaş",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "İnternet bağlantısı yok",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Pencere çok küçük",
+		"windowTooSmallMessage": "CueVote'u kullanmaya devam etmek için pencereyi büyütün.",
+		"backToRadio": "Radyoya dön",
 		"retry": "Bağlantıyı tekrar dene",
 		"switching": "Kanal Değiştiriliyor...",
 		"channelNotFound": "Kanal mevcut değil",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Sil",
 		"watch": "YouTube'da İzle",
 		"recommend": "Önerileri al",
-		"guest": "Misafir"
+		"guest": "Misafir",
+		"voteUp": "Olumlu oy ver",
+		"voteDown": "Olumsuz oy ver"
 	},
 	"library": {
 		"searchPlaceholder": "Kütüphanede ara...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "kütüphanede",
+		"about": "Kütüphane hakkında",
 		"info1": "Bu kütüphane son <strong>28 gün</strong> içinde çalınan benzersiz videoları görüntüler.",
 		"info2": "Eski videolar meta veri tazeliği için gizlenir, ancak <strong>asla silinmezler</strong>. <strong>Otomatik Doldurma</strong> özelliği tüm geçmişinizi hatırlar ve gerektiğinde eski videoları kuyruğa (ve bu listeye) otomatik olarak geri getirir!",
 		"empty": "Video bulunamadı"
@@ -224,6 +248,13 @@ export default {
 		"history": "Geçmiş",
 		"last50": "Son 50 ({count} içinden)",
 		"nowPlaying": "Şimdi Çalıyor",
+		"play": "Oynat",
+		"pause": "Duraklat",
+		"mute": "Sesi kapat",
+		"unmute": "Sesi aç",
+		"volume": "Ses düzeyi",
+		"cinemaMode": "Sinema modu",
+		"exitCinemaMode": "Sinema modundan çık",
 		"upNext": "Sıradaki",
 		"queueEmpty": "Kuyruk boş",
 		"errorNotFound": "Video bulunamadı",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "İsteklerden yasaklanan videolar burada görünecek.",
 		"bannedOn": "{date} tarihinde yasaklandı",
 		"unban": "Yasağı kaldır"
+	},
+	"appleMusic": {
+		"source": "Müzik kaynağı",
+		"sourceHint": "Apple Music bilgisayarınızda çalar ve Apple Music aboneliği gerektirir.",
+		"connect": "Apple Music'i bağla",
+		"connectHint": "Apple Music aboneliğinizin bağlı olduğu Apple hesabıyla giriş yapın.",
+		"signInFailed": "Giriş yapılamadı.",
+		"start": "Oynatmayı başlat",
+		"startHint": "Tarayıcı sesi ancak bir tıklamadan sonra çalar.",
+		"loading": "Apple Music yükleniyor…",
+		"loadFailed": "Apple Music yüklenemedi.",
+		"problemSubscription": "Bunu oynatmak için etkin bir Apple Music aboneliği gerekiyor.",
+		"switchAccount": "Başka bir hesap kullan",
+		"problemOtherDevice": "Apple hesabınızla başka bir cihazda müzik çalınıyor.",
+		"problemGeneric": "Apple Music oynatmayı durdurdu.",
+		"contentNotice": "Bu kanaldaki kapak görselleri ve önizlemeler Apple'dan gelir. Yüklenirken Apple IP adresinizi görür.",
+		"contentAccept": "Aç",
+		"previewFailed": "Bu önizleme oynatılamıyor.",
+		"standby": "Bu kanal şu anda başka bir cihazınızda çalıyor.",
+		"playHere": "Burada çal",
+		"waitingForHost": "Ev sahibi yeniden çalana kadar duraklatıldı.",
+		"playsOnComputer": "Apple Music bir bilgisayarda çalar. Bu kanalı orada açın ve Apple Music'i bağlayın."
 	},
 	"attribution": {
 		"youtube": "YouTube ile geliştirildi"

@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Saluran ini memerlukan akaun yang telah log masuk.",
 		"accountRequired": "Sila log masuk untuk berbuat demikian.",
 		"sessionNotReady": "Sesi anda belum sedia. Sila muat semula halaman.",
-		"guestLimit": "Terlalu ramai tetamu baharu pada rangkaian ini. Sila log masuk untuk meneruskan."
+		"guestLimit": "Terlalu ramai tetamu baharu pada rangkaian ini. Sila log masuk untuk meneruskan.",
+		"appleMusicUnavailable": "Apple Music tidak tersedia pada pelayan ini.",
+		"appleMusicNotConnected": "Hos perlu menyambungkan Apple Music terlebih dahulu.",
+		"appleMusicRoom": "Saluran ini memainkan Apple Music. Tampal pautan music.apple.com atau cari mengikut nama.",
+		"appleMusicNotFound": "Tidak dijumpai di Apple Music.",
+		"appleMusicLinkUnsupported": "Tampal pautan ke satu lagu atau video muzik, atau cari mengikut nama.",
+		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara hos.",
+		"appleMusicCatalogError": "Apple Music tidak menjawab. Sila cuba lagi."
 	},
 	"connectAi": {
 		"willSendTo": "Kebenaran akan dihantar ke",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Log masuk untuk Cipta",
 		"noChannelsFound": "Tiada saluran dijumpai",
 		"live": "Langsung",
+		"hostedBy": "Hos: {name}",
+		"wrongPassword": "Kata laluan salah",
 		"createNewChannel": "Cipta Saluran Baru",
 		"channelName": "Nama Saluran",
 		"channelNamePlaceholder": "cth. Rentak Malam",
@@ -81,13 +90,25 @@ export default {
 		"description": "Untuk memainkan muzik, kami perlu memuatkan Pemain YouTube. Ini bersambung ke pelayan Google.",
 		"policy": "Baca Dasar Privasi kami",
 		"accept": "Terima & Mainkan Muzik",
-		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah."
+		"youtubeConsent": "Kami memerlukan persetujuan anda untuk memuatkan Pemain YouTube. Sila terima kuki di bawah.",
+		"signInDescription": "Untuk log masuk dengan Google, kami memuatkan log masuk Google, yang bersambung ke pelayan Google. Persetujuan yang sama juga memuatkan pemain YouTube dalam saluran YouTube.",
+		"signInAccept": "Terima"
+	},
+	"join": {
+		"welcome": "Selamat datang ke {brand}",
+		"youtubeTitle": "Dayakan Audio & Video",
+		"youtubeBody": "Untuk memainkan muzik dari YouTube dan menyertai senarai main, kami perlu menggunakan kuki.",
+		"accept": "Dayakan & Sertai Parti",
+		"agree": "Dengan menyertai, anda bersetuju dengan {policy} kami.",
+		"policy": "Dasar Privasi",
+		"checking": "Menyemak saluran…"
 	},
 	"header": {
 		"profileSettings": "Profil & Tetapan",
 		"signIn": "Log masuk dengan Google",
 		"acceptCookies": "Terima kuki untuk log masuk",
 		"legal": "Info Undang-undang",
+		"player": "Pemain",
 		"playlist": "Senarai Main",
 		"library": "Pustaka",
 		"share": "Kongsi",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tiada sambungan internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Tetingkap terlalu kecil",
+		"windowTooSmallMessage": "Besarkan tetingkap untuk terus menggunakan CueVote.",
+		"backToRadio": "Kembali ke Radio",
 		"retry": "Cuba semula sambungan",
 		"switching": "Menukar Saluran...",
 		"channelNotFound": "Saluran tidak wujud",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Padam",
 		"watch": "Tonton di YouTube",
 		"recommend": "Dapatkan cadangan",
-		"guest": "Tetamu"
+		"guest": "Tetamu",
+		"voteUp": "Undi sokong",
+		"voteDown": "Undi bantah"
 	},
 	"library": {
 		"searchPlaceholder": "Cari pustaka...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "dalam pustaka",
+		"about": "Tentang pustaka",
 		"info1": "Pustaka ini memaparkan video unik yang dimainkan dalam <strong>28 hari</strong> lepas.",
 		"info2": "Video lama disembunyikan untuk kesegaran data, tetapi <strong>tidak pernah dipadam</strong>. Ciri <strong>Isi Semula Auto</strong> masih mengingati sejarah penuh anda dan akan mengembalikan video lama apabila diperlukan!",
 		"empty": "Tiada video ditemui"
@@ -222,6 +246,13 @@ export default {
 		"history": "Sejarah",
 		"last50": "50 Terakhir (daripada {count})",
 		"nowPlaying": "Sedang Main",
+		"play": "Main",
+		"pause": "Jeda",
+		"mute": "Senyapkan",
+		"unmute": "Nyahsenyap",
+		"volume": "Kelantangan",
+		"cinemaMode": "Mod pawagam",
+		"exitCinemaMode": "Keluar daripada mod pawagam",
 		"upNext": "Seterusnya",
 		"queueEmpty": "Barisan kosong",
 		"errorNotFound": "Video tidak dijumpai",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "Video yang diharamkan daripada permintaan akan muncul di sini.",
 		"bannedOn": "Diharamkan pada {date}",
 		"unban": "Buka haram"
+	},
+	"appleMusic": {
+		"source": "Sumber muzik",
+		"sourceHint": "Apple Music dimainkan pada komputer anda dan memerlukan langganan Apple Music.",
+		"connect": "Sambungkan Apple Music",
+		"connectHint": "Log masuk dengan akaun Apple yang mempunyai langganan Apple Music anda.",
+		"signInFailed": "Log masuk tidak berjaya.",
+		"start": "Mulakan main balik",
+		"startHint": "Pelayar hanya memainkan bunyi selepas satu klik.",
+		"loading": "Memuatkan Apple Music…",
+		"loadFailed": "Apple Music tidak dapat dimuatkan.",
+		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memainkan ini.",
+		"switchAccount": "Guna akaun lain",
+		"problemOtherDevice": "Akaun Apple anda sedang memainkan muzik pada peranti lain.",
+		"problemGeneric": "Apple Music menghentikan main balik.",
+		"contentNotice": "Kulit album dan pratonton dalam saluran ini datang daripada Apple. Semasa ia dimuatkan, Apple dapat melihat alamat IP anda.",
+		"contentAccept": "Hidupkan",
+		"previewFailed": "Pratonton ini tidak dapat dimainkan.",
+		"standby": "Saluran ini sedang dimainkan pada peranti anda yang lain.",
+		"playHere": "Main di sini",
+		"waitingForHost": "Dijeda sehingga hos memainkan semula.",
+		"playsOnComputer": "Apple Music dimainkan pada komputer. Buka saluran ini di sana dan sambungkan Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dibangunkan dengan YouTube"

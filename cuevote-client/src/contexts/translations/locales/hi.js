@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "इस चैनल के लिए लॉग इन किया हुआ खाता आवश्यक है।",
 		"accountRequired": "ऐसा करने के लिए कृपया लॉग इन करें।",
 		"sessionNotReady": "आपका सत्र अभी तैयार नहीं है। कृपया पेज रीलोड करें।",
-		"guestLimit": "इस नेटवर्क पर बहुत सारे नए मेहमान हैं। जारी रखने के लिए लॉग इन करें।"
+		"guestLimit": "इस नेटवर्क पर बहुत सारे नए मेहमान हैं। जारी रखने के लिए लॉग इन करें।",
+		"appleMusicUnavailable": "इस सर्वर पर Apple Music उपलब्ध नहीं है।",
+		"appleMusicNotConnected": "होस्ट को पहले Apple Music कनेक्ट करना होगा।",
+		"appleMusicRoom": "यह चैनल Apple Music चलाता है। music.apple.com का लिंक पेस्ट करें या नाम से खोजें।",
+		"appleMusicNotFound": "यह Apple Music पर नहीं मिला।",
+		"appleMusicLinkUnsupported": "किसी एक गाने या म्यूज़िक वीडियो का लिंक पेस्ट करें या नाम से खोजें।",
+		"appleMusicNotInStorefront": "यह गाना होस्ट के देश में Apple Music पर उपलब्ध नहीं है।",
+		"appleMusicCatalogError": "Apple Music ने जवाब नहीं दिया। कृपया पुनः प्रयास करें।"
 	},
 	"connectAi": {
 		"willSendTo": "अनुमति यहाँ भेजी जाएगी",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "बनाने के लिए लॉग इन करें",
 		"noChannelsFound": "कोई चैनल नहीं मिला",
 		"live": "लाइव",
+		"hostedBy": "मेज़बान: {name}",
+		"wrongPassword": "गलत पासवर्ड",
 		"createNewChannel": "नया चैनल बनाएं",
 		"channelName": "चैनल का नाम",
 		"channelNamePlaceholder": "उदा. देर रात की धुन",
@@ -81,13 +90,25 @@ export default {
 		"description": "संवीडियो चलाने के लिए, हमें YouTube प्लेयर लोड करना होगा। यह Google के सर्वर से कनेक्ट होता है।",
 		"policy": "हमारी गोपनीयता नीति पढ़ें",
 		"accept": "स्वीकार करें और संवीडियो चलाएं",
-		"youtubeConsent": "YouTube प्लेयर लोड करने के लिए हमें आपकी सहमति की आवश्यकता है। कृपया नीचे कुकीज़ स्वीकार करें।"
+		"youtubeConsent": "YouTube प्लेयर लोड करने के लिए हमें आपकी सहमति की आवश्यकता है। कृपया नीचे कुकीज़ स्वीकार करें।",
+		"signInDescription": "Google से साइन इन करने के लिए हम Google साइन-इन लोड करते हैं, जो Google के सर्वर से जुड़ता है। यही सहमति YouTube चैनलों में YouTube प्लेयर भी लोड करती है।",
+		"signInAccept": "स्वीकार करें"
+	},
+	"join": {
+		"welcome": "{brand} में आपका स्वागत है",
+		"youtubeTitle": "ऑडियो और वीडियो चालू करें",
+		"youtubeBody": "YouTube से संगीत चलाने और प्लेलिस्ट में भाग लेने के लिए हमें कुकीज़ का उपयोग करना होगा।",
+		"accept": "चालू करें और पार्टी में शामिल हों",
+		"agree": "शामिल होकर, आप हमारी {policy} से सहमत होते हैं।",
+		"policy": "गोपनीयता नीति",
+		"checking": "चैनल की जाँच हो रही है…"
 	},
 	"header": {
 		"profileSettings": "प्रोफ़ाइल और सेटिंग्स",
 		"signIn": "Google के साथ साइन इन करें",
 		"acceptCookies": "साइन इन करने के लिए कुकीज़ स्वीकार करें",
 		"legal": "कानूनी जानकारी",
+		"player": "प्लेयर",
 		"playlist": "प्लेलिस्ट",
 		"library": "लाइब्रेरी",
 		"share": "शेयर करें",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "कोई इंटरनेट कनेक्शन नहीं",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "विंडो बहुत छोटी है",
+		"windowTooSmallMessage": "CueVote का उपयोग जारी रखने के लिए विंडो बड़ी करें।",
+		"backToRadio": "रेडियो पर वापस जाएँ",
 		"retry": "कनेक्शन पुनः प्रयास करें",
 		"retrying": "पुनः प्रयास कर रहा है...",
 		"connecting": "सर्वर से कनेक्ट हो रहा है...",
@@ -188,7 +209,9 @@ export default {
 		"delete": "हटाएं",
 		"watch": "YouTube पर देखें",
 		"recommend": "सुझाव प्राप्त करें",
-		"guest": "मेहमान"
+		"guest": "मेहमान",
+		"voteUp": "पक्ष में वोट करें",
+		"voteDown": "विपक्ष में वोट करें"
 	},
 	"library": {
 		"searchPlaceholder": "लाइब्रेरी खोजें...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} वीडियो"
 		},
 		"inLibrary": "लाइब्रेरी में",
+		"about": "लाइब्रेरी के बारे में",
 		"info1": "यह लाइब्रेरी पिछले <strong>28 दिनों</strong> में बजाए गए अद्वितीय वीडियों को प्रदर्शित करती है।",
 		"info2": "मेटाडेटा ताजगी के लिए पुराने वीडियो छिपाए जाते हैं, लेकिन वे <strong>कभी नहीं हटाए जाते</strong>। <strong>स्वतः भरें</strong> सुविधा आपके पूरे इतिहास को याद रखती है और आवश्यकता पड़ने पर स्वचालित रूप से पुराने वीडियों को वापस लाती है!",
 		"empty": "कोई वीडियो नहीं मिला"
@@ -224,6 +248,13 @@ export default {
 		"history": "इतिहास",
 		"last50": "पिछले 50 ({count} में से)",
 		"nowPlaying": "अब चल रहा है",
+		"play": "चलाएँ",
+		"pause": "रोकें",
+		"mute": "म्यूट करें",
+		"unmute": "अनम्यूट करें",
+		"volume": "वॉल्यूम",
+		"cinemaMode": "सिनेमा मोड",
+		"exitCinemaMode": "सिनेमा मोड से बाहर निकलें",
 		"channelSuffix": "चैनल",
 		"upNext": "अगला",
 		"queueEmpty": "कतार खाली",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "अनुरोधों से प्रतिबंधित वीडियो यहां दिखाई देंगे।",
 		"bannedOn": "{date} को प्रतिबंधित",
 		"unban": "प्रतिबंध हटाएं"
+	},
+	"appleMusic": {
+		"source": "संगीत स्रोत",
+		"sourceHint": "Apple Music आपके कंप्यूटर पर चलता है और इसके लिए Apple Music सदस्यता ज़रूरी है।",
+		"connect": "Apple Music कनेक्ट करें",
+		"connectHint": "उस Apple खाते से साइन इन करें जिसमें आपकी Apple Music सदस्यता है।",
+		"signInFailed": "साइन इन नहीं हो सका।",
+		"start": "प्लेबैक शुरू करें",
+		"startHint": "ब्राउज़र एक क्लिक के बाद ही आवाज़ चलाता है।",
+		"loading": "Apple Music लोड हो रहा है…",
+		"loadFailed": "Apple Music लोड नहीं हो सका।",
+		"problemSubscription": "इसे चलाने के लिए Apple Music की सक्रिय सदस्यता ज़रूरी है।",
+		"switchAccount": "दूसरा खाता इस्तेमाल करें",
+		"problemOtherDevice": "आपका Apple खाता किसी दूसरे डिवाइस पर चल रहा है।",
+		"problemGeneric": "Apple Music ने प्लेबैक रोक दिया।",
+		"contentNotice": "इस चैनल के कवर आर्ट और पूर्वावलोकन Apple से आते हैं। इन्हें लोड करते समय Apple आपका IP पता देखता है।",
+		"contentAccept": "चालू करें",
+		"previewFailed": "यह पूर्वावलोकन नहीं चलाया जा सकता।",
+		"standby": "यह चैनल अभी आपके किसी दूसरे डिवाइस पर चल रहा है।",
+		"playHere": "यहाँ चलाएँ",
+		"waitingForHost": "होस्ट के दोबारा चलाने तक रुका हुआ है।",
+		"playsOnComputer": "Apple Music कंप्यूटर पर चलता है। वहाँ यह चैनल खोलें और Apple Music कनेक्ट करें।"
 	},
 	"attribution": {
 		"youtube": "YouTube के साथ विकसित"

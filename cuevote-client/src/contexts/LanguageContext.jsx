@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (c) 2026 Julian Zienert
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import { LanguageContext } from './LanguageContextValue.js';
 import { LANGUAGE_CODES, loadLanguage } from './translations';
+import { SpinnerScreen } from '../components/Spinner';
 
 const pluralRulesCache = new Map();
 function getPluralRules(lang) {
@@ -97,7 +98,14 @@ const initialBundles = Promise.all([
 // Single export with inline methods so bundler cannot reorder and cause TDZ.
 export const Language = {
 	LanguageProvider({ children }) {
-		const [language, setLanguage] = useState(INITIAL_LANGUAGE);
+		// The language the visitor picked, and the one the UI is showing. They
+		// differ only while a newly picked language is still downloading: the UI
+		// keeps the old strings until the new ones are in hand. Gating the whole
+		// tree on the picked language instead unmounted everything below this
+		// provider for the length of the download, router and WebSocket included,
+		// so every first switch blanked the screen and reconnected the socket.
+		const [selected, setSelected] = useState(INITIAL_LANGUAGE);
+		const [shown, setShown] = useState(INITIAL_LANGUAGE);
 		// Keyed by language code; holds every language loaded so far.
 		const [translations, setTranslations] = useState(null);
 		// Languages whose chunk did not load. Tracked so the gate below can stop
@@ -114,33 +122,49 @@ export const Language = {
 				}
 			});
 		}, []);
-		// Switching language pulls in that chunk once and keeps it.
+		// Switching language pulls in that chunk once and keeps it. The switch
+		// shows once the strings are in hand, or, if the chunk failed, with
+		// English standing in for them.
 		useEffect(() => {
-			if (!translations || translations[language] || failed.has(language)) return;
+			if (!translations) return;
+			if (translations[selected] || failed.has(selected)) {
+				setShown(selected);
+				return;
+			}
 			let cancelled = false;
-			loadLanguage(language).then(
+			loadLanguage(selected).then(
 				(bag) => {
 					if (cancelled) return;
-					setTranslations((prev) => ({ ...prev, [language]: bag }));
+					setTranslations((prev) => ({ ...prev, [selected]: bag }));
 				},
 				() => {
-					// Fall back to English rather than waiting forever. The loader
-					// evicted the failed request, so selecting this language again
-					// is a real retry.
 					if (cancelled) return;
-					setFailed((prev) => new Set(prev).add(language));
+					setFailed((prev) => new Set(prev).add(selected));
 				},
 			);
 			return () => { cancelled = true; };
-		}, [language, translations, failed]);
+		}, [selected, translations, failed]);
 		useEffect(() => {
-			writeStored('cuevote_language', language);
-		}, [language]);
-		// Ready when the chosen language is in hand, or when we know it is not
-		// coming and English can stand in. Waiting on `translations` alone let the
-		// whole UI repaint in English during every language switch.
+			writeStored('cuevote_language', selected);
+		}, [selected]);
+		// Picking a language whose chunk failed earlier reloads the page. A second
+		// import() in the same page cannot retry: the browser keeps the failed
+		// module for the page's lifetime and hands back the same error without
+		// another request. The choice is stored first, so the reload loads it.
+		const selectLanguage = useCallback((code) => {
+			if (failed.has(code)) {
+				writeStored('cuevote_language', code);
+				window.location.reload();
+				return;
+			}
+			setSelected(code);
+		}, [failed]);
+		// Ready once the first load settled: the shown language is in hand, or
+		// English stands in for it. Only that first load can hold the splash,
+		// because `shown` moves to a new language only after its strings arrived
+		// (or it failed and English took over).
 		const hasAny = !!translations && Object.keys(translations).length > 0;
-		const ready = hasAny && (!!translations[language] || (failed.has(language) && !!translations.en));
+		const ready = hasAny && (!!translations[shown] || !!translations.en);
 		// Nothing loaded at all: English itself failed after a retry. An eternal
 		// spinner is the wrong answer — offer the one action that can recover.
 		const fatal = !!translations && !hasAny;
@@ -148,8 +172,8 @@ export const Language = {
 		const t = (key, params = {}) => {
 			if (!translations) return key;
 			const keys = key.split('.');
-			let value = resolveKeyPath(translations[language], keys);
-			let usedLang = language;
+			let value = resolveKeyPath(translations[shown], keys);
+			let usedLang = shown;
 			if (value === undefined) {
 				value = resolveKeyPath(translations.en, keys);
 				usedLang = 'en';
@@ -173,7 +197,7 @@ export const Language = {
 			return value;
 		};
 		return (
-			<LanguageContext.Provider value={{ language, setLanguage, t }}>
+			<LanguageContext.Provider value={{ language: shown, setLanguage: selectLanguage, t }}>
 				{ready ? children : fatal ? (
 					// No strings at all, so nothing here can be translated. A reload
 					// glyph and an English aria-label are the honest minimum, and
@@ -195,9 +219,7 @@ export const Language = {
 					// Language-neutral splash until translations resolve, so raw i18n
 					// keys never paint. Intentionally text-free — any copy here would
 					// itself be untranslated. Matches the app's dark + orange theme.
-					<div className="fixed inset-0 z-[100] bg-[#050505] flex items-center justify-center" role="status" aria-label="Loading">
-						<div className="w-10 h-10 rounded-full border-2 border-neutral-800 border-t-orange-500 animate-spin" />
-					</div>
+					<SpinnerScreen />
 				)}
 			</LanguageContext.Provider>
 		);

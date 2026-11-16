@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "ช่องนี้ต้องใช้บัญชีที่เข้าสู่ระบบแล้ว",
 		"accountRequired": "โปรดเข้าสู่ระบบเพื่อทำสิ่งนี้",
 		"sessionNotReady": "เซสชันของคุณยังไม่พร้อม โปรดโหลดหน้าใหม่",
-		"guestLimit": "มีแขกใหม่จากเครือข่ายนี้มากเกินไป โปรดเข้าสู่ระบบเพื่อดำเนินการต่อ"
+		"guestLimit": "มีแขกใหม่จากเครือข่ายนี้มากเกินไป โปรดเข้าสู่ระบบเพื่อดำเนินการต่อ",
+		"appleMusicUnavailable": "Apple Music ไม่พร้อมใช้งานบนเซิร์ฟเวอร์นี้",
+		"appleMusicNotConnected": "เจ้าภาพต้องเชื่อมต่อ Apple Music ก่อน",
+		"appleMusicRoom": "ช่องนี้เล่นเพลงจาก Apple Music วางลิงก์ music.apple.com หรือค้นหาด้วยชื่อ",
+		"appleMusicNotFound": "ไม่พบใน Apple Music",
+		"appleMusicLinkUnsupported": "วางลิงก์ของเพลงหรือมิวสิกวิดีโอเพียงรายการเดียว หรือค้นหาด้วยชื่อ",
+		"appleMusicNotInStorefront": "เพลงนี้ไม่พร้อมใช้งานบน Apple Music ในประเทศของเจ้าภาพ",
+		"appleMusicCatalogError": "Apple Music ไม่ตอบสนอง โปรดลองอีกครั้ง"
 	},
 	"connectAi": {
 		"willSendTo": "การอนุญาตจะถูกส่งไปที่",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "เข้าสู่ระบบเพื่อสร้าง",
 		"noChannelsFound": "ไม่พบช่อง",
 		"live": "สด",
+		"hostedBy": "โฮสต์: {name}",
+		"wrongPassword": "รหัสผ่านไม่ถูกต้อง",
 		"createNewChannel": "สร้างช่องใหม่",
 		"channelName": "ชื่อช่อง",
 		"channelNamePlaceholder": "เช่น เพลงฟังสบาย",
@@ -81,13 +90,25 @@ export default {
 		"description": "เพื่อเล่นเพลง เราจำเป็นต้องโหลดเครื่องเล่น YouTube ซึ่งจะเชื่อมต่อกับเซิร์ฟเวอร์ของ Google",
 		"policy": "อ่านนโยบายความเป็นส่วนตัวของเรา",
 		"accept": "ยอมรับและเล่นเพลง",
-		"youtubeConsent": "เราต้องการความยินยอมจากคุณเพื่อโหลดเครื่องเล่น YouTube โปรดยอมรับคุกกี้ด้านล่าง"
+		"youtubeConsent": "เราต้องการความยินยอมจากคุณเพื่อโหลดเครื่องเล่น YouTube โปรดยอมรับคุกกี้ด้านล่าง",
+		"signInDescription": "หากต้องการเข้าสู่ระบบด้วย Google เราจะโหลดระบบเข้าสู่ระบบของ Google ซึ่งเชื่อมต่อกับเซิร์ฟเวอร์ของ Google ความยินยอมเดียวกันนี้ยังใช้โหลดเครื่องเล่น YouTube ในช่อง YouTube ด้วย",
+		"signInAccept": "ยอมรับ"
+	},
+	"join": {
+		"welcome": "ยินดีต้อนรับสู่ {brand}",
+		"youtubeTitle": "เปิดเสียงและวิดีโอ",
+		"youtubeBody": "เพื่อเล่นเพลงจาก YouTube และร่วมสร้างเพลย์ลิสต์ เราจำเป็นต้องใช้คุกกี้",
+		"accept": "เปิดใช้และเข้าร่วมปาร์ตี้",
+		"agree": "การเข้าร่วมถือว่าคุณยอมรับ{policy}ของเรา",
+		"policy": "นโยบายความเป็นส่วนตัว",
+		"checking": "กำลังตรวจสอบช่อง…"
 	},
 	"header": {
 		"profileSettings": "โปรไฟล์และการตั้งค่า",
 		"signIn": "เข้าสู่ระบบด้วย Google",
 		"acceptCookies": "ยอมรับคุกกี้เพื่อเข้าสู่ระบบ",
 		"legal": "ข้อมูลทางกฎหมาย",
+		"player": "เครื่องเล่น",
 		"playlist": "เพลย์ลิสต์",
 		"library": "คลังวิดีโอ",
 		"share": "แชร์",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "หน้าต่างเล็กเกินไป",
+		"windowTooSmallMessage": "ขยายหน้าต่างเพื่อใช้ CueVote ต่อ",
+		"backToRadio": "กลับไปที่วิทยุ",
 		"retry": "ลองเชื่อมต่ออีกครั้ง",
 		"switching": "กำลังเปลี่ยนช่อง...",
 		"channelNotFound": "ไม่มีช่องนี้",
@@ -188,7 +209,9 @@ export default {
 		"delete": "ลบ",
 		"watch": "ดูบน YouTube",
 		"recommend": "รับคำแนะนำ",
-		"guest": "แขก"
+		"guest": "แขก",
+		"voteUp": "โหวตเห็นด้วย",
+		"voteDown": "โหวตไม่เห็นด้วย"
 	},
 	"library": {
 		"searchPlaceholder": "ค้นหาคลังวิดีโอ...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} วิดีโอ"
 		},
 		"inLibrary": "ในคลัง",
+		"about": "เกี่ยวกับคลังวิดีโอ",
 		"info1": "คลังนี้แสดงวิดีโอที่ไม่ซ้ำที่เล่นใน <strong>28 วัน</strong> ที่ผ่านมา",
 		"info2": "วิดีโอเก่าจะถูกซ่อนเพื่อความสดใหม่ของข้อมูล แต่<strong>จะไม่ถูกลบ</strong> ฟีเจอร์ <strong>เติมอัตโนมัติ</strong> ยังคงจำประวัติทั้งหมดของคุณและจะนำวิดีโอเก่ากลับมาเมื่อจำเป็น!",
 		"empty": "ไม่พบวิดีโอ"
@@ -222,6 +246,13 @@ export default {
 		"history": "ประวัติ",
 		"last50": "50 วิดีโอล่าสุด (จาก {count})",
 		"nowPlaying": "กำลังเล่น",
+		"play": "เล่น",
+		"pause": "หยุดชั่วคราว",
+		"mute": "ปิดเสียง",
+		"unmute": "เปิดเสียง",
+		"volume": "ระดับเสียง",
+		"cinemaMode": "โหมดโรงภาพยนตร์",
+		"exitCinemaMode": "ออกจากโหมดโรงภาพยนตร์",
 		"channelSuffix": "ช่อง",
 		"upNext": "ถัดไป",
 		"queueEmpty": "คิวว่าง",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "วิดีโอที่ถูกแบนจากคำขอจะปรากฏที่นี่",
 		"bannedOn": "ถูกแบนเมื่อ {date}",
 		"unban": "ยกเลิกการแบน"
+	},
+	"appleMusic": {
+		"source": "แหล่งเพลง",
+		"sourceHint": "Apple Music เล่นบนคอมพิวเตอร์ของคุณ และต้องสมัครสมาชิก Apple Music",
+		"connect": "เชื่อมต่อ Apple Music",
+		"connectHint": "เข้าสู่ระบบด้วยบัญชี Apple ที่สมัครสมาชิก Apple Music ไว้",
+		"signInFailed": "เข้าสู่ระบบไม่สำเร็จ",
+		"start": "เริ่มเล่น",
+		"startHint": "เบราว์เซอร์จะเล่นเสียงได้หลังจากคลิกหนึ่งครั้งเท่านั้น",
+		"loading": "กำลังโหลด Apple Music…",
+		"loadFailed": "ไม่สามารถโหลด Apple Music ได้",
+		"problemSubscription": "ต้องสมัครสมาชิก Apple Music ที่ยังใช้งานอยู่จึงจะเล่นรายการนี้ได้",
+		"switchAccount": "ใช้บัญชีอื่น",
+		"problemOtherDevice": "บัญชี Apple ของคุณกำลังเล่นอยู่บนอุปกรณ์อื่น",
+		"problemGeneric": "Apple Music หยุดเล่น",
+		"contentNotice": "ภาพปกและตัวอย่างในช่องนี้มาจาก Apple ระหว่างโหลด Apple จะเห็นที่อยู่ IP ของคุณ",
+		"contentAccept": "เปิดใช้",
+		"previewFailed": "ไม่สามารถเล่นตัวอย่างนี้ได้",
+		"standby": "ช่องนี้กำลังเล่นอยู่บนอุปกรณ์อื่นของคุณ",
+		"playHere": "เล่นที่นี่",
+		"waitingForHost": "หยุดชั่วคราวจนกว่าเจ้าภาพจะเล่นอีกครั้ง",
+		"playsOnComputer": "Apple Music เล่นบนคอมพิวเตอร์ เปิดช่องนี้บนคอมพิวเตอร์แล้วเชื่อมต่อ Apple Music"
 	},
 	"attribution": {
 		"youtube": "พัฒนาด้วย YouTube"

@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Questo canale richiede un account con accesso effettuato.",
 		"accountRequired": "Accedi per farlo.",
 		"sessionNotReady": "La tua sessione non è ancora pronta. Ricarica la pagina.",
-		"guestLimit": "Troppi nuovi ospiti su questa rete. Accedi per continuare."
+		"guestLimit": "Troppi nuovi ospiti su questa rete. Accedi per continuare.",
+		"appleMusicUnavailable": "Apple Music non è disponibile su questo server.",
+		"appleMusicNotConnected": "L'host deve prima collegare Apple Music.",
+		"appleMusicRoom": "Questo canale riproduce Apple Music. Incolla un link di music.apple.com o cerca per nome.",
+		"appleMusicNotFound": "Non trovato su Apple Music.",
+		"appleMusicLinkUnsupported": "Incolla il link di un singolo brano o video musicale, oppure cerca per nome.",
+		"appleMusicNotInStorefront": "Questo brano non è disponibile su Apple Music nel paese dell'host.",
+		"appleMusicCatalogError": "Apple Music non ha risposto. Riprova."
 	},
 	"connectAi": {
 		"willSendTo": "L'autorizzazione verrà inviata a",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Accedi per Creare",
 		"noChannelsFound": "Nessun canale trovato per",
 		"live": "Live",
+		"hostedBy": "Organizzato da {name}",
+		"wrongPassword": "Password errata",
 		"createNewChannel": "Crea Nuovo Canale",
 		"channelName": "Nome Canale",
 		"channelNamePlaceholder": "es. Late Night Vibes",
@@ -81,7 +90,18 @@ export default {
 		"description": "Per riprodurre musica, dobbiamo caricare il player di YouTube. Questo si connette ai server di Google.",
 		"policy": "Leggi la nostra Privacy Policy",
 		"accept": "Accetta e Riproduci Musica",
-		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto."
+		"youtubeConsent": "Abbiamo bisogno del tuo consenso per caricare il player di YouTube. Accetta i cookie qui sotto.",
+		"signInDescription": "Per accedere con Google carichiamo l'accesso di Google, che si collega ai server di Google. Lo stesso consenso carica anche il player di YouTube nei canali YouTube.",
+		"signInAccept": "Accetta"
+	},
+	"join": {
+		"welcome": "Benvenuto su {brand}",
+		"youtubeTitle": "Attiva audio e video",
+		"youtubeBody": "Per riprodurre musica da YouTube e partecipare alla playlist, dobbiamo usare i cookie.",
+		"accept": "Attiva e unisciti alla festa",
+		"agree": "Unendoti, accetti la nostra {policy}.",
+		"policy": "Privacy Policy",
+		"checking": "Verifica del canale…"
 	},
 	"header": {
 		"back": "Indietro",
@@ -92,6 +112,7 @@ export default {
 		"signIn": "Accedi con Google",
 		"acceptCookies": "Accetta cookie per accedere",
 		"legal": "Informazioni Legali",
+		"player": "Lettore",
 		"playlist": "Playlist",
 		"library": "Libreria",
 		"share": "Condividi",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nessuna connessione internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Finestra troppo piccola",
+		"windowTooSmallMessage": "Ingrandisci la finestra per continuare a usare CueVote.",
+		"backToRadio": "Torna alla radio",
 		"retry": "Riprova connessione",
 		"retrying": "Riprovo...",
 		"connecting": "Connessione al server...",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Elimina",
 		"watch": "Su YouTube",
 		"recommend": "Ricevi suggerimenti",
-		"guest": "Ospite"
+		"guest": "Ospite",
+		"voteUp": "Vota a favore",
+		"voteDown": "Vota contro"
 	},
 	"library": {
 		"searchPlaceholder": "Cerca nella libreria...",
@@ -198,6 +221,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "nella libreria",
+		"about": "Informazioni sulla libreria",
 		"info1": "Questa libreria mostra brani unici riprodotti negli ultimi <strong>28 giorni</strong>.",
 		"info2": "I brani più vecchi sono nascosti per garantire la freschezza dei metadati, ma non vengono <strong>mai eliminati</strong>. La funzione <strong>Riempimento Automatico</strong> ricorda l'intera cronologia e riporterà automaticamente i vecchi brani nella coda (e in questo elenco) quando necessario!",
 		"empty": "Nessun brano trovato"
@@ -226,6 +250,13 @@ export default {
 		"history": "Cronologia",
 		"last50": "Ultime 50 di {count}",
 		"nowPlaying": "In riproduzione",
+		"play": "Riproduci",
+		"pause": "Pausa",
+		"mute": "Disattiva audio",
+		"unmute": "Attiva audio",
+		"volume": "Volume",
+		"cinemaMode": "Modalità cinema",
+		"exitCinemaMode": "Esci dalla modalità cinema",
 		"channelSuffix": "Canale",
 		"upNext": "In coda",
 		"queueEmpty": "Coda vuota",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "I video bloccati dalle richieste appariranno qui.",
 		"bannedOn": "Bloccato il {date}",
 		"unban": "Sblocca"
+	},
+	"appleMusic": {
+		"source": "Fonte musicale",
+		"sourceHint": "Apple Music viene riprodotto sul tuo computer e richiede un abbonamento ad Apple Music.",
+		"connect": "Collega Apple Music",
+		"connectHint": "Accedi con l'account Apple a cui è associato il tuo abbonamento Apple Music.",
+		"signInFailed": "L'accesso non è riuscito.",
+		"start": "Avvia riproduzione",
+		"startHint": "Il browser riproduce l'audio solo dopo un clic.",
+		"loading": "Caricamento di Apple Music…",
+		"loadFailed": "Impossibile caricare Apple Music.",
+		"problemSubscription": "Apple Music richiede un abbonamento attivo per riprodurre questo brano.",
+		"switchAccount": "Usa un altro account",
+		"problemOtherDevice": "Il tuo account Apple sta riproducendo su un altro dispositivo.",
+		"problemGeneric": "Apple Music ha interrotto la riproduzione.",
+		"contentNotice": "Le copertine e le anteprime di questo canale arrivano da Apple. Durante il caricamento Apple vede il tuo indirizzo IP.",
+		"contentAccept": "Attiva",
+		"previewFailed": "Impossibile riprodurre questa anteprima.",
+		"standby": "Questo canale è in riproduzione su un altro dei tuoi dispositivi.",
+		"playHere": "Riproduci qui",
+		"waitingForHost": "In pausa finché l'host non riprende la riproduzione.",
+		"playsOnComputer": "Apple Music si riproduce su un computer. Apri lì questo canale e collega Apple Music."
 	},
 	"attribution": {
 		"youtube": "Sviluppato con YouTube"

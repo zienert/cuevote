@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Denne kanal kræver en konto, der er logget ind.",
 		"accountRequired": "Log ind for at gøre det.",
 		"sessionNotReady": "Din session er ikke klar endnu. Genindlæs siden.",
-		"guestLimit": "For mange nye gæster på dette netværk. Log ind for at fortsætte."
+		"guestLimit": "For mange nye gæster på dette netværk. Log ind for at fortsætte.",
+		"appleMusicUnavailable": "Apple Music er ikke tilgængelig på denne server.",
+		"appleMusicNotConnected": "Værten skal først forbinde Apple Music.",
+		"appleMusicRoom": "Denne kanal spiller Apple Music. Indsæt et link fra music.apple.com eller søg efter navn.",
+		"appleMusicNotFound": "Ikke fundet på Apple Music.",
+		"appleMusicLinkUnsupported": "Indsæt et link til én sang eller musikvideo, eller søg efter navn.",
+		"appleMusicNotInStorefront": "Dette nummer er ikke tilgængeligt på Apple Music i værtens land.",
+		"appleMusicCatalogError": "Apple Music svarede ikke. Prøv igen."
 	},
 	"connectAi": {
 		"willSendTo": "Godkendelsen sendes til",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Log ind for at oprette",
 		"noChannelsFound": "Ingen kanaler fundet for",
 		"live": "Live",
+		"hostedBy": "Vært: {name}",
+		"wrongPassword": "Forkert adgangskode",
 		"createNewChannel": "Opret ny kanal",
 		"channelName": "Kanalnavn",
 		"channelNamePlaceholder": "f.eks. Late Night Vibes",
@@ -81,13 +90,25 @@ export default {
 		"description": "For at afspille musik skal vi indlæse YouTube-afspilleren. Dette opretter forbindelse til Googles servere.",
 		"policy": "Læs vores fortrolighedspolitik",
 		"accept": "Accepter & Spil musik",
-		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor."
+		"youtubeConsent": "Vi har brug for dit samtykke til at indlæse YouTube-afspilleren. Accepter cookies nedenfor.",
+		"signInDescription": "For at logge ind med Google indlæser vi Googles login, som forbinder til Googles servere. Det samme samtykke indlæser også YouTube-afspilleren i YouTube-kanaler.",
+		"signInAccept": "Accepter"
+	},
+	"join": {
+		"welcome": "Velkommen til {brand}",
+		"youtubeTitle": "Aktivér lyd og video",
+		"youtubeBody": "For at afspille musik fra YouTube og være med i playlisten skal vi bruge cookies.",
+		"accept": "Aktivér og deltag i festen",
+		"agree": "Ved at deltage accepterer du vores {policy}.",
+		"policy": "fortrolighedspolitik",
+		"checking": "Tjekker kanalen…"
 	},
 	"header": {
 		"profileSettings": "Profil & Indstillinger",
 		"signIn": "Log ind med Google",
 		"acceptCookies": "Accepter cookies for at logge ind",
 		"legal": "Juridisk information",
+		"player": "Afspiller",
 		"playlist": "Spilleliste",
 		"library": "Bibliotek",
 		"share": "Del",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internetforbindelse",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Vinduet er for lille",
+		"windowTooSmallMessage": "Gør vinduet større for at fortsætte med CueVote.",
+		"backToRadio": "Tilbage til radioen",
 		"retry": "Prøv forbindelse igen",
 		"switching": "Skifter kanal...",
 		"channelNotFound": "Kanal eksisterer ikke",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Slet",
 		"watch": "Se på YouTube",
 		"recommend": "Hent forslag",
-		"guest": "Gæst"
+		"guest": "Gæst",
+		"voteUp": "Stem op",
+		"voteDown": "Stem ned"
 	},
 	"library": {
 		"searchPlaceholder": "Søg i bibliotek...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} sange"
 		},
 		"inLibrary": "i bibliotek",
+		"about": "Om biblioteket",
 		"info1": "Dette bibliotek viser unikke sange spillet i de sidste <strong>28 dage</strong>.",
 		"info2": "Ældre sange skjules for at holde metadata friske, men de <strong>slettes aldrig</strong>. Funktionen <strong>Autooppfyldning</strong> husker stadig hele din historik og vil automatisk bringe ældre sange tilbage i køen (og denne liste) når det er nødvendigt!",
 		"empty": "Ingen sange fundet"
@@ -224,6 +248,13 @@ export default {
 		"history": "Historik",
 		"last50": "Sidste 50 (af {count})",
 		"nowPlaying": "Spiller nu",
+		"play": "Afspil",
+		"pause": "Pause",
+		"mute": "Slå lyd fra",
+		"unmute": "Slå lyd til",
+		"volume": "Lydstyrke",
+		"cinemaMode": "Biograftilstand",
+		"exitCinemaMode": "Forlad biograftilstand",
 		"upNext": "Næste",
 		"queueEmpty": "Kø er tom",
 		"errorNotFound": "Video ikke fundet",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Videoer, der er bannet fra forespørgsler, vises her.",
 		"bannedOn": "Bannet {date}",
 		"unban": "Ophæv ban"
+	},
+	"appleMusic": {
+		"source": "Musikkilde",
+		"sourceHint": "Apple Music spiller på din computer og kræver et Apple Music-abonnement.",
+		"connect": "Forbind Apple Music",
+		"connectHint": "Log ind med den Apple-konto, der har dit Apple Music-abonnement.",
+		"signInFailed": "Login lykkedes ikke.",
+		"start": "Start afspilning",
+		"startHint": "Browseren afspiller først lyd efter et klik.",
+		"loading": "Indlæser Apple Music…",
+		"loadFailed": "Apple Music kunne ikke indlæses.",
+		"problemSubscription": "Apple Music kræver et aktivt abonnement for at afspille dette.",
+		"switchAccount": "Brug en anden konto",
+		"problemOtherDevice": "Din Apple-konto afspiller på en anden enhed.",
+		"problemGeneric": "Apple Music stoppede afspilningen.",
+		"contentNotice": "Covers og forhåndsvisninger i denne kanal kommer fra Apple. Når de indlæses, ser Apple din IP-adresse.",
+		"contentAccept": "Slå til",
+		"previewFailed": "Denne forhåndsvisning kan ikke afspilles.",
+		"standby": "Denne kanal afspilles lige nu på en anden af dine enheder.",
+		"playHere": "Afspil her",
+		"waitingForHost": "Sat på pause, indtil værten afspiller igen.",
+		"playsOnComputer": "Apple Music afspilles på en computer. Åbn kanalen der, og forbind Apple Music."
 	},
 	"attribution": {
 		"youtube": "Udviklet med YouTube"
