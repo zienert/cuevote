@@ -572,7 +572,7 @@ have passed, and it refuses to leave a broken version serving.
 | 2 | `npm ci` + client build into `cuevote-client/dist.next`; nginx keeps serving `dist` | stops and puts the checkout back on the recorded commit; nothing changed (3) |
 | 3 | `npm ci` + MCP build into `cuevote-mcp/dist.next` | same (3) |
 | 4 | `npm ci` + **`npm test`** for the server | same (3) |
-| 5 | `pm2 reload` of the server (falls back to `restart`) | **rolls back** (1) — a wedged pm2 no longer ends the script before the rollback can run |
+| 5 | `pm2 reload` of the server (falls back to `restart`), or a fresh start from this checkout when pm2 runs it from another path | **rolls back** (1) — a wedged pm2 no longer ends the script before the rollback can run |
 | 6 | **Polls the server's `/health` for up to 15 s** | **rolls back** (1) |
 | 7 | Publishes the client: `dist` becomes `dist.prev`, `dist.next` becomes `dist` | **rolls back** (1) |
 | 8 | Publishes the MCP build the same way, restarts `cuevote-mcp-dj`, polls its `/health` for up to 15 s | **rolls back** (1) if the MCP was serving before the deploy; if it was not, the site stays on the new version (4) |
@@ -613,6 +613,13 @@ Consequences worth knowing:
   there is none: an unhealthy server there stops with exit 2 and leaves the
   process for you to inspect (`pm2 logs cuevote-server`), an unhealthy MCP
   with exit 4.
+* **Each process runs from the checkout being deployed.** Every checkout uses
+  the pm2 names `cuevote-server` and `cuevote-mcp-dj`, and `pm2 reload` or
+  `restart` re-runs the script path recorded when the process was first
+  started. When pm2 runs a process from another path (another worktree, a
+  checkout that moved or is gone), the script says so, deletes it and starts it
+  from this checkout, then runs `pm2 save`. On the server the paths match, and
+  it reloads as before.
 
 `bash scripts/test-deploy-scripts.sh` runs the script against a throw-away
 sandbox (local bare repo as `origin`, stubs for `npm`, `pm2` and `curl`) and

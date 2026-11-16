@@ -71,7 +71,7 @@ cat > "$SB/bin/pm2" <<'EOF'
 # A process is a directory under $PM2_STATE holding the script it runs (the
 # path resolved at start, as with real pm2) and whether that script answers
 # /health: not if the file is gone or contains UNHEALTHY. PM2_FAILS at the top
-# of the sandbox makes reload and restart fail.
+# of the sandbox makes reload and restart fail, PM2_JLIST_GARBAGE spoils jlist.
 echo "pm2 $*" >> "$CALLS"
 cmd="${1:-}"; [ $# -gt 0 ] && shift
 st="$PM2_STATE/${1:-none}"
@@ -89,6 +89,7 @@ case "$cmd" in
     st="$PM2_STATE/$name"; mkdir -p "$st"
     echo "$(pwd -P)/$script" > "$st/exec"; health ;;
   jlist)
+    [ -f "$SANDBOX/PM2_JLIST_GARBAGE" ] && { echo "not json"; exit 0; }
     sep=""; printf '['
     for d in "$PM2_STATE"/*/; do
       [ -d "$d" ] || continue
@@ -420,6 +421,67 @@ check "exit 3 (nothing changed)" is "$RC" 3
 check "branch feature not moved" is "$(git -C "$SB/main" rev-parse --short feature)" "$FEATURE"
 check "uncommitted edit kept" grep -q "uncommitted edit" "$SB/wt/cuevote-client/app.txt"
 check "nothing restarted" is "$(calls "$RESTARTS")" 0
+
+# ---- INFRA-08: pm2 runs each process from the checkout being deployed ----------
+
+# from_main: pm2 runs server and MCP from the main checkout, both healthy.
+from_main() {
+  (cd "$SB/main/cuevote-mcp" && npm run build) > /dev/null
+  (cd "$SB/main/cuevote-server" && pm2 start index.js --name cuevote-server) > /dev/null
+  (cd "$SB/main/cuevote-mcp" && pm2 start dist/http.js --name cuevote-mcp-dj) > /dev/null
+  : > "$CALLS"
+}
+exec_of() { cat "$PM2_STATE/$1/exec" 2> /dev/null; }
+
+case_ "worktree deploy while pm2 runs server and MCP from the main checkout"
+with_worktree
+from_main
+run "$SB/wt" bash "$SB/wt/update_server.sh"
+check "exit 0" is "$RC" 0
+check "says where the server ran from" says "pm2 ran cuevote-server from $SB/main/cuevote-server/index.js"
+check "server now runs from the worktree" is "$(exec_of cuevote-server)" "$SB/wt/cuevote-server/index.js"
+check "MCP now runs from the worktree" is "$(exec_of cuevote-mcp-dj)" "$SB/wt/cuevote-mcp/dist/http.js"
+check "both healthy" is "$(health_of cuevote-server) $(health_of cuevote-mcp-dj)" "up up"
+
+case_ "worktree deploy whose MCP fails while the main checkout's MCP was serving"
+with_worktree
+from_main
+touch "$SB/wt/MCP_UNHEALTHY"
+run "$SB/wt" bash "$SB/wt/update_server.sh"
+check "exit 4 (partial, nothing to roll back to)" is "$RC" 4
+check "says why" says "no rollback target"
+check "server runs from the worktree, healthy" is "$(exec_of cuevote-server) $(health_of cuevote-server)" "$SB/wt/cuevote-server/index.js up"
+
+case_ "pm2 runs the server from a checkout that is gone"
+deployed prod
+pm2 delete cuevote-server > /dev/null
+mkdir -p "$SB/gone/cuevote-server" && echo "// server" > "$SB/gone/cuevote-server/index.js"
+(cd "$SB/gone/cuevote-server" && pm2 start index.js --name cuevote-server) > /dev/null
+rm -rf "$SB/gone"
+new_commit "$C1" C2 cuevote-client/app.txt=v2 > /dev/null
+: > "$CALLS"
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 0" is "$RC" 0
+check "server runs from the deployed checkout" is "$(exec_of cuevote-server)" "$SB/prod/cuevote-server/index.js"
+
+case_ "server checkout that pm2 already runs from"
+deployed prod
+new_commit "$C1" C2 cuevote-client/app.txt=v2 > /dev/null
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+check "exit 0" is "$RC" 0
+check "server reloaded in place" is "$(calls '^pm2 reload cuevote-server')" 1
+check "MCP restarted in place" is "$(calls '^pm2 restart cuevote-mcp-dj')" 1
+check "nothing deleted" is "$(calls '^pm2 delete')" 0
+
+case_ "pm2 jlist cannot be read"
+deployed prod
+new_commit "$C1" C2 cuevote-client/app.txt=v2 > /dev/null
+touch "$SB/PM2_JLIST_GARBAGE"
+run "$SB/prod" bash "$SB/prod/update_server.sh"
+rm -f "$SB/PM2_JLIST_GARBAGE"
+check "exit 0" is "$RC" 0
+check "says so" says "did not say where"
+check "reloaded as before, nothing deleted" is "$(calls '^pm2 reload cuevote-server') $(calls '^pm2 delete')" "1 0"
 
 # ---- summary -------------------------------------------------------------------
 

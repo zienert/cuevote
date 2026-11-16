@@ -142,17 +142,57 @@ mcp_answers() {
 
 # ---- Processes ----
 
-# pm2_up NAME DIR SCRIPT VERB: reloads or restarts (VERB) the pm2 process NAME,
-# or starts it from DIR/SCRIPT when pm2 does not know it yet.
+# The script pm2 runs the process NAME from, as pm2 recorded it; nothing if
+# that cannot be read. jlist prints one line of JSON, possibly after notices.
+pm2_exec_path() {
+    pm2 jlist 2> /dev/null | node -e '
+        let s = "";
+        process.stdin.on("data", (d) => (s += d)).on("end", () => {
+            const line = s.split("\n").reverse().find((l) => l.trim().startsWith("["));
+            try {
+                const p = JSON.parse(line).find((p) => p.name === process.argv[1]);
+                if (p && p.pm2_env && p.pm2_env.pm_exec_path) console.log(p.pm2_env.pm_exec_path);
+            } catch {}
+        });' "$1" 2> /dev/null
+}
+
+# same_file A B: both exist and are the same file, symlinks resolved.
+same_file() {
+    local a b
+    [ -e "$1" ] && [ -e "$2" ] || return 1
+    a="$(cd "$(dirname "$1")" && pwd -P)/$(basename "$1")"
+    b="$(cd "$(dirname "$2")" && pwd -P)/$(basename "$2")"
+    [ "$a" = "$b" ]
+}
+
+# pm2_up NAME DIR SCRIPT VERB: makes pm2 run NAME from DIR/SCRIPT. Reloads or
+# restarts it (VERB) when it already runs from there, starts it when pm2 does
+# not know it yet.
+#
+# pm2 reload and restart re-run the script path recorded when the process was
+# first started, and every checkout uses the same process names. In a worktree
+# they restarted whichever checkout had started the process first: the deploy
+# reported this worktree healthy while another checkout's code answered. A
+# process that runs from anywhere else is deleted and started again from here.
 pm2_up() {
-    local name="$1" dir="$2" script="$3" verb="$4"
+    local name="$1" dir="$2" script="$3" verb="$4" running
     if pm2 describe "$name" > /dev/null 2>&1; then
-        pm2 "$verb" "$name" --update-env || pm2 restart "$name" --update-env
+        running="$(pm2_exec_path "$name")"
+        if [ -z "$running" ]; then
+            echo "  -> pm2 did not say where $name runs from; leaving it there."
+        fi
+        if [ -z "$running" ] || same_file "$running" "$dir/$script"; then
+            pm2 "$verb" "$name" --update-env || pm2 restart "$name" --update-env
+            return
+        fi
+        echo "  -> pm2 ran $name from $running;"
+        echo "     starting it from $dir/$script instead."
+        pm2 delete "$name" > /dev/null || return 1
     else
         echo "  -> $name is not in pm2 yet; starting it from $dir/$script."
-        (cd "$dir" && pm2 start "$script" --name "$name" --update-env) || return 1
-        pm2 save || echo "  -> Warning: pm2 save failed; $name will not come back after a reboot."
     fi
+    (cd "$dir" && pm2 start "$script" --name "$name" --update-env) || return 1
+    pm2 save || echo "  -> Warning: pm2 save failed; $name will not come back after a reboot."
 }
 
 # ---- Staged builds ----
