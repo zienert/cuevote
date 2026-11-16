@@ -41,9 +41,9 @@ export function JoinWelcome({ provider, onAccept }) {
 					<button
 						onClick={onAccept}
 						disabled={!provider}
-						className="cv-btn cv-btn-accent h-12 w-full text-base font-semibold shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] disabled:shadow-none"
+						className="cv-btn cv-btn-accent h-auto min-h-12 w-full py-2.5 text-base font-semibold shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] disabled:shadow-none"
 					>
-						<PlayCircle size={20} aria-hidden="true" />
+						<PlayCircle size={20} className="flex-none" aria-hidden="true" />
 						{t('join.accept')}
 					</button>
 					<p className="text-xs leading-relaxed text-ink-3">
