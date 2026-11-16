@@ -71,6 +71,9 @@ private fun isApplePage(uri: android.net.Uri?): Boolean {
     return host == "apple.com" || host.endsWith(".apple.com")
 }
 
+// How long a page gets to unload before its WebView is destroyed.
+private const val PAGE_UNLOAD_MS = 500L
+
 // How often the page is asked whether its Apple Music channel is playing.
 private const val PLAYBACK_PROBE_MS = 1000L
 
@@ -546,9 +549,19 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
         // swiping the app away killed the process on the spot. With the
         // playback service running at that moment Android lets the process
         // live, and the channel was heard for seconds after the app was gone.
+        //
+        // The page is unloaded first, the way a browser tab closes. Destroyed
+        // under a playing page, MusicKit takes the loss of its player for a
+        // playback error and reports it while it still can, and the server
+        // pauses the channel over a problem that is none. A page that simply
+        // goes leaves the channel waiting for its host, to play on when the
+        // app is opened again.
         if (::webView.isInitialized) {
-            (webView.parent as? ViewGroup)?.removeView(webView)
-            webView.destroy()
+            val page = webView
+            (page.parent as? ViewGroup)?.removeView(page)
+            page.stopLoading()
+            page.loadUrl("about:blank")
+            playbackHandler.postDelayed({ page.destroy() }, PAGE_UNLOAD_MS)
         }
         super.onDestroy()
     }
