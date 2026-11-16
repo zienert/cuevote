@@ -8,14 +8,24 @@
 // Three separate call sites used to re-implement "slice off the head, sort the
 // rest, put the head back", which is three chances to get that invariant wrong.
 
+// suggestedBy of the tracks the Auto-DJ ("Channel Mix") queues from history.
+const AUTO_DJ = 'System';
+
+const isAutoDjPick = (track) => track.suggestedBy === AUTO_DJ;
+
 /**
  * Ordering for the upcoming part of the queue: an owner's priority pick first,
- * then the highest score. Ties keep their arrival order, because Array#sort is
- * stable — that is what makes the queue first-come-first-served at equal votes.
+ * then the songs people asked for, then the Auto-DJ's picks, each by highest
+ * score. Ties keep their arrival order, because Array#sort is stable — that is
+ * what makes the queue first-come-first-served at equal votes.
+ *
+ * The Auto-DJ only fills gaps. It queues up to half the queue size at once, so
+ * a song asked for after a refill would otherwise wait behind all of it.
  */
 function compareUpcoming(a, b) {
     if (a.isOwnerPriority && !b.isOwnerPriority) return -1;
     if (!a.isOwnerPriority && b.isOwnerPriority) return 1;
+    if (isAutoDjPick(a) !== isAutoDjPick(b)) return isAutoDjPick(a) ? 1 : -1;
     return (b.score || 0) - (a.score || 0);
 }
 
@@ -35,4 +45,4 @@ function sortUpcoming(queue) {
     return [current, ...upcoming];
 }
 
-module.exports = { sortUpcoming, compareUpcoming };
+module.exports = { sortUpcoming, compareUpcoming, AUTO_DJ };
