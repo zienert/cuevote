@@ -114,7 +114,7 @@ export function ChannelLibrary({
 							className="block h-11 w-full rounded-xl border border-line bg-card pl-10 pr-3 text-base text-ink placeholder:text-ink-3 transition-[border-color,box-shadow] duration-150 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-accent/70 sm:h-10 sm:text-sm"
 						/>
 					</div>
-					<div className="mt-3 flex items-center justify-between gap-3 px-1">
+					<div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1">
 						<p className="text-[13px] text-ink-2">
 							<span className="font-medium tabular-nums text-accent">
 								{t('library.videos', { count: filteredVideos.length })}
