@@ -11,11 +11,12 @@ import { Consent } from '../contexts/ConsentContext';
 
 const VIEWS = [
 	{
-		title: 'A Überarbeitet',
-		note: 'Aufbau und Abläufe wie heute, aufgeräumt.',
+		title: 'A Überarbeitet, zweite Runde',
+		note: 'Aufbau und Abläufe wie heute, aufgeräumt; Farbe und Licht aus dem Stand jetzt sind zurück.',
 		links: [
 			['Lobby', '/__lobby-preview'],
 			['Lobby, erster Besuch', '/__lobby-preview?signedOut'],
+			['Lobby, Cookies angenommen, nicht angemeldet', '/__lobby-preview?signedOut&consent'],
 			['Kanal erstellen', '/__lobby-preview?create'],
 			['Raum am Computer, Gast', '/__room-preview?device=desktop&lang=de'],
 			['Raum am Computer, Host', '/__room-preview?device=desktop&lang=de&role=owner'],
