@@ -221,6 +221,7 @@ export default {
 			"other": "{count} vídeos"
 		},
 		"inLibrary": "na biblioteca",
+		"about": "Sobre a biblioteca",
 		"info1": "Esta biblioteca exibe vídeos únicas tocadas nos últimos <strong>28 dias</strong>.",
 		"info2": "Vídeos mais antigas são ocultadas para garantir a atualização dos metadados, mas <strong>nunca são excluídas</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigas de volta para a fila (e para esta lista) quando necessário!",
 		"empty": "Nenhuma vídeo encontrada"

@@ -221,6 +221,7 @@ export default {
 			"other": "{count} pjesama"
 		},
 		"inLibrary": "u knjižnici",
+		"about": "O knjižnici",
 		"info1": "Ova knjižnica prikazuje jedinstvene pjesme svirane u zadnjih <strong>28 dana</strong>.",
 		"info2": "Starije pjesme su skrivene radi svježine podataka, ali <strong>nikada nisu izbrisane</strong>. Značajka <strong>Automatsko Punjenje</strong> pamti cijelu vašu povijest i automatski će vratiti starije pjesme u red (i ovaj popis) kada je potrebno!",
 		"empty": "Nisu pronađene pjesme"

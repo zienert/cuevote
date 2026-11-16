@@ -227,6 +227,7 @@ export default {
 			"other": "{count} Videos"
 		},
 		"inLibrary": "in der Bibliothek",
+		"about": "Über die Bibliothek",
 		"info1": "Diese Bibliothek zeigt einzigartige Videos, die in den letzten <strong>28 Tagen</strong> gespielt wurden.",
 		"info2": "Ältere Videos werden ausgeblendet, um die Aktualität der Metadaten zu gewährleisten, aber sie werden <strong>niemals gelöscht</strong>. Die <strong>Auto-Fill</strong>-Funktion merkt sich weiterhin deinen gesamten Verlauf und bringt ältere Videos bei Bedarf automatisch zurück in die Warteschlange (und diese Liste) wenn nötig!",
 		"empty": "Keine Videos gefunden"

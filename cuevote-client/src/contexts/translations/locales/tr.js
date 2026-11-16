@@ -220,6 +220,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "kütüphanede",
+		"about": "Kütüphane hakkında",
 		"info1": "Bu kütüphane son <strong>28 gün</strong> içinde çalınan benzersiz videoları görüntüler.",
 		"info2": "Eski videolar meta veri tazeliği için gizlenir, ancak <strong>asla silinmezler</strong>. <strong>Otomatik Doldurma</strong> özelliği tüm geçmişinizi hatırlar ve gerektiğinde eski videoları kuyruğa (ve bu listeye) otomatik olarak geri getirir!",
 		"empty": "Video bulunamadı"

@@ -221,6 +221,7 @@ export default {
 			"other": "{count} pesama"
 		},
 		"inLibrary": "u biblioteci",
+		"about": "O biblioteci",
 		"info1": "Ova biblioteka prikazuje jedinstvene pesme svirane u zadnjih <strong>28 dana</strong>.",
 		"info2": "Starije pesme su skrivene radi svežine podataka, ali <strong>nikada nisu obrisane</strong>. Funkcija <strong>Automatsko Punjenje</strong> pamti celu vašu istoriju i automatski će vratiti starije pesme u red (i ovu listu) kada je potrebno!",
 		"empty": "Nisu pronađene pesme"

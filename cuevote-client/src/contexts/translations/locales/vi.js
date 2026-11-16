@@ -219,6 +219,7 @@ export default {
 			"other": "{count} bài"
 		},
 		"inLibrary": "trong thư viện",
+		"about": "Giới thiệu về thư viện",
 		"info1": "Thư viện hiển thị các bài hát duy nhất đã phát trong <strong>28 ngày</strong> qua.",
 		"info2": "Các bài cũ được ẩn để giữ dữ liệu mới, nhưng <strong>không bao giờ bị xóa</strong>. Tính năng <strong>Tự động điền</strong> vẫn nhớ toàn bộ lịch sử và sẽ tự động đưa bài cũ trở lại khi cần!",
 		"empty": "Không tìm thấy bài hát"

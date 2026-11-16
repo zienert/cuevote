@@ -222,6 +222,7 @@ export default {
 			"other": "{count} skladeb"
 		},
 		"inLibrary": "v knihovně",
+		"about": "O knihovně",
 		"info1": "Tato knihovna zobrazuje unikátní skladby přehrané za posledních <strong>28 dní</strong>.",
 		"info2": "Starší skladby jsou skryty pro čerstvost metadat, ale <strong>nikdy nejsou smazány</strong>. Funkce <strong>Automatické Doplnění</strong> si pamatuje celou vaši historii a automaticky vrátí starší skladby do fronty (a tohoto seznamu), když je potřeba!",
 		"empty": "Nebyly nalezeny žádné skladby"

@@ -220,6 +220,7 @@ export default {
 			"other": "{count} sanger"
 		},
 		"inLibrary": "i bibliotek",
+		"about": "Om biblioteket",
 		"info1": "Dette biblioteket viser unike sanger spilt i de siste <strong>28 dagene</strong>.",
 		"info2": "Eldre sanger skjules for å holde metadata friske, men de <strong>slettes aldri</strong>. Funksjonen <strong>Autorefill</strong> husker fortsatt hele historikken din og vil automatisk hente eldre sanger tilbake i køen (og denne listen) når det trengs!",
 		"empty": "Ingen sanger funnet"

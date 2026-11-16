@@ -228,6 +228,7 @@ export default {
 			"other": "{count} videos"
 		},
 		"inLibrary": "en biblioteca",
+		"about": "Acerca de la biblioteca",
 		"info1": "Esta biblioteca muestra videos únicas reproducidas en los últimos <strong>28 días</strong>.",
 		"info2": "Las videos más antiguas se ocultan para garantizar la frescura de los metadatos, pero <strong>nunca se eliminan</strong>. ¡La función de <strong>Relleno Automático</strong> recuerda todo tu historial y traerá automáticamente las videos antiguas a la cola (y a esta lista) cuando sea necesario!",
 		"empty": "No se encontraron videos"

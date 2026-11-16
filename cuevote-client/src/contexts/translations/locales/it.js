@@ -221,6 +221,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "nella libreria",
+		"about": "Informazioni sulla libreria",
 		"info1": "Questa libreria mostra brani unici riprodotti negli ultimi <strong>28 giorni</strong>.",
 		"info2": "I brani più vecchi sono nascosti per garantire la freschezza dei metadati, ma non vengono <strong>mai eliminati</strong>. La funzione <strong>Riempimento Automatico</strong> ricorda l'intera cronologia e riporterà automaticamente i vecchi brani nella coda (e in questo elenco) quando necessario!",
 		"empty": "Nessun brano trovato"
