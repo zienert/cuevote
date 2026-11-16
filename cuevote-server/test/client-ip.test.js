@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { createClientIpResolver, resolverFromEnv } = require('../client-ip');
+const { createClientIpResolver, resolverFromEnv, netKey } = require('../client-ip');
 
 function req(peer, headers = {}) {
   return { socket: { remoteAddress: peer }, headers };
@@ -64,5 +64,36 @@ describe('client IP', () => {
     assert.equal(custom(req('127.0.0.1', { 'x-real-ip': '192.0.2.50' })), '127.0.0.1', 'loopback is no longer trusted');
     // An edge address of the default list is not special under the custom one.
     assert.equal(custom(req('10.9.9.9', { 'x-real-ip': CF_EDGE_V4, 'cf-connecting-ip': VISITOR })), CF_EDGE_V4);
+  });
+});
+
+describe('network key', () => {
+  it('is the address itself for IPv4, also in its IPv6-mapped form', () => {
+    assert.equal(netKey('203.0.113.7'), '203.0.113.7');
+    assert.equal(netKey('::ffff:203.0.113.7'), '203.0.113.7');
+    assert.equal(netKey('::FFFF:203.0.113.7'), '203.0.113.7');
+  });
+
+  it('puts IPv6 addresses of one /64 under one key', () => {
+    const a = netKey('2001:db8:abcd:12::1');
+    assert.equal(a, '2001:db8:abcd:12::/64');
+    assert.equal(netKey('2001:db8:abcd:12:ffff:ffff:ffff:fffe'), a);
+    assert.equal(netKey('2001:0DB8:ABCD:0012:0000:0000:0000:0042'), a, 'spelling does not matter');
+    assert.notEqual(netKey('2001:db8:abcd:13::1'), a, 'the next /64 is another network');
+  });
+
+  it('handles compressed, full and edge-case IPv6 spellings', () => {
+    assert.equal(netKey('::1'), '::/64');
+    assert.equal(netKey('1:2:3:4:5:6:7:8'), '1:2:3:4::/64');
+    assert.equal(netKey('2001:db8::'), '2001:db8::/64');
+    assert.equal(netKey('2001:db8:0:0:1::'), '2001:db8::/64');
+    assert.equal(netKey('fe80::1%en0'), 'fe80::/64');
+    assert.equal(netKey('64:ff9b::192.0.2.33'), '64:ff9b::/64');
+  });
+
+  it('keeps anything that is not an address as its own key', () => {
+    assert.equal(netKey('unknown'), 'unknown');
+    assert.equal(netKey(''), 'unknown');
+    assert.equal(netKey(undefined), 'unknown');
   });
 });

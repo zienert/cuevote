@@ -138,4 +138,38 @@ function resolverFromEnv(env = process.env) {
     });
 }
 
-module.exports = { createClientIpResolver, resolverFromEnv, DEFAULT_TRUSTED_PROXIES, DEFAULT_CLOUDFLARE_RANGES };
+// An IPv6 address in canonical form ('2001:db8::1'), via the URL parser, which
+// also turns an embedded IPv4 tail into hex. A zone id ('%eth0') is dropped.
+function canonicalIpv6(address) {
+    try {
+        return new URL(`http://[${address.split('%')[0]}]/`).hostname.slice(1, -1);
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * The key a per-network limit counts under: an IPv4 address as it is, an IPv6
+ * address by its /64 ('2001:db8:abcd:12::/64'). A single IPv6 connection
+ * usually owns a whole /64, so counted by the full address one visitor could
+ * be somebody new on every connection. Anything that is not an address (the
+ * resolver's 'unknown') is a key of its own.
+ */
+function netKey(address) {
+    if (typeof address !== 'string' || !address) return 'unknown';
+    const plain = unmap(address.toLowerCase());
+    if (!net.isIPv6(plain)) return plain;
+    const canonical = canonicalIpv6(plain);
+    if (!canonical) return plain;
+
+    // Expand the '::' to count groups; the canonical form has at most one.
+    const [head, tail] = canonical.split('::');
+    const left = head ? head.split(':') : [];
+    const right = tail ? tail.split(':') : [];
+    const groups = tail === undefined
+        ? left
+        : [...left, ...new Array(8 - left.length - right.length).fill('0'), ...right];
+    return `${canonicalIpv6(`${groups.slice(0, 4).join(':')}::`)}/64`;
+}
+
+module.exports = { createClientIpResolver, resolverFromEnv, netKey, DEFAULT_TRUSTED_PROXIES, DEFAULT_CLOUDFLARE_RANGES };
