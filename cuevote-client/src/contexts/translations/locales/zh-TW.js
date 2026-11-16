@@ -221,7 +221,7 @@ export default {
 		"inLibrary": "在庫中",
 		"about": "關於媒體庫",
 		"info1": "此庫顯示過去 <strong>28 天</strong> 內播放的唯一影片。",
-		"info2": "為了保持元數據新鮮度，較舊的影片會被隱藏，但<strong>絕不會被刪除</strong>。<strong>自動填補</strong>功能仍會記住您的完整歷史記錄，並在需要時自動將舊影片帶回佇列（及此列表）！",
+		"info2": "為了保持元數據新鮮度，較舊的影片會被隱藏，但<strong>絕不會被刪除</strong>。<strong>Auto-DJ</strong> 功能仍會記住您的完整歷史記錄，並在需要時自動將舊影片帶回佇列（及此列表）！",
 		"empty": "未找到影片"
 	},
 	"pending": {
