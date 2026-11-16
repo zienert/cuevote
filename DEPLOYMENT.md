@@ -457,18 +457,19 @@ cat /var/log/unattended-upgrades/unattended-upgrades.log
 `unattended-upgrades` only covers **apt packages**. The app's npm dependencies are pinned by `package-lock.json`, and `npm ci` (used by `update_server.sh`) installs exactly those pinned versions — a deploy never bumps anything by itself. That is deliberate (reproducible builds), but it means a known vulnerability in a dependency stays on the server until someone acts:
 
 ```bash
-# check (run in cuevote-server/ and cuevote-client/)
+# check (run in cuevote-server/, cuevote-client/ and cuevote-mcp/)
 npm audit --omit=dev
 
 # fix within semver ranges, then prove the project still passes
 npm audit fix && npm ci
 
 # then, per project:
-npm run build          # cuevote-client, cuevote-mcp
+npm run build              # cuevote-client
 npm run lint && npm test   # cuevote-server (it has no build step)
+npm test && npm run build  # cuevote-mcp
 ```
 
-Commit the resulting `package-lock.json`, merge, then deploy with `bash update_server.sh` as usual. Run the audit on a schedule (monthly works) and/or enable GitHub Dependabot alerts on the repository, so new advisories reach you instead of waiting to be discovered.
+Commit the resulting `package-lock.json`, merge, then deploy with `bash update_server.sh` as usual. Run the audit on a schedule (monthly works), and keep Dependabot alerts and Dependabot security updates enabled on the repository (Settings → Code security), so new advisories reach you instead of waiting to be discovered. `.github/dependabot.yml` points Dependabot at all three npm projects and limits it to security updates.
 
 ### Use SSH Keys (Best Practice)
 For maximum security, disable password login entirely and use SSH keys.
