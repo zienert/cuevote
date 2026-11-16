@@ -129,7 +129,7 @@ function track(provider, index, extra = {}) {
 }
 
 // queue[0] mirrors currentTrack, as in a live room.
-function initialRoom(provider, { empty, waiting, requireLogin, pending }) {
+function initialRoom(provider, { owner, empty, waiting, requireLogin, pending }) {
 	const now = Date.now();
 	// How many titles were played, and the scores of the upcoming ones, per
 	// ?data: one of each, a long evening's worth, or the demo's handful.
@@ -147,7 +147,9 @@ function initialRoom(provider, { empty, waiting, requireLogin, pending }) {
 	return {
 		roomId: ROOM_ID,
 		activeChannel: DATA === 'worst' ? WORST_CHANNEL_NAME : 'WG-Party Küche',
-		ownerId: OWNER.id,
+		// As the server sends it: the owner's id goes to the owner alone.
+		isOwner: owner,
+		...(owner ? { ownerId: OWNER.id } : {}),
 		provider,
 		queue,
 		currentTrack: queue[0] || null,
@@ -306,7 +308,7 @@ export default function RoomPreview() {
 	const stuck = PARAMS.has('stuck');
 	const lang = PARAMS.get('lang');
 
-	const [room, setRoom] = useState(() => initialRoom(provider, { empty: PARAMS.has('empty') || DATA === 'empty', waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin'), pending: PARAMS.has('pending') }));
+	const [room, setRoom] = useState(() => initialRoom(provider, { owner: isOwner, empty: PARAMS.has('empty') || DATA === 'empty', waiting: PARAMS.has('waiting'), requireLogin: PARAMS.has('requireLogin'), pending: PARAMS.has('pending') }));
 	const [lastMessage, setLastMessage] = useState(null);
 	const [lastError, setLastError] = useState( // { message, code, at }
 		CONNECTION === 'password' ? { message: 'Password required', code: 'PASSWORD_REQUIRED', at: Date.now() } : null,
