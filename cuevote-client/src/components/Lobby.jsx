@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import { Users, Sparkles, Cookie, UserRound, AlertCircle, X, LogOut, Search, Lock, Globe, Scale, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { Users, Sparkles, UserRound, AlertCircle, X, LogOut, Search, Lock, Globe, Scale, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { useWebSocketContext } from "../hooks/useWebSocketContext";
 import { Consent } from '../contexts/ConsentContext';
 import { Language } from '../contexts/LanguageContext';
@@ -647,7 +647,6 @@ export function Lobby() {
         if (focusedIndex !== index) setFocusedIndex(index);
     };
     const createLabel = isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'));
-    const CreateIcon = !isSignedIn(user) && !hasConsent ? Cookie : Sparkles;
     // "Everywhere": on a phone a quiet line icon, so that the cards keep the
     // eye; from a tablet up the blue globe, a little light on the black page.
     const worldMark = (size, className = '') => (
@@ -849,11 +848,12 @@ export function Lobby() {
                                 title={createLabel}
                             >
                                 {/* The lobby's one lit tile: an orange outline, the icon in
-                                    orange, the words in ink. Without consent it asks for the
-                                    cookies and shows a cookie. Reached with the arrow keys
-                                    (TV remote) the outline doubles in width. */}
+                                    orange, the words in ink. The cookie banner below carries
+                                    the cookie, so the tile keeps its sparkles in every state.
+                                    Reached with the arrow keys (TV remote) the outline
+                                    doubles in width. */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-2 py-3 sm:gap-4 sm:p-5">
-                                    <CreateIcon className="h-7 w-7 flex-none text-accent sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden="true" />
+                                    <Sparkles className="h-7 w-7 flex-none text-accent sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden="true" />
                                     <span className="max-w-full hyphens-auto text-center text-sm font-medium text-ink [overflow-wrap:anywhere] sm:text-base">
                                         {createLabel}
                                     </span>
