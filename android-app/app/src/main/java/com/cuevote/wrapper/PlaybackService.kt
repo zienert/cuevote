@@ -26,12 +26,15 @@ import androidx.core.content.ContextCompat
 // foreground service of type mediaPlayback, holding a wake lock and a Wi-Fi
 // lock, is what Android expects of an app that plays music.
 //
-// The service knows nothing about the page. MainActivity watches MusicKit and
-// reports every time it finds the channel playing (playing()); the service runs
-// from the first report until none has come for GRACE_MS, or until stop(). It
-// ends itself, so its notification cannot outlive whatever should have ended it.
+// The service knows nothing about the page. MainActivity watches the page and
+// reports what it finds: the channel sounding here (playing()), or this device
+// being its player while nothing sounds (standingBy()). The service runs from
+// the first report for as long as reports come, up to IDLE_LIMIT_MS off screen
+// without playback; once they stop it is gone after GRACE_MS, and at once on
+// stop(). It ends itself, so its notification cannot outlive whatever should
+// have ended it.
 //
-// YouTube never gets here. Only MusicKit playing a full item is reported, and
+// YouTube never gets here. Only an Apple Music player is reported, and
 // YouTube's terms do not allow playback in the background.
 //
 // All of it runs on the main thread.
@@ -116,7 +119,7 @@ class PlaybackService : Service() {
     }
 
     // Held exactly as long as the service runs, and the service ends itself
-    // (GRACE_MS), so there is no timeout on the wake lock.
+    // (GRACE_MS, IDLE_LIMIT_MS), so there is no timeout on the wake lock.
     @SuppressLint("WakelockTimeout")
     private fun acquireLocks() {
         try {
@@ -199,34 +202,69 @@ class PlaybackService : Service() {
         // CueVote's orange (colorPrimary in themes.xml), behind the icon.
         private const val ACCENT_COLOR = 0xFFF97316.toInt()
 
-        // How long the service outlives the last report of a playing channel.
-        // Long enough for what happens inside a playing channel: the gap
-        // between two titles, a title that fails and is skipped, a stall, the
-        // page reloading for a fresh token, a ringing phone. Short enough that
-        // a paused channel does not keep the device awake or its notification
-        // up for long.
+        // How long the service outlives the last report from the page. Long
+        // enough for a live player that says nothing for a moment: the gap
+        // between two titles, a title that fails and is skipped, the page
+        // reloading for a fresh token. A page that is gone, signed out or no
+        // longer the channel's player says nothing at all, and the service
+        // does not sit on it.
         const val GRACE_MS = 60_000L
 
-        // The channel should be kept playing (the service runs or is starting).
+        // How long the service stays off screen while this device is the
+        // channel's player but nothing sounds: the channel is paused from
+        // another device, or its queue is empty. The phone has to remain what
+        // the channel plays on until the next play or the next title, and
+        // awake: the page tells the server every few seconds that it can play,
+        // and a player that falls silent loses the channel to the owner's next
+        // device. It still ends, so a channel left paused does not keep the
+        // device awake for good.
+        const val IDLE_LIMIT_MS = 2 * 60 * 60 * 1000L
+
+        // The channel should be kept going (the service runs or is starting).
         private var wanted = false
         // The service, once it is in the foreground.
         private var running: PlaybackService? = null
-        private var deadline = 0L
+        // The service ends at the earlier of the two: GRACE_MS after the last
+        // report, IDLE_LIMIT_MS after the channel last sounded or the app was
+        // last on screen.
+        private var heardUntil = 0L
+        private var idleUntil = 0L
+        private val deadline: Long get() = minOf(heardUntil, idleUntil)
         private var title = ""
         private var artist = ""
 
-        // Called when the service is no longer keeping the channel playing.
+        // Called when the service is no longer keeping the channel going.
         var onStopped: (() -> Unit)? = null
 
         val isActive: Boolean get() = wanted
 
-        // The channel is playing right now. The first report starts the
-        // service, which Android allows only while the app is on screen;
-        // every further one keeps it running.
+        // The channel sounds here right now.
         fun playing(context: Context, title: String, artist: String) {
-            deadline = SystemClock.elapsedRealtime() + GRACE_MS
-            this.title = title
-            this.artist = artist
+            val now = SystemClock.elapsedRealtime()
+            heardUntil = now + GRACE_MS
+            idleUntil = now + IDLE_LIMIT_MS
+            keep(context, title, artist)
+        }
+
+        // This device is the channel's player, but nothing sounds: the channel
+        // is paused or has nothing to play. On screen the wait costs nothing,
+        // so the idle limit counts from the moment the app left the screen.
+        fun standingBy(context: Context, title: String, artist: String, onScreen: Boolean) {
+            val now = SystemClock.elapsedRealtime()
+            heardUntil = now + GRACE_MS
+            if (onScreen) idleUntil = now + IDLE_LIMIT_MS
+            keep(context, title, artist)
+        }
+
+        // The first report starts the service, which Android allows only
+        // while the app is on screen (the caller sees to that); every further
+        // one keeps it running.
+        private fun keep(context: Context, title: String, artist: String) {
+            // A player with nothing loaded names no title: the last one stays up.
+            if (title.isNotEmpty() || !wanted) {
+                this.title = title
+                this.artist = artist
+            }
             if (wanted) {
                 running?.showNotification(force = false)
                 return

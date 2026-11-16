@@ -85,22 +85,39 @@ private const val PAGE_SETTLE_MS = 3000L
 
 private const val REQUEST_NOTIFICATIONS = 1
 
-// Asks MusicKit what it is playing: the title of an Apple Music channel that
-// plays here in full, or null. A guest's preview (previewOnly) is not the
-// channel, and a YouTube channel has no MusicKit at all.
+// Asks the page about the Apple Music player on it. Null when there is none
+// that could play a channel: no MusicKit (a YouTube channel has none), a
+// guest's preview player (previewOnly), or one that is signed out and silent.
+// Otherwise:
+//   playing        MusicKit sounds a full title here
+//   marked         the page says this device is the channel's player, sounding
+//                  or not: data-apple-player on <html>, set by web clients that
+//                  know of it. A frame cannot set it.
+//   title, artist  of what MusicKit plays or has loaded
 private const val PLAYBACK_PROBE_JS = """
 (function () {
   try {
     var music = window.MusicKit && MusicKit.getInstance();
-    if (!music || music.previewOnly || music.playbackState !== MusicKit.PlaybackStates.playing) return null;
+    if (!music || music.previewOnly) return null;
     var item = music.nowPlayingItem;
-    if (!item) return null;
-    return { title: String(item.title || ''), artist: String(item.artistName || '') };
+    var playing = !!item && music.playbackState === MusicKit.PlaybackStates.playing;
+    if (!playing && !music.isAuthorized) return null;
+    if (!item && music.queue && music.queue.items) item = music.queue.items[0];
+    var mark = document.documentElement.getAttribute('data-apple-player');
+    return {
+      playing: playing,
+      marked: mark === 'playing' || mark === 'paused',
+      title: item ? String(item.title || '') : '',
+      artist: item ? String(item.artistName || '') : ''
+    };
   } catch (e) {
     return null;
   }
 })()
 """
+
+// What the probe found on the page.
+private class ApplePlayer(val playing: Boolean, val marked: Boolean, val title: String, val artist: String)
 
 class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
@@ -126,11 +143,12 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
         packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 
-    // An Apple Music channel that plays on this device keeps playing in the
-    // background (see PlaybackService). Android lets that service start only
-    // while the app is on screen, so whether the channel plays has to be known
-    // before the app leaves it: the page is asked every second while the app is
-    // on screen, and on for as long as the service runs.
+    // An Apple Music channel that this device plays goes on in the background,
+    // and stays ready there while it is paused (see PlaybackService). Android
+    // lets that service start only while the app is on screen, so whether this
+    // device is the channel's player has to be known before the app leaves it:
+    // the page is asked every second while the app is on screen, and on for as
+    // long as the service runs.
     //
     // It is asked through evaluateJavascript, which runs in the main frame.
     // The CueVoteAndroid interface would be the wrong way: it is reachable from
@@ -150,6 +168,10 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     // when the address changes, the channel has been left.
     private var watchedUrl: String? = null
     private var watchedSince = 0L
+    // Whether this page has marked its player (see PLAYBACK_PROBE_JS). A page
+    // that does is taken at its word from then on; one that never does comes
+    // from a web client without the mark.
+    private var markSeen = false
     private var askedForNotifications = false
 
     // The service gave up while the app is in the background: from here on the
@@ -448,9 +470,9 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
         super.onPause()
         resumed = false
         if (::webView.isInitialized) {
-            // A playing Apple Music channel goes on in the background, and its
-            // page has to stay live for that. Everything else, YouTube above
-            // all, is paused as it always was.
+            // An Apple Music channel that this device plays goes on in the
+            // background, and its page has to stay live for that. Everything
+            // else, YouTube above all, is paused as it always was.
             if (!PlaybackService.isActive) pauseWebView()
         }
     }
@@ -479,30 +501,44 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             // Another page: whatever played has been left. No grace period.
             watchedUrl = url
             watchedSince = SystemClock.elapsedRealtime()
+            markSeen = false
             PlaybackService.stop()
         }
         if (!isCueVoteUrl(url)) return
         webView.evaluateJavascript(PLAYBACK_PROBE_JS) { result ->
             // Stopped or moved on since it was asked: the next probe looks again.
             if (!probing || webView.url != url) return@evaluateJavascript
-            // Not playing: the service's grace period decides (the gap
-            // between two titles, a pause).
-            val item = parsePlayingItem(result) ?: return@evaluateJavascript
             if (SystemClock.elapsedRealtime() - watchedSince < PAGE_SETTLE_MS) return@evaluateJavascript
-            // Started playing while the app is off screen: too late for Android
-            // to let the service start.
-            if (!resumed && !PlaybackService.isActive) return@evaluateJavascript
-            PlaybackService.playing(this, item.first, item.second)
+            // No Apple player on the page: a service that runs gives up after
+            // its grace period.
+            val player = parseApplePlayer(result) ?: return@evaluateJavascript
+            if (player.marked) markSeen = true
+            // This device is the channel's player although nothing sounds
+            // (paused, or nothing to play): the page says so itself, or, on a
+            // web client without the mark, MusicKit is still signed in on the
+            // page that played.
+            val standingBy = !player.playing && (player.marked || !markSeen)
+            if (!player.playing && !standingBy) return@evaluateJavascript
+            // Android lets the service start only while the app is on screen.
+            // It starts on sound or on the page's own word, never on a guess.
+            if (!PlaybackService.isActive && !(resumed && (player.playing || player.marked))) return@evaluateJavascript
+            if (player.playing) PlaybackService.playing(this, player.title, player.artist)
+            else PlaybackService.standingBy(this, player.title, player.artist, onScreen = resumed)
             askForNotificationsOnce()
         }
     }
 
-    // Title and artist of what MusicKit plays, from the probe's answer.
-    private fun parsePlayingItem(result: String?): Pair<String, String>? {
+    // The probe's answer, with title and artist ready for the notification.
+    private fun parseApplePlayer(result: String?): ApplePlayer? {
         if (result.isNullOrEmpty() || result == "null") return null
         return try {
-            val item = org.json.JSONObject(result)
-            notificationText(item.optString("title")) to notificationText(item.optString("artist"))
+            val found = org.json.JSONObject(result)
+            ApplePlayer(
+                playing = found.optBoolean("playing"),
+                marked = found.optBoolean("marked"),
+                title = notificationText(found.optString("title")),
+                artist = notificationText(found.optString("artist")),
+            )
         } catch (_: org.json.JSONException) {
             null
         }
@@ -515,8 +551,8 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
     // Android 13 and later show no notification until the user has allowed it.
     // The service runs either way, but its notification is how the user sees
     // what plays and gets back to the app, so it is asked for: once per start,
-    // at the moment an Apple Music channel plays here, and never again after a
-    // "no" (which Android reports as wanting an explanation).
+    // at the moment this device plays an Apple Music channel, and never again
+    // after a "no" (which Android reports as wanting an explanation).
     private fun askForNotificationsOnce() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || askedForNotifications || !resumed) return
         askedForNotifications = true
