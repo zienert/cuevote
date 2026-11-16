@@ -272,7 +272,7 @@ export default {
 		"addVideos": "Füge Videos hinzu, um zu starten"
 	},
 	"mobile": {
-		"tagline": "Die Demokratische Jukebox",
+		"tagline": "Die demokratische Jukebox",
 		"tvDescription": "Verwandle diesen Bildschirm in die ultimative Jukebox. Lass deine Gäste über die Musik abstimmen.",
 		"mobileDescription": "Stimme über Videos ab, erstelle gemeinsam die Playlist und lass die beste Musik gewinnen.",
 		"tvFeatureTitle": "Kinomodus",
