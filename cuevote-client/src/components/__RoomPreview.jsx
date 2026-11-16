@@ -29,6 +29,8 @@
 //   ?requireLogin     a channel where only signed-in users vote and suggest
 //   ?pending          two suggestions wait for the host's answer (with
 //                     ?role=owner)
+//   ?banned           two videos are banned from the requests (with
+//                     ?role=owner&pending, then "Banned videos")
 //   ?conn=...         the connection: opening (the channel opens and has no
 //                     answer yet), opening-problem (it does not come: the card
 //                     shows after 12 s), lost (it dropped while the room is
@@ -163,7 +165,11 @@ function initialRoom(provider, { owner, empty, waiting, requireLogin, pending })
 		suggestionMode: 'auto',
 		pendingSuggestions: pending ? [track(provider, 12), track(provider, 13)] : [],
 		ownerPopups: true,
-		bannedVideos: [],
+		// ?banned: two videos the host has shut out of the requests.
+		bannedVideos: PARAMS.has('banned') ? [
+			{ videoId: 'preview-banned-1', title: 'Baby Shark Dance', artist: 'Pinkfong', bannedAt: Date.UTC(2026, 10, 14) },
+			{ videoId: 'preview-banned-2', title: 'Never Gonna Give You Up', artist: 'Rick Astley', bannedAt: Date.UTC(2026, 10, 9) },
+		] : [],
 		appleStorefront: provider === 'apple' ? 'de' : null,
 		waitingForHost: !!waiting,
 		requireLogin: !!requireLogin,
