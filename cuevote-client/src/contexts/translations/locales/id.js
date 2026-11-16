@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Login untuk Membuat",
 		"noChannelsFound": "Kanal tidak ditemukan",
 		"live": "Live",
+		"hostedBy": "Tuan rumah: {name}",
+		"wrongPassword": "Kata sandi salah",
 		"createNewChannel": "Buat Kanal Baru",
 		"channelName": "Nama Kanal",
 		"channelNamePlaceholder": "cth. Santai Malam",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tidak ada koneksi internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Jendela terlalu kecil",
+		"windowTooSmallMessage": "Perbesar jendela untuk terus menggunakan CueVote.",
 		"backToRadio": "Kembali ke Radio",
 		"retry": "Coba lagi koneksi",
 		"switching": "Ganti Kanal...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Hapus",
 		"watch": "Tonton di YouTube",
 		"recommend": "Dapatkan saran",
-		"guest": "Tamu"
+		"guest": "Tamu",
+		"voteUp": "Beri suara setuju",
+		"voteDown": "Beri suara tidak setuju"
 	},
 	"library": {
 		"searchPlaceholder": "Cari pustaka...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "di pustaka",
+		"about": "Tentang pustaka",
 		"info1": "Pustaka ini menampilkan video unik yang diputar dalam <strong>28 hari</strong> terakhir.",
 		"info2": "Video lama disembunyikan agar data tetap segar, tapi <strong>tidak pernah dihapus</strong>. Fitur <strong>Isi Otomatis</strong> tetap mengingat seluruh riwayat Anda dan akan otomatis mengembalikan video lama saat dibutuhkan!",
 		"empty": "Video tidak ditemukan"
@@ -241,6 +246,13 @@ export default {
 		"history": "Riwayat",
 		"last50": "50 Terakhir (dari {count})",
 		"nowPlaying": "Sedang Diputar",
+		"play": "Putar",
+		"pause": "Jeda",
+		"mute": "Bisukan",
+		"unmute": "Bunyikan",
+		"volume": "Volume",
+		"cinemaMode": "Mode bioskop",
+		"exitCinemaMode": "Keluar dari mode bioskop",
 		"channelSuffix": "Saluran",
 		"upNext": "Berikutnya",
 		"queueEmpty": "Antrean kovideo",

@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import { Radio, Users, Sparkles, AlertCircle, X, LogOut, Search, Lock, Unlock, Globe, Scale, ChevronLeft, ChevronRight } from "lucide-react";
+import { Users, Sparkles, UserRound, AlertCircle, X, LogOut, Search, Lock, Globe, Scale, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { useWebSocketContext } from "../hooks/useWebSocketContext";
 import { Consent } from '../contexts/ConsentContext';
 import { Language } from '../contexts/LanguageContext';
@@ -12,12 +12,15 @@ const { LanguageSwitcher, languages } = LanguageSwitcherExports;
 import { GoogleAuthButton } from './GoogleAuthButton';
 import { GoogleGIcon } from './GoogleGIcon';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
-import { channelLanguages, getFlagEmoji } from '../constants/channelLanguages';
+import { channelLanguages, getFlagEmoji, hasFlag } from '../constants/channelLanguages';
+import { formatCount } from '../utils/numbers';
+import { Avatar } from './Avatar';
 
 import { LoadingScreen } from './LoadingScreen';
 import { SegmentedControl } from './SegmentedControl';
 import { displayName, isSignedIn } from '../utils/participation';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
+import { deviceDetection } from '../utils/deviceDetection';
 
 function useLocalizedCountries(uiLanguage) {
     return useMemo(() => {
@@ -170,6 +173,10 @@ export function Lobby() {
     // View State
     const [channelType, setChannelType] = useState('public'); // 'public' | 'private'
     const [focusedIndex, setFocusedIndex] = useState(0);
+    // The focus ring belongs to the arrow keys (a TV remote, a keyboard). With a
+    // mouse or a finger the card under it is marked by its hover and pressed
+    // looks, and nothing is ringed before anyone has pointed at anything.
+    const [keyboardFocus, setKeyboardFocus] = useState(() => deviceDetection.isTV());
     const [columns, setColumns] = useState(4);
     const isScrolling = useRef(false);
     // Default to 4 for lg screens
@@ -317,9 +324,9 @@ export function Lobby() {
     const handleCreateRoomClick = () => {
         if (!isSignedIn(user)) {
             if (!hasConsent) {
-                alert(t('lobby.acceptCookies') + "!");
+                alert(t('lobby.acceptCookies'));
             } else {
-                alert(t('lobby.loginToCreate') + "!");
+                alert(t('lobby.loginToCreate'));
             }
             return;
         }
@@ -396,6 +403,8 @@ export function Lobby() {
                 }
                 return; // Let user type in search
             }
+
+            if (e.key.startsWith('Arrow') || e.key === 'Enter') setKeyboardFocus(true);
 
             // Total items on THIS page
             const currentItemsCount = (showCreateButton ? 1 : 0) + visibleRooms.length;
@@ -588,7 +597,7 @@ export function Lobby() {
     useEffect(() => {
         if (lastErrorCode === "PASSWORD_REQUIRED") {
             if (showPasswordModal) {
-                setPasswordError("Incorrect password");
+                setPasswordError("wrong");
             }
         }
     }, [lastErrorCode, showPasswordModal]);
@@ -630,90 +639,105 @@ export function Lobby() {
         sendMessage({ type: "DELETE_ACCOUNT", payload: {} });
     };
 
+    // Marked by the arrow keys (see keyboardFocus).
+    const isFocused = (index) => keyboardFocus && focusedIndex === index;
+    const pointAt = (index) => {
+        if (isScrolling.current) return;
+        if (keyboardFocus) setKeyboardFocus(false);
+        if (focusedIndex !== index) setFocusedIndex(index);
+    };
+    const createLabel = isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'));
+    // "Everywhere": on a phone a quiet line icon, so that the cards keep the
+    // eye; from a tablet up the blue globe, a little light on the black page.
+    const worldMark = (size, className = '') => (
+        <>
+            <Globe size={size} className={`sm:hidden ${className}`} />
+            <span className="max-sm:hidden">{getFlagEmoji('international')}</span>
+        </>
+    );
+    const tabClass = (active, index) =>
+        `cv-hit flex h-9 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors duration-150 sm:flex-none ${active ? 'bg-raised text-ink' : 'text-ink-2 hover:text-ink'} ${isFocused(index) ? 'relative z-10 text-ink ring-2 ring-accent' : ''}`;
+    const avatar = (size) => <Avatar picture={user.picture} name={displayName(user, t)} className={size} />;
+    // A channel is created with the line "Hosted by <name>"; say it in the
+    // reader's language. Anything else a channel carries there shows as it is.
+    const hostLine = (description) => {
+        const host = /^Hosted by (.+)$/.exec(description || '');
+        return host ? t('lobby.hostedBy', { name: host[1] }) : description;
+    };
+
     return (
-        <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center p-8 pt-[calc(2rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
+        <div className="min-h-screen bg-page text-ink flex flex-col items-center px-4 sm:px-8 pt-[calc(1.5rem+env(safe-area-inset-top))] sm:pt-[calc(2rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
 
 
-            <header className="w-full max-w-5xl flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4 relative z-50">
-                <div className="flex items-start justify-between w-full sm:w-auto gap-4">
-                    <div className="flex items-start gap-4">
-                        <div className="flex flex-col">
-                            <h1 className="text-3xl font-bold text-orange-500 tracking-tight">
-                                CueVote
-                            </h1>
-                            <YouTubeBrandSubtitle className="mt-0.5" />
-                        </div>
+            <header className="relative z-50 mb-8 flex w-full max-w-5xl items-center justify-between gap-2 sm:mb-10 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <div className="flex flex-col">
+                        <h1 className="text-[1.75rem] font-bold leading-8 tracking-tight text-accent">
+                            CueVote
+                        </h1>
+                        <YouTubeBrandSubtitle className="mt-0.5 whitespace-nowrap" />
+                    </div>
 
-                        {/* Language Switcher */}
-                        <LanguageSwitcher
-                            isOpen={languageMenuOpen}
-                            onToggle={(val) => {
-                                setLanguageMenuOpen(val);
-                                if (val) setFocusedIndex(INDEX_LANGUAGE);
-                            }}
-                            focused={focusedIndex === INDEX_LANGUAGE}
-                            focusedLanguageIndex={languageMenuIndex}
+                    {/* Language Switcher */}
+                    <LanguageSwitcher
+                        isOpen={languageMenuOpen}
+                        onToggle={(val) => {
+                            setLanguageMenuOpen(val);
+                            if (val) setFocusedIndex(INDEX_LANGUAGE);
+                        }}
+                        focused={isFocused(INDEX_LANGUAGE)}
+                        focusedLanguageIndex={languageMenuIndex}
+                        compact={!isSignedIn(user)}
+                    />
+                </div>
+
+                {/* Mobile User Profile (Visible only on small screens). The
+                    sign-in button gives way when its words are long (Polish,
+                    Hungarian, Arabic): it shortens instead of pushing the page
+                    wider than the screen. */}
+                <div className={`sm:hidden ${isSignedIn(user) ? 'flex-none' : 'min-w-0'}`}>
+                    {isSignedIn(user) ? (
+                        <button
+                            onClick={() => setShowProfileModal(true)}
+                            className={`cv-hit flex items-center rounded-full transition-transform duration-150 ease-cv active:scale-95 ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
+                            aria-label={t('header.profileSettings')}
+                        >
+                            {avatar('h-9 w-9')}
+                        </button>
+                    ) : (
+                        <GoogleAuthButton
+                            onLoginSuccess={handleLoginSuccess}
+                            render={(performLogin, disabled) => (
+                                <button
+                                    id="lobby-auth-button-mobile"
+                                    type="button"
+                                    onTouchEnd={(e) => {
+                                        // iOS Fix: Trigger immediately on touch release preventing ghost clicks
+                                        e.preventDefault();
+                                        performLogin();
+                                    }}
+                                    onClick={performLogin}
+                                    className={`cv-hit flex h-9 max-w-full items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-raised px-2.5 text-xs font-medium text-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95 ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : 'hover:bg-[#2b2927]'} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
+                                >
+                                    <GoogleGIcon className="h-3.5 w-3.5 flex-none" />
+                                    <span className="truncate">{t('lobby.signInGoogle')}</span>
+                                </button>
+                            )}
                         />
-                    </div>
-
-                    {/* Mobile User Profile (Visible only on small screens) */}
-                    <div className="sm:hidden">
-                        {isSignedIn(user) ? (
-                            <button
-                                onClick={() => setShowProfileModal(true)}
-                                className={`flex items-center gap-2 rounded-full transition-all ${focusedIndex === INDEX_PROFILE ? 'ring-2 ring-orange-500 scale-105' : ''}`}
-                            >
-                                {user.picture ? (
-                                    <img src={user.picture} referrerPolicy="no-referrer" className="w-8 h-8 rounded-full border border-neutral-700" alt={user.name} />
-                                ) : (
-                                    <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-xs font-bold text-neutral-500 border border-neutral-700">
-                                        {displayName(user, t).charAt(0)}
-                                    </div>
-                                )}
-                            </button>
-                        ) : (
-                            <GoogleAuthButton
-                                onLoginSuccess={handleLoginSuccess}
-                                render={(performLogin, disabled) => (
-                                    <button
-                                        id="lobby-auth-button-mobile"
-                                        type="button"
-                                        onTouchEnd={(e) => {
-                                            // iOS Fix: Trigger immediately on touch release preventing ghost clicks
-                                            e.preventDefault();
-                                            performLogin();
-                                        }}
-                                        onClick={performLogin}
-                                        className={`flex items-center gap-1 px-2 py-1.5 rounded-full border border-neutral-700 bg-neutral-800 text-white text-[10px] font-medium whitespace-nowrap transition-transform active:scale-90 ${disabled && focusedIndex !== INDEX_PROFILE ? 'opacity-50' : 'hover:bg-neutral-700'} ${focusedIndex === INDEX_PROFILE ? 'ring-2 ring-orange-500 scale-105' : ''}`}
-                                    >
-                                        <GoogleGIcon className="w-3.5 h-3.5" />
-                                        <span>{t('lobby.signInGoogle')}</span>
-                                    </button>
-                                )}
-                            />
-                        )}
-                    </div>
+                    )}
                 </div>
 
                 {/* Desktop User Profile */}
-                <div className="hidden sm:block" id="lobby-profile-section">
+                <div className="hidden min-w-0 sm:block" id="lobby-profile-section">
                     {isSignedIn(user) ? (
                         <button
                             id="lobby-auth-button"
                             onClick={() => setShowProfileModal(true)}
-                            className={`flex items-center gap-3 px-3 py-1.5 rounded-full hover:bg-neutral-800/50 hover:border-neutral-700 border transition-all group cursor-pointer ${focusedIndex === INDEX_PROFILE ? 'ring-2 ring-orange-500 bg-neutral-800 border-neutral-700 scale-105' : 'border-transparent'}`}
+                            className={`group flex h-10 max-w-full cursor-pointer items-center gap-2.5 rounded-full pl-1 pr-3.5 transition-colors duration-150 hover:bg-raised ${isFocused(INDEX_PROFILE) ? 'bg-raised ring-2 ring-accent' : ''}`}
                             title={t('header.profileSettings')}
                         >
-                            <div className="flex items-center gap-2">
-                                {user.picture ? (
-                                    <img src={user.picture} referrerPolicy="no-referrer" className="w-8 h-8 rounded-full border border-neutral-700" alt={user.name} />
-                                ) : (
-                                    <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-xs font-bold text-neutral-500 border border-neutral-700">
-                                        {displayName(user, t).charAt(0)}
-                                    </div>
-                                )}
-                                <span className="text-neutral-300 font-medium group-hover:text-white transition-colors">{t('lobby.welcome')}, {displayName(user, t)}</span>
-                            </div>
+                            {avatar('h-8 w-8')}
+                            <span dir="auto" className="cv-bidi min-w-0 truncate text-sm font-medium text-ink-2 transition-colors duration-150 group-hover:text-ink">{t('lobby.welcome')}, {displayName(user, t)}</span>
                         </button>
                     ) : (
                         <GoogleAuthButton
@@ -722,10 +746,10 @@ export function Lobby() {
                                 <button
                                     id="lobby-auth-button"
                                     onClick={performLogin}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-700 font-medium transition-all ${disabled ? (focusedIndex === INDEX_PROFILE ? 'bg-neutral-900 text-neutral-500 border-neutral-700' : 'bg-neutral-900/50 text-neutral-600 border-neutral-800 opacity-50 grayscale') : 'bg-neutral-800 hover:bg-neutral-700 text-white active:scale-95'} ${focusedIndex === INDEX_PROFILE ? 'ring-2 ring-orange-500 scale-105' : ''}`}
+                                    className={`cv-btn cv-btn-quiet rounded-full ${disabled && !isFocused(INDEX_PROFILE) ? 'opacity-60' : ''} ${isFocused(INDEX_PROFILE) ? 'ring-2 ring-accent' : ''}`}
                                     title={disabled ? t('lobby.acceptCookies') : ""}
                                 >
-                                    <GoogleGIcon className={`w-5 h-5 ${disabled ? 'opacity-50' : ''}`} />
+                                    <GoogleGIcon className="h-4 w-4" />
                                     {t('lobby.signInGoogle')}
                                 </button>
                             )}
@@ -735,49 +759,53 @@ export function Lobby() {
             </header>
 
             {lastError && (
-                <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounceIn">
-                    <div className="bg-red-900/90 border border-red-500 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-md">
-                        <AlertCircle size={20} className="text-red-400" />
-                        <span className="font-medium">{lastError}</span>
+                <div className="pointer-events-none fixed inset-x-0 top-20 z-50 flex justify-center px-4">
+                    <div className="animate-fadeIn flex items-center gap-3 rounded-xl border border-red-500/40 bg-[#2a1311] px-4 py-3 text-ink shadow-2xl">
+                        <AlertCircle size={18} className="flex-none text-red-400" />
+                        <span className="text-sm font-medium">{lastError}</span>
                     </div>
                 </div>
             )}
 
             <main className="w-full max-w-5xl">
-                <div className="flex flex-col gap-6 mb-8">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <h2 className="text-2xl font-semibold leading-tight">{t('lobby.browseChannels')}</h2>
+                <div className="mb-6 flex flex-col gap-4">
+                    <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                        <h2 className="text-2xl font-semibold leading-8 tracking-tight">{t('lobby.browseChannels')}</h2>
 
                         {/* Search Bar with integrated Language Filter */}
                         <div className="relative w-full md:w-80" ref={filterFlagRef}>
                             <button
                                 type="button"
                                 onClick={() => { setFilterFlagOpen(!filterFlagOpen); if (!filterFlagOpen) setFilterFlagSearch(""); }}
-                                className={`absolute inset-y-0 left-0 flex items-center pl-3 pr-2 rounded-l-xl transition-colors z-10 ${filterLanguageFlag !== 'international' ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+                                className={`absolute inset-y-0 left-0 z-10 flex items-center gap-1 rounded-l-xl pl-3 pr-2 transition-colors duration-150 ${filterLanguageFlag !== 'international' ? 'text-ink' : 'text-ink-3 hover:text-ink-2'}`}
                                 title={t('lobby.videoLanguage')}
                             >
-                                <span className="text-base">{getFlagEmoji(filterLanguageFlag)}</span>
-                                <svg className={`w-3 h-3 ml-1 text-neutral-600 transition-transform ${filterFlagOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                <span className="flex items-center text-base leading-none">
+                                    {filterLanguageFlag === 'international' ? worldMark(16) : getFlagEmoji(filterLanguageFlag)}
+                                </span>
+                                <ChevronDown size={12} className={`transition-transform duration-150 ${filterFlagOpen ? 'rotate-180' : ''}`} />
                             </button>
                             <input
                                 id="channel-search"
                                 type="text"
-                                className={`bg-neutral-900 border text-white text-sm rounded-xl block w-full pl-14 p-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent placeholder-neutral-500 transition-all ${filterFlagOpen ? 'border-orange-500/50' : 'border-neutral-800'}`}
-                                placeholder={filterFlagOpen ? "Search countries..." : t('lobby.searchPlaceholder')}
+                                className={`block h-11 w-full rounded-xl border bg-card pl-14 pr-3 text-base text-ink sm:h-10 placeholder:text-ink-3 transition-[border-color,box-shadow] duration-150 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-accent/70 sm:text-sm ${filterFlagOpen ? 'border-accent/50' : 'border-line'}`}
+                                placeholder={filterFlagOpen ? t('lobby.searchCountries') : t('lobby.searchPlaceholder')}
                                 value={filterFlagOpen ? filterFlagSearch : searchQuery}
                                 onChange={(e) => filterFlagOpen ? setFilterFlagSearch(e.target.value) : setSearchQuery(e.target.value)}
                             />
                             {filterFlagOpen && (
-                                <div className="absolute left-0 top-full mt-1 w-full bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150 overflow-y-auto py-1" style={{ maxHeight: '20rem' }}>
+                                <div className="absolute left-0 top-full z-50 mt-1 w-full origin-top-left overflow-y-auto overscroll-contain rounded-xl border border-line bg-card py-1 shadow-xl animate-in fade-in zoom-in-95 duration-150 ease-cv" style={{ maxHeight: '20rem' }}>
                                     {localizedCountries.filter(lang =>
                                         lang.code === 'international' || lang.search.includes(filterFlagSearch.toLowerCase())
                                     ).map(lang => (
                                         <button
                                             key={lang.code}
                                             onClick={() => { setFilterLanguageFlag(lang.code); setFilterFlagOpen(false); setFilterFlagSearch(""); }}
-                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-neutral-800 transition-colors ${filterLanguageFlag === lang.code ? 'text-orange-500 font-bold bg-orange-500/10' : 'text-neutral-300'}`}
+                                            className={`flex min-h-11 w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors duration-150 hover:bg-raised sm:min-h-0 ${filterLanguageFlag === lang.code ? 'bg-accent/10 font-medium text-accent' : 'text-ink'}`}
                                         >
-                                            <span className="text-base">{lang.emoji}</span>
+                                            <span className="flex w-5 justify-center text-base leading-none">
+                                                {lang.code === 'international' ? worldMark(16, 'text-ink-2') : lang.emoji}
+                                            </span>
                                             <span>{lang.label}</span>
                                         </button>
                                     ))}
@@ -786,37 +814,26 @@ export function Lobby() {
                         </div>
                     </div>
 
-                    {/* Filters - Scrollable on mobile */}
-                    <div className="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-none">
-                        <div className="flex bg-neutral-900 rounded-lg p-1.5 gap-2 border border-neutral-800 w-full sm:w-fit">
-                            <button
-                                onClick={() => setChannelType('public')}
-                                className={`flex-1 sm:flex-none px-3 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 whitespace-nowrap ${channelType === 'public' ? 'bg-neutral-800 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-300'} ${focusedIndex === -2 ? 'ring-2 ring-orange-500 text-white relative z-10' : ''}`}
-                            >
-                                <Globe size={14} /> {t('lobby.public')}
+                    {/* Filters: three equal tabs on a phone, as wide as their words above that */}
+                    <div className="flex w-full gap-1 rounded-xl border border-line bg-card p-1 sm:w-fit">
+                        <button onClick={() => setChannelType('public')} className={tabClass(channelType === 'public', -2)}>
+                            <Globe size={16} className="max-sm:hidden" /> {t('lobby.public')}
+                        </button>
+                        <button onClick={() => setChannelType('private')} className={tabClass(channelType === 'private', -1)}>
+                            <Lock size={16} className="max-sm:hidden" /> {t('lobby.private')}
+                        </button>
+                        {user && (
+                            <button onClick={() => setChannelType('my_channels')} className={tabClass(channelType === 'my_channels', -4)}>
+                                <UserRound size={16} className="max-sm:hidden" /> {t('lobby.myChannels')}
                             </button>
-                            <button
-                                onClick={() => setChannelType('private')}
-                                className={`flex-1 sm:flex-none px-3 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 whitespace-nowrap ${channelType === 'private' ? 'bg-neutral-800 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-300'} ${focusedIndex === -1 ? 'ring-2 ring-orange-500 text-white relative z-10' : ''}`}
-                            >
-                                <Lock size={14} /> {t('lobby.private')}
-                            </button>
-                            {user && (
-                                <button
-                                    onClick={() => setChannelType('my_channels')}
-                                    className={`flex-1 sm:flex-none px-3 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 whitespace-nowrap ${channelType === 'my_channels' ? 'bg-orange-500/10 text-orange-500 border border-orange-500/50' : 'text-neutral-500 hover:text-neutral-300'}`}
-                                >
-                                    <Sparkles size={14} /> {t('lobby.myChannels')}
-                                </button>
-                            )}
-                        </div>
+                        )}
                     </div>
                 </div>
 
                 {showConnectingOverlay || !hasList ? (
                     <LoadingScreen embedded isOnline={isOnline} message={t('lobby.connecting')} reconnectAttempt={reconnectAttempt} onForceReconnect={forceReconnect} />
                 ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
                         {/* Create Room Button - Only on First Page */}
                         {showCreateButton && (
                             <button
@@ -825,24 +842,20 @@ export function Lobby() {
                                     handleCreateRoomClick();
                                     setFocusedIndex(0);
                                 }}
-                                onMouseEnter={() => {
-                                    if (!isScrolling.current) setFocusedIndex(0);
-                                }}
-                                onMouseMove={() => {
-                                    if (!isScrolling.current && focusedIndex !== 0) setFocusedIndex(0);
-                                }}
-                                className={`scroll-mt-56 scroll-mb-24 rounded-2xl border relative transition-all duration-300 w-full aspect-[4/3] order-first ${focusedIndex === 0
-                                    ? "border-orange-500 ring-2 ring-orange-500/50 scale-[1.02] bg-neutral-800/50"
-                                    : isSignedIn(user)
-                                        ? "border-neutral-800 text-neutral-500 cursor-pointer"
-                                        : "border-neutral-900 text-neutral-700 cursor-not-allowed"
-                                    }`}
-                                title={isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'))}
+                                onMouseEnter={() => pointAt(0)}
+                                onMouseMove={() => pointAt(0)}
+                                className={`group order-first relative aspect-[4/3] w-full scroll-mb-24 scroll-mt-56 rounded-2xl border border-accent bg-card transition-[background-color,box-shadow,transform] duration-150 ease-cv active:scale-[0.98] ${isFocused(0) ? "ring-4 ring-accent" : "ring-2 ring-accent/50"} ${isSignedIn(user) ? "cursor-pointer hover:bg-raised" : "cursor-not-allowed"}`}
+                                title={createLabel}
                             >
-                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-4 sm:p-6">
-                                    <Sparkles size={32} className={focusedIndex === 0 ? "text-orange-500" : ""} />
-                                    <span className={`font-medium text-center ${focusedIndex === 0 ? "text-white" : ""}`}>
-                                        {isSignedIn(user) ? t('lobby.createChannel') : (!hasConsent ? t('lobby.acceptCookies') : t('lobby.loginToCreate'))}
+                                {/* The lobby's one lit tile: an orange outline, the icon in
+                                    orange, the words in ink. The cookie banner below carries
+                                    the cookie, so the tile keeps its sparkles in every state.
+                                    Reached with the arrow keys (TV remote) the outline
+                                    doubles in width. */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-2 py-3 sm:gap-4 sm:p-5">
+                                    <Sparkles className="h-7 w-7 flex-none text-accent sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden="true" />
+                                    <span className="max-w-full hyphens-auto text-center text-sm font-medium text-ink [overflow-wrap:anywhere] sm:text-base">
+                                        {createLabel}
                                     </span>
                                 </div>
                             </button>
@@ -850,8 +863,8 @@ export function Lobby() {
 
                         {/* Filtered Rooms */}
                         {filteredRooms.length === 0 && searchQuery && (
-                            <div className="col-span-full text-center text-neutral-500 py-12 flex flex-col items-center">
-                                <Search className="w-8 h-8 mb-2 opacity-50" />
+                            <div className="col-span-full flex flex-col items-center py-12 text-center text-ink-2">
+                                <Search className="mb-2 h-6 w-6 text-ink-3" />
                                 <p>{t('lobby.noChannelsFound')} "{searchQuery}"</p>
                             </div>
                         )}
@@ -861,6 +874,7 @@ export function Lobby() {
                             // If create button is shown, first room is index 1.
                             // If not, first room is index 0.
                             const actualIndex = showCreateButton ? i + 1 : i;
+                            const hasThumbnail = channel.currentTrack?.thumbnail && hasConsent && !failedThumbnails.has(channel.currentTrack.thumbnail);
 
                             return (
                                 <div
@@ -870,31 +884,26 @@ export function Lobby() {
                                         setFocusedIndex(actualIndex);
                                         handleRoomClick(channel); // Use handler instead of direct navigate
                                     }}
-                                    onMouseEnter={() => {
-                                        if (!isScrolling.current) setFocusedIndex(actualIndex);
-                                    }}
-                                    onMouseMove={() => {
-                                        if (!isScrolling.current && focusedIndex !== actualIndex) setFocusedIndex(actualIndex);
-                                    }}
-                                    className={`scroll-mt-56 scroll-mb-24 group relative overflow-hidden rounded-2xl bg-neutral-900 border transition-all duration-300 text-left w-full aspect-[4/3] cursor-pointer ${actualIndex === focusedIndex
-                                        ? "border-orange-500 ring-2 ring-orange-500/50 scale-[1.02] z-10"
-                                        : "border-neutral-800"
+                                    onMouseEnter={() => pointAt(actualIndex)}
+                                    onMouseMove={() => pointAt(actualIndex)}
+                                    className={`group relative aspect-[4/3] w-full cursor-pointer scroll-mb-24 scroll-mt-56 overflow-hidden rounded-2xl border bg-card text-left transition-[border-color,transform] duration-150 ease-cv active:scale-[0.98] ${isFocused(actualIndex)
+                                        ? "z-10 border-transparent ring-2 ring-accent"
+                                        : "border-line hover:border-ink/25"
                                         }`}
                                 >
                                     <div className="absolute inset-0">
-                                        {channel.currentTrack?.thumbnail && hasConsent && !failedThumbnails.has(channel.currentTrack.thumbnail) ? (
+                                        {hasThumbnail ? (
                                             <>
                                                 <img
                                                     src={channel.currentTrack.thumbnail}
-                                                    alt={channel.name}
-                                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 scale-105 group-hover:scale-110 transform transition-transform"
+                                                    alt=""
+                                                    className="h-full w-full object-cover"
                                                     onError={() => setFailedThumbnails(prev => new Set(prev).add(channel.currentTrack.thumbnail))}
                                                 />
-                                                <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-500" />
+                                                {/* The words sit at the bottom: darker there, the picture clearer above. */}
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/30 transition-opacity duration-150 group-hover:opacity-90" />
                                             </>
-                                        ) : (
-                                            <div className={`absolute inset-0 bg-gradient-to-br ${channel.color} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
-                                        )}
+                                        ) : null}
                                         {/* Apple channels never send a thumbnail, so a warm glow
                                             from the label's corner fills the card instead. */}
                                         {channel.provider === 'apple' && (
@@ -902,71 +911,38 @@ export function Lobby() {
                                         )}
                                     </div>
 
-                                    {/* The source in words, set like the rest of the card: Apple
-                                        allows its badges and icon only as links to Apple Music,
-                                        and the name stays "Apple Music" in every language. */}
-                                    {channel.provider === 'apple' && (
-                                        <span className={`absolute top-3 left-4 sm:top-5 sm:left-6 z-10 text-xs font-semibold transition-colors ${actualIndex === focusedIndex ? 'text-orange-300' : 'text-orange-400'}`}>
-                                            Apple Music
-                                        </span>
-                                    )}
+                                    <div className="absolute inset-0 z-10 flex flex-col p-3 sm:p-5">
+                                        {/* The source in words, set like the rest of the card: Apple
+                                            allows its badges and icon only as links to Apple Music,
+                                            and the name stays "Apple Music" in every language. */}
+                                        {channel.provider === 'apple' && (
+                                            <span className="text-xs font-semibold text-orange-400">
+                                                Apple Music
+                                            </span>
+                                        )}
 
-                                    <div className="absolute inset-0 p-4 sm:p-6 flex flex-col justify-end z-10 w-full pointer-events-none">
-                                        <div className="flex items-center justify-between pointer-events-auto">
-                                            <div className="flex-1 min-w-0 pr-2">
-                                                {/* Mobile: Always scroll if long */}
-                                                <div className="md:hidden">
-                                                    {channel.name.length > 12 ? (
-                                                        <div className="overflow-hidden whitespace-nowrap w-full mask-linear-fade">
-                                                            <span
-                                                                className="animate-billboard inline-block pl-0"
-                                                                style={{ animationDuration: `${Math.max(10, channel.name.length * 0.4)}s` }}
-                                                            >
-                                                                <h3 className="text-xl font-bold text-white inline">
-                                                                    {channel.name}&nbsp;&nbsp;&nbsp;&nbsp;{channel.name}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                </h3>
-                                                            </span>
-                                                        </div>
-                                                    ) : (
-                                                        <h3 className="text-xl font-bold text-white truncate">
-                                                            {channel.name}
-                                                        </h3>
-                                                    )}
+                                        <div className="mt-auto min-w-0">
+                                            {/* The whole name, on up to two lines. */}
+                                            <h3 dir="auto" className="cv-bidi line-clamp-2 break-words text-base font-semibold leading-snug text-ink sm:text-lg sm:leading-6">
+                                                {channel.name}
+                                            </h3>
+                                            {/* One line, and none on a phone, where the card has no room
+                                                for it: the name and the source label keep theirs. */}
+                                            <p dir="auto" className="cv-bidi mt-0.5 line-clamp-1 text-sm text-ink-2 max-sm:hidden">{hostLine(channel.description)}</p>
+
+                                            <div className="mt-2 flex items-center justify-between gap-2 text-xs font-medium text-ink-2 sm:mt-3">
+                                                <div className="flex items-center gap-1.5 tabular-nums">
+                                                    <Users size={14} className="text-ink-3" /> <span>{formatCount(channel.listeners, language)} {t('lobby.live')}</span>
                                                 </div>
-
-                                                {/* Desktop: Scroll on focus */}
-                                                <div className="hidden md:block">
-                                                    {actualIndex === focusedIndex && channel.name.length > 15 ? (
-                                                        <div className="overflow-hidden whitespace-nowrap w-full mask-linear-fade">
-                                                            <span
-                                                                className="animate-billboard inline-block pl-0"
-                                                                style={{ animationDuration: `${Math.max(8, channel.name.length * 0.2)}s` }}
-                                                            >
-                                                                <h3 className="text-2xl font-bold text-orange-400 inline">
-                                                                    {channel.name}&nbsp;&nbsp;&nbsp;&nbsp;{channel.name}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                </h3>
-                                                            </span>
-                                                        </div>
-                                                    ) : (
-                                                        <h3 className={`text-2xl font-bold transition-colors truncate ${actualIndex === focusedIndex ? "text-orange-400" : "text-white"}`}>
-                                                            {channel.name}
-                                                        </h3>
-                                                    )}
+                                                <div className="flex items-center gap-2">
+                                                    {channel.is_protected && <Lock size={14} className="text-ink-2" />}
+                                                    <span className="flex h-4 items-center text-sm leading-none" title={localizedCountries.find(l => l.code === channel.language_flag)?.label || 'International'}>
+                                                        {/* The globe also for a country the lobby has no flag for. */}
+                                                        {hasFlag(channel.language_flag)
+                                                            ? getFlagEmoji(channel.language_flag)
+                                                            : worldMark(14, 'text-ink-3')}
+                                                    </span>
                                                 </div>
-                                            </div>
-                                            <Radio className={`transition-colors flex-shrink-0 ${actualIndex === focusedIndex ? "text-white" : "text-neutral-500"}`} />
-                                        </div>
-                                        {/* One line, and none on a phone, where the card has no room
-                                            for it: the name and the source label keep theirs. */}
-                                        <p className="max-sm:hidden text-neutral-400 text-sm line-clamp-1 mt-2 pointer-events-auto">{channel.description}</p>
-
-                                        <div className="flex items-center gap-2 pt-3 sm:pt-4 text-xs font-medium text-neutral-500 uppercase tracking-wider justify-between pointer-events-auto">
-                                            <div className="flex items-center gap-2">
-                                                <Users size={14} /> <span>{channel.listeners || 0} {t('lobby.live')}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-base normal-case" title={localizedCountries.find(l => l.code === channel.language_flag)?.label || 'International'}>{getFlagEmoji(channel.language_flag)}</span>
-                                                {channel.is_protected && <Lock size={14} className="text-orange-500" />}
                                             </div>
                                         </div>
                                     </div>
@@ -980,25 +956,25 @@ export function Lobby() {
                 {/* Pagination Controls */}
                 {
                     totalPages > 1 && (
-                        <div className="flex items-center justify-center gap-4 mt-8">
+                        <div className="mt-8 flex items-center justify-center gap-4">
                             <button
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                 disabled={currentPage === 1}
-                                className="p-2 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-card text-ink-2 transition-colors duration-150 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                <ChevronLeft size={20} />
+                                <ChevronLeft size={18} />
                             </button>
 
-                            <div className="text-sm font-medium text-neutral-400">
-                                Page <span className="text-white">{currentPage}</span> of <span className="text-white">{totalPages}</span>
+                            <div className="text-sm font-medium tabular-nums text-ink-2">
+                                Page <span className="text-ink">{currentPage}</span> of <span className="text-ink">{totalPages}</span>
                             </div>
 
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                 disabled={currentPage === totalPages}
-                                className="p-2 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-card text-ink-2 transition-colors duration-150 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                <ChevronRight size={20} />
+                                <ChevronRight size={18} />
                             </button>
                         </div>
                     )
@@ -1008,11 +984,11 @@ export function Lobby() {
             {/* Create Room Modal */}
             {
                 isCreatingRoom && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-md p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                        <div className="bg-card border border-line rounded-2xl w-full max-w-md p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-xl font-bold text-white">{t('lobby.createNewChannel')}</h3>
-                                <button onClick={() => setIsCreatingRoom(false)} className="text-neutral-500 hover:text-white transition-colors">
+                                <h3 className="text-xl font-semibold text-ink">{t('lobby.createNewChannel')}</h3>
+                                <button onClick={() => setIsCreatingRoom(false)} className="text-ink-3 hover:text-ink transition-colors duration-150">
                                     <X size={24} />
                                 </button>
                             </div>
@@ -1020,18 +996,18 @@ export function Lobby() {
                             <form onSubmit={submitCreateRoom}>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.channelName')}</label>
+                                        <label className="block text-sm font-medium text-ink-2 mb-1.5">{t('lobby.channelName')}</label>
                                         <input
                                             type="text"
                                             value={newRoomName}
                                             onChange={(e) => setNewRoomName(e.target.value.slice(0, 100))}
                                             placeholder={t('lobby.channelNamePlaceholder')}
                                             maxLength={100}
-                                            className="w-full bg-[#050505] border border-neutral-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                                            className="w-full bg-page border border-line rounded-xl px-4 py-3 text-ink placeholder:text-ink-3 focus:outline-none focus:border-accent transition-colors duration-150"
                                             autoFocus
                                         />
                                         <div className="flex justify-end mt-1">
-                                            <span className={`text-xs ${newRoomName.length >= 100 ? 'text-red-500 font-bold' : 'text-neutral-500'}`}>
+                                            <span className={`text-xs ${newRoomName.length >= 100 ? 'text-red-500 font-bold' : 'text-ink-3'}`}>
                                                 {newRoomName.length}/100
                                             </span>
                                         </div>
@@ -1042,7 +1018,7 @@ export function Lobby() {
                                         YouTube content, and neither is a link here. */}
                                     {appleMusicAvailable && (
                                         <div>
-                                            <p id="create-source-label" className="block text-sm font-medium text-neutral-400 mb-1">{t('appleMusic.source')}</p>
+                                            <p id="create-source-label" className="block text-sm font-medium text-ink-2 mb-1.5">{t('appleMusic.source')}</p>
                                             <SegmentedControl
                                                 labelledBy="create-source-label"
                                                 value={provider}
@@ -1053,13 +1029,13 @@ export function Lobby() {
                                                 ]}
                                             />
                                             {provider === 'apple' && (
-                                                <p className="mt-2 text-xs text-neutral-500 animate-in fade-in slide-in-from-top-1 duration-200">{t('appleMusic.sourceHint')}</p>
+                                                <p className="mt-2 text-xs text-ink-2 animate-in fade-in slide-in-from-top-1 duration-200">{t('appleMusic.sourceHint')}</p>
                                             )}
                                         </div>
                                     )}
 
                                     <div>
-                                        <p id="create-privacy-label" className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.privacy')}</p>
+                                        <p id="create-privacy-label" className="block text-sm font-medium text-ink-2 mb-1.5">{t('lobby.privacy')}</p>
                                         <SegmentedControl
                                             labelledBy="create-privacy-label"
                                             value={isPrivate ? 'private' : 'public'}
@@ -1081,20 +1057,20 @@ export function Lobby() {
 
                                     {!isPrivate && (
                                         <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-                                            <label className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.videoLanguage')}</label>
+                                            <label className="block text-sm font-medium text-ink-2 mb-1.5">{t('lobby.videoLanguage')}</label>
                                             <div className="relative">
                                                 {languageFlagOpen ? (
-                                                    <div className="w-full bg-[#050505] border border-orange-500/50 rounded-xl px-4 py-3 flex items-center gap-2">
+                                                    <div className="w-full bg-page border border-accent/50 rounded-xl px-4 py-3 flex items-center gap-2">
                                                         <span className="text-lg">{getFlagEmoji(languageFlag)}</span>
                                                         <input
                                                             type="text"
-                                                            className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder-neutral-500"
+                                                            className="flex-1 bg-transparent text-ink text-sm focus:outline-none placeholder:text-ink-3"
                                                             placeholder={t('lobby.searchCountries')}
                                                             value={createFlagSearch}
                                                             onChange={(e) => setCreateFlagSearch(e.target.value)}
                                                             autoFocus
                                                         />
-                                                        <button type="button" onClick={() => { setLanguageFlagOpen(false); setCreateFlagSearch(""); }} className="text-neutral-500 hover:text-white">
+                                                        <button type="button" onClick={() => { setLanguageFlagOpen(false); setCreateFlagSearch(""); }} className="text-ink-3 hover:text-ink">
                                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                                                         </button>
                                                     </div>
@@ -1102,17 +1078,17 @@ export function Lobby() {
                                                     <button
                                                         type="button"
                                                         onClick={() => { setLanguageFlagOpen(true); setCreateFlagSearch(""); }}
-                                                        className="w-full bg-[#050505] border border-neutral-800 rounded-xl px-4 py-3 text-white text-left flex items-center justify-between hover:border-neutral-700 transition-colors"
+                                                        className="w-full bg-page border border-line rounded-xl px-4 py-3 text-ink text-left flex items-center justify-between hover:border-ink/25 transition-colors duration-150"
                                                     >
                                                         <span className="flex items-center gap-2">
                                                             <span className="text-lg">{getFlagEmoji(languageFlag)}</span>
                                                             <span>{localizedCountries.find(l => l.code === languageFlag)?.label || 'International'}</span>
                                                         </span>
-                                                        <svg className="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                                        <svg className="w-4 h-4 text-ink-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                                     </button>
                                                 )}
                                                 {languageFlagOpen && (
-                                                    <div className="absolute z-50 mt-1 w-full bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-xl animate-in fade-in zoom-in-95 duration-150 overflow-y-auto py-1" style={{ maxHeight: '14rem' }}>
+                                                    <div className="absolute z-50 mt-1 w-full bg-card border border-line rounded-xl shadow-xl animate-in fade-in zoom-in-95 duration-150 overflow-y-auto py-1" style={{ maxHeight: '14rem' }}>
                                                         {localizedCountries.filter(lang =>
                                                             lang.code === 'international' || lang.search.includes(createFlagSearch.toLowerCase())
                                                         ).map(lang => (
@@ -1120,7 +1096,7 @@ export function Lobby() {
                                                                 key={lang.code}
                                                                 type="button"
                                                                 onClick={() => { setLanguageFlag(lang.code); setLanguageFlagOpen(false); setCreateFlagSearch(""); }}
-                                                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-neutral-800 transition-colors ${languageFlag === lang.code ? 'text-orange-500 font-bold bg-orange-500/10' : 'text-neutral-300'}`}
+                                                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-raised transition-colors duration-150 ${languageFlag === lang.code ? 'text-accent font-medium bg-accent/10' : 'text-ink'}`}
                                                             >
                                                                 <span className="text-base">{lang.emoji}</span>
                                                                 <span>{lang.label}</span>
@@ -1134,31 +1110,31 @@ export function Lobby() {
 
                                     {isPrivate && (
                                         <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-                                            <label className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.passwordOptional')}</label>
+                                            <label className="block text-sm font-medium text-ink-2 mb-1.5">{t('lobby.passwordOptional')}</label>
                                             <input
                                                 type="text"
                                                 value={createPassword}
                                                 onChange={(e) => setCreatePassword(e.target.value)}
                                                 placeholder={t('lobby.passwordPlaceholder')}
-                                                className="w-full bg-[#050505] border border-neutral-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                                                className="w-full bg-page border border-line rounded-xl px-4 py-3 text-ink placeholder:text-ink-3 focus:outline-none focus:border-accent transition-colors duration-150"
                                             />
                                         </div>
                                     )}
 
                                 </div>
 
-                                <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800 mt-6">
+                                <div className="flex justify-end gap-3 pt-4 border-t border-line mt-6">
                                     <button
                                         type="button"
                                         onClick={() => setIsCreatingRoom(false)}
-                                        className="px-4 py-2 rounded-xl text-neutral-400 hover:text-white transition-colors font-medium"
+                                        className="cv-btn cv-btn-ghost"
                                     >
                                         {t('lobby.cancel')}
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={!newRoomName.trim()}
-                                        className="px-6 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold hover:from-orange-400 hover:to-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="cv-btn cv-btn-accent px-5 font-semibold"
                                     >
                                         {t('lobby.createChannel')}
                                     </button>
@@ -1171,38 +1147,38 @@ export function Lobby() {
 
             {
                 showPasswordModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                        <div className="bg-card border border-line rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                    <Lock size={20} className="text-orange-500" /> Private Channel
+                                <h3 className="text-xl font-semibold text-ink flex items-center gap-2">
+                                    <Lock size={18} className="text-ink-2" /> Private Channel
                                 </h3>
-                                <button onClick={() => setShowPasswordModal(false)} className="text-neutral-500 hover:text-white transition-colors">
+                                <button onClick={() => setShowPasswordModal(false)} className="text-ink-3 hover:text-ink transition-colors duration-150">
                                     <X size={24} />
                                 </button>
                             </div>
 
                             <form onSubmit={submitPasswordJoin} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-400 mb-1">{t('lobby.enterPassword')}</label>
+                                    <label className="block text-sm font-medium text-ink-2 mb-1.5">{t('lobby.enterPassword')}</label>
                                     <input
                                         type="password"
                                         value={passwordInput}
                                         onChange={(e) => setPasswordInput(e.target.value)}
                                         placeholder={t('lobby.passwordInputPlaceholder')}
-                                        className={`w-full bg-[#050505] border ${passwordError ? 'border-red-500 focus:border-red-500' : 'border-neutral-800 focus:border-orange-500'} rounded-xl px-4 py-3 text-white focus:outline-none transition-colors`}
+                                        className={`w-full bg-page border ${passwordError ? 'border-red-500 focus:border-red-500' : 'border-line focus:border-accent'} rounded-xl px-4 py-3 text-ink placeholder:text-ink-3 focus:outline-none transition-colors duration-150`}
                                         autoFocus
                                     />
                                     {passwordError && (
                                         <div className="text-red-500 text-sm mt-2 font-medium animate-in slide-in-from-top-1">
-                                            {passwordError}
+                                            {t('lobby.wrongPassword')}
                                         </div>
                                     )}
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold hover:from-orange-400 hover:to-orange-500 transition-all mt-2"
+                                    className="cv-btn cv-btn-accent mt-2 h-11 w-full font-semibold"
                                 >
                                     {t('lobby.unlockJoin')}
                                 </button>
@@ -1216,23 +1192,17 @@ export function Lobby() {
             {
                 showProfileModal && (
                     <div
-                        className="fixed inset-0 z-[50] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+                        className="fixed inset-0 z-[50] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200"
                         onClick={() => setShowProfileModal(false)}
                     >
                         <div
-                            className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200"
+                            className="bg-card border border-line rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex flex-col items-center mb-6">
-                                {user?.picture ? (
-                                    <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-20 h-20 rounded-full border-2 border-neutral-700 mb-4 shadow-xl" />
-                                ) : (
-                                    <div className="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center text-3xl font-bold text-neutral-500 mb-4 border-2 border-neutral-700">
-                                        {displayName(user, t).charAt(0)}
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-white">{displayName(user, t)}</h3>
-                                <p className="text-sm text-neutral-400">{user?.email}</p>
+                                <Avatar picture={user?.picture} name={displayName(user, t)} className="mb-4 h-20 w-20" textClassName="text-3xl" />
+                                <h3 className="text-xl font-semibold text-ink">{displayName(user, t)}</h3>
+                                <p className="text-sm text-ink-2">{user?.email}</p>
                             </div>
 
                             {!showDeleteConfirm ? (
@@ -1242,12 +1212,12 @@ export function Lobby() {
                                             handleLogout();
                                             setShowProfileModal(false);
                                         }}
-                                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium transition-colors border border-black/20"
+                                        className="cv-btn cv-btn-quiet h-11 w-full"
                                     >
                                         <LogOut size={18} /> {t('lobby.signOut')}
                                     </button>
 
-                                    <div className="pt-4 border-t border-neutral-800 mt-4">
+                                    <div className="pt-4 border-t border-line mt-4">
                                         <button
                                             onClick={() => setShowDeleteConfirm(true)}
                                             className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-red-900/30 text-red-500 hover:bg-red-950/30 hover:border-red-900/50 transition-colors text-sm font-medium"
@@ -1259,17 +1229,17 @@ export function Lobby() {
                             ) : (
                                 <div className="text-center animate-in fade-in slide-in-from-bottom-2">
                                     <h4 className="text-lg font-bold text-red-500 mb-2">{t('lobby.deleteAccountConfirm')}</h4>
-                                    <p className="text-sm text-neutral-400 mb-4 leading-relaxed" dangerouslySetInnerHTML={dangerousHtml(t('lobby.deleteAccountWarning'))} />
+                                    <p className="text-sm text-ink-2 mb-4 leading-relaxed" dangerouslySetInnerHTML={dangerousHtml(t('lobby.deleteAccountWarning'))} />
 
                                     <div className="mb-6">
-                                        <label className="block text-xs text-neutral-500 mb-2 font-medium">
-                                            {t('lobby.deleteAccountType')} <span className="text-neutral-300 font-bold select-none">{t('lobby.deleteAccountPhrase')}</span> {t('lobby.deleteAccountToConfirm')}
+                                        <label className="block text-xs text-ink-2 mb-2 font-medium">
+                                            {t('lobby.deleteAccountType')} <span className="text-ink font-semibold select-none">{t('lobby.deleteAccountPhrase')}</span> {t('lobby.deleteAccountToConfirm')}
                                         </label>
                                         <input
                                             type="text"
                                             value={deleteConfirmationText}
                                             onChange={(e) => setDeleteConfirmationText(e.target.value)}
-                                            className="w-full bg-black/30 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500/50 transition-colors placeholder-neutral-700 font-mono"
+                                            className="w-full bg-page border border-line rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-red-500/50 transition-colors duration-150 placeholder:text-ink-3"
                                             placeholder={t('lobby.deleteAccountType') + "..."}
                                             autoFocus
                                         />
@@ -1281,7 +1251,7 @@ export function Lobby() {
                                                 setShowDeleteConfirm(false);
                                                 setDeleteConfirmationText("");
                                             }}
-                                            className="flex-1 px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium transition-colors"
+                                            className="cv-btn cv-btn-quiet flex-1"
                                         >
                                             {t('lobby.cancel')}
                                         </button>
@@ -1304,8 +1274,8 @@ export function Lobby() {
                 )
             }
 
-            <footer className="w-full max-w-5xl mt-12 py-6 border-t border-neutral-800 flex justify-center">
-                <Link to="/legal" className="text-neutral-500 hover:text-orange-500 transition-colors text-sm font-medium flex items-center gap-2">
+            <footer className="mt-12 flex w-full max-w-5xl justify-center border-t border-line py-6">
+                <Link to="/legal" className="cv-hit flex items-center gap-2 text-sm font-medium text-ink-2 transition-colors duration-150 hover:text-ink">
                     <Scale size={16} />
                     <span>{t('lobby.terms')}</span>
                 </Link>

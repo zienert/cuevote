@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Logg inn for å opprette",
 		"noChannelsFound": "Ingen kanaler funnet for",
 		"live": "Live",
+		"hostedBy": "Vert: {name}",
+		"wrongPassword": "Feil passord",
 		"createNewChannel": "Opprett ny kanal",
 		"channelName": "Kanalnavn",
 		"channelNamePlaceholder": "f.eks. Late Night Vibes",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internettforbindelse",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Vinduet er for lite",
+		"windowTooSmallMessage": "Gjør vinduet større for å fortsette å bruke CueVote.",
 		"backToRadio": "Tilbake til radioen",
 		"retry": "Prøv tilkobling på nytt",
 		"switching": "Bytter kanal...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Slett",
 		"watch": "Se på YouTube",
 		"recommend": "Hent forslag",
-		"guest": "Gjest"
+		"guest": "Gjest",
+		"voteUp": "Stem opp",
+		"voteDown": "Stem ned"
 	},
 	"library": {
 		"searchPlaceholder": "Søk i bibliotek...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} sanger"
 		},
 		"inLibrary": "i bibliotek",
+		"about": "Om biblioteket",
 		"info1": "Dette biblioteket viser unike sanger spilt i de siste <strong>28 dagene</strong>.",
 		"info2": "Eldre sanger skjules for å holde metadata friske, men de <strong>slettes aldri</strong>. Funksjonen <strong>Autorefill</strong> husker fortsatt hele historikken din og vil automatisk hente eldre sanger tilbake i køen (og denne listen) når det trengs!",
 		"empty": "Ingen sanger funnet"
@@ -243,6 +248,13 @@ export default {
 		"history": "Historikk",
 		"last50": "Siste 50 (av {count})",
 		"nowPlaying": "Spiller nå",
+		"play": "Spill av",
+		"pause": "Pause",
+		"mute": "Slå av lyd",
+		"unmute": "Slå på lyd",
+		"volume": "Volum",
+		"cinemaMode": "Kinomodus",
+		"exitCinemaMode": "Avslutt kinomodus",
 		"upNext": "Neste",
 		"queueEmpty": "Køen er tom",
 		"errorNotFound": "Video ikke funnet",

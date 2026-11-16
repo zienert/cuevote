@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Влез, за да създадешь",
 		"noChannelsFound": "Няма намерени канали за",
 		"live": "На живо",
+		"hostedBy": "Домакин: {name}",
+		"wrongPassword": "Грешна парола",
 		"createNewChannel": "Създай нов канал",
 		"channelName": "Име на канала",
 		"channelNamePlaceholder": "напр. Нощни вибрации",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Няма интернет връзка",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Прозорецът е твърде малък",
+		"windowTooSmallMessage": "Уголемете прозореца, за да продължите да използвате CueVote.",
 		"backToRadio": "Обратно към радиото",
 		"retry": "Опитайте отново връзката",
 		"switching": "Смяна на канал...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Изтрий",
 		"watch": "Гледай в YouTube",
 		"recommend": "Получи препоръки",
-		"guest": "Гост"
+		"guest": "Гост",
+		"voteUp": "Гласувай за",
+		"voteDown": "Гласувай против"
 	},
 	"library": {
 		"searchPlaceholder": "Търсене в библиотеката...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} песни"
 		},
 		"inLibrary": "в библиотеката",
+		"about": "За библиотеката",
 		"info1": "Тази библиотека показва уникални видео, пускани през последните <strong>28 дни</strong>.",
 		"info2": "По-старите видео се скриват за актуалност на данните, но <strong>никога не се изтриват</strong>. Функцията <strong>Автоматично попълване</strong> помни цялата ви история и автоматично ще върне стари видео в опашката (и в този списък), когато е необходимо!",
 		"empty": "Няма намерени видео"
@@ -243,6 +248,13 @@ export default {
 		"history": "История",
 		"last50": "Последно 50 (от {count})",
 		"nowPlaying": "Свири сега",
+		"play": "Пусни",
+		"pause": "Пауза",
+		"mute": "Без звук",
+		"unmute": "Включи звука",
+		"volume": "Сила на звука",
+		"cinemaMode": "Кино режим",
+		"exitCinemaMode": "Изход от кино режима",
 		"upNext": "Следващо",
 		"queueEmpty": "Опашката е празна",
 		"errorNotFound": "Видеото не е намерено",

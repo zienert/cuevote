@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Jelentkezz be a létrehozáshoz",
 		"noChannelsFound": "Nem található csatorna ehhez",
 		"live": "Élő",
+		"hostedBy": "Házigazda: {name}",
+		"wrongPassword": "Hibás jelszó",
 		"createNewChannel": "Új Csatorna Létrehozása",
 		"channelName": "Csatorna Neve",
 		"channelNamePlaceholder": "pl. Késő Esti Hangulat",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nincs internetkapcsolat",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Az ablak túl kicsi",
+		"windowTooSmallMessage": "Nagyítsd az ablakot a CueVote további használatához.",
 		"backToRadio": "Vissza a rádióhoz",
 		"retry": "Kapcsolat újrapróbálása",
 		"switching": "Csatorna Váltása...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Törlés",
 		"watch": "Megtekintés YouTube-on",
 		"recommend": "Javaslatok kérése",
-		"guest": "Vendég"
+		"guest": "Vendég",
+		"voteUp": "Szavazás mellette",
+		"voteDown": "Szavazás ellene"
 	},
 	"library": {
 		"searchPlaceholder": "Keresés a könyvtárban...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} dal"
 		},
 		"inLibrary": "a könyvtárban",
+		"about": "A könyvtárról",
 		"info1": "Ez a könyvtár az elmúlt <strong>28 napban</strong> lejátszott egyedi dalokat jeleníti meg.",
 		"info2": "A régebbi dalok el vannak rejtve az adatok frissessége érdekében, de <strong>soha nem törlődnek</strong>. Az <strong>Automatikus Újratöltés</strong> funkció emlékszik a teljes előzményekre, és szükség esetén automatikusan visszahozza a régebbi dalokat a sorba (és ebbe a listába)!",
 		"empty": "Nem található dal"
@@ -243,6 +248,13 @@ export default {
 		"history": "Előzmények",
 		"last50": "Utolsó 50 ({count}-ből)",
 		"nowPlaying": "Most Játszott",
+		"play": "Lejátszás",
+		"pause": "Szünet",
+		"mute": "Némítás",
+		"unmute": "Némítás feloldása",
+		"volume": "Hangerő",
+		"cinemaMode": "Mozi mód",
+		"exitCinemaMode": "Kilépés a mozi módból",
 		"upNext": "Következő",
 		"queueEmpty": "A sor üres",
 		"errorNotFound": "A videó nem található",

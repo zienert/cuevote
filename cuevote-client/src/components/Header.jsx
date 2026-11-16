@@ -13,6 +13,7 @@ import { dangerousHtml } from '../utils/sanitizeHtml';
 import { YouTubeBrandSubtitle } from './YouTubeBrandSubtitle';
 import { SegmentedControl } from './SegmentedControl';
 import { displayName, isSignedIn } from '../utils/participation';
+import { Avatar } from "./Avatar";
 
 
 export function Header({
@@ -188,11 +189,14 @@ export function Header({
   const effectiveIsOwner = isOwner && ownerBypass;
   const suggestDisabled = !suggestionsEnabled && !effectiveIsOwner;
 
-  const pillClass = (active) =>
-    `keep-open flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all active:scale-95 flex-shrink-0 ${
+  // The room's views and actions: quiet buttons, the open one a step lighter.
+  // Suggesting is the one thing everyone comes here to do, so it alone
+  // carries the accent.
+  const pillClass = (active, accent = false) =>
+    `keep-open flex h-8 items-center gap-2 px-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-[background-color,color,transform] duration-150 ease-cv active:scale-[0.97] flex-shrink-0 ${
       active
-        ? "bg-orange-500/15 text-orange-500 border border-orange-500/30"
-        : "text-orange-500/70 hover:text-orange-400 hover:bg-orange-500/10 border border-transparent"
+        ? (accent ? "bg-accent/15 text-accent" : "bg-raised text-ink")
+        : (accent ? "text-accent hover:bg-accent/10" : "text-ink-2 hover:bg-raised hover:text-ink")
     }`;
 
   const isPlaylistMode = mode === "playlist" || mode === "library";
@@ -202,16 +206,16 @@ export function Header({
       return (
         <>
           <button onClick={onPlaylist} className={pillClass(mode === "playlist")}>
-            <List size={15} /><span>{t('header.playlist')}</span>
+            <List size={16} /><span>{t('header.playlist')}</span>
           </button>
           <button onClick={onLibrary} className={pillClass(mode === "library")}>
-            <Library size={15} /><span>{t('header.library')}</span>
+            <Library size={16} /><span>{t('header.library')}</span>
           </button>
           {/* Desktop guests in the playlist view (venue mode, every Apple
               room) suggest from here; touch devices have their own button. */}
           {includeSuggest && (
-            <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest)} ${suggestDisabled ? "opacity-40" : ""}`}>
-              <Send size={15} /><span>{t('header.suggest')}</span>
+            <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest, true)} ${suggestDisabled ? "opacity-40" : ""}`}>
+              <Send size={16} /><span>{t('header.suggest')}</span>
             </button>
           )}
         </>
@@ -222,20 +226,20 @@ export function Header({
       <>
         {!(playlistViewMode && !isOwner) && (
           <button onClick={onPlaylist} className={pillClass(false)}>
-            <List size={15} /><span>{t('header.playlist')}</span>
+            <List size={16} /><span>{t('header.playlist')}</span>
           </button>
         )}
         <button onClick={onShare} className={pillClass(false)}>
-          <QrCode size={15} /><span>{t('header.share')}</span>
+          <QrCode size={16} /><span>{t('header.share')}</span>
         </button>
         {isOwner && (
           <button onClick={onToggleSettings} className={pillClass(showSettings)}>
-            <Settings size={15} /><span>{t('header.settings')}</span>
+            <Settings size={16} /><span>{t('header.settings')}</span>
           </button>
         )}
         {includeSuggest && (
-          <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest)} ${suggestDisabled ? "opacity-40" : ""}`}>
-            <Send size={15} /><span>{t('header.suggest')}</span>
+          <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest, true)} ${suggestDisabled ? "opacity-40" : ""}`}>
+            <Send size={16} /><span>{t('header.suggest')}</span>
           </button>
         )}
       </>
@@ -243,13 +247,13 @@ export function Header({
   };
 
   const suggestButton = (
-    <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest)} ${suggestDisabled ? "opacity-40" : ""}`}>
-      <Send size={15} /><span>{t('header.suggest')}</span>
+    <button onClick={onSuggest} disabled={suggestDisabled} className={`${pillClass(showSuggest, true)} ${suggestDisabled ? "opacity-40" : ""}`}>
+      <Send size={16} /><span>{t('header.suggest')}</span>
     </button>
   );
 
   const wordmark = (
-    <h1 className="text-lg font-bold text-orange-500 tracking-tight whitespace-nowrap flex-shrink-0">
+    <h1 className="text-lg font-bold text-accent tracking-tight whitespace-nowrap flex-shrink-0">
       CueVote
     </h1>
   );
@@ -269,7 +273,7 @@ export function Header({
           askToLeave();
         }
       }}
-      className="p-1.5 text-orange-500/70 hover:text-orange-400 transition-colors rounded-full hover:bg-orange-500/10 flex-shrink-0"
+      className="cv-hit flex h-8 w-8 items-center justify-center text-ink-2 hover:text-ink transition-colors duration-150 rounded-lg hover:bg-raised flex-shrink-0"
       title={isPlaylistMode && onClosePlaylist ? t('playlist.close') : t('header.leave')}
     >
       <ChevronLeft size={20} />
@@ -281,7 +285,7 @@ export function Header({
   const leaveButton = (
     <button
       onClick={askToLeave}
-      className="p-1.5 text-orange-500/70 hover:text-orange-400 transition-colors rounded-full hover:bg-orange-500/10 flex-shrink-0"
+      className="cv-hit flex h-8 w-8 items-center justify-center text-ink-2 hover:text-ink transition-colors duration-150 rounded-lg hover:bg-raised flex-shrink-0"
       title={t('header.leave')}
       aria-label={t('header.leave')}
     >
@@ -301,21 +305,16 @@ export function Header({
     else if (view === "playlist") onPlaylist();
     else onLibrary();
   };
-  const phoneIconButton = "keep-open flex h-9 w-9 flex-none items-center justify-center rounded-full transition-colors";
+  const phoneIconButton = "keep-open cv-hit flex h-9 w-9 flex-none items-center justify-center rounded-lg transition-[background-color,color,transform] duration-150 ease-cv active:scale-90";
 
   const userIdentity = isSignedIn(user) ? (
     <button
       onClick={() => setShowProfileModal(true)}
-      className="flex-shrink-0 rounded-full hover:ring-2 hover:ring-orange-500/30 transition-all"
+      className="cv-hit flex-shrink-0 rounded-full transition-transform duration-150 ease-cv active:scale-90"
       title={t('header.profileSettings')}
+      aria-label={t('header.profileSettings')}
     >
-      {user.picture ? (
-        <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-7 h-7 rounded-full border border-neutral-700" />
-      ) : (
-        <div className="w-7 h-7 rounded-full bg-neutral-800 flex items-center justify-center text-xs font-bold text-orange-500 border border-neutral-700">
-          {displayName(user, t).charAt(0)}
-        </div>
-      )}
+      <Avatar picture={user.picture} name={displayName(user, t)} className="h-7 w-7" />
     </button>
   ) : (
     <GoogleAuthButton
@@ -324,7 +323,7 @@ export function Header({
         // Without the cookie consent performLogin asks for it.
         <button
           onClick={() => performLogin()}
-          className={`flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-neutral-700 bg-neutral-800/50 transition-all ${disabled ? 'opacity-40' : 'hover:ring-2 hover:ring-orange-500/30 active:scale-95'}`}
+          className={`cv-hit flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-line bg-raised transition-[opacity,transform] duration-150 ease-cv ${disabled ? 'opacity-50' : 'active:scale-90'}`}
           title={disabled ? t('header.acceptCookies') : t('header.signIn')}
         >
           <GoogleGIcon className="w-4 h-4" />
@@ -344,7 +343,7 @@ export function Header({
         {backButton}
         {userIdentity}
 
-        <div className="h-5 w-px bg-neutral-800 flex-shrink-0" />
+        <div className="h-5 w-px bg-line flex-shrink-0" />
 
         <div
           ref={pillsRef}
@@ -365,21 +364,20 @@ export function Header({
           tabs below it. Suggesting lives at the bottom of the screen there,
           see RoomBody. */}
       <div className="md:hidden">
-        <div className="flex items-center gap-1.5 min-w-0">
+        <div className="flex items-center gap-1 min-w-0">
           {leaveButton}
           {wordmark}
-          <div className="h-5 w-px bg-neutral-800 flex-shrink-0 mx-0.5" />
-          <div className="min-w-0 flex-1 leading-tight">
-            <p id="room-channel-name" className="truncate text-sm font-semibold text-white">{channelName}</p>
+          <div className="ml-2 min-w-0 flex-1 leading-tight">
+            <p id="room-channel-name" dir="auto" title={channelName} className="cv-bidi truncate text-sm font-semibold text-ink">{channelName}</p>
             {showYouTubeAttribution
               ? <YouTubeBrandSubtitle className="max-w-full truncate align-top" />
-              : <span className="block truncate text-[10px] font-semibold text-orange-400">Apple Music</span>}
+              : <span className="block truncate text-[11px] font-semibold leading-4 text-orange-400">Apple Music</span>}
           </div>
           <button
             onClick={onShare}
             title={t('header.share')}
             aria-label={t('header.share')}
-            className={`${phoneIconButton} text-orange-500/80 hover:bg-orange-500/10 hover:text-orange-400`}
+            className={`${phoneIconButton} text-ink-2 hover:bg-raised hover:text-ink`}
           >
             <QrCode size={18} />
           </button>
@@ -388,7 +386,7 @@ export function Header({
               onClick={onToggleSettings}
               title={t('header.settings')}
               aria-label={t('header.settings')}
-              className={`${phoneIconButton} ${showSettings ? "bg-orange-500/15 text-orange-500" : "text-orange-500/80 hover:bg-orange-500/10 hover:text-orange-400"}`}
+              className={`${phoneIconButton} ${showSettings ? "bg-raised text-ink" : "text-ink-2 hover:bg-raised hover:text-ink"}`}
             >
               <Settings size={18} />
             </button>
@@ -408,10 +406,10 @@ export function Header({
 
       {
         showExitConfirm && createPortal(
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 text-center">
-              <h3 className="text-xl font-bold text-white mb-2">{t('header.leaveChannel')}</h3>
-              <p className="text-neutral-400 mb-6">{t('header.leaveChannelConfirm')}</p>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-card border border-line rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 text-center">
+              <h3 className="text-xl font-semibold text-ink mb-2">{t('header.leaveChannel')}</h3>
+              <p className="text-ink-2 mb-6">{t('header.leaveChannelConfirm')}</p>
 
               <div className="flex gap-3 justify-center">
                 <button
@@ -421,9 +419,9 @@ export function Header({
                     e.stopPropagation();
                     setShowExitConfirm(false);
                   }}
-                  className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all border ${exitConfirmIndex === 0
-                    ? "bg-neutral-700 text-white ring-2 ring-orange-500/50 border-transparent"
-                    : "bg-neutral-800 text-neutral-400 hover:bg-neutral-700 border-transparent"
+                  className={`cv-btn h-11 flex-1 border border-line bg-raised ${exitConfirmIndex === 0
+                    ? "text-ink ring-2 ring-accent/60"
+                    : "text-ink-2"
                     }`}
                   onMouseEnter={() => setExitConfirmIndex(0)}
                 >
@@ -441,9 +439,9 @@ export function Header({
                     setShowExitConfirm(false);
                     onShowSuggest(false);
                   }}
-                  className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all border ${exitConfirmIndex === 1
-                    ? "bg-orange-500 text-white ring-2 ring-orange-500/50 shadow-lg shadow-orange-500/20 border-transparent"
-                    : "bg-red-900/30 text-red-400 hover:bg-red-900/50 border-red-900/50"
+                  className={`cv-btn h-11 flex-1 font-semibold ${exitConfirmIndex === 1
+                    ? "bg-accent text-accent-ink"
+                    : "border border-line bg-raised text-ink"
                     }`}
                   onMouseEnter={() => setExitConfirmIndex(1)}
                 >
@@ -459,29 +457,32 @@ export function Header({
       {
         showQRCode && createPortal(
           <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200"
             onClick={() => onShowQRCode(false)}
           >
             <div
-              className="qr-code-modal bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 text-center flex flex-col items-center"
+              className="qr-code-modal bg-card border border-line rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 text-center flex flex-col items-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-xl font-bold text-orange-500 mb-4">{t('header.share')}</h3>
-              <div className="relative group">
-                <div className="relative bg-neutral-900 p-4 rounded-xl mb-4 border border-orange-500/50">
+              <h3 className="text-xl font-semibold text-accent mb-4">{t('header.share')}</h3>
+              {/* Dark on white, with a quiet zone: a code drawn light on dark is
+                  one that some phone cameras do not read. The orange of the
+                  brand frames the white tile instead of colouring the code. */}
+              <div className="mb-4 rounded-2xl border border-accent/60 p-1.5">
+                <div className="rounded-xl bg-white p-3.5">
                   <QRCodeSVG
                     value={window.location.href}
                     size={200}
                     level={"H"}
                     includeMargin={false}
-                    fgColor={"#ffffff"}
-                    bgColor={"transparent"}
+                    fgColor={"#0a0a09"}
+                    bgColor={"#ffffff"}
                   />
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-6 bg-neutral-800/50 p-2 pl-4 rounded-xl w-full max-w-[280px] border border-neutral-800">
-                <p className="text-neutral-400 text-sm overflow-x-auto whitespace-nowrap flex-1 font-mono no-scrollbar">{window.location.href}</p>
+              <div className="flex items-center gap-2 mb-6 bg-page p-1.5 pl-3 rounded-xl w-full max-w-[280px] border border-line">
+                <p className="text-ink-2 text-sm overflow-x-auto whitespace-nowrap flex-1 no-scrollbar">{window.location.href}</p>
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href)
@@ -491,9 +492,9 @@ export function Header({
                       })
                       .catch(() => { /* Clipboard denied or unavailable */ });
                   }}
-                  className={`p-2 rounded-lg transition-all ${copied
-                    ? "bg-green-500/10 text-green-500"
-                    : "bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white"
+                  className={`cv-hit flex h-8 w-8 items-center justify-center rounded-lg transition-[background-color,color,transform] duration-150 ease-cv active:scale-90 ${copied
+                    ? "bg-accent/15 text-accent"
+                    : "bg-raised text-ink-2 hover:text-ink"
                     }`}
                   title={t('header.copyUrl')}
                 >
@@ -505,7 +506,7 @@ export function Header({
 
               <button
                 onClick={() => onShowQRCode(false)}
-                className="px-6 py-2 bg-neutral-800 hover:bg-neutral-700 text-orange-500 border border-orange-500/20 hover:border-orange-500/50 rounded-lg transition-all font-medium"
+                className="cv-btn border border-accent/25 bg-raised px-6 text-accent hover:border-accent/50 hover:bg-[#2b2927]"
               >
                 {t('header.close')}
               </button>
@@ -517,24 +518,18 @@ export function Header({
       {
         showProfileModal && createPortal(
           <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200"
             onClick={() => setShowProfileModal(false)}
           >
             <div
-              className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200"
+              className="bg-card border border-line rounded-2xl w-full max-w-sm p-6 shadow-2xl scale-100 animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
 
               <div className="flex flex-col items-center mb-6">
-                {user?.picture ? (
-                  <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-20 h-20 rounded-full border-2 border-neutral-700 mb-4 shadow-xl" />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center text-3xl font-bold text-neutral-500 mb-4 border-2 border-neutral-700">
-                    {displayName(user, t).charAt(0)}
-                  </div>
-                )}
-                <h3 className="text-xl font-bold text-white">{displayName(user, t)}</h3>
-                <p className="text-sm text-neutral-400">{user?.email}</p>
+                <Avatar picture={user?.picture} name={displayName(user, t)} className="mb-4 h-20 w-20" textClassName="text-3xl" />
+                <h3 className="text-xl font-semibold text-ink">{displayName(user, t)}</h3>
+                <p className="text-sm text-ink-2">{user?.email}</p>
               </div>
 
               {!showDeleteConfirm ? (
@@ -544,15 +539,15 @@ export function Header({
                       onLogout();
                       setShowProfileModal(false);
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium transition-colors border border-black/20"
+                    className="cv-btn cv-btn-quiet h-11 w-full"
                   >
                     <LogOut size={18} /> {t('lobby.signOut')}
                   </button>
 
-                  <div className="pt-4 border-t border-neutral-800 mt-4 space-y-3">
+                  <div className="pt-4 border-t border-line mt-4 space-y-3">
                     <a
                       href="/legal"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white font-medium transition-colors border border-black/20 text-sm"
+                      className="cv-btn cv-btn-quiet h-11 w-full text-ink-2 hover:text-ink"
                     >
                       <Scale size={18} /> {t('header.legal')}
                     </a>
@@ -568,17 +563,17 @@ export function Header({
               ) : (
                 <div className="text-center animate-in fade-in slide-in-from-bottom-2">
                   <h4 className="text-lg font-bold text-red-500 mb-2">{t('lobby.deleteAccountConfirm')}</h4>
-                  <p className="text-sm text-neutral-400 mb-4 leading-relaxed" dangerouslySetInnerHTML={dangerousHtml(t('lobby.deleteAccountWarning'))} />
+                  <p className="text-sm text-ink-2 mb-4 leading-relaxed" dangerouslySetInnerHTML={dangerousHtml(t('lobby.deleteAccountWarning'))} />
 
                   <div className="mb-6">
-                    <label className="block text-xs text-neutral-500 mb-2 font-medium">
-                      {t('lobby.deleteAccountType')} <span className="text-neutral-300 font-bold select-none">{t('lobby.deleteAccountPhrase')}</span> {t('lobby.deleteAccountToConfirm')}
+                    <label className="block text-xs text-ink-2 mb-2 font-medium">
+                      {t('lobby.deleteAccountType')} <span className="text-ink font-semibold select-none">{t('lobby.deleteAccountPhrase')}</span> {t('lobby.deleteAccountToConfirm')}
                     </label>
                     <input
                       type="text"
                       value={deleteConfirmationText}
                       onChange={(e) => setDeleteConfirmationText(e.target.value)}
-                      className="w-full bg-black/30 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500/50 transition-colors placeholder-neutral-700 font-mono"
+                      className="w-full bg-page border border-line rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-red-500/50 transition-colors duration-150 placeholder:text-ink-3"
                       placeholder={t('header.deleteChannelType')}
                       autoFocus
                     />
@@ -590,7 +585,7 @@ export function Header({
                         setShowDeleteConfirm(false);
                         setDeleteConfirmationText("");
                       }}
-                      className="flex-1 px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium transition-colors"
+                      className="cv-btn cv-btn-quiet flex-1"
                     >
                       {t('lobby.cancel')}
                     </button>

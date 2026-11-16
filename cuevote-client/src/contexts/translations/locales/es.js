@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Inicia sesión para crear",
 		"noChannelsFound": "No se encontraron canales para",
 		"live": "En vivo",
+		"hostedBy": "Anfitrión: {name}",
+		"wrongPassword": "Contraseña incorrecta",
 		"createNewChannel": "Crear Nuevo Canal",
 		"channelName": "Nombre del Canal",
 		"channelNamePlaceholder": "ej. Vibras Nocturnas",
@@ -189,8 +191,8 @@ export default {
 		"listenMusic": "Escuchar vídeo",
 		"unmuteAndPlay": "Sonido y Reproducir",
 		"noInternet": "Sin conexión a internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Ventana demasiado pequeña",
+		"windowTooSmallMessage": "Amplía la ventana para seguir usando CueVote.",
 		"backToRadio": "Volver a la radio",
 		"retry": "Reintentar conexión",
 		"retrying": "Reintentando...",
@@ -214,7 +216,9 @@ export default {
 		"delete": "Eliminar",
 		"watch": "En YouTube",
 		"recommend": "Obtener Sugerencias",
-		"guest": "Invitado"
+		"guest": "Invitado",
+		"voteUp": "Votar a favor",
+		"voteDown": "Votar en contra"
 	},
 	"library": {
 		"searchPlaceholder": "Buscar en biblioteca...",
@@ -224,6 +228,7 @@ export default {
 			"other": "{count} videos"
 		},
 		"inLibrary": "en biblioteca",
+		"about": "Acerca de la biblioteca",
 		"info1": "Esta biblioteca muestra videos únicas reproducidas en los últimos <strong>28 días</strong>.",
 		"info2": "Las videos más antiguas se ocultan para garantizar la frescura de los metadatos, pero <strong>nunca se eliminan</strong>. ¡La función de <strong>Relleno Automático</strong> recuerda todo tu historial y traerá automáticamente las videos antiguas a la cola (y a esta lista) cuando sea necesario!",
 		"empty": "No se encontraron videos"
@@ -252,6 +257,13 @@ export default {
 		"history": "Historial",
 		"last50": "Últimas 50 de {count}",
 		"nowPlaying": "Reproduciendo ahora",
+		"play": "Reproducir",
+		"pause": "Pausar",
+		"mute": "Silenciar",
+		"unmute": "Activar sonido",
+		"volume": "Volumen",
+		"cinemaMode": "Modo cine",
+		"exitCinemaMode": "Salir del modo cine",
 		"channelSuffix": "Canal",
 		"upNext": "A continuación",
 		"queueEmpty": "Cola vacía",

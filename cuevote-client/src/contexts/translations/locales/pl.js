@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Zaloguj się, aby utworzyć",
 		"noChannelsFound": "Nie znaleziono kanałów dla",
 		"live": "Na żywo",
+		"hostedBy": "Gospodarz: {name}",
+		"wrongPassword": "Nieprawidłowe hasło",
 		"createNewChannel": "Utwórz nowy kanał",
 		"channelName": "Nazwa kanału",
 		"channelNamePlaceholder": "np. Nocne wibracje",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Brak połączenia z internetem",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Okno jest za małe",
+		"windowTooSmallMessage": "Powiększ okno, aby dalej korzystać z CueVote.",
 		"backToRadio": "Wróć do radia",
 		"retry": "Ponów połączenie",
 		"switching": "Przełączanie kanału...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Usuń",
 		"watch": "Oglądaj na YouTube",
 		"recommend": "Pobierz propozycje",
-		"guest": "Gość"
+		"guest": "Gość",
+		"voteUp": "Głosuj za",
+		"voteDown": "Głosuj przeciw"
 	},
 	"library": {
 		"searchPlaceholder": "Szukaj w bibliotece...",
@@ -218,6 +222,7 @@ export default {
 			"other": "{count} utworu"
 		},
 		"inLibrary": "w bibliotece",
+		"about": "O bibliotece",
 		"info1": "Ta biblioteka wyświetla unikalne utwory odtwarzane w ciągu ostatnich <strong>28 dni</strong>.",
 		"info2": "Starsze utwory są ukrywane dla świeżości metadanych, ale <strong>nigdy nie są usuwane</strong>. Funkcja <strong>automatycznego uzupełniania</strong> wciąż pamięta całą historię i automatycznie przywróci starsze utwory do kolejki (i tej listy) w razie potrzeby!",
 		"empty": "Nie znaleziono utworów"
@@ -247,6 +252,13 @@ export default {
 		"history": "Historia",
 		"last50": "Ostatnie 50 (z {count})",
 		"nowPlaying": "Teraz odtwarzane",
+		"play": "Odtwórz",
+		"pause": "Wstrzymaj",
+		"mute": "Wycisz",
+		"unmute": "Wyłącz wyciszenie",
+		"volume": "Głośność",
+		"cinemaMode": "Tryb kinowy",
+		"exitCinemaMode": "Wyjdź z trybu kinowego",
 		"channelSuffix": "Kanał",
 		"upNext": "Następne",
 		"queueEmpty": "Kolejka pusta",

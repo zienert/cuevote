@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Войдите, чтобы создать",
 		"noChannelsFound": "Каналы не найдены по запросу",
 		"live": "Эфир",
+		"hostedBy": "Ведущий: {name}",
+		"wrongPassword": "Неверный пароль",
 		"createNewChannel": "Создать новый канал",
 		"channelName": "Название канала",
 		"channelNamePlaceholder": "напр., Ночные ритмы",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Нет подключения к интернету",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Окно слишком маленькое",
+		"windowTooSmallMessage": "Увеличьте окно, чтобы продолжить пользоваться CueVote.",
 		"backToRadio": "Назад к радио",
 		"retry": "Повторить попытку подключения",
 		"switching": "Переключение канала...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Удалить",
 		"watch": "Смотреть на YouTube",
 		"recommend": "Получить рекомендации",
-		"guest": "Гость"
+		"guest": "Гость",
+		"voteUp": "Голосовать за",
+		"voteDown": "Голосовать против"
 	},
 	"library": {
 		"searchPlaceholder": "Поиск в библиотеке...",
@@ -218,6 +222,7 @@ export default {
 			"other": "{count} видео"
 		},
 		"inLibrary": "в библиотеке",
+		"about": "О библиотеке",
 		"info1": "Эта библиотека отображает уникальные видео, проигранные за последние <strong>28 дней</strong>.",
 		"info2": "Старые видео скрываются для свежести метаданных, но <strong>никогда не удаляются</strong>. Функция <strong>Автозаполнения</strong> помнит всю вашу историю и автоматически вернет старые видео в очередь (и этот список) при необходимости!",
 		"empty": "Видео не найдены"
@@ -247,6 +252,13 @@ export default {
 		"history": "История",
 		"last50": "Последние 50 (из {count})",
 		"nowPlaying": "Сейчас играет",
+		"play": "Воспроизвести",
+		"pause": "Пауза",
+		"mute": "Выключить звук",
+		"unmute": "Включить звук",
+		"volume": "Громкость",
+		"cinemaMode": "Режим кинотеатра",
+		"exitCinemaMode": "Выйти из режима кинотеатра",
 		"upNext": "Далее",
 		"queueEmpty": "Очередь пуста",
 		"errorNotFound": "Видео не найдено",

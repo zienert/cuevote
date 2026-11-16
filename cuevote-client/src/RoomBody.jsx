@@ -427,7 +427,7 @@ function RoomBody() {
     if (lastErrorCode === "PASSWORD_REQUIRED") {
       setShowPasswordModal(true);
       if (lastPasswordAttemptRef.current) {
-        setPasswordError("Incorrect password");
+        setPasswordError("wrong");
       } else {
         setPasswordError("");
       }
@@ -1536,7 +1536,7 @@ function RoomBody() {
       <div className="flex flex-col h-screen w-full bg-black items-center justify-center p-6 text-center z-[100] relative overflow-hidden">
         <div className="absolute inset-0 bg-neutral-900/50" />
         <div className="relative z-10 max-w-sm space-y-6">
-          <div className="mx-auto w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 animate-bounce">
+          <div className="mx-auto w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
             <Maximize2 size={32} />
           </div>
           <h2 className="text-2xl font-bold text-white">{t('app.windowTooSmall')}</h2>
@@ -1617,7 +1617,7 @@ function RoomBody() {
             />
             {passwordError && (
               <div className="text-red-500 text-sm mt-2 font-medium animate-in slide-in-from-top-1">
-                {passwordError}
+                {t('lobby.wrongPassword')}
               </div>
             )}
           </div>
@@ -1626,13 +1626,13 @@ function RoomBody() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="flex-1 px-4 py-3 rounded-xl border border-neutral-700 text-neutral-300 font-medium hover:bg-neutral-800 transition-all"
+              className="cv-btn cv-btn-quiet h-12 flex-1"
             >
               {t('lobby.cancel')}
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold hover:from-orange-400 hover:to-orange-500 transition-all"
+              className="cv-btn cv-btn-accent h-12 flex-1 font-semibold"
             >
               {t('app.unlock')}
             </button>
@@ -1700,7 +1700,7 @@ function RoomBody() {
   return (
     <ConsentContext.Provider value={roomConsent}>
     <div
-      className={`text-white flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-[#0a0a0a] pb-0" : (isPhoneLayout || (isQueueMinimized && !isCinemaMode) ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-black" : "min-h-screen bg-black pb-32")}`}
+      className={`text-ink flex flex-col ${isAnyPlaylistView ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-page pb-0" : (isPhoneLayout || (isQueueMinimized && !isCinemaMode) ? "h-screen supports-[height:100dvh]:h-[100dvh] overflow-hidden bg-page" : "min-h-screen bg-page pb-32")}`}
       // On phones the room is exactly the visible part of the screen and its
       // parts share that height; elsewhere the playback controls float over
       // the bottom edge and the room leaves them room.
@@ -1711,7 +1711,7 @@ function RoomBody() {
       {ipBlockDetected && !throttleDismissed && (
         <div className="fixed inset-0 z-[100] bg-[#050505] text-white flex items-center justify-center p-6 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/20 via-[#050505] to-[#050505] pointer-events-none" />
-          <div className="relative z-10 w-full flex flex-col items-center justify-center text-center max-w-md animate-in fade-in zoom-in-95 duration-500">
+          <div className="relative z-10 w-full flex flex-col items-center justify-center text-center max-w-md animate-in fade-in zoom-in-95 duration-200">
             <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
               <WifiOff size={32} className="text-red-400" />
             </div>
@@ -1729,14 +1729,14 @@ function RoomBody() {
               <button
                 autoFocus
                 onClick={() => window.location.reload()}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg active:scale-[0.97] transition-[background-color,transform] duration-150 ease-cv focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
               >
                 <RefreshCw size={18} />
                 {t('player.ipBlockRetry', 'Reload')}
               </button>
               <button
                 onClick={() => { dismissThrottle(); setIpBlockDetected(false); }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium active:scale-[0.97] transition-[background-color,transform] duration-150 ease-cv focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-[#050505]"
               >
                 {t('player.ipBlockDismiss', 'Dismiss')}
               </button>
@@ -1748,10 +1748,10 @@ function RoomBody() {
       {/* The room is there, the connection is not: one line under the header.
           Without a header (cinema mode) it lies over the top edge. */}
       {connectionBar && isCinemaMode && (
-        <div className="fixed inset-x-0 top-0 z-[100] bg-[#050505]">{connectionBar}</div>
+        <div className="fixed inset-x-0 top-0 z-[100] bg-page">{connectionBar}</div>
       )}
       {!isCinemaMode && (
-        <div className="sticky top-0 z-[55] bg-[#050505]/95 backdrop-blur-md border-b border-neutral-900 transition-all duration-700 ease-in-out">
+        <div className="sticky top-0 z-[55] bg-page/95 backdrop-blur-md border-b border-line">
           <Header
             showYouTubeAttribution={!isAppleRoom}
             onGoHome={() => navigate("/")}
@@ -1911,10 +1911,10 @@ function RoomBody() {
 
       <div
         className={isCinemaMode
-          ? "fixed inset-0 z-40 bg-black transition-all duration-500 ease-in-out"
+          ? "fixed inset-0 z-40 bg-black"
           : (isAnyPlaylistView
-            ? "flex-1 w-full relative group transition-all duration-500 ease-in-out min-h-0"
-            : `w-full relative group transition-all duration-500 ease-in-out min-w-[200px] min-h-[200px] ${isQueueMinimized ? "flex-1 min-h-0" : "flex-shrink-0 aspect-video max-h-[60vh]"}`
+            ? "flex-1 w-full relative group min-h-0"
+            : `w-full relative group min-w-[200px] min-h-[200px] bg-black ${isQueueMinimized ? "flex-1 min-h-0" : "flex-shrink-0 aspect-video max-h-[60vh]"}`
           )
         }
         style={{
@@ -1925,7 +1925,9 @@ function RoomBody() {
         }}
       >
         <div
-          className={`absolute inset-0 border-4 ${previewTrack ? "border-green-500" : "border-transparent"} transition-colors duration-300 box-border pointer-events-none z-20`}
+          // A preview is framed in the brand's orange; green belongs to the
+          // title that plays in the channel.
+          className={`absolute inset-0 border-2 ${previewTrack ? "border-accent/70" : "border-transparent"} transition-colors duration-200 box-border pointer-events-none z-20`}
         ></div>
         {/* The owner's Apple player stays mounted in every view and is only
             hidden: MusicKit's video lives in its container, and a video taken
@@ -2035,7 +2037,7 @@ function RoomBody() {
                         )}
                       </PlayerErrorBoundary>
                     </div>
-                    {!(currentTrack || previewTrack) && <div className="flex h-full w-full items-center justify-center text-neutral-500 bg-neutral-900">{t('playlist.queueEmpty')}</div>}
+                    {!(currentTrack || previewTrack) && <div className="flex h-full w-full items-center justify-center text-ink-2 bg-card">{t('playlist.queueEmpty')}</div>}
                   </>
                 )}
               </div>
@@ -2046,7 +2048,7 @@ function RoomBody() {
       </div>
 
       {!isAnyPlaylistView && !isCinemaMode && (
-        <div className={`min-h-0 transition-all duration-700 ease-in-out ${isQueueMinimized ? "flex-none" : `pb-4 flex-1 ${isPhoneLayout ? "overflow-y-auto" : ""}`}`}>
+        <div className={`min-h-0 ${isQueueMinimized ? "flex-none" : `pb-4 flex-1 ${isPhoneLayout ? "overflow-y-auto" : ""}`}`}>
           <Queue
             tracks={queue}
             currentTrack={currentTrack}
@@ -2070,41 +2072,46 @@ function RoomBody() {
 
       {
         previewTrack ? (
-          <div className="fixed bottom-0 left-0 w-full bg-green-900/95 backdrop-blur-md border-t border-green-700 px-3 py-2 sm:px-6 sm:py-3 flex items-center justify-between z-[80] select-none">
-            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+          // The bar of a preview: a quiet surface, the word "Preview" in
+          // orange before the title, and the way back as the one orange button.
+          <div className="fixed bottom-0 left-0 z-[80] flex w-full select-none items-center justify-between gap-3 border-t border-line bg-card px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] pt-2 sm:px-6 sm:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pt-3">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
               <button
                 onClick={handleStopPreview}
-                className="bg-white text-green-900 hover:bg-gray-100 transition-colors rounded-full p-2 sm:p-3 shadow-lg flex-shrink-0 flex items-center gap-2"
+                className="cv-btn cv-btn-accent cv-hit h-10 flex-none rounded-full px-4 font-semibold shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] max-sm:w-10 max-sm:px-0"
                 title={t('app.backToRadio')}
+                aria-label={t('app.backToRadio')}
               >
-                <ArrowLeft size={18} className="sm:w-6 sm:h-6" />
-                <span className="font-bold pr-2 hidden sm:inline">{t('app.backToRadio')}</span>
+                <ArrowLeft size={18} aria-hidden="true" />
+                <span className="max-sm:hidden">{t('app.backToRadio')}</span>
               </button>
-              <div className="truncate min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 items-baseline gap-2">
+                  <span className="flex-none text-xs font-semibold text-accent">{t('track.preview')}</span>
                   {previewTrack.title ? (
-                    <h3 className="font-bold text-white text-sm sm:text-base leading-tight truncate">{previewTrack.title}</h3>
+                    <h3 dir="auto" className="cv-bidi truncate text-sm font-semibold leading-tight text-ink sm:text-base">{previewTrack.title}</h3>
                   ) : (
-                    <Skeleton className="h-4 w-32 max-w-full bg-green-700/60" />
+                    <Skeleton className="h-4 w-32 max-w-full" />
                   )}
-                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold uppercase animate-pulse flex-shrink-0">{t('track.preview')}</span>
                 </div>
                 {previewTrack.artist ? (
-                  <p className="text-green-200 text-xs sm:text-sm truncate">{previewTrack.artist}</p>
+                  <p dir="auto" className="cv-bidi truncate text-xs text-ink-2 sm:text-sm">{previewTrack.artist}</p>
                 ) : (
-                  <Skeleton className="h-3 w-20 max-w-full mt-1 bg-green-700/50" />
+                  <Skeleton className="mt-1 h-3 w-20 max-w-full" />
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 text-green-200 pl-2 sm:pl-4 flex-shrink-0">
+            <div className="flex flex-none items-center gap-1 text-ink-2 sm:gap-2">
               <button
                 onClick={(event) => {
                   event.stopPropagation();
                   handleMuteToggle();
                 }}
-                className="hover:text-white transition-colors"
+                aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                className="cv-hit flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-150 hover:bg-raised hover:text-ink"
               >
-                {isMuted ? <VolumeX /> : <Volume2 />}
+                {isMuted ? <VolumeX size={20} aria-hidden="true" /> : <Volume2 size={20} aria-hidden="true" />}
               </button>
               <input
                 type="range"
@@ -2113,7 +2120,8 @@ function RoomBody() {
                 step="1"
                 value={volume}
                 onChange={handleVolumeChange}
-                className={`accent-green-500 w-24 ${isMuted ? "opacity-50" : ""} `}
+                aria-label={t('playlist.volume')}
+                className={`w-24 accent-accent ${isMuted ? "opacity-50" : ""}`}
                 onClick={(event) => event.stopPropagation()}
               />
             </div>
@@ -2150,7 +2158,7 @@ function RoomBody() {
       {isPhoneLayout && (
         <div
           ref={setBottomBar}
-          className={`flex-none z-[55] border-t border-neutral-900 bg-[#050505]/95 px-2 pt-2 backdrop-blur-md ${previewTrack ? "hidden" : ""}`}
+          className={`flex-none z-[55] border-t border-line bg-page/95 px-3 pt-2 backdrop-blur-md ${previewTrack ? "hidden" : ""}`}
           style={{ paddingBottom: 'calc(0.5rem + var(--bar-safe-bottom, var(--sab)))' }}
         >
           {suggestForm(true)}
@@ -2200,7 +2208,7 @@ function RoomBody() {
 
       {/* TV Unmute Overlay - only when video is visible (not in playlist-only view) */}
       {deviceDetection.isTV() && isMuted && isPlayerReady && !isAnyPlaylistView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <button
             onClick={() => {
               handleMuteToggle();
@@ -2209,13 +2217,11 @@ function RoomBody() {
                 handlePlayPause();
               }
             }}
-            className="group relative bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full px-12 py-6 text-3xl font-bold flex items-center gap-6 shadow-2xl hover:from-orange-400 hover:to-orange-500 hover:scale-105 transition-all duration-300"
+            className="group relative bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full px-12 py-6 text-3xl font-bold flex items-center gap-6 shadow-2xl hover:from-orange-400 hover:to-orange-500 active:scale-[0.97] transition-transform duration-150 ease-cv"
           >
             <div className="absolute inset-0 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <VolumeX size={48} className="animate-pulse" />
+            <VolumeX size={48} />
             {t('app.tapToUnmute')}
-            <div className="absolute -inset-4 rounded-full border border-white/20 animate-ping opacity-20" />
-            <div className="absolute -inset-8 rounded-full border border-white/10 animate-ping opacity-10 animation-delay-300" />
           </button>
         </div>
       )}

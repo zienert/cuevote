@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "登入以建立",
 		"noChannelsFound": "未找到頻道",
 		"live": "直播",
+		"hostedBy": "主持人：{name}",
+		"wrongPassword": "密碼錯誤",
 		"createNewChannel": "建立新頻道",
 		"channelName": "頻道名稱",
 		"channelNamePlaceholder": "例如：深夜氛圍",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "無網際網路連線",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "視窗太小",
+		"windowTooSmallMessage": "請放大視窗以繼續使用 CueVote。",
 		"backToRadio": "返回電台",
 		"retry": "重試連線",
 		"retrying": "重試中...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "刪除",
 		"watch": "在 YouTube 觀看",
 		"recommend": "獲取推薦",
-		"guest": "訪客"
+		"guest": "訪客",
+		"voteUp": "投贊成票",
+		"voteDown": "投反對票"
 	},
 	"library": {
 		"searchPlaceholder": "搜尋媒體庫...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} 個視訊"
 		},
 		"inLibrary": "在庫中",
+		"about": "關於媒體庫",
 		"info1": "此庫顯示過去 <strong>28 天</strong> 內播放的唯一视频。",
 		"info2": "為了保持元數據新鮮度，較舊的视频會被隱藏，但<strong>絕不會被刪除</strong>。<strong>自動填補</strong>功能仍會記住您的完整歷史記錄，並在需要時自動將舊视频帶回佇列（及此列表）！",
 		"empty": "未找到视频"
@@ -241,6 +246,13 @@ export default {
 		"history": "歷史記錄",
 		"last50": "最近 50 首（共 {count} 首）",
 		"nowPlaying": "正在播放",
+		"play": "播放",
+		"pause": "暫停",
+		"mute": "靜音",
+		"unmute": "取消靜音",
+		"volume": "音量",
+		"cinemaMode": "劇院模式",
+		"exitCinemaMode": "退出劇院模式",
 		"channelSuffix": "频道",
 		"upNext": "即將播放",
 		"queueEmpty": "佇列為空",
