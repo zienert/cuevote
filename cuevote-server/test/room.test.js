@@ -84,6 +84,35 @@ describe('Room', () => {
       assert.equal(room.metadata.language_flag, 'en');
       room.destroy();
     });
+
+    it('should carry the room provider into state and summary', () => {
+      const youtube = new Room('provider-yt', 'YT', null, { owner_id: 'owner-1' });
+      assert.equal(youtube.state.provider, 'youtube');
+      assert.equal(youtube.getSummary().provider, 'youtube');
+      youtube.destroy();
+
+      const apple = new Room('provider-am', 'AM', null, { owner_id: 'owner-1', provider: 'apple' });
+      assert.equal(apple.state.provider, 'apple');
+      assert.equal(apple.getSummary().provider, 'apple');
+      apple.destroy();
+
+      const unknown = new Room('provider-x', 'X', null, { owner_id: 'owner-1', provider: 'spotify' });
+      assert.equal(unknown.state.provider, 'youtube');
+      unknown.destroy();
+    });
+
+    it('should never show or store what an Apple room is playing in the lobby', () => {
+      db.createRoom({
+        id: 'provider-am-lobby', name: 'AM Lobby', description: '', owner_id: 'owner-1',
+        color: 'red', is_public: 1, password: null, provider: 'apple',
+      });
+      const room = new Room('provider-am-lobby', 'AM Lobby', null, { owner_id: 'owner-1', provider: 'apple' });
+      room.state.currentTrack = { videoId: 'am:video:1258705880', title: 'New Rules', artist: 'Dua Lipa', thumbnail: 'https://example.com/a.jpg' };
+      assert.equal(room.getSummary().currentTrack, null);
+      room.persistLobbyPreview();
+      assert.equal(db.getRoom('provider-am-lobby').lobby_preview, null);
+      room.destroy();
+    });
   });
 
   describe('Client Management', () => {
@@ -223,6 +252,28 @@ describe('Room', () => {
       assert.equal(room.state.currentTrack.id, 'next');
       assert.equal(room.state.queue.length, 1);
       assert.ok(room.state.history.length >= 1);
+      room.destroy();
+    });
+
+    it('resumes a paused track where it stopped, however long the pause', async () => {
+      const room = new Room('pause-room', 'Pause', null, { owner_id: 'owner-1' });
+      const owner = mockWs({ id: 'owner-1', name: 'Owner' });
+      room.addClient(owner);
+      room.state.queue = [{ id: 'current', videoId: 'v1', title: 'Current', score: 0, voters: {}, duration: 210, artist: 'A', thumbnail: 'x' }];
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() - 60000 };
+      room.state.isPlaying = true;
+      room.tick();
+      assert.equal(room.state.progress, 60);
+
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: false });
+      assert.equal(room.state.progress, 60, 'the pause freezes the position');
+
+      // Ten minutes later, longer than the track.
+      room.state.currentTrack.startedAt -= 600000;
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: true });
+      room.tick();
+      assert.equal(room.state.currentTrack.id, 'current', 'not skipped');
+      assert.ok(room.state.progress >= 60 && room.state.progress <= 61, `goes on at 60 s, got ${room.state.progress}`);
       room.destroy();
     });
   });
@@ -487,6 +538,30 @@ describe('Room', () => {
       room.destroy();
     });
 
+    it('shows the account name on a suggestion made as a guest', () => {
+      const room = new Room('merge-name', 'Merge Name', null, { owner_id: 'owner-1' });
+      room.state.queue = [
+        { id: 'current', videoId: 'v0', title: 'Current', score: 0, voters: {} },
+        {
+          id: 'track-1', videoId: 'v1', title: 'T1', score: 0, voters: {},
+          suggestedBy: 'guest:abc123', suggestedByUsername: 'Guest 4F2A',
+          suggestedByIsGuest: true, suggestedByGuestTag: '4F2A',
+        },
+        {
+          id: 'track-2', videoId: 'v2', title: 'T2', score: 0, voters: {},
+          suggestedBy: 'owner-1', suggestedByUsername: 'Room Owner',
+        },
+      ];
+
+      room.mergeIdentity('guest:abc123', 'guest-1', 'Second User');
+
+      const mine = room.state.queue.find(t => t.id === 'track-1');
+      assert.equal(mine.suggestedByUsername, 'Second User', 'not the English "Guest 4F2A" any more');
+      const theirs = room.state.queue.find(t => t.id === 'track-2');
+      assert.equal(theirs.suggestedByUsername, 'Room Owner', 'other people\'s suggestions keep their names');
+      room.destroy();
+    });
+
     it('leaves a room alone when the identity never took part', () => {
       const room = new Room('merge-noop', 'Merge Noop', null, { owner_id: 'owner-1' });
       const queue = [{ id: 'current', videoId: 'v0', title: 'Current', score: 0, voters: {} }];
@@ -634,6 +709,107 @@ describe('Room', () => {
 
       assert.equal(ws._messages[0].type, 'state');
       assert.equal(ws._messages[0].payload.queue[0].myVote, 'up');
+      room.destroy();
+    });
+
+    // ownerId is the owner's Google account id. Anyone who opens the room
+    // gets the state, signed in or not; only the owner may see the id.
+    it('never sends the owner\'s id to a socket that is not the owner', () => {
+      const room = roomWithVotes('project-owner-anon-room');
+      const anonymous = mockWs(null); // only sent JOIN_ROOM
+      const guest = mockWs({ id: 'guest:abc123', name: 'Guest 4F2A', guestTag: '4F2A', isGuest: true });
+      const account = mockWs({ id: 'guest-1', name: 'Guest User' });
+      for (const ws of [anonymous, guest, account]) {
+        room.addClient(ws);
+        const msg = ws._messages[0];
+        assert.equal(msg.type, 'state');
+        assert.equal('ownerId' in msg.payload, false);
+        assert.equal(msg.payload.isOwner, false);
+        assert.ok(!JSON.stringify(msg).includes('owner-1'));
+      }
+      assert.equal(room.state.ownerId, 'owner-1', 'the server keeps it');
+      room.destroy();
+    });
+
+    it('tells the owner that they own the room', () => {
+      const room = roomWithVotes('project-owner-room');
+      const owner = mockWs({ id: 'owner-1', name: 'Room Owner' });
+      room.addClient(owner);
+
+      const state = owner._messages[0].payload;
+      assert.equal(state.isOwner, true);
+      assert.equal(state.ownerId, 'owner-1', 'clients from before isOwner still compare ids');
+      room.destroy();
+    });
+
+    it('projects ownership per viewer in a broadcast', () => {
+      const room = roomWithVotes('project-owner-broadcast-room');
+      const owner = mockWs({ id: 'owner-1', name: 'Room Owner' });
+      const anonymous = mockWs(null);
+      const guest = mockWs({ id: 'guest:abc123', name: 'Guest 4F2A', isGuest: true });
+      for (const ws of [owner, anonymous, guest]) room.addClient(ws);
+      for (const ws of [owner, anonymous, guest]) ws._messages.length = 0;
+
+      room.broadcastState();
+
+      assert.equal(owner._messages[0].payload.isOwner, true);
+      assert.equal(owner._messages[0].payload.ownerId, 'owner-1');
+      for (const ws of [anonymous, guest]) {
+        assert.equal(ws._messages[0].payload.isOwner, false);
+        assert.equal('ownerId' in ws._messages[0].payload, false);
+      }
+      room.destroy();
+    });
+
+    it('leaves a delta without ownerId as it is', () => {
+      const room = roomWithVotes('project-owner-delta-room');
+      const owner = mockWs({ id: 'owner-1', name: 'Room Owner' });
+      const anonymous = mockWs(null);
+      room.addClient(owner);
+      room.addClient(anonymous);
+      owner._messages.length = 0;
+      anonymous._messages.length = 0;
+
+      room.updateState({ suggestionsEnabled: false });
+
+      for (const ws of [owner, anonymous]) {
+        assert.equal(ws._messages[0].type, 'state_delta');
+        assert.deepEqual(ws._messages[0].payload, { suggestionsEnabled: false });
+      }
+      room.destroy();
+    });
+
+    it('re-projects ownership when the socket signs in and out', () => {
+      const room = roomWithVotes('project-owner-resend-room');
+      const ws = mockWs(null);
+      room.addClient(ws);
+      assert.equal(ws._messages[0].payload.isOwner, false);
+
+      ws.user = { id: 'owner-1', name: 'Room Owner' }; // LOGIN / RESUME_SESSION
+      ws._messages.length = 0;
+      room.sendStateTo(ws);
+      assert.equal(ws._messages[0].payload.isOwner, true);
+      assert.equal(ws._messages[0].payload.ownerId, 'owner-1');
+
+      ws.user = null; // LOGOUT
+      ws._messages.length = 0;
+      room.sendStateTo(ws);
+      assert.equal(ws._messages[0].payload.isOwner, false);
+      assert.equal('ownerId' in ws._messages[0].payload, false);
+      room.destroy();
+    });
+
+    it('makes nobody the owner of a room without an owner', () => {
+      const room = new Room('project-ownerless-room', 'Ownerless', null, {});
+      const anonymous = mockWs(null);
+      const account = mockWs({ id: 'guest-1', name: 'Guest User' });
+      room.addClient(anonymous);
+      room.addClient(account);
+
+      for (const ws of [anonymous, account]) {
+        assert.equal(ws._messages[0].payload.isOwner, false);
+        assert.equal('ownerId' in ws._messages[0].payload, false);
+      }
       room.destroy();
     });
   });
@@ -806,6 +982,604 @@ describe('Room', () => {
       assert.equal(room.state.currentTrack.videoId, 'VID_GONE');
       assert.equal(room.state.queue[1].title, 'OK');
 
+      room.destroy();
+    });
+  });
+
+  describe('Apple Music rooms', () => {
+    const video = (id, title, duration = 221) => ({
+      videoId: `am:video:${id}`, provider: 'apple', kind: 'musicVideo', title,
+      artist: 'Dua Lipa', thumbnail: 'https://example.com/a.jpg', duration, explicit: false,
+    });
+    const song = (id, title) => ({ ...video(id, title), videoId: `am:song:${id}`, kind: 'song' });
+
+    let calls = [];
+    // songForVideo: { 'am:video:id': song track }, or a function (key) => track / promise.
+    function useCatalog({ search = { videos: [], songs: [] }, items = [], fail = false, equivalents = {}, songForVideo = {} } = {}) {
+      calls = [];
+      const outage = () => Object.assign(new Error('down'), { code: 'APPLE_CATALOG_UNREACHABLE' });
+      Room.setAppleCatalog({
+        async search(storefront, term) {
+          calls.push(['search', storefront, term]);
+          if (fail) throw outage();
+          return search;
+        },
+        async lookup(storefront, keys) {
+          calls.push(['lookup', storefront, keys]);
+          if (fail) throw outage();
+          return new Map(items.filter(t => keys.includes(t.videoId)).map(t => [t.videoId, t]));
+        },
+        // equivalents: { 'am:song:US-id': track in this storefront }
+        async equivalents(storefront, keys) {
+          calls.push(['equivalents', storefront, keys]);
+          if (fail) throw outage();
+          return new Map(keys.filter(k => equivalents[k]).map(k => [k, equivalents[k]]));
+        },
+        async songForVideo(storefront, key, hint) {
+          calls.push(['songForVideo', storefront, key, hint]);
+          if (fail) throw outage();
+          return typeof songForVideo === 'function' ? songForVideo(key) : (songForVideo[key] || null);
+        },
+      });
+    }
+
+    let roomCounter = 0;
+    function appleRoom(storefront = 'nl') {
+      const id = `apple-room-${++roomCounter}`;
+      db.createRoom({ id, name: id, description: '', owner_id: 'owner-1', color: 'red', is_public: 1, password: null, provider: 'apple' });
+      return new Room(id, id, null, { owner_id: 'owner-1', provider: 'apple', apple_storefront: storefront });
+    }
+    const ownerWs = () => mockWs({ id: 'owner-1', name: 'Owner' });
+    const guestWs = () => mockWs({ id: 'guest-1', name: 'Guest' });
+    const lastOf = (ws, type) => ws._messages.filter(m => m.type === type).pop();
+    const suggest = (room, ws, query) => room.handleMessage(ws, { type: 'SUGGEST_SONG', payload: { query } });
+
+    after(() => Room.setAppleCatalog(null));
+
+    it('needs the catalog and the host storefront before taking suggestions', async () => {
+      Room.setAppleCatalog(null);
+      const room = appleRoom();
+      let ws = guestWs();
+      await suggest(room, ws, 'new rules');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_UNAVAILABLE');
+
+      useCatalog();
+      const unconnected = appleRoom(null);
+      ws = guestWs();
+      await suggest(unconnected, ws, 'new rules');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_NOT_CONNECTED');
+      assert.equal(calls.length, 0);
+      room.destroy();
+      unconnected.destroy();
+    });
+
+    it('stores the storefront only the host reports', async () => {
+      const room = appleRoom(null);
+      await room.handleMessage(guestWs(), { type: 'APPLE_STOREFRONT', payload: 'us' });
+      assert.equal(room.metadata.apple_storefront, null);
+      await room.handleMessage(ownerWs(), { type: 'APPLE_STOREFRONT', payload: 'DEU' });
+      assert.equal(room.metadata.apple_storefront, null);
+      await room.handleMessage(ownerWs(), { type: 'APPLE_STOREFRONT', payload: 'de' });
+      assert.equal(room.metadata.apple_storefront, 'de');
+      assert.equal(db.getRoom(room.id).apple_storefront, 'de');
+      room.destroy();
+    });
+
+    it('queues the first music video of a search before any song', async () => {
+      useCatalog({ search: { videos: [video(1258705880, 'New Rules')], songs: [song(1228739609, 'New Rules')] } });
+      const room = appleRoom();
+      const ws = guestWs();
+      await suggest(room, ws, 'new rules');
+      assert.deepEqual(calls[0], ['search', 'nl', 'new rules']);
+      assert.equal(lastOf(ws, 'success').message, 'Added');
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1258705880');
+      assert.equal(room.state.queue[0].suggestedBy, 'guest-1');
+      room.destroy();
+    });
+
+    it('queues the original music video when Apple ranks a remix first', async () => {
+      useCatalog({ search: { videos: [video(1, 'Levitating (The Blessed Madonna Remix)'), video(2, 'Levitating')], songs: [] } });
+      const room = appleRoom();
+      await suggest(room, guestWs(), 'dua lipa levitating');
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+      room.destroy();
+    });
+
+    it('falls back to a song when there is no music video', async () => {
+      useCatalog({ search: { videos: [], songs: [song(1538003843, 'Levitating')] } });
+      const room = appleRoom();
+      await suggest(room, guestWs(), 'levitating');
+      assert.equal(room.state.currentTrack.videoId, 'am:song:1538003843');
+      room.destroy();
+    });
+
+    it('looks music.apple.com links up in the host storefront', async () => {
+      useCatalog({ items: [video(1258705880, 'New Rules')] });
+      const room = appleRoom('de');
+      await suggest(room, guestWs(), 'https://music.apple.com/us/music-video/new-rules/1258705880');
+      assert.deepEqual(calls[0], ['lookup', 'de', ['am:video:1258705880']]);
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1258705880');
+
+      const ws = guestWs();
+      await suggest(room, ws, 'https://music.apple.com/us/music-video/gone/999');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_NOT_IN_STOREFRONT');
+      room.destroy();
+    });
+
+    it('refuses YouTube links without asking any catalog', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const ws = guestWs();
+      await suggest(room, ws, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_ROOM');
+      assert.equal(calls.length, 0);
+      assert.equal(room.state.queue.length, 0);
+      room.destroy();
+    });
+
+    it('applies bans and the maximum duration', async () => {
+      useCatalog({ search: { videos: [video(1, 'Long One', 900)], songs: [] }, items: [video(2, 'Banned')] });
+      const room = appleRoom();
+      room.state.bannedVideos = [{ videoId: 'am:video:2', title: 'Banned' }];
+
+      let ws = guestWs();
+      await suggest(room, ws, 'https://music.apple.com/nl/music-video/banned/2');
+      assert.match(lastOf(ws, 'error').message, /banned/);
+      assert.equal(calls.length, 0, 'a banned link needs no lookup');
+
+      ws = guestWs();
+      await suggest(room, ws, 'long one');
+      assert.match(lastOf(ws, 'error').message, /too long/);
+      assert.equal(room.state.queue.length, 0);
+      room.destroy();
+    });
+
+    it("takes the owner's country as the storefront until the player reports the account's", async () => {
+      useCatalog();
+      const room = appleRoom(null);
+      const guest = guestWs();
+      guest.country = 'de';
+      room.addClient(guest);
+      assert.equal(room.metadata.apple_storefront, null, 'a guest never sets it');
+
+      const owner = ownerWs();
+      owner.country = 'nl';
+      room.addClient(owner);
+      assert.equal(room.metadata.apple_storefront, 'nl');
+      assert.equal(room.state.appleStorefront, 'nl', 'guests get it for previews');
+
+      await room.handleMessage(owner, { type: 'APPLE_STOREFRONT', payload: 'be' });
+      assert.equal(room.state.appleStorefront, 'be');
+      room.destroy();
+    });
+
+    it('moves waiting entries to the ids of a new storefront and drops what it lacks', async () => {
+      const dutch = { ...song(1715687117, 'Sexy Bitch (feat. Akon)'), artist: 'David Guetta' };
+      useCatalog({ items: [video(1, 'Playing'), video(2, 'Everywhere')], equivalents: { 'am:song:693246512': dutch } });
+      const room = appleRoom('us');
+      room.state.queue = [video(1, 'Playing'), video(2, 'Everywhere'), song(693246512, 'Sexy Bitch'), video(3, 'US only')]
+        .map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
+      room.state.currentTrack = room.state.queue[0];
+      room.state.pendingSuggestions = [{ ...video(4, 'Also US only'), id: 'p1', score: 0, voters: {} }];
+
+      room.setAppleStorefront('nl');
+      await new Promise(resolve => setTimeout(resolve, 10));
+      assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1', 'am:video:2', 'am:song:1715687117']);
+      assert.equal(room.state.queue[2].id, 'q3', 'the same entry, votes and all');
+      assert.equal(room.state.pendingSuggestions.length, 0);
+      room.destroy();
+    });
+
+    it('refuses links it cannot play instead of searching them as text', async () => {
+      useCatalog({ search: { videos: [video(9, 'Open Your Eyes')], songs: [] } });
+      const room = appleRoom();
+      const ws = guestWs();
+      await suggest(room, ws, 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_ROOM');
+      const another = guestWs(); // past the per-socket wait between suggestions
+      await suggest(room, another, 'https://music.apple.com/nl/album/future-nostalgia/1538003494');
+      assert.equal(lastOf(another, 'error').code, 'APPLE_MUSIC_LINK_UNSUPPORTED');
+      assert.equal(room.state.queue.length, 0);
+      assert.equal(calls.some(c => c[0] === 'search'), false, 'no text search');
+      room.destroy();
+    });
+
+    it('takes a link from another country as the same recording in the host country', async () => {
+      const dutch = { ...song(1715687117, 'Sexy Bitch (feat. Akon)'), artist: 'David Guetta' };
+      useCatalog({ equivalents: { 'am:song:693246512': dutch } });
+      const room = appleRoom('nl');
+      const ws = guestWs();
+      await suggest(room, ws, 'https://music.apple.com/us/song/sexy-bitch-feat-akon/693246512');
+      assert.equal(room.state.queue[0] && room.state.queue[0].videoId, 'am:song:1715687117');
+      room.destroy();
+    });
+
+    it('reports a catalog outage as an error', async () => {
+      useCatalog({ fail: true });
+      const room = appleRoom();
+      const ws = guestWs();
+      await suggest(room, ws, 'new rules');
+      assert.equal(lastOf(ws, 'error').code, 'APPLE_MUSIC_CATALOG_ERROR');
+      room.destroy();
+    });
+
+    it('checks Apple keys against the catalog, never YouTube', async () => {
+      useCatalog({ items: [video(1, 'Still There')] });
+      const room = appleRoom();
+      const result = await room.checkVideoAvailability(['am:video:1', 'am:video:2']);
+      assert.deepEqual(result.get('am:video:1'), { title: 'Still There', artist: 'Dua Lipa', thumbnail: 'https://example.com/a.jpg', duration: 221 });
+      assert.equal(result.has('am:video:2'), false, 'confirmed gone in this storefront');
+      assert.equal(db.getVideo('am:video:1').title, 'Still There');
+
+      useCatalog({ fail: true });
+      const unchecked = await room.checkVideoAvailability(['am:video:1']);
+      assert.equal(unchecked.has('am:video:1'), true);
+      assert.equal(unchecked.get('am:video:1'), null);
+      room.destroy();
+    });
+
+    it('pauses on host-side errors and skips only unplayable items', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const first = { ...video(1, 'First'), id: 'q1', score: 0, voters: {} };
+      const second = { ...video(2, 'Second'), id: 'q2', score: 0, voters: {} };
+      room.state.currentTrack = { ...first, startedAt: Date.now() };
+      room.state.queue = [room.state.currentTrack, second];
+      room.state.isPlaying = true;
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'SUBSCRIPTION_ERROR' } });
+      assert.equal(room.state.isPlaying, false);
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.deepEqual(lastOf(owner, 'APPLE_PLAYBACK_PROBLEM').payload, { code: 'SUBSCRIPTION_ERROR' });
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'CONTENT_UNAVAILABLE' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: { bad: true } } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2', 'malformed payloads are ignored');
+      room.destroy();
+    });
+
+    it('keeps an item the storefront does not offer out of history and the Auto-DJ', async () => {
+      useCatalog({ items: [video(2, 'Second')] });
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const unplayable = { ...song(693246512, 'Not in NL'), id: 'q1', score: 0, voters: {} };
+      // An earlier failure had already put it into the history the Auto-DJ draws from.
+      room.state.history = [{ ...unplayable, playedAt: Date.now() - 60000 }, { ...video(2, 'Second'), playedAt: Date.now() - 50000 }];
+      room.state.autoRefill = true;
+      room.state.currentTrack = { ...unplayable, startedAt: Date.now() };
+      room.state.queue = [room.state.currentTrack];
+      room.state.isPlaying = true;
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:song:693246512', errorCode: 'NOT_FOUND' } });
+      await new Promise(resolve => setImmediate(resolve));
+
+      assert.equal(room.state.history.some(t => t.videoId === 'am:song:693246512'), false, 'not in history');
+      assert.equal(room.state.queue.some(t => t.videoId === 'am:song:693246512'), false, 'not queued again');
+      room.destroy();
+    });
+
+    it('does not let a second click on the end of the bar skip the next track too', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const first = { ...video(1, 'First'), id: 'q1', score: 0, voters: {} };
+      const second = { ...video(2, 'Second'), id: 'q2', score: 0, voters: {} };
+      room.state.currentTrack = { ...first, startedAt: Date.now() - 60000 };
+      room.state.queue = [room.state.currentTrack, second];
+      room.state.isPlaying = true;
+
+      // The first click seeks to the end, and the next tick moves on.
+      await room.handleMessage(owner, { type: 'SEEK_TO', payload: 221 });
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+
+      // The second click, a moment later, was aimed at the first track.
+      await room.handleMessage(owner, { type: 'SEEK_TO', payload: 220.8 });
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:2', 'the next track keeps playing');
+      assert.ok(room.state.progress < 5, 'from its start');
+
+      // A deliberate seek on the new track still works.
+      room.currentTrackSince = Date.now() - 3000;
+      await room.handleMessage(owner, { type: 'SEEK_TO', payload: 100 });
+      assert.equal(room.state.progress, 100);
+      room.destroy();
+    });
+
+    // An owner socket that reports a player able to play.
+    const withPlayer = (room, ws, state = 'ready') => {
+      if (!room.clients.has(ws)) room.addClient(ws);
+      ws.applePlayerState = state;
+      room.applePlayer = { ws, state, lastSeen: Date.now() };
+      return ws;
+    };
+
+    it('lets one owner device play and puts the others on standby until they take over', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const tv = ownerWs();
+      const laptop = ownerWs();
+      room.addClient(tv);
+      room.addClient(laptop);
+
+      await room.handleMessage(tv, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      await room.handleMessage(laptop, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      assert.deepEqual(lastOf(laptop, 'APPLE_PLAYER_LEASE').payload, { active: false });
+
+      // Only the player's errors count.
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      await room.handleMessage(laptop, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'NOT_FOUND' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+
+      await room.handleMessage(laptop, { type: 'APPLE_PLAYER_CLAIM' });
+      assert.deepEqual(lastOf(laptop, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: false });
+
+      // The player closes: the device on standby takes over.
+      room.removeClient(laptop);
+      assert.equal(room.applePlayer.ws, tv);
+      assert.deepEqual(lastOf(tv, 'APPLE_PLAYER_LEASE').payload, { active: true });
+      room.destroy();
+    });
+
+    it('holds its position while no host player can play and goes on from there', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      room.state.currentTrack.startedAt = Date.now() - 40000;
+      room.state.queue[0] = room.state.currentTrack;
+
+      room.tick(); // no player: the grace starts, the clock still runs
+      assert.equal(room.state.waitingForHost, false);
+      room.hostMissingSince = Date.now() - 20000;
+      room.tick();
+      assert.equal(room.state.waitingForHost, true);
+      const held = room.state.progress;
+      assert.ok(held >= 40 && held <= 41, `held at ${held}`);
+
+      // Ten minutes without a host: nothing moves.
+      room.state.currentTrack.startedAt -= 600000;
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.progress, held);
+
+      await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'playing' } });
+      assert.equal(room.state.waitingForHost, false);
+      room.tick();
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1', 'not skipped');
+      assert.ok(room.state.progress >= held && room.state.progress <= held + 1, `goes on at ${held}, got ${room.state.progress}`);
+      room.destroy();
+    });
+
+    it('lets the Auto-DJ wait for the host and fill the room when the host is back', async () => {
+      useCatalog({ items: [video(1, 'Fine')] });
+      const room = appleRoom();
+      room.state.autoRefill = true;
+      room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      await room.populateQueueFromHistory();
+      assert.equal(room.state.queue.length, 0, 'nobody to hear it');
+
+      const owner = ownerWs();
+      room.addClient(owner);
+      await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'ready' } });
+      await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
+      room.destroy();
+    });
+
+    const playing = (room, tracks) => {
+      room.state.queue = tracks.map((t, i) => ({ ...t, id: `q${i + 1}`, score: 0, voters: {} }));
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() };
+      room.state.queue[0] = room.state.currentTrack;
+      room.state.isPlaying = true;
+    };
+
+    describe('a player that cannot play music videos (Android)', () => {
+      const asSong = (room, ws, videoId, trackId) =>
+        room.handleMessage(ws, { type: 'APPLE_PLAY_AS_SONG', payload: { videoId, trackId } });
+
+      it('plays the current music video as its song: same entry, the song\'s length, the position kept', async () => {
+        useCatalog({ songForVideo: { 'am:video:1': { ...song(11, 'One (Album)'), duration: 180 } } });
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One', 200), video(2, 'Two')]);
+        room.state.currentTrack.suggestedBy = 'guest-1';
+        room.state.queue[0] = room.state.currentTrack;
+        room.setTrackPosition(60);
+
+        await asSong(room, owner, 'am:video:1', 'q1');
+        const current = room.state.currentTrack;
+        assert.deepEqual(calls.pop(), ['songForVideo', 'nl', 'am:video:1', { title: 'One', artist: 'Dua Lipa' }]);
+        assert.equal(current.id, 'q1');
+        assert.equal(current.videoId, 'am:song:11');
+        assert.equal(current.title, 'One (Album)');
+        assert.equal(current.duration, 180);
+        assert.equal(current.suggestedBy, 'guest-1');
+        assert.equal(room.state.queue[0], current);
+        assert.equal(room.state.queue[1].videoId, 'am:video:2', 'later entries stay videos');
+        assert.ok(Math.abs(room.currentPosition() - 60) <= 1);
+        room.destroy();
+      });
+
+      it('keeps the position inside a shorter song', async () => {
+        useCatalog({ songForVideo: { 'am:video:1': { ...song(11, 'One'), duration: 180 } } });
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One', 240)]);
+        room.setTrackPosition(200);
+        await asSong(room, owner, 'am:video:1', 'q1');
+        assert.equal(room.state.currentTrack.videoId, 'am:song:11');
+        assert.ok(room.currentPosition() <= 175);
+        room.destroy();
+      });
+
+      it('listens only to the room\'s player, and only about the current music video', async () => {
+        useCatalog({ songForVideo: { 'am:video:1': song(11, 'One'), 'am:video:2': song(12, 'Two') } });
+        const room = appleRoom();
+        const player = withPlayer(room, ownerWs());
+        const standby = ownerWs();
+        room.addClient(standby);
+        const guest = guestWs();
+        room.addClient(guest);
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+
+        await asSong(room, guest, 'am:video:1', 'q1');
+        await asSong(room, standby, 'am:video:1', 'q1');
+        await asSong(room, player, 'am:video:2', 'q2');
+        await asSong(room, player, 'am:video:1', 'q9');
+        await room.handleMessage(player, { type: 'APPLE_PLAY_AS_SONG', payload: { videoId: { bad: true } } });
+        assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+        assert.equal(calls.length, 0);
+
+        room.state.currentTrack = { ...room.state.currentTrack, videoId: 'am:song:5' };
+        await asSong(room, player, 'am:song:5', 'q1');
+        assert.equal(calls.length, 0, 'a song needs no swap');
+        room.destroy();
+      });
+
+      it('skips a music video Apple knows no song for, like any item it cannot play', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'Live'), video(2, 'Two')]);
+        await asSong(room, owner, 'am:video:1', 'q1');
+        assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+        assert.ok(!room.state.history.some(t => t.videoId === 'am:video:1'));
+        room.destroy();
+      });
+
+      it('drops a song that arrives after the room moved on', async () => {
+        let answer;
+        useCatalog({ songForVideo: () => new Promise((resolve) => { answer = resolve; }) });
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+        const asking = asSong(room, owner, 'am:video:1', 'q1');
+        await new Promise(resolve => setImmediate(resolve));
+        room.handleNextTrack();
+        answer(song(11, 'One'));
+        await asking;
+        assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+        assert.ok(!room.state.queue.some(t => t.videoId === 'am:song:11'));
+        room.destroy();
+      });
+    });
+
+    it('pauses at the third item error in a row instead of skipping the whole queue', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two'), video(3, 'Three'), video(4, 'Four')]);
+
+      for (const id of [1, 2]) {
+        await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: `am:video:${id}`, errorCode: 'CONTENT_UNSUPPORTED' } });
+      }
+      assert.equal(room.state.currentTrack.videoId, 'am:video:3');
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:3', errorCode: 'CONTENT_UNSUPPORTED' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:3', 'kept');
+      assert.equal(room.state.isPlaying, false, 'paused');
+      assert.deepEqual(lastOf(owner, 'APPLE_PLAYBACK_PROBLEM').payload, { code: 'CONTENT_UNSUPPORTED' });
+      room.destroy();
+    });
+
+    it('treats a geo block as a problem on the host side', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'One'), video(2, 'Two')]);
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'GEO_BLOCK' } });
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.isPlaying, false);
+      room.destroy();
+    });
+
+    it('ignores an error or a duration reported for an earlier entry of the same song', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'Again'), video(1, 'Again'), video(2, 'Next')]);
+      room.handleNextTrack();
+      assert.equal(room.state.currentTrack.id, 'q2');
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:video:1', errorCode: 'NOT_FOUND', trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.id, 'q2', 'not skipped');
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: { duration: 30, trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.duration, 221, 'duration untouched');
+      room.destroy();
+    });
+
+    it('keeps the catalog length over the length the player reports', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      playing(room, [video(1, 'Known'), { ...video(2, 'Unknown'), duration: null }]);
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: { duration: 30, trackId: 'q1' } });
+      assert.equal(room.state.currentTrack.duration, 221);
+
+      room.handleNextTrack();
+      await room.handleMessage(owner, { type: 'UPDATE_DURATION', payload: 187 });
+      assert.equal(room.state.currentTrack.duration, 187, 'fills a missing length');
+      room.destroy();
+    });
+
+    it('removes an unplayable item from the stored history as well', async () => {
+      useCatalog();
+      const room = appleRoom();
+      const owner = ownerWs();
+      room.addClient(owner);
+      const unplayable = { ...song(693246512, 'Not in NL'), playedAt: Date.now() - 60000 };
+      db.addToRoomHistory(room.id, unplayable);
+      room.state.history = [unplayable];
+      playing(room, [song(693246512, 'Not in NL'), video(2, 'Two')]);
+
+      await room.handleMessage(owner, { type: 'PLAYBACK_ERROR', payload: { videoId: 'am:song:693246512', errorCode: 'NOT_FOUND' } });
+      assert.equal(db.getRoomHistory(room.id).some(t => t.videoId === 'am:song:693246512'), false);
+      room.destroy();
+    });
+
+    it('lets the Auto-DJ pick only checked, unbanned items, and nothing without a storefront', async () => {
+      useCatalog({ items: [video(1, 'Fine'), video(2, 'Banned')] });
+      const room = appleRoom();
+      room.state.autoRefill = true;
+      room.state.history = [video(1, 'Fine'), video(2, 'Banned'), video(3, 'Gone')].map(t => ({ ...t, playedAt: Date.now() - 60000 }));
+      room.state.bannedVideos = [{ videoId: 'am:video:2', title: 'Banned' }];
+      withPlayer(room, ownerWs());
+
+      await room.populateQueueFromHistory();
+      assert.deepEqual(room.state.queue.map(t => t.videoId), ['am:video:1']);
+      assert.equal(room.state.currentTrack.videoId, 'am:video:1');
+      assert.equal(room.state.history.some(t => t.videoId === 'am:video:3'), false, 'gone from history');
+      room.destroy();
+
+      const unconnected = appleRoom(null);
+      unconnected.state.autoRefill = true;
+      unconnected.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      await unconnected.populateQueueFromHistory();
+      assert.equal(unconnected.state.queue.length, 0);
+      unconnected.destroy();
+    });
+
+    it('starts the refill even when play was pressed while it ran', async () => {
+      useCatalog({ items: [video(1, 'Fine')] });
+      const room = appleRoom();
+      room.state.history = [{ ...video(1, 'Fine'), playedAt: Date.now() - 60000 }];
+      withPlayer(room, ownerWs());
+      room.state.isPlaying = true; // play pressed, nothing current
+      await room.populateQueueFromHistory();
+      assert.equal(room.state.currentTrack && room.state.currentTrack.videoId, 'am:video:1');
       room.destroy();
     });
   });

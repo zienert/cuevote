@@ -39,6 +39,15 @@ describe('Zod Schemas', () => {
     });
   });
 
+  describe('RoomProviderPayload', () => {
+    it('should take a room id and nothing else of note', () => {
+      assert.ok(schemas.RoomProviderPayload.safeParse({ roomId: 'apple-test-e6b64131f81d9fff' }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse({ roomId: '' }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse({ roomId: 'x'.repeat(201) }).success);
+      assert.ok(!schemas.RoomProviderPayload.safeParse(undefined).success);
+    });
+  });
+
   describe('CreateRoomPayload', () => {
     it('should accept valid room creation', () => {
       const result = schemas.CreateRoomPayload.safeParse({
@@ -58,6 +67,25 @@ describe('Zod Schemas', () => {
     it('should reject missing name', () => {
       const result = schemas.CreateRoomPayload.safeParse({});
       assert.ok(!result.success);
+    });
+
+    // Lobby builds already in browsers send null for a public room's password.
+    it('should accept a public room with a null password', () => {
+      const result = schemas.CreateRoomPayload.safeParse({ name: 'Open Room', isPrivate: false, password: null });
+      assert.ok(result.success);
+      assert.equal(result.data.password, null);
+    });
+
+    // bcrypt ignores everything past 72 bytes.
+    it('should reject a password longer than 72 chars', () => {
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'R', isPrivate: true, password: 'x'.repeat(72) }).success);
+      assert.ok(!schemas.CreateRoomPayload.safeParse({ name: 'R', isPrivate: true, password: 'x'.repeat(73) }).success);
+    });
+
+    it('should accept the two providers and nothing else', () => {
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'A', provider: 'apple' }).success);
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'Y', provider: 'youtube' }).success);
+      assert.ok(!schemas.CreateRoomPayload.safeParse({ name: 'S', provider: 'spotify' }).success);
     });
   });
 
@@ -195,6 +223,26 @@ describe('Zod Schemas', () => {
 
     it('should reject Infinity', () => {
       assert.ok(!schemas.SeekToPayload.safeParse(Infinity).success);
+    });
+  });
+
+  describe('McpAuthorizePayload', () => {
+    it('should accept a handle with the displayed client and host', () => {
+      const result = schemas.McpAuthorizePayload.safeParse({ handle: 'abc', shownClient: 'Some DJ', shownHost: 'ai.example' });
+      assert.ok(result.success);
+      assert.equal(result.data.shownHost, 'ai.example');
+    });
+
+    it('should accept a handle alone', () => {
+      assert.ok(schemas.McpAuthorizePayload.safeParse({ handle: 'abc' }).success);
+    });
+
+    it('should reject a non-string host', () => {
+      assert.ok(!schemas.McpAuthorizePayload.safeParse({ handle: 'abc', shownHost: 42 }).success);
+    });
+
+    it('should reject an overlong host', () => {
+      assert.ok(!schemas.McpAuthorizePayload.safeParse({ handle: 'abc', shownHost: 'a'.repeat(301) }).success);
     });
   });
 });

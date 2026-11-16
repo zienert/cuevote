@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "이 채널은 로그인한 계정이 필요합니다.",
 		"accountRequired": "이 작업을 하려면 로그인하세요.",
 		"sessionNotReady": "세션이 아직 준비되지 않았습니다. 페이지를 새로고침하세요.",
-		"guestLimit": "이 네트워크의 새 게스트가 너무 많습니다. 로그인 후 계속하세요."
+		"guestLimit": "이 네트워크의 새 게스트가 너무 많습니다. 로그인 후 계속하세요.",
+		"appleMusicUnavailable": "이 서버에서는 Apple Music을 사용할 수 없습니다.",
+		"appleMusicNotConnected": "주최자가 먼저 Apple Music을 연결해야 합니다.",
+		"appleMusicRoom": "이 채널은 Apple Music을 재생합니다. music.apple.com 링크를 붙여넣거나 이름으로 검색하세요.",
+		"appleMusicNotFound": "Apple Music에서 찾을 수 없습니다.",
+		"appleMusicLinkUnsupported": "곡 하나 또는 뮤직비디오 하나의 링크를 붙여넣거나 이름으로 검색하세요.",
+		"appleMusicNotInStorefront": "이 곡은 주최자 국가의 Apple Music에서 이용할 수 없습니다.",
+		"appleMusicCatalogError": "Apple Music이 응답하지 않았습니다. 다시 시도하세요."
 	},
 	"connectAi": {
 		"willSendTo": "승인이 전송될 주소",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "로그인하여 만들기",
 		"noChannelsFound": "채널을 찾을 수 없음:",
 		"live": "라이브",
+		"hostedBy": "호스트: {name}",
+		"wrongPassword": "비밀번호가 틀렸습니다",
 		"createNewChannel": "새 채널 만들기",
 		"channelName": "채널 이름",
 		"channelNamePlaceholder": "예: 늦은 밤 감성",
@@ -81,13 +90,25 @@ export default {
 		"description": "음악을 재생하려면 YouTube 플레이어를 로드해야 합니다. 이는 Google 서버에 연결됩니다.",
 		"policy": "개인정보 처리방침 읽기",
 		"accept": "수락 및 음악 재생",
-		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오."
+		"youtubeConsent": "YouTube 플레이어를 로드하려면 귀하의 동의가 필요합니다. 아래 쿠키를 수락하십시오.",
+		"signInDescription": "Google로 로그인하려면 Google 로그인을 불러옵니다. 이때 Google 서버에 연결됩니다. 같은 동의로 YouTube 채널에서는 YouTube 플레이어도 불러옵니다.",
+		"signInAccept": "동의"
+	},
+	"join": {
+		"welcome": "{brand}에 오신 것을 환영합니다",
+		"youtubeTitle": "오디오 및 비디오 사용",
+		"youtubeBody": "YouTube에서 음악을 재생하고 플레이리스트에 참여하려면 쿠키를 사용해야 합니다.",
+		"accept": "사용하고 파티 참여하기",
+		"agree": "참여하면 {policy}에 동의하는 것으로 간주됩니다.",
+		"policy": "개인정보 처리방침",
+		"checking": "채널 확인 중…"
 	},
 	"header": {
 		"profileSettings": "프로필 및 설정",
 		"signIn": "Google로 로그인",
 		"acceptCookies": "로그인하려면 쿠키 허용",
 		"legal": "법적 정보",
+		"player": "플레이어",
 		"playlist": "재생목록",
 		"library": "라이브러리",
 		"share": "공유",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "인터넷에 연결되지 않음",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "창이 너무 작습니다",
+		"windowTooSmallMessage": "CueVote를 계속 사용하려면 창을 키워 주세요.",
+		"backToRadio": "라디오로 돌아가기",
 		"retry": "연결 재시도",
 		"retrying": "재시도 중...",
 		"connecting": "서버 연결 중...",
@@ -188,7 +209,9 @@ export default {
 		"delete": "삭제",
 		"watch": "YouTube에서 보기",
 		"recommend": "추천 받기",
-		"guest": "게스트"
+		"guest": "게스트",
+		"voteUp": "찬성 투표",
+		"voteDown": "반대 투표"
 	},
 	"library": {
 		"searchPlaceholder": "라이브러리 검색...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} 동영상"
 		},
 		"inLibrary": "라이브러리에",
+		"about": "라이브러리 정보",
 		"info1": "이 라이브러리는 최근 <strong>28일</strong> 동안 재생된 고유한 동영상을 표시합니다.",
 		"info2": "메타데이터 최신화를 위해 오래된 동영상은 숨겨지지만, <strong>절대 삭제되지 않습니다</strong>. <strong>자동 리필</strong> 기능은 전체 기록을 기억하며 필요할 때 오래된 동영상을 대기열(및 이 목록)로 다시 가져옵니다!",
 		"empty": "동영상을 찾을 수 없음"
@@ -222,6 +246,13 @@ export default {
 		"history": "기록",
 		"last50": "최근 50동영상 (총 {count})",
 		"nowPlaying": "현재 재생",
+		"play": "재생",
+		"pause": "일시정지",
+		"mute": "음소거",
+		"unmute": "음소거 해제",
+		"volume": "음량",
+		"cinemaMode": "시네마 모드",
+		"exitCinemaMode": "시네마 모드 종료",
 		"channelSuffix": "채널",
 		"upNext": "다음 동영상",
 		"queueEmpty": "대기열 비었음",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "요청에서 차단된 동영상이 여기에 표시됩니다.",
 		"bannedOn": "{date}에 차단",
 		"unban": "차단 해제"
+	},
+	"appleMusic": {
+		"source": "음악 소스",
+		"sourceHint": "Apple Music은 내 컴퓨터에서 재생되며 Apple Music 구독이 필요합니다.",
+		"connect": "Apple Music 연결",
+		"connectHint": "Apple Music을 구독 중인 Apple 계정으로 로그인하세요.",
+		"signInFailed": "로그인하지 못했습니다.",
+		"start": "재생 시작",
+		"startHint": "브라우저는 클릭한 뒤에만 소리를 재생합니다.",
+		"loading": "Apple Music 불러오는 중…",
+		"loadFailed": "Apple Music을 불러올 수 없습니다.",
+		"problemSubscription": "재생하려면 활성 상태의 Apple Music 구독이 필요합니다.",
+		"switchAccount": "다른 계정 사용",
+		"problemOtherDevice": "다른 기기에서 내 Apple 계정으로 재생 중입니다.",
+		"problemGeneric": "Apple Music 재생이 중지되었습니다.",
+		"contentNotice": "이 채널의 커버 아트와 미리듣기는 Apple에서 제공됩니다. 로드할 때 Apple이 귀하의 IP 주소를 확인할 수 있습니다.",
+		"contentAccept": "켜기",
+		"previewFailed": "이 미리듣기를 재생할 수 없습니다.",
+		"standby": "이 채널은 지금 다른 기기에서 재생 중입니다.",
+		"playHere": "여기에서 재생",
+		"waitingForHost": "주최자가 다시 재생할 때까지 일시 정지됩니다.",
+		"playsOnComputer": "Apple Music은 컴퓨터에서 재생됩니다. 컴퓨터에서 이 채널을 열고 Apple Music을 연결하세요."
 	},
 	"attribution": {
 		"youtube": "YouTube로 개발됨"

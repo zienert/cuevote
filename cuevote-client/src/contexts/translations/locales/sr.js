@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Овај канал захтева пријављен налог.",
 		"accountRequired": "Пријавите се да бисте то урадили.",
 		"sessionNotReady": "Ваша сесија још није спремна. Освежите страницу.",
-		"guestLimit": "Превише нових гостију на овој мрежи. Пријавите се да наставите."
+		"guestLimit": "Превише нових гостију на овој мрежи. Пријавите се да наставите.",
+		"appleMusicUnavailable": "Apple Music nije dostupan na ovom serveru.",
+		"appleMusicNotConnected": "Domaćin prvo mora da poveže Apple Music.",
+		"appleMusicRoom": "Ovaj kanal pušta Apple Music. Nalepite link sa music.apple.com ili pretražujte po nazivu.",
+		"appleMusicNotFound": "Nije pronađeno na Apple Music-u.",
+		"appleMusicLinkUnsupported": "Nalepite link do jedne pesme ili muzičkog spota ili pretražujte po nazivu.",
+		"appleMusicNotInStorefront": "Ova pesma nije dostupna na Apple Music-u u zemlji domaćina.",
+		"appleMusicCatalogError": "Apple Music ne odgovara. Pokušajte ponovo."
 	},
 	"connectAi": {
 		"willSendTo": "Odobrenje će biti poslato na",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Prijavi se za pravljenje",
 		"noChannelsFound": "Nema pronađenih kanala za",
 		"live": "Uživo",
+		"hostedBy": "Domaćin: {name}",
+		"wrongPassword": "Pogrešna lozinka",
 		"createNewChannel": "Napravi Novi Kanal",
 		"channelName": "Ime Kanala",
 		"channelNamePlaceholder": "npr. Noćne Vibracije",
@@ -81,13 +90,25 @@ export default {
 		"description": "Za reprodukciju muzike moramo učitati YouTube plejer. Ovo se povezuje sa Google-ovim serverima.",
 		"policy": "Pročitajte našu Politiku privatnosti",
 		"accept": "Prihvati i pusti muziku",
-		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod."
+		"youtubeConsent": "Potrebna nam je vaša saglasnost za učitavanje YouTube plejera. Prihvatite kolačiće ispod.",
+		"signInDescription": "Za prijavu preko Google-a učitavamo Google prijavu, koja se povezuje sa Google serverima. Ista saglasnost u YouTube kanalima učitava i YouTube plejer.",
+		"signInAccept": "Prihvati"
+	},
+	"join": {
+		"welcome": "Dobro došli na {brand}",
+		"youtubeTitle": "Omogući zvuk i video",
+		"youtubeBody": "Da bismo puštali muziku sa YouTube-a i da biste učestvovali u plejlisti, moramo da koristimo kolačiće.",
+		"accept": "Omogući i pridruži se žurci",
+		"agree": "Pridruživanjem prihvatate našu {policy}.",
+		"policy": "Politiku privatnosti",
+		"checking": "Provera kanala…"
 	},
 	"header": {
 		"profileSettings": "Profil i Podešavanja",
 		"signIn": "Prijavi se putem Google-a",
 		"acceptCookies": "Prihvatite kolačiće za prijavu",
 		"legal": "Pravne Informacije",
+		"player": "Reprodukcija",
 		"playlist": "Plejlista",
 		"library": "Biblioteka",
 		"share": "Podeli",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nema internet veze",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Prozor je premali",
+		"windowTooSmallMessage": "Povećajte prozor da biste nastavili da koristite CueVote.",
+		"backToRadio": "Nazad na radio",
 		"retry": "Pokušaj ponovo povezivanje",
 		"switching": "Promena Kanala...",
 		"channelNotFound": "Kanal ne postoji",
@@ -175,7 +196,7 @@ export default {
 		"takingTooLong": "Траје дуже него обично...",
 		"checkConnection": "Молимо проверите интернет везу.",
 		"networkThrottle": "YouTube је блокирао IP ове мреже. Репродукција је паузирана. Покушајте да се пребаците на мобилну приступну тачку.",
-		"retryPlayback": "Покушај поново",
+		"retryPlayback": "Pokušaj ponovo",
 		"tapToUnmute": "Додирните за укључивање звука"
 	},
 	"track": {
@@ -188,7 +209,9 @@ export default {
 		"delete": "Obriši",
 		"watch": "Gledaj na YouTube-u",
 		"recommend": "Преузми предлоге",
-		"guest": "Гост"
+		"guest": "Гост",
+		"voteUp": "Glasaj za",
+		"voteDown": "Glasaj protiv"
 	},
 	"library": {
 		"searchPlaceholder": "Traži u biblioteci...",
@@ -198,6 +221,7 @@ export default {
 			"other": "{count} pesama"
 		},
 		"inLibrary": "u biblioteci",
+		"about": "O biblioteci",
 		"info1": "Ova biblioteka prikazuje jedinstvene pesme svirane u zadnjih <strong>28 dana</strong>.",
 		"info2": "Starije pesme su skrivene radi svežine podataka, ali <strong>nikada nisu obrisane</strong>. Funkcija <strong>Automatsko Punjenje</strong> pamti celu vašu istoriju i automatski će vratiti starije pesme u red (i ovu listu) kada je potrebno!",
 		"empty": "Nisu pronađene pesme"
@@ -226,6 +250,13 @@ export default {
 		"history": "Istorija",
 		"last50": "Zadnjih 50 (od {count})",
 		"nowPlaying": "Sada Svira",
+		"play": "Pusti",
+		"pause": "Pauziraj",
+		"mute": "Isključi zvuk",
+		"unmute": "Uključi zvuk",
+		"volume": "Jačina zvuka",
+		"cinemaMode": "Bioskopski režim",
+		"exitCinemaMode": "Izađi iz bioskopskog režima",
 		"upNext": "Sledeće",
 		"queueEmpty": "Red je prazan",
 		"errorNotFound": "Video nije pronađen",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "Видео снимци забрањени из захтева појавиће се овде.",
 		"bannedOn": "Забрањено {date}",
 		"unban": "Уклони забрану"
+	},
+	"appleMusic": {
+		"source": "Izvor muzike",
+		"sourceHint": "Apple Music svira na vašem računaru i zahteva pretplatu na Apple Music.",
+		"connect": "Poveži Apple Music",
+		"connectHint": "Prijavite se Apple nalogom na kojem imate pretplatu na Apple Music.",
+		"signInFailed": "Prijava nije uspela.",
+		"start": "Pokreni reprodukciju",
+		"startHint": "Pregledač reprodukuje zvuk tek nakon klika.",
+		"loading": "Apple Music se učitava…",
+		"loadFailed": "Apple Music nije moguće učitati.",
+		"problemSubscription": "Za reprodukciju je potrebna aktivna pretplata na Apple Music.",
+		"switchAccount": "Koristi drugi nalog",
+		"problemOtherDevice": "Vaš Apple nalog pušta muziku na drugom uređaju.",
+		"problemGeneric": "Apple Music je zaustavio reprodukciju.",
+		"contentNotice": "Omoti i pregledi u ovom kanalu stižu od Apple-a. Pri njihovom učitavanju Apple vidi vašu IP adresu.",
+		"contentAccept": "Uključi",
+		"previewFailed": "Ovaj pregled nije moguće pustiti.",
+		"standby": "Ovaj kanal se trenutno pušta na drugom vašem uređaju.",
+		"playHere": "Pusti ovde",
+		"waitingForHost": "Pauzirano dok domaćin ponovo ne pusti muziku.",
+		"playsOnComputer": "Apple Music se pušta na računaru. Otvorite ovaj kanal tamo i povežite Apple Music."
 	},
 	"attribution": {
 		"youtube": "Развијено уз YouTube"

@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Kanal ini memerlukan akun yang sudah masuk.",
 		"accountRequired": "Silakan masuk untuk melakukannya.",
 		"sessionNotReady": "Sesi Anda belum siap. Silakan muat ulang halaman.",
-		"guestLimit": "Terlalu banyak tamu baru di jaringan ini. Silakan masuk untuk melanjutkan."
+		"guestLimit": "Terlalu banyak tamu baru di jaringan ini. Silakan masuk untuk melanjutkan.",
+		"appleMusicUnavailable": "Apple Music tidak tersedia di server ini.",
+		"appleMusicNotConnected": "Tuan rumah harus menghubungkan Apple Music terlebih dahulu.",
+		"appleMusicRoom": "Kanal ini memutar Apple Music. Tempel link music.apple.com atau cari berdasarkan nama.",
+		"appleMusicNotFound": "Tidak ditemukan di Apple Music.",
+		"appleMusicLinkUnsupported": "Tempel link ke satu lagu atau video musik, atau cari berdasarkan nama.",
+		"appleMusicNotInStorefront": "Lagu ini tidak tersedia di Apple Music di negara tuan rumah.",
+		"appleMusicCatalogError": "Apple Music tidak merespons. Silakan coba lagi."
 	},
 	"connectAi": {
 		"willSendTo": "Persetujuan akan dikirim ke",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Login untuk Membuat",
 		"noChannelsFound": "Kanal tidak ditemukan",
 		"live": "Live",
+		"hostedBy": "Tuan rumah: {name}",
+		"wrongPassword": "Kata sandi salah",
 		"createNewChannel": "Buat Kanal Baru",
 		"channelName": "Nama Kanal",
 		"channelNamePlaceholder": "cth. Santai Malam",
@@ -81,13 +90,25 @@ export default {
 		"description": "Untuk memutar musik, kami perlu memuat Pemutar YouTube. Ini terhubung ke server Google.",
 		"policy": "Baca Kebijakan Privasi kami",
 		"accept": "Terima & Putar Musik",
-		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini."
+		"youtubeConsent": "Kami memerlukan persetujuan Anda untuk memuat Pemutar YouTube. Harap terima cookie di bawah ini.",
+		"signInDescription": "Untuk masuk dengan Google, kami memuat login Google, yang terhubung ke server Google. Persetujuan yang sama juga memuat pemutar YouTube di saluran YouTube.",
+		"signInAccept": "Terima"
+	},
+	"join": {
+		"welcome": "Selamat datang di {brand}",
+		"youtubeTitle": "Aktifkan Audio & Video",
+		"youtubeBody": "Untuk memutar musik dari YouTube dan ikut serta dalam playlist, kami perlu menggunakan cookie.",
+		"accept": "Aktifkan & Ikut Pesta",
+		"agree": "Dengan bergabung, Anda menyetujui {policy} kami.",
+		"policy": "Kebijakan Privasi",
+		"checking": "Memeriksa saluran…"
 	},
 	"header": {
 		"profileSettings": "Profil & Pengaturan",
 		"signIn": "Masuk dengan Google",
 		"acceptCookies": "Terima cookie untuk masuk",
 		"legal": "Info Hukum",
+		"player": "Pemutar",
 		"playlist": "Playlist",
 		"library": "Pustaka",
 		"share": "Bagikan",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tidak ada koneksi internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Jendela terlalu kecil",
+		"windowTooSmallMessage": "Perbesar jendela untuk terus menggunakan CueVote.",
+		"backToRadio": "Kembali ke Radio",
 		"retry": "Coba lagi koneksi",
 		"switching": "Ganti Kanal...",
 		"channelNotFound": "Kanal tidak ada",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Hapus",
 		"watch": "Tonton di YouTube",
 		"recommend": "Dapatkan saran",
-		"guest": "Tamu"
+		"guest": "Tamu",
+		"voteUp": "Beri suara setuju",
+		"voteDown": "Beri suara tidak setuju"
 	},
 	"library": {
 		"searchPlaceholder": "Cari pustaka...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "di pustaka",
+		"about": "Tentang pustaka",
 		"info1": "Pustaka ini menampilkan video unik yang diputar dalam <strong>28 hari</strong> terakhir.",
 		"info2": "Video lama disembunyikan agar data tetap segar, tapi <strong>tidak pernah dihapus</strong>. Fitur <strong>Isi Otomatis</strong> tetap mengingat seluruh riwayat Anda dan akan otomatis mengembalikan video lama saat dibutuhkan!",
 		"empty": "Video tidak ditemukan"
@@ -222,6 +246,13 @@ export default {
 		"history": "Riwayat",
 		"last50": "50 Terakhir (dari {count})",
 		"nowPlaying": "Sedang Diputar",
+		"play": "Putar",
+		"pause": "Jeda",
+		"mute": "Bisukan",
+		"unmute": "Bunyikan",
+		"volume": "Volume",
+		"cinemaMode": "Mode bioskop",
+		"exitCinemaMode": "Keluar dari mode bioskop",
 		"channelSuffix": "Saluran",
 		"upNext": "Berikutnya",
 		"queueEmpty": "Antrean kovideo",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "Video yang diblokir dari permintaan akan muncul di sini.",
 		"bannedOn": "Diblokir pada {date}",
 		"unban": "Buka blokir"
+	},
+	"appleMusic": {
+		"source": "Sumber musik",
+		"sourceHint": "Apple Music diputar di komputer Anda dan memerlukan langganan Apple Music.",
+		"connect": "Hubungkan Apple Music",
+		"connectHint": "Masuk dengan akun Apple yang memiliki langganan Apple Music Anda.",
+		"signInFailed": "Proses masuk tidak berhasil.",
+		"start": "Mulai pemutaran",
+		"startHint": "Browser baru memutar suara setelah diklik.",
+		"loading": "Memuat Apple Music…",
+		"loadFailed": "Apple Music tidak dapat dimuat.",
+		"problemSubscription": "Apple Music memerlukan langganan aktif untuk memutar ini.",
+		"switchAccount": "Gunakan akun lain",
+		"problemOtherDevice": "Akun Apple Anda sedang memutar di perangkat lain.",
+		"problemGeneric": "Apple Music menghentikan pemutaran.",
+		"contentNotice": "Sampul album dan pratinjau di saluran ini berasal dari Apple. Saat dimuat, Apple dapat melihat alamat IP Anda.",
+		"contentAccept": "Aktifkan",
+		"previewFailed": "Pratinjau ini tidak dapat diputar.",
+		"standby": "Saluran ini sedang diputar di perangkat Anda yang lain.",
+		"playHere": "Putar di sini",
+		"waitingForHost": "Dijeda sampai tuan rumah memutar lagi.",
+		"playsOnComputer": "Apple Music diputar di komputer. Buka saluran ini di sana dan hubungkan Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dikembangkan dengan YouTube"

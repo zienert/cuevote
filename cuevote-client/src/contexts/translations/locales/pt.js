@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Este canal requer uma conta com sessão iniciada.",
 		"accountRequired": "Faça login para fazer isso.",
 		"sessionNotReady": "A sua sessão ainda não está pronta. Recarregue a página.",
-		"guestLimit": "Demasiados convidados novos nesta rede. Faça login para continuar."
+		"guestLimit": "Demasiados convidados novos nesta rede. Faça login para continuar.",
+		"appleMusicUnavailable": "O Apple Music não está disponível neste servidor.",
+		"appleMusicNotConnected": "O anfitrião precisa conectar o Apple Music primeiro.",
+		"appleMusicRoom": "Este canal toca Apple Music. Cole um link do music.apple.com ou pesquise pelo nome.",
+		"appleMusicNotFound": "Não encontrado no Apple Music.",
+		"appleMusicLinkUnsupported": "Cole o link de uma única música ou videoclipe, ou pesquise pelo nome.",
+		"appleMusicNotInStorefront": "Este título não está disponível no Apple Music no país do anfitrião.",
+		"appleMusicCatalogError": "O Apple Music não respondeu. Tente novamente."
 	},
 	"connectAi": {
 		"willSendTo": "A autorização será enviada para",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Login para Criar",
 		"noChannelsFound": "Nenhum canal encontrado para",
 		"live": "Ao vivo",
+		"hostedBy": "Anfitrião: {name}",
+		"wrongPassword": "Palavra-passe incorreta",
 		"createNewChannel": "Criar Novo Canal",
 		"channelName": "Nome do Canal",
 		"channelNamePlaceholder": "ex. Vibe da Noite",
@@ -81,7 +90,18 @@ export default {
 		"description": "Para tocar vídeo, precisamos carregar o player do YouTube. Isso conecta aos servidores do Google.",
 		"policy": "Ler Política de Privacidade",
 		"accept": "Aceitar e Tocar Vídeo",
-		"youtubeConsent": "Precisamos do seu consentimento para carregar o player do YouTube. Aceite os cookies abaixo."
+		"youtubeConsent": "Precisamos do seu consentimento para carregar o player do YouTube. Aceite os cookies abaixo.",
+		"signInDescription": "Para entrar com o Google, carregamos o login do Google, que se conecta aos servidores do Google. O mesmo consentimento também carrega o player do YouTube nos canais do YouTube.",
+		"signInAccept": "Aceitar"
+	},
+	"join": {
+		"welcome": "Bem-vindo ao {brand}",
+		"youtubeTitle": "Ativar áudio e vídeo",
+		"youtubeBody": "Para tocar música do YouTube e participar da playlist, precisamos usar cookies.",
+		"accept": "Ativar e entrar na festa",
+		"agree": "Ao entrar, você concorda com nossa {policy}.",
+		"policy": "Política de Privacidade",
+		"checking": "Verificando o canal…"
 	},
 	"header": {
 		"back": "Voltar",
@@ -92,6 +112,7 @@ export default {
 		"signIn": "Entrar com Google",
 		"acceptCookies": "Aceitar cookies para entrar",
 		"legal": "Informações Legais",
+		"player": "Player",
 		"playlist": "Playlist",
 		"library": "Biblioteca",
 		"share": "Compartilhar",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Sem conexão com a internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Janela demasiado pequena",
+		"windowTooSmallMessage": "Aumente a janela para continuar a usar o CueVote.",
+		"backToRadio": "Voltar à rádio",
 		"retry": "Tentar novamente",
 		"retrying": "Tentando...",
 		"connecting": "Conectando ao servidor...",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Excluir",
 		"watch": "No YouTube",
 		"recommend": "Obter sugestões",
-		"guest": "Convidado"
+		"guest": "Convidado",
+		"voteUp": "Votar a favor",
+		"voteDown": "Votar contra"
 	},
 	"library": {
 		"searchPlaceholder": "Buscar na biblioteca...",
@@ -198,6 +221,7 @@ export default {
 			"other": "{count} vídeos"
 		},
 		"inLibrary": "na biblioteca",
+		"about": "Sobre a biblioteca",
 		"info1": "Esta biblioteca exibe vídeos únicas tocadas nos últimos <strong>28 dias</strong>.",
 		"info2": "Vídeos mais antigas são ocultadas para garantir a atualização dos metadados, mas <strong>nunca são excluídas</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigas de volta para a fila (e para esta lista) quando necessário!",
 		"empty": "Nenhuma vídeo encontrada"
@@ -226,6 +250,13 @@ export default {
 		"history": "Histórico",
 		"last50": "Últimas 50 de {count}",
 		"nowPlaying": "Tocando agora",
+		"play": "Reproduzir",
+		"pause": "Pausar",
+		"mute": "Silenciar",
+		"unmute": "Ativar som",
+		"volume": "Volume",
+		"cinemaMode": "Modo cinema",
+		"exitCinemaMode": "Sair do modo cinema",
 		"upNext": "A seguir",
 		"queueEmpty": "Fila vazia",
 		"errorNotFound": "Vídeo não encontrado",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "Vídeos banidos das solicitações aparecerão aqui.",
 		"bannedOn": "Banido em {date}",
 		"unban": "Desbanir"
+	},
+	"appleMusic": {
+		"source": "Fonte de música",
+		"sourceHint": "O Apple Music toca no seu computador e exige uma assinatura do Apple Music.",
+		"connect": "Conectar Apple Music",
+		"connectHint": "Entre com a conta Apple que tem a sua assinatura do Apple Music.",
+		"signInFailed": "Não foi possível entrar.",
+		"start": "Iniciar reprodução",
+		"startHint": "O navegador só reproduz som depois de um clique.",
+		"loading": "Carregando o Apple Music…",
+		"loadFailed": "Não foi possível carregar o Apple Music.",
+		"problemSubscription": "O Apple Music precisa de uma assinatura ativa para tocar isto.",
+		"switchAccount": "Usar outra conta",
+		"problemOtherDevice": "Sua conta Apple está tocando em outro dispositivo.",
+		"problemGeneric": "O Apple Music parou a reprodução.",
+		"contentNotice": "As capas e as prévias deste canal vêm da Apple. Ao carregá-las, a Apple vê o seu endereço IP.",
+		"contentAccept": "Ativar",
+		"previewFailed": "Não é possível reproduzir esta prévia.",
+		"standby": "Este canal está tocando em outro dos seus dispositivos.",
+		"playHere": "Tocar aqui",
+		"waitingForHost": "Pausado até o anfitrião voltar a tocar.",
+		"playsOnComputer": "O Apple Music toca em um computador. Abra este canal nele e conecte o Apple Music."
 	},
 	"attribution": {
 		"youtube": "Desenvolvido com YouTube"

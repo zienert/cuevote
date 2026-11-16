@@ -35,6 +35,146 @@ enum CueVoteOrigin {
     }
 }
 
+/// Apple Music's sign-in pages.
+enum AppleSignIn {
+    /// Where MusicKit JS opens its sign-in window.
+    static func isSignInPage(_ url: URL?) -> Bool {
+        guard let url = url, url.scheme?.lowercased() == "https" else { return false }
+        return url.host?.lowercased() == "authorize.music.apple.com"
+    }
+
+    /// The pages that sign-in moves through: Apple ID, two-factor, password reset.
+    static func isApplePage(_ url: URL?) -> Bool {
+        guard let url = url, url.scheme?.lowercased() == "https",
+              let host = url.host?.lowercased() else { return false }
+        return host == "apple.com" || host.hasSuffix(".apple.com")
+    }
+
+    static func topViewController() -> UIViewController? {
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        var top = window?.rootViewController
+        while let presented = top?.presentedViewController { top = presented }
+        return top
+    }
+}
+
+/// Apple Music's sign-in, shown over CueVote as a sheet: a bar with the page's
+/// address and a close button, Apple's page underneath. The page is a popup of
+/// CueVote's WebView, so MusicKit gets its answer the regular way. Closing the
+/// sheet cancels the sign-in: the popup goes away, MusicKit sees its window
+/// closed and stops waiting.
+final class AppleSignInController: UIViewController, WKNavigationDelegate, WKUIDelegate {
+    let webView: WKWebView
+    private let address = UILabel()
+
+    /// The web view must exist before createWebViewWith returns it, so it is
+    /// built here rather than in viewDidLoad.
+    init(configuration: WKWebViewConfiguration) {
+        webView = WKWebView(frame: .zero, configuration: configuration)
+        super.init(nibName: nil, bundle: nil)
+        webView.navigationDelegate = self
+        webView.uiDelegate = self
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+
+        let close = UIButton(type: .system)
+        close.setImage(UIImage(systemName: "xmark"), for: .normal)
+        close.tintColor = .white
+        close.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+
+        address.textColor = UIColor(white: 0.64, alpha: 1)
+        address.font = .systemFont(ofSize: 14)
+        address.lineBreakMode = .byTruncatingMiddle
+
+        let bar = UIView()
+        bar.backgroundColor = UIColor(white: 0.04, alpha: 1)
+        [address, close].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            bar.addSubview($0)
+        }
+        [bar, webView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+        NSLayoutConstraint.activate([
+            bar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            bar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bar.heightAnchor.constraint(equalToConstant: 48),
+            address.leadingAnchor.constraint(equalTo: bar.leadingAnchor, constant: 16),
+            address.centerYAnchor.constraint(equalTo: bar.centerYAnchor),
+            address.trailingAnchor.constraint(lessThanOrEqualTo: close.leadingAnchor, constant: -8),
+            close.trailingAnchor.constraint(equalTo: bar.trailingAnchor, constant: -4),
+            close.centerYAnchor.constraint(equalTo: bar.centerYAnchor),
+            close.widthAnchor.constraint(equalToConstant: 44),
+            close.heightAnchor.constraint(equalToConstant: 44),
+            webView.topAnchor.constraint(equalTo: bar.bottomAnchor),
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+
+    @objc private func closeTapped() {
+        dismiss(animated: true)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        // However the sheet went (close button, swipe, the page closing itself),
+        // the popup goes with it.
+        guard isBeingDismissed || presentingViewController == nil else { return }
+        webView.stopLoading()
+        webView.navigationDelegate = nil
+        webView.uiDelegate = nil
+        webView.removeFromSuperview()
+    }
+
+    // Inside the sign-in, Apple's own pages only; anything else goes to Safari.
+    func webView(_ webView: WKWebView,
+                 decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let target = navigationAction.targetFrame, !target.isMainFrame {
+            decisionHandler(.allow)
+            return
+        }
+        let url = navigationAction.request.url
+        if AppleSignIn.isApplePage(url) || url?.scheme?.lowercased() == "about" {
+            decisionHandler(.allow)
+            return
+        }
+        decisionHandler(.cancel)
+        if let url = url, url.scheme?.lowercased() == "https" {
+            UIApplication.shared.open(url)
+        }
+    }
+
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        address.text = webView.url?.host
+    }
+
+    // Apple's page closes itself once MusicKit has the result.
+    func webViewDidClose(_ webView: WKWebView) {
+        dismiss(animated: true)
+    }
+
+    // Further windows from Apple's page (help links) go to Safari.
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if let url = navigationAction.request.url, url.scheme?.lowercased() == "https" {
+            UIApplication.shared.open(url)
+        }
+        return nil
+    }
+}
+
 struct WebView: UIViewRepresentable {
     let url: URL
     @Binding var isOffline: Bool
@@ -206,6 +346,15 @@ struct WebView: UIViewRepresentable {
                 return
             }
 
+            // Apple Music's sign-in, opened by CueVote as a new window: it has to
+            // stay a popup of this WebView (see createWebViewWith below).
+            if navigationAction.targetFrame == nil,
+               AppleSignIn.isSignInPage(url),
+               CueVoteOrigin.isTrusted(navigationAction.sourceFrame) {
+                decisionHandler(.allow)
+                return
+            }
+
             decisionHandler(.cancel)
 
             // Only a page of ours earns the hand-off. The OAuth consent screen
@@ -356,7 +505,22 @@ struct WebView: UIViewRepresentable {
             }
         }
         
-        func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? { return nil }
+        /// New windows. Only Apple Music's sign-in gets one: MusicKit JS opens it
+        /// with window.open and waits for it to post the result back through
+        /// window.opener, so it must be a real popup of this WebView. Handed to
+        /// Safari it can never report back and the host stays signed out.
+        /// Everything else has already gone to the system browser in
+        /// decidePolicyFor above.
+        func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+            guard AppleSignIn.isSignInPage(navigationAction.request.url),
+                  CueVoteOrigin.isTrusted(navigationAction.sourceFrame),
+                  let presenter = AppleSignIn.topViewController() else { return nil }
+            // CueVote's bridge and marker script stay with CueVote.
+            configuration.userContentController = WKUserContentController()
+            let controller = AppleSignInController(configuration: configuration)
+            presenter.present(controller, animated: true)
+            return controller.webView
+        }
         func webViewDidClose(_ webView: WKWebView) {}
         func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) { completionHandler() }
     }

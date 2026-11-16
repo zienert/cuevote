@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Tämä kanava vaatii kirjautuneen tilin.",
 		"accountRequired": "Kirjaudu sisään tehdäksesi tämän.",
 		"sessionNotReady": "Istuntosi ei ole vielä valmis. Lataa sivu uudelleen.",
-		"guestLimit": "Liian monta uutta vierasta tässä verkossa. Kirjaudu sisään jatkaaksesi."
+		"guestLimit": "Liian monta uutta vierasta tässä verkossa. Kirjaudu sisään jatkaaksesi.",
+		"appleMusicUnavailable": "Apple Music ei ole käytettävissä tällä palvelimella.",
+		"appleMusicNotConnected": "Isännän täytyy ensin yhdistää Apple Music.",
+		"appleMusicRoom": "Tällä kanavalla soi Apple Music. Liitä music.apple.com-linkki tai hae nimellä.",
+		"appleMusicNotFound": "Ei löytynyt Apple Musicista.",
+		"appleMusicLinkUnsupported": "Liitä linkki yhteen kappaleeseen tai musiikkivideoon tai hae nimellä.",
+		"appleMusicNotInStorefront": "Tämä kappale ei ole saatavilla Apple Musicissa isännän maassa.",
+		"appleMusicCatalogError": "Apple Music ei vastannut. Yritä uudelleen."
 	},
 	"connectAi": {
 		"willSendTo": "Hyväksyntä lähetetään osoitteeseen",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Kirjaudu luodaksesi",
 		"noChannelsFound": "Kanavia ei löytynyt haulla",
 		"live": "Live",
+		"hostedBy": "Isäntä: {name}",
+		"wrongPassword": "Väärä salasana",
 		"createNewChannel": "Luo uusi kanava",
 		"channelName": "Kanavan nimi",
 		"channelNamePlaceholder": "esim. Yöfiilikset",
@@ -81,13 +90,25 @@ export default {
 		"description": "Musiikin toistamiseksi meidän on ladattava YouTube-soitin. Tämä muodostaa yhteyden Googlen palvelimiin.",
 		"policy": "Lue tietosuojakäytäntömme",
 		"accept": "Hyväksy & Soita musiikkia",
-		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta."
+		"youtubeConsent": "Tarvitsemme suostumuksesi YouTube-soittimen lataamiseen. Hyväksy evästeet alta.",
+		"signInDescription": "Google-kirjautumista varten lataamme Googlen kirjautumisen, joka muodostaa yhteyden Googlen palvelimiin. Sama suostumus lataa YouTube-kanavilla myös YouTube-soittimen.",
+		"signInAccept": "Hyväksy"
+	},
+	"join": {
+		"welcome": "Tervetuloa {brand}-palveluun",
+		"youtubeTitle": "Ota ääni ja video käyttöön",
+		"youtubeBody": "Jotta voimme soittaa musiikkia YouTubesta ja voit osallistua soittolistaan, tarvitsemme evästeitä.",
+		"accept": "Ota käyttöön ja liity juhliin",
+		"agree": "Liittymällä hyväksyt {policy}.",
+		"policy": "tietosuojakäytäntömme",
+		"checking": "Tarkistetaan kanavaa…"
 	},
 	"header": {
 		"profileSettings": "Profiili & Asetukset",
 		"signIn": "Kirjaudu Googlella",
 		"acceptCookies": "Hyväksy evästeet kirjautuaksesi",
 		"legal": "Oikeudelliset tiedot",
+		"player": "Soitin",
 		"playlist": "Soittolista",
 		"library": "Kirjasto",
 		"share": "Jaa",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ei internetyhteyttä",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Ikkuna on liian pieni",
+		"windowTooSmallMessage": "Suurenna ikkunaa jatkaaksesi CueVoten käyttöä.",
+		"backToRadio": "Takaisin radioon",
 		"retry": "Yritä yhteyttä uudelleen",
 		"switching": "Vaihdetaan kanavaa...",
 		"channelNotFound": "Kanavaa ei ole",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Poista",
 		"watch": "Katso YouTubessa",
 		"recommend": "Hae ehdotuksia",
-		"guest": "Vieras"
+		"guest": "Vieras",
+		"voteUp": "Äänestä puolesta",
+		"voteDown": "Äänestä vastaan"
 	},
 	"library": {
 		"searchPlaceholder": "Etsi kirjastosta...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} kappaletta"
 		},
 		"inLibrary": "kirjastossa",
+		"about": "Tietoja kirjastosta",
 		"info1": "Tämä kirjasto näyttää viimeisen <strong>28 päivän</strong> aikana soitetut ainutlaatuiset kappaleet.",
 		"info2": "Vanhemmat kappaleet piilotetaan tietojen tuoreuden vuoksi, mutta niitä <strong>ei koskaan poisteta</strong>. <strong>Automaattitäyttö</strong> muistaa koko historiasi ja palauttaa vanhemmat kappaleet automaattisesti jonoon (ja tähän listaan) tarvittaessa!",
 		"empty": "Kappaleita ei löytynyt"
@@ -224,6 +248,13 @@ export default {
 		"history": "Historia",
 		"last50": "Viimeiset 50 ({count}:sta)",
 		"nowPlaying": "Nyt soi",
+		"play": "Toista",
+		"pause": "Keskeytä",
+		"mute": "Mykistä",
+		"unmute": "Poista mykistys",
+		"volume": "Äänenvoimakkuus",
+		"cinemaMode": "Elokuvatila",
+		"exitCinemaMode": "Poistu elokuvatilasta",
 		"upNext": "Seuraava",
 		"queueEmpty": "Jono tyhjä",
 		"errorNotFound": "Videota ei löydy",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Pyynnöistä estetyt videot näkyvät tässä.",
 		"bannedOn": "Estetty {date}",
 		"unban": "Poista esto"
+	},
+	"appleMusic": {
+		"source": "Musiikkilähde",
+		"sourceHint": "Apple Music soi tietokoneellasi ja vaatii Apple Music -tilauksen.",
+		"connect": "Yhdistä Apple Music",
+		"connectHint": "Kirjaudu sisään sillä Apple-tilillä, johon Apple Music -tilauksesi kuuluu.",
+		"signInFailed": "Kirjautuminen ei onnistunut.",
+		"start": "Aloita toisto",
+		"startHint": "Selain toistaa ääntä vasta napsautuksen jälkeen.",
+		"loading": "Ladataan Apple Musicia…",
+		"loadFailed": "Apple Musicia ei voitu ladata.",
+		"problemSubscription": "Tämän toistaminen vaatii voimassa olevan Apple Music -tilauksen.",
+		"switchAccount": "Käytä toista tiliä",
+		"problemOtherDevice": "Apple-tilisi toistaa musiikkia toisella laitteella.",
+		"problemGeneric": "Apple Music keskeytti toiston.",
+		"contentNotice": "Tämän kanavan kansikuvat ja esikatselut tulevat Applelta. Kun ne latautuvat, Apple näkee IP-osoitteesi.",
+		"contentAccept": "Ota käyttöön",
+		"previewFailed": "Tätä esikatselua ei voi toistaa.",
+		"standby": "Tätä kanavaa toistetaan nyt toisella laitteellasi.",
+		"playHere": "Toista tässä",
+		"waitingForHost": "Tauolla, kunnes isäntä jatkaa toistoa.",
+		"playsOnComputer": "Apple Music soi tietokoneella. Avaa kanava siellä ja yhdistä Apple Music."
 	},
 	"attribution": {
 		"youtube": "Kehitetty YouTuben kanssa"

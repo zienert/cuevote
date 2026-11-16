@@ -18,13 +18,15 @@ process.on('uncaughtException', (error) => {
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
-const bcrypt = require('bcryptjs');
 const { slugify } = require('transliteration');
 const db = require('./db');
 const dbAsync = require('./db-async');
 const gdpr = require('./gdpr');
 const guest = require('./guest');
+const clientIp = require('./client-ip');
+const roomPassword = require('./room-password');
 const adminApi = require('./admin');
+const appleMusic = require('./apple-music');
 const backupScheduler = require('./backup_scheduler');
 backupScheduler.start();
 
@@ -43,6 +45,9 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
     : [];
 
+// MusicKit developer tokens; off (404) unless APPLE_MUSIC_* is configured.
+const appleMusicTokens = appleMusic.setup({ allowedOrigins: ALLOWED_ORIGINS, logger });
+
 const server = http.createServer((req, res) => {
     if (req.url === '/health' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -59,13 +64,17 @@ const server = http.createServer((req, res) => {
             'Expires: ' + expires + '\n' +
             'Preferred-Languages: en\n' +
             'Canonical: https://cuevote.com/.well-known/security.txt\n' +
-            'Policy: https://github.com/loewenmaehne/cuevote/blob/main/SECURITY.md\n';
+            'Policy: https://github.com/zienert/cuevote/blob/main/SECURITY.md\n';
         res.writeHead(200, {
             'Content-Type': 'text/plain; charset=utf-8',
             'Content-Length': Buffer.byteLength(body),
             'Cache-Control': 'public, max-age=86400',
         });
         res.end(req.method === 'HEAD' ? undefined : body);
+        return;
+    }
+    if (req.url.split('?')[0] === appleMusic.DEVELOPER_TOKEN_PATH) {
+        appleMusicTokens.handleRequest(req, res);
         return;
     }
     res.writeHead(404);
@@ -136,6 +145,12 @@ async function verifyGoogleToken(token) {
 
 const Room = require('./Room');
 const schemas = require('./schemas');
+const { createAppleCatalog } = require('./apple-catalog');
+
+// Apple rooms resolve suggestions in Apple's catalog with a server-only token.
+if (appleMusicTokens.enabled) {
+    Room.setAppleCatalog(createAppleCatalog({ getToken: appleMusicTokens.getServerToken }));
+}
 
 // Room Manager
 const rooms = new Map();
@@ -156,6 +171,37 @@ function loadRooms() {
 
 loadRooms();
 
+// The room a JOIN_ROOM names, loaded or asleep in the DB, as far as the join
+// needs it before letting anyone in. Ids match in any case, for typed links.
+function findRoom(roomId) {
+    const loaded = rooms.get(roomId) || rooms.get(roomId.toLowerCase()) || rooms.get(roomId.toUpperCase());
+    if (loaded) return { id: loaded.id, ownerId: loaded.metadata.owner_id, passwordHash: loaded.metadata.password };
+    try {
+        const row = db.getRoom(roomId) || db.getRoom(roomId.toLowerCase()) || db.getRoom(roomId.toUpperCase());
+        if (row) return { id: row.id, ownerId: row.owner_id, passwordHash: row.password };
+    } catch (e) {
+        logger.error({ err: e }, 'DB Lookup failed');
+    }
+    return null;
+}
+
+// Loads a sleeping room so it runs again: its timer starts and a queue saved
+// while playing plays on. Only for someone who is let in. Null if it is gone.
+function wakeRoom(roomId) {
+    let row;
+    try {
+        row = db.getRoom(roomId);
+    } catch (e) {
+        logger.error({ err: e }, 'DB Lookup failed');
+        return null;
+    }
+    if (!row) return null;
+    logger.info(`Waking up idle room: ${row.name} (${row.id})`);
+    const room = new Room(row.id, row.name, YOUTUBE_API_KEY, row);
+    rooms.set(row.id, room);
+    return room;
+}
+
 // Localhost-only admin API for ops tooling (no-op unless ADMIN_TOKEN is set).
 adminApi.start({ rooms });
 
@@ -171,7 +217,7 @@ function adoptGuestIdentity(ws, previousIdentity) {
     ws.guestToken = undefined;
     if (!ws.roomId || !rooms.has(ws.roomId)) return;
     try {
-        rooms.get(ws.roomId).mergeIdentity(previousIdentity.id, ws.user.id);
+        rooms.get(ws.roomId).mergeIdentity(previousIdentity.id, ws.user.id, ws.user.name);
     } catch (e) {
         logger.error({ err: e }, '[Identity] Failed to merge a guest identity into an account');
     }
@@ -216,37 +262,42 @@ setInterval(() => {
     }
 }, GUEST_MINT_WINDOW_MS).unref();
 
-// Peers whose forwarding headers we believe. Everything else is treated as a
-// direct client and identified by its socket address.
-//
-// This matters because the server binds 0.0.0.0, so it can be reached without
-// going through nginx: a client that does so could otherwise name itself via a
-// header and the cap above would count each connection under a different key.
-const TRUSTED_PROXY_IPS = new Set(
-    (process.env.TRUSTED_PROXY_IPS || '127.0.0.1,::1,::ffff:127.0.0.1')
-        .split(',').map(s => s.trim()).filter(Boolean)
-);
+// The address each connection counts under: the visitor's, not the Cloudflare
+// edge server's or a header a direct client made up. See client-ip.js.
+const getClientIp = clientIp.resolverFromEnv();
 
-function getClientIp(req) {
-    const peer = req.socket.remoteAddress || 'unknown';
-    if (!TRUSTED_PROXY_IPS.has(peer)) return peer;
+// Room passwords: guesses per network and per room are paid for before bcrypt
+// runs, and bcrypt runs asynchronously, at most two at a time
+// (room-password.js). Budgets that have refilled are dropped every minute.
+const roomPasswords = roomPassword.createRoomPasswordGuard();
+setInterval(() => roomPasswords.prune(), 60 * 1000).unref();
 
-    // nginx sets `X-Real-IP $remote_addr`, which REPLACES whatever the client
-    // sent — one hop, not spoofable. Prefer it.
-    const real = req.headers['x-real-ip'];
-    if (typeof real === 'string' && real.trim()) return real.trim();
-
-    // Fallback for a proxy that only sends X-Forwarded-For. Ours builds it with
-    // `$proxy_add_x_forwarded_for`, which APPENDS the peer address — so the last
-    // element is the proxy's own observation and the leading ones are whatever
-    // the client sent. Reading the first element (as this used to) means reading
-    // the client's own claim.
-    const xff = req.headers['x-forwarded-for'];
-    if (typeof xff === 'string' && xff.trim()) {
-        const parts = xff.split(',').map(s => s.trim()).filter(Boolean);
-        if (parts.length) return parts[parts.length - 1];
+// Logs a refused room password attempt, never the password: every wrong one,
+// and a run of attempts over the budget once, so a script hammering the limit
+// cannot flood the log.
+function logPasswordRefusal(ws, roomId, check) {
+    if (check.reason === 'wrong') {
+        logger.warn({ event: 'room_password_wrong', roomId, netKey: ws.netKey }, '[JoinRoom] Wrong room password');
+    } else if (check.reason === 'limited' && check.firstDenial) {
+        logger.warn(
+            { event: 'room_password_limited', roomId, netKey: ws.netKey, scope: check.scope, retryAfter: check.retryAfter },
+            '[JoinRoom] Room password attempts over budget'
+        );
     }
-    return peer;
+}
+
+// What the client is told when its password attempt was refused.
+function passwordRefusal(check) {
+    if (check.reason !== 'limited') {
+        return { type: "error", code: "PASSWORD_REQUIRED", message: "Password required" };
+    }
+    const seconds = check.retryAfter === 1 ? '1 second' : `${check.retryAfter} seconds`;
+    return {
+        type: "error",
+        code: "RATE_LIMITED",
+        retryAfter: check.retryAfter,
+        message: `Too many password attempts. Please try again in ${seconds}.`
+    };
 }
 
 logger.info("WebSocket server started on port", process.env.PORT || 8080);
@@ -265,6 +316,14 @@ wss.on("connection", (ws, req) => {
     }
     ipSocketCount.set(ip, ipCount + 1);
     ws.ip = ip; // marker that this socket is counted
+    ws.netKey = clientIp.netKey(ip); // what per-network budgets count under
+    ws.joinSeq = 0; // numbers this socket's JOIN_ROOMs; the latest one wins
+
+    // Country of the connection as Cloudflare sees it ("XX" unknown, "T1" Tor).
+    // Only ever a default: the storefront of the owner's own Apple room until
+    // their player reports the account's (Room.addClient).
+    const cfCountry = typeof req.headers['cf-ipcountry'] === 'string' ? req.headers['cf-ipcountry'].trim().toLowerCase() : '';
+    ws.country = /^[a-z]{2}$/.test(cfCountry) && cfCountry !== 'xx' ? cfCountry : null;
 
     // Parse Client ID
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
@@ -582,6 +641,7 @@ wss.on("connection", (ws, req) => {
                         return;
                     }
                     const { roomId, password } = joinResult.data;
+                    const joinSeq = ++ws.joinSeq;
                     logger.info(`[SERVER TRACE] Client ${ws.id} requesting to join room: ${roomId}`);
 
                     // Leave ALL rooms to ensure no duplicate subscriptions
@@ -592,41 +652,56 @@ wss.on("connection", (ws, req) => {
                         }
                     }
 
-                    // Try to resolve room
-                    let room = rooms.get(roomId) || rooms.get(roomId.toLowerCase()) || rooms.get(roomId.toUpperCase());
-
-                    if (!room) {
-                        try {
-                            const roomData = db.getRoom(roomId) || db.getRoom(roomId.toLowerCase()) || db.getRoom(roomId.toUpperCase());
-                            if (roomData) {
-                                const resolvedId = roomData.id;
-                                logger.info(`Waking up idle room: ${roomData.name} (${resolvedId})`);
-                                room = new Room(resolvedId, roomData.name, YOUTUBE_API_KEY, roomData);
-                                rooms.set(resolvedId, room);
-                            }
-                        } catch (e) {
-                            logger.error("DB Lookup failed", e);
-                        }
-                    }
-
-                    if (room) {
-                        // Password Check
-                        if (room.metadata.password) {
-                            const isOwner = ws.user && ws.user.id === room.metadata.owner_id;
-                            if (!isOwner && (!password || !bcrypt.compareSync(password, room.metadata.password))) {
-                                ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
-                                return;
-                            }
-                        }
-
-                        logger.info(`Client ${ws.id} joining room: ${room.id}`);
-                        ws.roomId = room.id;
-                        room.addClient(ws);
-                        db.updateRoomActivity(room.id);
-                        sendAck();
-                    } else {
+                    // A sleeping room is only read here, not woken: waking it
+                    // restarts its queue, which is for whoever gets in, not for
+                    // anyone who knows the id.
+                    const target = findRoom(roomId);
+                    if (!target) {
                         ws.send(JSON.stringify({ type: "error", code: "ROOM_NOT_FOUND", message: "Room not found" }));
+                        return;
                     }
+
+                    // Password Check
+                    const isOwner = ws.user && ws.user.id === target.ownerId;
+                    if (target.passwordHash && !isOwner) {
+                        if (!password) {
+                            ws.send(JSON.stringify({ type: "error", code: "PASSWORD_REQUIRED", message: "Password required" }));
+                            return;
+                        }
+                        // The guess is paid for before bcrypt runs: past the
+                        // budget an attempt costs nothing and reveals nothing.
+                        let check;
+                        try {
+                            check = await roomPasswords.verify({ password, passwordHash: target.passwordHash, netKey: ws.netKey, roomId: target.id });
+                        } catch (err) {
+                            logger.error({ err, roomId: target.id }, '[JoinRoom] Room password check failed');
+                            if (ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ type: "error", message: "Could not check the password. Please try again." }));
+                            }
+                            return;
+                        }
+                        if (!check.ok) logPasswordRefusal(ws, target.id, check);
+                        // Other messages ran during the check. A socket that has
+                        // closed or asked for another room since is past this
+                        // join: an answer would land in the wrong screen, and a
+                        // closed socket added to a room would keep it loaded.
+                        if (ws.readyState !== WebSocket.OPEN || ws.joinSeq !== joinSeq) return;
+                        if (!check.ok) {
+                            ws.send(JSON.stringify(passwordRefusal(check)));
+                            return;
+                        }
+                    }
+
+                    const room = rooms.get(target.id) || wakeRoom(target.id);
+                    if (!room) {
+                        ws.send(JSON.stringify({ type: "error", code: "ROOM_NOT_FOUND", message: "Room not found" }));
+                        return;
+                    }
+                    logger.info(`Client ${ws.id} joining room: ${room.id}`);
+                    ws.roomId = room.id;
+                    room.addClient(ws);
+                    db.updateRoomActivity(room.id);
+                    sendAck();
                     return;
                 }
                 case "CREATE_ROOM": {
@@ -642,7 +717,36 @@ wss.on("connection", (ws, req) => {
                         ws.send(JSON.stringify({ type: "error", message: "Invalid room data. Name is required (max 100 chars)." }));
                         return;
                     }
-                    const { name, description, color, isPrivate, password, captionsEnabled, languageFlag } = createResult.data;
+                    const { name, description, color, isPrivate, password, captionsEnabled, languageFlag, provider } = createResult.data;
+                    // An Apple room cannot play anything without developer tokens.
+                    if (provider === 'apple' && !appleMusicTokens.enabled) {
+                        ws.send(JSON.stringify({ type: "error", code: "APPLE_MUSIC_UNAVAILABLE", message: "Apple Music is not available on this server." }));
+                        return;
+                    }
+
+                    // Hashed once, not once per id attempt, and in line with the
+                    // password checks so it cannot hold up the event loop either.
+                    const ownerId = ws.user.id;
+                    let passwordHash = null;
+                    if (isPrivate && password) {
+                        try {
+                            passwordHash = await roomPasswords.hash(password);
+                        } catch (err) {
+                            logger.error({ err }, '[Create Room] Hashing the room password failed');
+                            if (ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ type: "error", message: "Failed to create room." }));
+                            }
+                            return;
+                        }
+                        // Other messages ran while hashing. A creator who has
+                        // gone would never hear of the room, and one who signed
+                        // out no longer has the account it would belong to.
+                        if (ws.readyState !== WebSocket.OPEN) return;
+                        if (!ws.user || ws.user.id !== ownerId) {
+                            ws.send(JSON.stringify({ type: "error", code: "ACCOUNT_REQUIRED", message: "You must be logged in to create a room." }));
+                            return;
+                        }
+                    }
 
                     let attempts = 0;
                     let success = false;
@@ -655,12 +759,13 @@ wss.on("connection", (ws, req) => {
                                 id,
                                 name,
                                 description: description || "Community Station",
-                                owner_id: ws.user.id,
+                                owner_id: ownerId,
                                 color: color || "from-gray-700 to-black",
                                 is_public: isPrivate ? 0 : 1,
-                                password: (isPrivate && password) ? bcrypt.hashSync(password, 10) : null,
+                                password: passwordHash,
                                 captions_enabled: captionsEnabled ? 1 : 0,
-                                language_flag: languageFlag || 'international'
+                                language_flag: languageFlag || 'international',
+                                provider: provider === 'apple' ? 'apple' : 'youtube'
                             };
 
                             db.createRoom(roomData);
@@ -683,6 +788,21 @@ wss.on("connection", (ws, req) => {
                     if (!success) {
                         ws.send(JSON.stringify({ type: "error", message: "Failed to generate a unique channel ID. Please try again." }));
                     }
+                    return;
+                }
+                case "ROOM_PROVIDER": {
+                    // Before joining, the welcome screen asks for the consent the
+                    // channel needs: YouTube or Apple Music.
+                    const providerResult = schemas.RoomProviderPayload.safeParse(parsedMessage.payload);
+                    if (!providerResult.success) return;
+                    const { roomId } = providerResult.data;
+                    let provider = null;
+                    try {
+                        provider = db.getRoomProvider(roomId);
+                    } catch (e) {
+                        logger.error(`ROOM_PROVIDER lookup failed: ${e && e.message}`);
+                    }
+                    ws.send(JSON.stringify({ type: "ROOM_PROVIDER", payload: { roomId, provider } }));
                     return;
                 }
                 case "LIST_ROOMS": {
@@ -753,10 +873,12 @@ wss.on("connection", (ws, req) => {
                                 description: dbr.description,
                                 color: dbr.color,
                                 listeners: 0,
-                                currentTrack: lobbyPreview,
+                                // Apple rooms never store a preview; ignore a stray one.
+                                currentTrack: dbr.provider === 'apple' ? null : lobbyPreview,
                                 is_protected: !!dbr.password,
                                 isActive: false,
-                                language_flag: dbr.language_flag || 'international'
+                                language_flag: dbr.language_flag || 'international',
+                                provider: dbr.provider || 'youtube'
                             });
                         }
                     });
@@ -832,7 +954,12 @@ wss.on("connection", (ws, req) => {
                         const res = await fetch(`${mcpUrl}/oauth/finalize`, {
                             method: 'POST',
                             headers: { 'Authorization': `Bearer ${finalizeSecret}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ handle: r.data.handle, userId: ws.user.id })
+                            body: JSON.stringify({
+                                handle: r.data.handle,
+                                userId: ws.user.id,
+                                shownClient: r.data.shownClient ?? '',
+                                shownHost: r.data.shownHost ?? ''
+                            })
                         });
                         const data = await res.json().catch(() => ({}));
                         if (!res.ok || !data.redirectTo) {

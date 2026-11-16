@@ -29,6 +29,11 @@ export default defineConfig({
     host: '0.0.0.0', // Force IPv4 binding
     port: 5173,
     strictPort: true,
+    // The Node server answers /api/* (the Apple Music developer token). In
+    // production nginx forwards the same paths, see DEPLOYMENT.md.
+    proxy: {
+      '/api': 'http://localhost:8080',
+    },
     // For local development only; avoid exposing this dev server to the public internet.
     // eslint-disable-next-line no-undef -- vite config runs in Node, `process` is fine here.
     headers: process.env.NODE_ENV === 'development'

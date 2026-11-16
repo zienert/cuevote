@@ -16,6 +16,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PROJECTS = [
 	{ name: 'cuevote-client', dir: join(ROOT, 'cuevote-client'), selfPackage: 'cuevote-client@0.0.0' },
 	{ name: 'cuevote-server', dir: join(ROOT, 'cuevote-server'), selfPackage: 'cuevote-server@1.0.0' },
+	{ name: 'cuevote-mcp', dir: join(ROOT, 'cuevote-mcp'), selfPackage: 'cuevote-mcp@0.1.0' },
 ];
 
 // Allow-list. Add new SPDX identifiers here only after manual review.

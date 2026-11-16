@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# Copyright (c) 2026 Julian Zienert
+#
+# Security updates only. open-pull-requests-limit: 0 switches off routine
+# version-update PRs; Dependabot still opens PRs for advisories once
+# "Dependabot security updates" is enabled in the repository settings.
+# All fixes for one project arrive as a single grouped PR.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /cuevote-server
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: "fix(deps)"
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+
+  - package-ecosystem: npm
+    directory: /cuevote-client
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: "fix(deps)"
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+
+  - package-ecosystem: npm
+    directory: /cuevote-mcp
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: "fix(deps)"
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
