@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "تتطلب هذه القناة حسابًا مسجّل الدخول.",
 		"accountRequired": "يرجى تسجيل الدخول للقيام بذلك.",
 		"sessionNotReady": "جلستك ليست جاهزة بعد. يرجى إعادة تحميل الصفحة.",
-		"guestLimit": "عدد كبير جدًا من الضيوف الجدد على هذه الشبكة. يرجى تسجيل الدخول للمتابعة."
+		"guestLimit": "عدد كبير جدًا من الضيوف الجدد على هذه الشبكة. يرجى تسجيل الدخول للمتابعة.",
+		"appleMusicUnavailable": "Apple Music غير متاح على هذا الخادم.",
+		"appleMusicNotConnected": "يجب على المضيف ربط Apple Music أولاً.",
+		"appleMusicRoom": "تشغّل هذه القناة Apple Music. يرجى لصق رابط من music.apple.com أو البحث بالاسم.",
+		"appleMusicNotFound": "تعذّر العثور على هذا في Apple Music.",
+		"appleMusicLinkUnsupported": "يرجى لصق رابط لأغنية واحدة أو فيديو موسيقي واحد، أو البحث بالاسم.",
+		"appleMusicNotInStorefront": "هذا المقطع غير متاح في Apple Music في بلد المضيف.",
+		"appleMusicCatalogError": "لم يستجب Apple Music. يرجى المحاولة مرة أخرى."
 	},
 	"connectAi": {
 		"willSendTo": "سيتم إرسال الموافقة إلى",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "تسجيل الدخول للإنشاء",
 		"noChannelsFound": "لم يتم العثور على قنوات لـ",
 		"live": "مباشر",
+		"hostedBy": "يستضيفها {name}",
+		"wrongPassword": "كلمة المرور غير صحيحة",
 		"createNewChannel": "إنشاء قناة جديدة",
 		"channelName": "اسم القناة",
 		"channelNamePlaceholder": "مثلاً: أجواء ليلية",
@@ -81,13 +90,25 @@ export default {
 		"description": "لتشغيل الموسيقى، نحتاج إلى تحميل مشغل YouTube. هذا يتصل بخوادم Google.",
 		"policy": "اقرأ سياسة الخصوصية الخاصة بنا",
 		"accept": "قبول وتشغيل الموسيقى",
-		"youtubeConsent": "نحتاج إلى موافقتك لتحميل مشغل YouTube. يرجى قبول ملفات تعريف الارتباط أدناه."
+		"youtubeConsent": "نحتاج إلى موافقتك لتحميل مشغل YouTube. يرجى قبول ملفات تعريف الارتباط أدناه.",
+		"signInDescription": "لتسجيل الدخول باستخدام Google، نحمّل خدمة تسجيل الدخول من Google، وهي تتصل بخوادم Google. وتُحمِّل الموافقة نفسها أيضًا مشغّل YouTube في قنوات YouTube.",
+		"signInAccept": "قبول"
+	},
+	"join": {
+		"welcome": "مرحبًا بك في {brand}",
+		"youtubeTitle": "تفعيل الصوت والفيديو",
+		"youtubeBody": "لتشغيل الموسيقى من YouTube والمشاركة في قائمة التشغيل، نحتاج إلى استخدام ملفات تعريف الارتباط.",
+		"accept": "تفعيل والانضمام إلى الحفلة",
+		"agree": "بانضمامك، فإنك توافق على {policy}.",
+		"policy": "سياسة الخصوصية الخاصة بنا",
+		"checking": "جارٍ التحقق من القناة…"
 	},
 	"header": {
 		"profileSettings": "الملف الشخصي والإعدادات",
 		"signIn": "تسجيل الدخول باستخدام Google",
 		"acceptCookies": "قبول ملفات تعريف الارتباط لتسجيل الدخول",
 		"legal": "معلومات قانونية",
+		"player": "المشغّل",
 		"playlist": "قائمة التشغيل",
 		"library": "المكتبة",
 		"share": "مشاركة",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "لا يوجد اتصال بالإنترنت",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "النافذة صغيرة جدًا",
+		"windowTooSmallMessage": "كبّر النافذة لمتابعة استخدام CueVote.",
+		"backToRadio": "العودة إلى الراديو",
 		"retry": "أعد محاولة الاتصال",
 		"switching": "جارٍ تبديل القناة...",
 		"channelNotFound": "القناة غير موجودة",
@@ -188,7 +209,9 @@ export default {
 		"delete": "حذف",
 		"watch": "مشاهدة على YouTube",
 		"recommend": "الحصول على اقتراحات",
-		"guest": "ضيف"
+		"guest": "ضيف",
+		"voteUp": "تصويت مؤيد",
+		"voteDown": "تصويت معارض"
 	},
 	"library": {
 		"searchPlaceholder": "بحث في المكتبة...",
@@ -201,6 +224,7 @@ export default {
 			"other": "{count} مقاطع فيديو"
 		},
 		"inLibrary": "في المكتبة",
+		"about": "عن المكتبة",
 		"info1": "تعرض هذه المكتبة مقاطع الفيديو الفريدة التي تم تشغيلها في آخر <strong>28 يومًا</strong>.",
 		"info2": "يتم إخفاء مقاطع الفيديو القديمة لتحديث البيانات الوصفية، ولكن <strong>لا يتم حذفها أبدًا</strong>. ميزة <strong>إعادة التعبئة التلقائية</strong> تتذكر سجلك بالكامل وستعيد مقاطع الفيديو القديمة تلقائيًا إلى القائمة (وهذه القائمة) عند الحاجة!",
 		"empty": "لم يتم العثور على مقاطع فيديو"
@@ -232,6 +256,13 @@ export default {
 		"history": "السجل",
 		"last50": "آخر 50 (من {count})",
 		"nowPlaying": "يعمل الآن",
+		"play": "تشغيل",
+		"pause": "إيقاف مؤقت",
+		"mute": "كتم الصوت",
+		"unmute": "إلغاء كتم الصوت",
+		"volume": "مستوى الصوت",
+		"cinemaMode": "وضع السينما",
+		"exitCinemaMode": "الخروج من وضع السينما",
 		"upNext": "التالي",
 		"queueEmpty": "قائمة الانتظار فارغة",
 		"errorNotFound": "الفيديو غير موجود",
@@ -284,6 +315,28 @@ export default {
 		"emptySubtitle": "ستظهر هنا الفيديوهات المحظورة من الطلبات.",
 		"bannedOn": "محظور في {date}",
 		"unban": "إلغاء الحظر"
+	},
+	"appleMusic": {
+		"source": "مصدر الموسيقى",
+		"sourceHint": "يعمل Apple Music على جهاز الكمبيوتر الخاص بك ويتطلب اشتراكًا في Apple Music.",
+		"connect": "ربط Apple Music",
+		"connectHint": "سجّل الدخول بحساب Apple الذي يتضمن اشتراكك في Apple Music.",
+		"signInFailed": "لم يكتمل تسجيل الدخول.",
+		"start": "بدء التشغيل",
+		"startHint": "لا يشغّل المتصفح الصوت إلا بعد نقرة.",
+		"loading": "جارٍ تحميل Apple Music…",
+		"loadFailed": "تعذّر تحميل Apple Music.",
+		"problemSubscription": "يتطلب Apple Music اشتراكًا نشطًا لتشغيل هذا.",
+		"switchAccount": "استخدام حساب آخر",
+		"problemOtherDevice": "يتم استخدام حساب Apple الخاص بك للتشغيل على جهاز آخر.",
+		"problemGeneric": "أوقف Apple Music التشغيل.",
+		"contentNotice": "صور الأغلفة والمعاينات في هذه القناة تأتي من Apple. ترى Apple عنوان IP الخاص بك عند تحميلها.",
+		"contentAccept": "تفعيل",
+		"previewFailed": "تعذّر تشغيل هذه المعاينة.",
+		"standby": "تعمل هذه القناة الآن على جهاز آخر من أجهزتك.",
+		"playHere": "التشغيل هنا",
+		"waitingForHost": "متوقف مؤقتًا حتى يعاود المضيف التشغيل.",
+		"playsOnComputer": "يعمل Apple Music على جهاز كمبيوتر. افتح هذه القناة هناك واربط Apple Music."
 	},
 	"attribution": {
 		"youtube": "تم التطوير مع YouTube"

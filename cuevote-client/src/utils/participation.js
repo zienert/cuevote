@@ -23,6 +23,13 @@ export function participationErrorKey(code) {
 		case 'ACCOUNT_REQUIRED': return 'errors.accountRequired';
 		case 'NO_IDENTITY': return 'errors.sessionNotReady';
 		case 'GUEST_LIMIT': return 'errors.guestLimit';
+		case 'APPLE_MUSIC_UNAVAILABLE': return 'errors.appleMusicUnavailable';
+		case 'APPLE_MUSIC_NOT_CONNECTED': return 'errors.appleMusicNotConnected';
+		case 'APPLE_MUSIC_ROOM': return 'errors.appleMusicRoom';
+		case 'APPLE_MUSIC_NOT_FOUND': return 'errors.appleMusicNotFound';
+		case 'APPLE_MUSIC_LINK_UNSUPPORTED': return 'errors.appleMusicLinkUnsupported';
+		case 'APPLE_MUSIC_NOT_IN_STOREFRONT': return 'errors.appleMusicNotInStorefront';
+		case 'APPLE_MUSIC_CATALOG_ERROR': return 'errors.appleMusicCatalogError';
 		default: return null;
 	}
 }
@@ -38,6 +45,19 @@ export function canParticipate(user, requireLogin) {
 	if (!user) return false;
 	if (requireLogin && user.isGuest) return false;
 	return true;
+}
+
+/**
+ * The first letter of a name, for a picture's stand-in. A whole letter as a
+ * person reads it: "🦊 Fox" gives the fox, not half of its code.
+ */
+export function initialOf(name) {
+	const text = (name || '').trim();
+	if (!text) return '?';
+	const first = typeof Intl !== 'undefined' && Intl.Segmenter
+		? new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)[Symbol.iterator]().next().value?.segment
+		: Array.from(text)[0];
+	return (first || '?').toLocaleUpperCase();
 }
 
 /**

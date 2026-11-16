@@ -2,8 +2,9 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Shield, FileText, Scale, ChevronRight, Music, Mail, Phone, Globe, Flag, Loader2, Package, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Shield, FileText, Scale, ChevronRight, Music, Mail, Phone, Globe, Flag, Package, ExternalLink } from 'lucide-react';
 import { Language } from '../contexts/LanguageContext';
+import { SpinnerScreen } from './Spinner';
 import { dangerousHtml } from '../utils/sanitizeHtml';
 import { legalProfile } from '../constants/legalProfile';
 
@@ -38,11 +39,7 @@ export function LegalPage() {
     }, [activeTab]);
 
     if (!content) {
-        return (
-            <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">
-                <Loader2 size={32} className="animate-spin text-orange-500" />
-            </div>
-        );
+        return <SpinnerScreen />;
     }
 
     const tabs = [
@@ -53,10 +50,10 @@ export function LegalPage() {
     ];
 
     const dates = {
-        terms: "April 1, 2026",
-        privacy: "May 29, 2026",
+        terms: "November 13, 2026",
+        privacy: "November 14, 2026",
         imprint: "May 17, 2026",
-        attributions: "May 24, 2026"
+        attributions: "November 13, 2026"
     };
     const LastUpdated = dates[activeTab];
 

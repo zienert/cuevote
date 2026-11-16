@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Kênh này yêu cầu tài khoản đã đăng nhập.",
 		"accountRequired": "Vui lòng đăng nhập để làm điều đó.",
 		"sessionNotReady": "Phiên của bạn chưa sẵn sàng. Vui lòng tải lại trang.",
-		"guestLimit": "Quá nhiều khách mới trên mạng này. Vui lòng đăng nhập để tiếp tục."
+		"guestLimit": "Quá nhiều khách mới trên mạng này. Vui lòng đăng nhập để tiếp tục.",
+		"appleMusicUnavailable": "Apple Music không khả dụng trên máy chủ này.",
+		"appleMusicNotConnected": "Người tổ chức cần kết nối Apple Music trước.",
+		"appleMusicRoom": "Kênh này phát Apple Music. Hãy dán link music.apple.com hoặc tìm theo tên.",
+		"appleMusicNotFound": "Không tìm thấy trên Apple Music.",
+		"appleMusicLinkUnsupported": "Hãy dán link của một bài hát hoặc một video âm nhạc, hoặc tìm theo tên.",
+		"appleMusicNotInStorefront": "Bài hát này không khả dụng trên Apple Music ở quốc gia của người tổ chức.",
+		"appleMusicCatalogError": "Apple Music không phản hồi. Vui lòng thử lại."
 	},
 	"connectAi": {
 		"willSendTo": "Phê duyệt sẽ được gửi tới",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Đăng nhập để tạo",
 		"noChannelsFound": "Không tìm thấy kênh",
 		"live": "Trực tiếp",
+		"hostedBy": "Chủ phòng: {name}",
+		"wrongPassword": "Sai mật khẩu",
 		"createNewChannel": "Tạo Kênh Mới",
 		"channelName": "Tên Kênh",
 		"channelNamePlaceholder": "vd. Nhạc Thư Giãn",
@@ -81,13 +90,25 @@ export default {
 		"description": "Để phát nhạc, chúng tôi cần tải trình phát YouTube. Điều này kết nối với máy chủ của Google.",
 		"policy": "Đọc Chính sách bảo mật của chúng tôi",
 		"accept": "Chấp nhận & Phát nhạc",
-		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới."
+		"youtubeConsent": "Chúng tôi cần sự đồng ý của bạn để tải trình phát YouTube. Vui lòng chấp nhận cookie bên dưới.",
+		"signInDescription": "Để đăng nhập bằng Google, chúng tôi tải trang đăng nhập của Google, vốn kết nối với máy chủ của Google. Sự đồng ý này cũng tải trình phát YouTube trong các kênh YouTube.",
+		"signInAccept": "Chấp nhận"
+	},
+	"join": {
+		"welcome": "Chào mừng đến với {brand}",
+		"youtubeTitle": "Bật âm thanh & video",
+		"youtubeBody": "Để phát nhạc từ YouTube và tham gia danh sách phát, chúng tôi cần sử dụng cookie.",
+		"accept": "Bật & tham gia bữa tiệc",
+		"agree": "Khi tham gia, bạn đồng ý với {policy} của chúng tôi.",
+		"policy": "Chính sách bảo mật",
+		"checking": "Đang kiểm tra kênh…"
 	},
 	"header": {
 		"profileSettings": "Hồ sơ & Cài đặt",
 		"signIn": "Đăng nhập với Google",
 		"acceptCookies": "Chấp nhận cookie để đăng nhập",
 		"legal": "Thông tin pháp lý",
+		"player": "Trình phát",
 		"playlist": "Danh sách phát",
 		"library": "Thư viện",
 		"share": "Chia sẻ",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Không có kết nối internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Cửa sổ quá nhỏ",
+		"windowTooSmallMessage": "Hãy phóng to cửa sổ để tiếp tục dùng CueVote.",
+		"backToRadio": "Quay lại radio",
 		"retry": "Thử lại kết nối",
 		"switching": "Đang chuyển kênh...",
 		"channelNotFound": "Kênh không tồn tại",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Xóa",
 		"watch": "Xem trên YouTube",
 		"recommend": "Nhận gợi ý",
-		"guest": "Khách"
+		"guest": "Khách",
+		"voteUp": "Bỏ phiếu thuận",
+		"voteDown": "Bỏ phiếu chống"
 	},
 	"library": {
 		"searchPlaceholder": "Tìm kiếm thư viện...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} bài"
 		},
 		"inLibrary": "trong thư viện",
+		"about": "Giới thiệu về thư viện",
 		"info1": "Thư viện hiển thị các bài hát duy nhất đã phát trong <strong>28 ngày</strong> qua.",
 		"info2": "Các bài cũ được ẩn để giữ dữ liệu mới, nhưng <strong>không bao giờ bị xóa</strong>. Tính năng <strong>Tự động điền</strong> vẫn nhớ toàn bộ lịch sử và sẽ tự động đưa bài cũ trở lại khi cần!",
 		"empty": "Không tìm thấy bài hát"
@@ -222,6 +246,13 @@ export default {
 		"history": "Lịch sử",
 		"last50": "50 bài gần nhất (của {count})",
 		"nowPlaying": "Đang phát",
+		"play": "Phát",
+		"pause": "Tạm dừng",
+		"mute": "Tắt tiếng",
+		"unmute": "Bật tiếng",
+		"volume": "Âm lượng",
+		"cinemaMode": "Chế độ rạp chiếu",
+		"exitCinemaMode": "Thoát chế độ rạp chiếu",
 		"channelSuffix": "Kênh",
 		"upNext": "Tiếp theo",
 		"queueEmpty": "Hàng đợi trống",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "Các video bị cấm khỏi yêu cầu sẽ xuất hiện ở đây.",
 		"bannedOn": "Bị cấm vào {date}",
 		"unban": "Bỏ cấm"
+	},
+	"appleMusic": {
+		"source": "Nguồn nhạc",
+		"sourceHint": "Apple Music phát trên máy tính của bạn và cần gói đăng ký Apple Music.",
+		"connect": "Kết nối Apple Music",
+		"connectHint": "Đăng nhập bằng tài khoản Apple có gói đăng ký Apple Music của bạn.",
+		"signInFailed": "Đăng nhập không thành công.",
+		"start": "Bắt đầu phát",
+		"startHint": "Trình duyệt chỉ phát âm thanh sau một lần nhấp.",
+		"loading": "Đang tải Apple Music…",
+		"loadFailed": "Không thể tải Apple Music.",
+		"problemSubscription": "Cần gói đăng ký Apple Music còn hiệu lực để phát nội dung này.",
+		"switchAccount": "Dùng tài khoản khác",
+		"problemOtherDevice": "Tài khoản Apple của bạn đang phát trên một thiết bị khác.",
+		"problemGeneric": "Apple Music đã dừng phát.",
+		"contentNotice": "Ảnh bìa và bản nghe thử trong kênh này đến từ Apple. Khi tải, Apple thấy địa chỉ IP của bạn.",
+		"contentAccept": "Bật",
+		"previewFailed": "Không thể phát bản nghe thử này.",
+		"standby": "Kênh này đang phát trên một thiết bị khác của bạn.",
+		"playHere": "Phát tại đây",
+		"waitingForHost": "Đang tạm dừng cho đến khi người tổ chức phát lại.",
+		"playsOnComputer": "Apple Music phát trên máy tính. Hãy mở kênh này trên máy tính và kết nối Apple Music."
 	},
 	"attribution": {
 		"youtube": "Phát triển với YouTube"

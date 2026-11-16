@@ -1,121 +1,85 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (c) 2026 Julian Zienert
 import React, { useState, useEffect } from "react";
-import { WifiOff, RefreshCw, Loader2, ServerCrash } from "lucide-react";
+import { CloudOff, RotateCw, WifiOff } from "lucide-react";
 import { Language } from "../contexts/LanguageContext";
+import { StatusButton, StatusCard } from "./PlayerStatus";
+import { LobbySkeleton, RoomSkeleton } from "./Skeletons";
 
+// A connection that has not come after this long, and after several attempts,
+// is a problem to tell about. Until then the app is simply connecting.
+const PROBLEM_AFTER_MS = 12000;
+// "Retry" stays busy this long: long enough to see that it was pressed.
+const RETRY_BUSY_MS = 1500;
+
+/**
+ * What the app shows while it has no connection: the whole screen when a
+ * channel opens, or (`embedded`) the lobby's place for its channels.
+ *
+ * Connecting passes on its own: placeholders in the shape of what is coming,
+ * with a light passing over them. A connection that does not come, or a
+ * device that is offline, gets the card with the way to try again.
+ */
 export function LoadingScreen({ isOnline, embedded = false, message, reconnectAttempt = 0, onForceReconnect }) {
 	const { t } = Language.useLanguage();
-	const [showTimeoutCheck, setShowTimeoutCheck] = useState(false);
+	const [waitedLong, setWaitedLong] = useState(false);
 	const [isRetrying, setIsRetrying] = useState(false);
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setShowTimeoutCheck(true);
-		}, 12000);
-
+		const timer = setTimeout(() => setWaitedLong(true), PROBLEM_AFTER_MS);
 		return () => clearTimeout(timer);
 	}, []);
 
+	useEffect(() => {
+		if (!isRetrying || !onForceReconnect) return undefined;
+		const timer = setTimeout(() => setIsRetrying(false), RETRY_BUSY_MS);
+		return () => clearTimeout(timer);
+	}, [isRetrying, onForceReconnect]);
+
 	const handleRetry = () => {
+		setIsRetrying(true);
 		if (onForceReconnect) {
 			onForceReconnect();
 			return;
 		}
-		setIsRetrying(true);
 		setTimeout(() => {
 			window.location.reload();
 		}, 500);
 	};
 
-	let state = 'loading';
+	let state = 'connecting';
 	if (!isOnline) state = 'offline';
-	else if (showTimeoutCheck && reconnectAttempt > 3) state = 'error';
-	else state = 'loading';
+	else if (waitedLong && reconnectAttempt > 3) state = 'problem';
 
-	const getConfig = () => {
-		switch (state) {
-			case 'offline':
-				return {
-					icon: <WifiOff size={48} className="text-neutral-500 mb-6" />,
-					title: t('app.noInternet', "No Internet Connection"),
-					sub: t('app.checkConnection', "Please check your internet connection."),
-					action: true
-				};
-			case 'error':
-				return {
-					icon: <ServerCrash size={48} className="text-orange-500 mb-6" />,
-					title: t('app.connectionIssue', "Connection Issue"),
-					sub: reconnectAttempt > 1
-						? `${t('app.reconnecting', "Reconnecting")}... (${reconnectAttempt})`
-						: t('app.takingTooLong', "Taking longer than usual..."),
-					action: true
-				};
-		case 'loading':
-		default:
-			return {
-				icon: <Loader2 size={48} className="text-orange-500 animate-spin mb-6" />,
-				title: message || (reconnectAttempt > 0
-					? t('app.reconnecting', "Reconnecting") + "..."
-					: t('app.connecting', "Connecting to server...")),
-				sub: reconnectAttempt > 1
-					? `${t('app.attempt', "Attempt")} ${reconnectAttempt}`
-					: null,
-				action: reconnectAttempt > 3
-			};
-		}
-	};
-
-	const config = getConfig();
-
-	const content = (
-		<div className={`flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-500 ${embedded ? "" : "max-w-md p-8"}`}>
-			<div className={`transition-all duration-500 ${isRetrying ? "opacity-50 scale-90" : "opacity-100 scale-100"}`}>
-				{config.icon}
-			</div>
-
-			<h2 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight">
-				{config.title}
-			</h2>
-
-			{config.sub && (
-				<p className="text-neutral-400 font-medium mb-8">
-					{config.sub}
-				</p>
-			)}
-
-			{config.action && (
-				<button
-					onClick={handleRetry}
-					disabled={isRetrying}
-					className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-lg shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-				>
-					<RefreshCw size={20} className={isRetrying ? "animate-spin" : ""} />
-					{isRetrying ? t('app.retrying', "Retrying...") : t('app.retry', "Retry Connection")}
-				</button>
-			)}
+	const connecting = message || t('app.connecting', "Connecting to server...");
+	const card = state === 'connecting' ? null : (
+		<div className="flex w-full justify-center animate-in fade-in zoom-in-95 duration-300">
+			<StatusCard
+				icon={state === 'offline' ? WifiOff : CloudOff}
+				tone="attention"
+				title={state === 'offline' ? t('app.noInternet', "No Internet Connection") : t('app.connectionIssue', "Connection Issue")}
+				text={state === 'offline' ? t('app.checkConnection', "Please check your internet connection.") : t('app.takingTooLong', "Taking longer than usual...")}
+			>
+				<StatusButton icon={RotateCw} busy={isRetrying} onClick={handleRetry}>
+					{t('app.retry', "Retry Connection")}
+				</StatusButton>
+			</StatusCard>
 		</div>
 	);
 
 	if (embedded) {
+		if (!card) return <LobbySkeleton label={connecting} />;
 		return (
-			<div className="flex flex-col items-center justify-center p-8 w-full h-full min-h-[300px]">
-				{content}
+			<div role="status" className="flex min-h-[19rem] items-center justify-center py-6">
+				{card}
 			</div>
 		);
 	}
 
-	// Full Screen Mode
+	if (!card) return <RoomSkeleton label={connecting} />;
 	return (
-		<div className="fixed inset-0 z-[100] bg-[#050505] text-white flex items-center justify-center p-6 overflow-hidden">
-			{/* Background Gradient */}
-			<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-[#050505] to-[#050505] pointer-events-none" />
-
-			{/* Content */}
-			<div className="relative z-10 w-full flex items-center justify-center">
-				{content}
-			</div>
+		<div role="status" className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-page p-6 text-ink">
+			{card}
 		</div>
 	);
 }
-

@@ -26,14 +26,21 @@ const JoinRoomPayload = z.object({
   password: z.string().max(PASSWORD_MAX).optional(),
 });
 
+// Asked before joining: which consent the welcome screen needs.
+const RoomProviderPayload = z.object({
+  roomId: z.string().min(1).max(200),
+});
+
 const CreateRoomPayload = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   color: z.string().max(100).optional(),
   isPrivate: z.boolean().optional(),
-  password: z.string().max(PASSWORD_MAX).optional(),
+  // Lobby builds already in browsers send null for a public room.
+  password: z.string().max(PASSWORD_MAX).nullish(),
   captionsEnabled: z.boolean().optional(),
   languageFlag: z.string().max(50).optional(),
+  provider: z.enum(['youtube', 'apple']).optional(),
 });
 
 const ListRoomsPayload = z.object({
@@ -92,9 +99,38 @@ const FetchSuggestionsPayload = z.object({
   videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
 });
 
-const UpdateDurationPayload = z.number().finite().positive().max(86400);
+// A bare number is what older clients send; the object names the queue entry
+// the duration belongs to, so a late report cannot land on the next track.
+const DurationSeconds = z.number().finite().positive().max(86400);
+const UpdateDurationPayload = z.union([
+  DurationSeconds,
+  z.object({ duration: DurationSeconds, trackId: z.string().min(1).max(100) }),
+]);
+
+// The host's player reports why the current track failed: a YouTube IFrame
+// error number, or a MusicKit error code in Apple rooms.
+const PlaybackErrorPayload = z.object({
+  videoId: z.string().min(1).max(50),
+  errorCode: z.union([z.number().int(), z.string().max(60)]).optional(),
+  // The queue entry that failed: the same song can be queued twice in a row.
+  trackId: z.string().min(1).max(100).optional(),
+});
 
 const PlayPausePayload = z.boolean();
+
+// What the owner's Apple player can do: play (playing, or ready and paused
+// with the room), not (blocked: loading, signed out, waiting for a tap, an
+// error), or stand by while another owner device plays.
+const ApplePlayerStatusPayload = z.object({
+  state: z.enum(['playing', 'ready', 'blocked', 'standby']),
+});
+
+// The owner's Apple player cannot play the current music video (MusicKit JS
+// plays none on Android) and asks for the song instead.
+const ApplePlayAsSongPayload = z.object({
+  videoId: z.string().min(1).max(50),
+  trackId: z.string().min(1).max(100).optional(),
+});
 
 // Remote DJ MCP: the web consent page sends this (over the user's authenticated
 // socket) to approve an OAuth authorization. The server adds the user id and
@@ -102,6 +138,10 @@ const PlayPausePayload = z.boolean();
 // the browser.
 const McpAuthorizePayload = z.object({
   handle: z.string().min(1).max(200),
+  // What the consent page displayed. The MCP finalizes only if it matches the
+  // authorization behind the handle.
+  shownClient: z.string().max(1000).optional(),
+  shownHost: z.string().max(300).optional(),
 });
 
 // A returning guest presents the token it was issued earlier; a first-time
@@ -122,6 +162,7 @@ module.exports = {
   ResumeSessionPayload,
   LogoutPayload,
   JoinRoomPayload,
+  RoomProviderPayload,
   CreateRoomPayload,
   ListRoomsPayload,
   SuggestSongPayload,
@@ -132,6 +173,9 @@ module.exports = {
   VideoIdPayload,
   FetchSuggestionsPayload,
   UpdateDurationPayload,
+  PlaybackErrorPayload,
+  ApplePlayerStatusPayload,
+  ApplePlayAsSongPayload,
   PlayPausePayload,
   McpAuthorizePayload,
   GuestSessionPayload,
