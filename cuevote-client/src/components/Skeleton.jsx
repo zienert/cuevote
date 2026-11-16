@@ -4,7 +4,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 /**
- * Skeleton — a neutral pulsing placeholder bar.
+ * Skeleton — a neutral placeholder bar with the light of everything that is
+ * still loading (`.skeleton` in index.css).
  *
  * Used while a value (e.g. a track title that was cleared after YouTube's
  * 28-day metadata retention limit) is being re-fetched fresh on join.
@@ -18,7 +19,7 @@ export function Skeleton({ className = "" }) {
   const hasBg = /(^|\s)bg-/.test(className);
   return (
     <div
-      className={`rounded animate-pulse ${hasBg ? "" : "bg-neutral-700/50"} ${className}`}
+      className={`skeleton rounded ${hasBg ? "" : "bg-neutral-700/50"} ${className}`}
       aria-hidden="true"
     />
   );

@@ -43,15 +43,17 @@ On the host that runs `cuevote-server`, from the repo root:
 ```
 
 It builds the MCP, enables the admin API (generates `ADMIN_TOKEN` and restarts the
-server once), writes `cuevote-mcp/.env`, verifies the admin health endpoint, and
-prints the one line to run on your Mac — typically:
+server once), sets the admin keys in `cuevote-mcp/.env` (every other line there
+stays), verifies the admin health endpoint, and prints the one line to run on
+your Mac — typically:
 
 ```bash
 claude mcp add cuevote -- ssh -T <user>@cuevote.com node /abs/path/cuevote-mcp/dist/index.js
 ```
 
-Re-run `./setup-mcp.sh` after each deploy to rebuild the MCP. Read-only **and**
-live-ops are then both active.
+Read-only **and** live-ops are then both active. Deploys rebuild and restart the
+MCP through `update_server.sh`, so there is no need to re-run the script; doing
+so is safe, as it changes only its own keys in `cuevote-mcp/.env`.
 
 ## Configure (manual / local)
 

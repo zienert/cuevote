@@ -25,7 +25,7 @@ export function YouTubeBrandSubtitle({ className = '' }) {
 			href="https://www.youtube.com"
 			target="_blank"
 			rel="noopener noreferrer"
-			className={`inline-block text-[10px] text-neutral-500 hover:text-neutral-300 no-underline transition-colors select-none ${className}`}
+			className={`cv-hit inline-block text-[11px] leading-4 text-ink-3 hover:text-ink-2 no-underline transition-colors duration-150 select-none ${className}`}
 		>
 			{t('attribution.youtube')}
 		</a>

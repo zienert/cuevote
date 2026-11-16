@@ -50,6 +50,13 @@ export function ConnectAI() {
       let host = '';
       try { host = new URL(target, window.location.origin).host; } catch { /* keep '' */ }
 
+      // Follow the code only to the host this page showed. The MCP checks the
+      // same before it issues a code; this keeps the page from relying on it.
+      if (host !== (redirectHost || '')) {
+        setPhase('error');
+        return;
+      }
+
       if (inNativeWrapper && isExternalHost(host)) {
         setHandoffHost(host);
         setPhase('handoff');
@@ -60,13 +67,14 @@ export function ConnectAI() {
     } else if (lastMessage.type === 'error' && phase === 'submitting') {
       setPhase('error');
     }
-  }, [lastMessage, phase, inNativeWrapper]);
+  }, [lastMessage, phase, inNativeWrapper, redirectHost]);
 
   const approve = () => {
     if (!handle || !user) return;
     clearMessage(); // drop any stale error so the effect only reacts to THIS request's reply
     setPhase('submitting');
-    sendMessage({ type: 'MCP_AUTHORIZE', payload: { handle } });
+    // Echo what this page displayed: the MCP issues a code only if it matches.
+    sendMessage({ type: 'MCP_AUTHORIZE', payload: { handle, shownClient: clientName || '', shownHost: redirectHost || '' } });
   };
 
   // If neither result nor error comes back, don't leave the button stuck.

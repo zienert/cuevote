@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Este canal requiere una cuenta con sesión iniciada.",
 		"accountRequired": "Inicia sesión para hacer eso.",
 		"sessionNotReady": "Tu sesión aún no está lista. Recarga la página.",
-		"guestLimit": "Demasiados invitados nuevos en esta red. Inicia sesión para continuar."
+		"guestLimit": "Demasiados invitados nuevos en esta red. Inicia sesión para continuar.",
+		"appleMusicUnavailable": "Apple Music no está disponible en este servidor.",
+		"appleMusicNotConnected": "El anfitrión tiene que conectar Apple Music primero.",
+		"appleMusicRoom": "Este canal reproduce Apple Music. Pega un enlace de music.apple.com o busca por nombre.",
+		"appleMusicNotFound": "No se encontró en Apple Music.",
+		"appleMusicLinkUnsupported": "Pega el enlace de una sola canción o videoclip, o busca por nombre.",
+		"appleMusicNotInStorefront": "Este título no está disponible en Apple Music en el país del anfitrión.",
+		"appleMusicCatalogError": "Apple Music no respondió. Inténtalo de nuevo."
 	},
 	"connectAi": {
 		"willSendTo": "La autorización se enviará a",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Inicia sesión para crear",
 		"noChannelsFound": "No se encontraron canales para",
 		"live": "En vivo",
+		"hostedBy": "Anfitrión: {name}",
+		"wrongPassword": "Contraseña incorrecta",
 		"createNewChannel": "Crear Nuevo Canal",
 		"channelName": "Nombre del Canal",
 		"channelNamePlaceholder": "ej. Vibras Nocturnas",
@@ -81,7 +90,18 @@ export default {
 		"description": "Para reproducir vídeo, necesitamos cargar el reproductor de YouTube. Esto conecta con los servidores de Google.",
 		"policy": "Leer política de privacidad",
 		"accept": "Aceptar y Escuchar Vídeo",
-		"youtubeConsent": "Necesitamos tu consentimiento para cargar el reproductor de YouTube. Por favor acepta las cookies abajo."
+		"youtubeConsent": "Necesitamos tu consentimiento para cargar el reproductor de YouTube. Por favor acepta las cookies abajo.",
+		"signInDescription": "Para iniciar sesión con Google, cargamos el inicio de sesión de Google, que se conecta a los servidores de Google. El mismo consentimiento también carga el reproductor de YouTube en los canales de YouTube.",
+		"signInAccept": "Aceptar"
+	},
+	"join": {
+		"welcome": "Bienvenido a {brand}",
+		"youtubeTitle": "Activar audio y vídeo",
+		"youtubeBody": "Para reproducir música de YouTube y participar en la playlist, necesitamos usar cookies.",
+		"accept": "Activar y unirse a la fiesta",
+		"agree": "Al unirte, aceptas nuestra {policy}.",
+		"policy": "política de privacidad",
+		"checking": "Comprobando el canal…"
 	},
 	"header": {
 		"back": "Atrás",
@@ -92,6 +112,7 @@ export default {
 		"signIn": "Iniciar sesión con Google",
 		"acceptCookies": "Aceptar cookies para entrar",
 		"legal": "Información Legal",
+		"player": "Reproductor",
 		"playlist": "Lista",
 		"library": "Biblioteca",
 		"share": "Compartir",
@@ -170,9 +191,9 @@ export default {
 		"listenMusic": "Escuchar vídeo",
 		"unmuteAndPlay": "Sonido y Reproducir",
 		"noInternet": "Sin conexión a internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Ventana demasiado pequeña",
+		"windowTooSmallMessage": "Amplía la ventana para seguir usando CueVote.",
+		"backToRadio": "Volver a la radio",
 		"retry": "Reintentar conexión",
 		"retrying": "Reintentando...",
 		"connecting": "Conectando al servidor...",
@@ -195,7 +216,9 @@ export default {
 		"delete": "Eliminar",
 		"watch": "En YouTube",
 		"recommend": "Obtener Sugerencias",
-		"guest": "Invitado"
+		"guest": "Invitado",
+		"voteUp": "Votar a favor",
+		"voteDown": "Votar en contra"
 	},
 	"library": {
 		"searchPlaceholder": "Buscar en biblioteca...",
@@ -205,6 +228,7 @@ export default {
 			"other": "{count} videos"
 		},
 		"inLibrary": "en biblioteca",
+		"about": "Acerca de la biblioteca",
 		"info1": "Esta biblioteca muestra videos únicas reproducidas en los últimos <strong>28 días</strong>.",
 		"info2": "Las videos más antiguas se ocultan para garantizar la frescura de los metadatos, pero <strong>nunca se eliminan</strong>. ¡La función de <strong>Relleno Automático</strong> recuerda todo tu historial y traerá automáticamente las videos antiguas a la cola (y a esta lista) cuando sea necesario!",
 		"empty": "No se encontraron videos"
@@ -233,6 +257,13 @@ export default {
 		"history": "Historial",
 		"last50": "Últimas 50 de {count}",
 		"nowPlaying": "Reproduciendo ahora",
+		"play": "Reproducir",
+		"pause": "Pausar",
+		"mute": "Silenciar",
+		"unmute": "Activar sonido",
+		"volume": "Volumen",
+		"cinemaMode": "Modo cine",
+		"exitCinemaMode": "Salir del modo cine",
 		"channelSuffix": "Canal",
 		"upNext": "A continuación",
 		"queueEmpty": "Cola vacía",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "Los videos bloqueados de las solicitudes aparecerán aquí.",
 		"bannedOn": "Bloqueado el {date}",
 		"unban": "Desbloquear"
+	},
+	"appleMusic": {
+		"source": "Fuente de música",
+		"sourceHint": "Apple Music suena en tu computadora y requiere una suscripción a Apple Music.",
+		"connect": "Conectar Apple Music",
+		"connectHint": "Inicia sesión con la cuenta de Apple que tiene tu suscripción a Apple Music.",
+		"signInFailed": "No se pudo iniciar sesión.",
+		"start": "Iniciar reproducción",
+		"startHint": "El navegador solo reproduce sonido después de un clic.",
+		"loading": "Cargando Apple Music…",
+		"loadFailed": "No se pudo cargar Apple Music.",
+		"problemSubscription": "Apple Music necesita una suscripción activa para reproducir esto.",
+		"switchAccount": "Usar otra cuenta",
+		"problemOtherDevice": "Tu cuenta de Apple está reproduciendo en otro dispositivo.",
+		"problemGeneric": "Apple Music detuvo la reproducción.",
+		"contentNotice": "Las portadas y las vistas previas de este canal vienen de Apple. Al cargarlas, Apple ve tu dirección IP.",
+		"contentAccept": "Activar",
+		"previewFailed": "No se puede reproducir esta vista previa.",
+		"standby": "Este canal se está reproduciendo en otro de tus dispositivos.",
+		"playHere": "Reproducir aquí",
+		"waitingForHost": "En pausa hasta que el anfitrión vuelva a reproducir.",
+		"playsOnComputer": "Apple Music suena en una computadora. Abre este canal allí y conecta Apple Music."
 	},
 	"attribution": {
 		"youtube": "Desarrollado con YouTube"

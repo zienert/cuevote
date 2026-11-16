@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Ten kanał wymaga zalogowanego konta.",
 		"accountRequired": "Zaloguj się, aby to zrobić.",
 		"sessionNotReady": "Twoja sesja nie jest jeszcze gotowa. Odśwież stronę.",
-		"guestLimit": "Zbyt wielu nowych gości w tej sieci. Zaloguj się, aby kontynuować."
+		"guestLimit": "Zbyt wielu nowych gości w tej sieci. Zaloguj się, aby kontynuować.",
+		"appleMusicUnavailable": "Ten serwer nie obsługuje Apple Music.",
+		"appleMusicNotConnected": "Gospodarz musi najpierw połączyć Apple Music.",
+		"appleMusicRoom": "Ten kanał odtwarza Apple Music. Wklej link z music.apple.com lub wyszukaj po nazwie.",
+		"appleMusicNotFound": "Nie znaleziono w Apple Music.",
+		"appleMusicLinkUnsupported": "Wklej link do jednego utworu lub teledysku albo wyszukaj po nazwie.",
+		"appleMusicNotInStorefront": "Ten utwór jest niedostępny w Apple Music w kraju gospodarza.",
+		"appleMusicCatalogError": "Apple Music nie odpowiada. Spróbuj ponownie."
 	},
 	"connectAi": {
 		"willSendTo": "Zgoda zostanie wysłana do",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Zaloguj się, aby utworzyć",
 		"noChannelsFound": "Nie znaleziono kanałów dla",
 		"live": "Na żywo",
+		"hostedBy": "Gospodarz: {name}",
+		"wrongPassword": "Nieprawidłowe hasło",
 		"createNewChannel": "Utwórz nowy kanał",
 		"channelName": "Nazwa kanału",
 		"channelNamePlaceholder": "np. Nocne wibracje",
@@ -81,13 +90,25 @@ export default {
 		"description": "Aby odtwarzać muzykę, musimy załadować odtwarzacz YouTube. Łączy się to z serwerami Google.",
 		"policy": "Przeczytaj naszą Politykę Prywatności",
 		"accept": "Zaakceptuj i Odtwarzaj",
-		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej."
+		"youtubeConsent": "Potrzebujemy Twojej zgody na załadowanie odtwarzacza YouTube. Zaakceptuj pliki cookie poniżej.",
+		"signInDescription": "Aby zalogować się przez Google, wczytujemy logowanie Google, które łączy się z serwerami Google. Ta sama zgoda wczytuje też odtwarzacz YouTube na kanałach YouTube.",
+		"signInAccept": "Akceptuję"
+	},
+	"join": {
+		"welcome": "Witamy w {brand}",
+		"youtubeTitle": "Włącz dźwięk i wideo",
+		"youtubeBody": "Aby odtwarzać muzykę z YouTube i współtworzyć playlistę, musimy używać plików cookie.",
+		"accept": "Włącz i dołącz do imprezy",
+		"agree": "Dołączając, akceptujesz naszą {policy}.",
+		"policy": "Politykę Prywatności",
+		"checking": "Sprawdzanie kanału…"
 	},
 	"header": {
 		"profileSettings": "Profil i ustawienia",
 		"signIn": "Zaloguj się przez Google",
 		"acceptCookies": "Zaakceptuj pliki cookie, aby się zalogować",
 		"legal": "Informacje prawne",
+		"player": "Odtwarzacz",
 		"playlist": "Playlista",
 		"library": "Biblioteka",
 		"share": "Udostępnij",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Brak połączenia z internetem",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Okno jest za małe",
+		"windowTooSmallMessage": "Powiększ okno, aby dalej korzystać z CueVote.",
+		"backToRadio": "Wróć do radia",
 		"retry": "Ponów połączenie",
 		"switching": "Przełączanie kanału...",
 		"channelNotFound": "Kanał nie istnieje",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Usuń",
 		"watch": "Oglądaj na YouTube",
 		"recommend": "Pobierz propozycje",
-		"guest": "Gość"
+		"guest": "Gość",
+		"voteUp": "Głosuj za",
+		"voteDown": "Głosuj przeciw"
 	},
 	"library": {
 		"searchPlaceholder": "Szukaj w bibliotece...",
@@ -199,6 +222,7 @@ export default {
 			"other": "{count} utworu"
 		},
 		"inLibrary": "w bibliotece",
+		"about": "O bibliotece",
 		"info1": "Ta biblioteka wyświetla unikalne utwory odtwarzane w ciągu ostatnich <strong>28 dni</strong>.",
 		"info2": "Starsze utwory są ukrywane dla świeżości metadanych, ale <strong>nigdy nie są usuwane</strong>. Funkcja <strong>automatycznego uzupełniania</strong> wciąż pamięta całą historię i automatycznie przywróci starsze utwory do kolejki (i tej listy) w razie potrzeby!",
 		"empty": "Nie znaleziono utworów"
@@ -228,6 +252,13 @@ export default {
 		"history": "Historia",
 		"last50": "Ostatnie 50 (z {count})",
 		"nowPlaying": "Teraz odtwarzane",
+		"play": "Odtwórz",
+		"pause": "Wstrzymaj",
+		"mute": "Wycisz",
+		"unmute": "Wyłącz wyciszenie",
+		"volume": "Głośność",
+		"cinemaMode": "Tryb kinowy",
+		"exitCinemaMode": "Wyjdź z trybu kinowego",
 		"channelSuffix": "Kanał",
 		"upNext": "Następne",
 		"queueEmpty": "Kolejka pusta",
@@ -280,6 +311,28 @@ export default {
 		"emptySubtitle": "Filmy zablokowane z żądań pojawią się tutaj.",
 		"bannedOn": "Zablokowany {date}",
 		"unban": "Odblokuj"
+	},
+	"appleMusic": {
+		"source": "Źródło muzyki",
+		"sourceHint": "Apple Music gra na Twoim komputerze i wymaga subskrypcji Apple Music.",
+		"connect": "Połącz Apple Music",
+		"connectHint": "Zaloguj się na konto Apple, na którym masz subskrypcję Apple Music.",
+		"signInFailed": "Logowanie nie powiodło się.",
+		"start": "Rozpocznij odtwarzanie",
+		"startHint": "Przeglądarka odtwarza dźwięk dopiero po kliknięciu.",
+		"loading": "Ładowanie Apple Music…",
+		"loadFailed": "Nie udało się załadować Apple Music.",
+		"problemSubscription": "Aby to odtworzyć, Apple Music wymaga aktywnej subskrypcji.",
+		"switchAccount": "Użyj innego konta",
+		"problemOtherDevice": "Twoje konto Apple odtwarza muzykę na innym urządzeniu.",
+		"problemGeneric": "Odtwarzanie w Apple Music zostało zatrzymane.",
+		"contentNotice": "Okładki i podglądy w tym kanale pochodzą od Apple. Podczas ich ładowania Apple widzi Twój adres IP.",
+		"contentAccept": "Włącz",
+		"previewFailed": "Nie można odtworzyć tego podglądu.",
+		"standby": "Ten kanał jest odtwarzany na innym Twoim urządzeniu.",
+		"playHere": "Odtwarzaj tutaj",
+		"waitingForHost": "Wstrzymano, dopóki gospodarz znów nie zacznie odtwarzać.",
+		"playsOnComputer": "Apple Music odtwarza się na komputerze. Otwórz tam ten kanał i połącz Apple Music."
 	},
 	"attribution": {
 		"youtube": "Stworzone z YouTube"
