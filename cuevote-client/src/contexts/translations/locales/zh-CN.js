@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "此频道需要已登录的账号。",
 		"accountRequired": "请登录后再操作。",
 		"sessionNotReady": "你的会话尚未就绪，请刷新页面。",
-		"guestLimit": "此网络上的新访客过多，请登录后继续。"
+		"guestLimit": "此网络上的新访客过多，请登录后继续。",
+		"appleMusicUnavailable": "此服务器上无法使用 Apple Music。",
+		"appleMusicNotConnected": "主持人需要先连接 Apple Music。",
+		"appleMusicRoom": "此频道播放 Apple Music。请粘贴 music.apple.com 链接，或按名称搜索。",
+		"appleMusicNotFound": "在 Apple Music 上找不到该内容。",
+		"appleMusicLinkUnsupported": "请粘贴单首歌曲或单个音乐视频的链接，或按名称搜索。",
+		"appleMusicNotInStorefront": "此曲目在主持人所在国家/地区的 Apple Music 上不可用。",
+		"appleMusicCatalogError": "Apple Music 没有响应，请重试。"
 	},
 	"connectAi": {
 		"willSendTo": "授权将发送至",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "登录以创建",
 		"noChannelsFound": "未找到频道",
 		"live": "直播",
+		"hostedBy": "主持人：{name}",
+		"wrongPassword": "密码错误",
 		"createNewChannel": "创建新频道",
 		"channelName": "频道名称",
 		"channelNamePlaceholder": "例如：深夜氛围",
@@ -81,13 +90,25 @@ export default {
 		"description": "为了播放音乐，我们需要加载 YouTube 播放器。这将连接到 Google 服务器。",
 		"policy": "阅读我们的隐私政策",
 		"accept": "接受并播放音乐",
-		"youtubeConsent": "我们需要您的同意才能加载 YouTube 播放器。请在下方接受 Cookie。"
+		"youtubeConsent": "我们需要您的同意才能加载 YouTube 播放器。请在下方接受 Cookie。",
+		"signInDescription": "为了使用 Google 登录，我们会加载 Google 登录，这会连接到 Google 的服务器。同一项同意也会在 YouTube 频道中加载 YouTube 播放器。",
+		"signInAccept": "接受"
+	},
+	"join": {
+		"welcome": "欢迎来到 {brand}",
+		"youtubeTitle": "启用音频和视频",
+		"youtubeBody": "要播放来自 YouTube 的音乐并参与播放列表，我们需要使用 Cookie。",
+		"accept": "启用并加入派对",
+		"agree": "加入即表示你同意我们的{policy}。",
+		"policy": "隐私政策",
+		"checking": "正在检查频道…"
 	},
 	"header": {
 		"profileSettings": "个人资料与设置",
 		"signIn": "通过 Google 登录",
 		"acceptCookies": "接受 Cookie 以登录",
 		"legal": "法律信息",
+		"player": "播放器",
 		"playlist": "播放列表",
 		"library": "媒体库",
 		"share": "分享频道",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "无网络连接",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "窗口太小",
+		"windowTooSmallMessage": "请放大窗口以继续使用 CueVote。",
+		"backToRadio": "返回电台",
 		"retry": "重试连接",
 		"retrying": "重试中...",
 		"connecting": "连接服务器中...",
@@ -188,7 +209,9 @@ export default {
 		"delete": "删除",
 		"watch": "在 YouTube 观看",
 		"recommend": "获取推荐",
-		"guest": "访客"
+		"guest": "访客",
+		"voteUp": "投赞成票",
+		"voteDown": "投反对票"
 	},
 	"library": {
 		"searchPlaceholder": "搜索媒体库...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} 个视频"
 		},
 		"inLibrary": "在库中",
+		"about": "关于媒体库",
 		"info1": "此库显示过去 <strong>28 天</strong> 内播放的唯一视频。",
 		"info2": "为了保持元数据新鲜度，较旧的视频会被隐藏，但<strong>绝不会被删除</strong>。<strong>Auto-DJ</strong> 功能仍会记住您的完整历史记录，并在需要时自动将旧视频带回队列（及此列表）！",
 		"empty": "未找到视频"
@@ -222,6 +246,13 @@ export default {
 		"history": "历史记录",
 		"last50": "最近 50 首（共 {count} 首）",
 		"nowPlaying": "正在播放",
+		"play": "播放",
+		"pause": "暂停",
+		"mute": "静音",
+		"unmute": "取消静音",
+		"volume": "音量",
+		"cinemaMode": "影院模式",
+		"exitCinemaMode": "退出影院模式",
 		"channelSuffix": "频道",
 		"upNext": "即将播放",
 		"queueEmpty": "队列为空",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "从请求中被禁用的视频将显示在这里。",
 		"bannedOn": "禁用于 {date}",
 		"unban": "解禁"
+	},
+	"appleMusic": {
+		"source": "音乐来源",
+		"sourceHint": "Apple Music 在你的电脑上播放，并且需要 Apple Music 订阅。",
+		"connect": "连接 Apple Music",
+		"connectHint": "请使用订阅了 Apple Music 的 Apple 账号登录。",
+		"signInFailed": "登录未成功。",
+		"start": "开始播放",
+		"startHint": "浏览器需要点击一次后才会播放声音。",
+		"loading": "正在加载 Apple Music…",
+		"loadFailed": "无法加载 Apple Music。",
+		"problemSubscription": "需要有效的 Apple Music 订阅才能播放此内容。",
+		"switchAccount": "使用其他账号",
+		"problemOtherDevice": "你的 Apple 账号正在另一台设备上播放。",
+		"problemGeneric": "Apple Music 已停止播放。",
+		"contentNotice": "此频道的封面图片和试听来自 Apple。加载时，Apple 会看到你的 IP 地址。",
+		"contentAccept": "开启",
+		"previewFailed": "无法播放此试听。",
+		"standby": "此频道正在你的另一台设备上播放。",
+		"playHere": "在此播放",
+		"waitingForHost": "已暂停，等待主持人重新播放。",
+		"playsOnComputer": "Apple Music 在电脑上播放。请在电脑上打开此频道并连接 Apple Music。"
 	},
 	"attribution": {
 		"youtube": "基于 YouTube 开发"

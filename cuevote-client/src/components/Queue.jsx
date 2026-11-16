@@ -3,6 +3,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Track } from "./Track";
+import { Language } from '../contexts/LanguageContext';
+import { ReorderList } from './ReorderList';
 
 export function Queue({
   tracks,
@@ -22,23 +24,26 @@ export function Queue({
   isFetchingSuggestions,
   queueVideoIds
 }) {
+  const { t } = Language.useLanguage();
   // Filter out current track as it is shown in the bottom bar
   const visibleTracks = tracks.filter(t => t.id !== currentTrack?.id);
 
   return (
-    <div
-      className={`relative transition-all duration-700 ease-in-out ${isMinimized
-        ? "max-h-0 opacity-0 translate-y-10"
-        : "p-6 space-y-4 opacity-100 translate-y-0"
+    <ReorderList
+      order={visibleTracks.map(track => track.id).join(' ')}
+      className={`relative mx-auto w-full max-w-3xl transition-[opacity,transform] duration-300 ease-cv ${isMinimized
+        ? "max-h-0 translate-y-3 overflow-hidden opacity-0"
+        : "translate-y-0 space-y-1 px-3 py-4 opacity-100 sm:px-4"
         }`}
-      style={{
-        maskImage: isMinimized
-          ? "none"
-          : "linear-gradient(to bottom, white 80%, transparent 100%)",
-      }}
     >
+      {!isMinimized && visibleTracks.length > 0 && (
+        <div className="flex items-baseline gap-2 px-3 pb-1">
+          <span className="text-[13px] font-medium text-ink-2">{t('playlist.upNext')}</span>
+          <span className="text-[13px] tabular-nums text-ink-3">{visibleTracks.length}</span>
+        </div>
+      )}
       {visibleTracks.map((track) => (
-        <div key={track.id} id={`track-${track.id}`}>
+        <div key={track.id} id={`track-${track.id}`} data-reorder-id={track.id} className="relative">
           <Track
             track={track}
             isActive={false} // Never active in this list
@@ -60,7 +65,7 @@ export function Queue({
       ))}
 
       {/* "Back to Now" removed as current track is not in list */}
-    </div>
+    </ReorderList>
   );
 }
 

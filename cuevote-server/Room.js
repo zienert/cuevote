@@ -5,8 +5,40 @@ const db = require("./db");
 const dbAsync = require("./db-async");
 const logger = require("./logger");
 const schemas = require("./schemas");
-const { sortUpcoming } = require("./queue-order");
+const { sortUpcoming, AUTO_DJ } = require("./queue-order");
 const guest = require("./guest");
+const { appleTrackKey, parseTrackKey } = require("./track-keys");
+const { bestMatch, isAppleMusicPage, isStorefront, looksLikeLink, parseAppleMusicLink } = require("./apple-catalog");
+
+// Apple Music catalog for Apple rooms; index.js sets it when MusicKit is set up
+// (Room.setAppleCatalog). Without it Apple rooms cannot resolve suggestions.
+let appleCatalog = null;
+
+// MusicKit errors that concern only the item being played. Every other error
+// (sign-in, subscription, DRM, another device streaming, blocked autoplay, a
+// geo block, which comes from where the host is) is a problem on the host's
+// side that the next track would hit as well.
+const APPLE_ITEM_ERRORS = new Set([
+    'CONTENT_UNAVAILABLE',
+    'CONTENT_RESTRICTED',
+    'CONTENT_UNSUPPORTED',
+    'NOT_FOUND',
+]);
+// The third item error within a minute pauses instead of skipping.
+const APPLE_ITEM_ERROR_LIMIT = 3;
+const APPLE_ITEM_ERROR_WINDOW_MS = 60 * 1000;
+// An Apple room plays on one owner device, its "player". The player reports
+// its state about every 10 s (APPLE_PLAYER_STATUS); silent this long, it
+// counts as gone.
+const APPLE_PLAYER_STALE_MS = 25 * 1000;
+// How long a playing Apple room keeps its clock going without a player that
+// can play (a reload, buffering) before it waits for the host.
+const APPLE_HOST_GRACE_MS = 15 * 1000;
+
+// A seek this soon after the current track changed was aimed at the previous
+// one, whose progress bar was still on screen. Clicking the end of the bar to
+// skip, twice in a row, used to skip the next track as well (14.11.2026).
+const SEEK_AFTER_CHANGE_MS = 2000;
 
 // Helper to check ownership
 function isOwner(room, ws) {
@@ -52,12 +84,20 @@ function projectTrack(track, viewerId) {
 // A copy of a state — or of a delta — with those fields removed and the viewer's
 // own vote added. Only keys that are actually present get touched, so deltas
 // pass through unchanged apart from the track collections they carry.
+//
+// `ownerId` is the owner's account id as well. A viewer only needs to know
+// whether it is the owner, which travels as `isOwner`; the id itself goes to
+// the owner alone, so that clients from before `isOwner` keep working for them.
 function projectState(state, viewerId) {
     if (!state || typeof state !== 'object') return state;
     const out = { ...state };
     if ('currentTrack' in out) out.currentTrack = projectTrack(out.currentTrack, viewerId);
     for (const key of TRACK_COLLECTIONS) {
         if (Array.isArray(out[key])) out[key] = out[key].map(t => projectTrack(t, viewerId));
+    }
+    if ('ownerId' in out) {
+        out.isOwner = !!viewerId && viewerId === out.ownerId;
+        if (!out.isOwner) delete out.ownerId;
     }
     return out;
 }
@@ -88,7 +128,11 @@ class Room {
             password: metadata.password || null,
             captions_enabled: metadata.captions_enabled !== undefined ? metadata.captions_enabled : 0,
             language_flag: metadata.language_flag || 'international',
-            require_login: metadata.require_login !== undefined ? metadata.require_login : 0
+            require_login: metadata.require_login !== undefined ? metadata.require_login : 0,
+            // Fixed at creation: an Apple Music room never takes YouTube tracks.
+            provider: metadata.provider === 'apple' ? 'apple' : 'youtube',
+            // Country of the host's Apple account, reported by their player.
+            apple_storefront: isStorefront(metadata.apple_storefront) ? metadata.apple_storefront : null
         };
         this.clients = new Set();
         this.knownVideos = new Set(); // Stores videoIds of approved videos
@@ -98,6 +142,10 @@ class Room {
         this.videoStatusCache = new Map(); // videoId -> { reason, checkedAt } to avoid redundant API calls
         this.videoStatusChecksInFlight = new Set(); // videoIds mid-API-check; dedupes concurrent PLAYBACK_ERRORs
         this.isRehydrating = false;        // Guards the on-join metadata re-fetch from concurrent duplicate runs
+        // Apple rooms: the owner socket that plays the room { ws, state, lastSeen },
+        // and since when no player has been able to play while the room plays.
+        this.applePlayer = null;
+        this.hostMissingSince = null;
 
         this.state = {
             roomId: id, // Send ID to client for validation
@@ -108,6 +156,11 @@ class Room {
             progress: 0,
             activeChannel: name,
             ownerId: metadata.owner_id,
+            provider: this.metadata.provider,
+            // Guests' previews look items up in the same country as the host.
+            appleStorefront: this.metadata.provider === 'apple' ? this.metadata.apple_storefront : null,
+            // Apple rooms: the room plays, but no host player can (followApplePlayer).
+            waitingForHost: false,
             suggestionsEnabled: true,
             musicOnly: false, // Default false
             maxDuration: 600, // Default 10 minutes
@@ -182,8 +235,9 @@ class Room {
                 if (saved.progress) this.state.progress = saved.progress;
                 if (saved.isPlaying) this.state.isPlaying = saved.isPlaying;
                 // Recalculate startedAt from saved progress so tick() doesn't
-                // see a stale timestamp and immediately advance past the track
-                if (this.state.currentTrack && this.state.progress > 0) {
+                // see a stale timestamp and immediately advance past the track,
+                // also at progress 0.
+                if (this.state.currentTrack) {
                     this.state.currentTrack = {
                         ...this.state.currentTrack,
                         startedAt: Date.now() - (this.state.progress * 1000)
@@ -233,7 +287,8 @@ class Room {
     }
 
     getSummary() {
-        const track = this.state.currentTrack;
+        // No lobby preview for Apple rooms, see persistLobbyPreview().
+        const track = this.metadata.provider === 'apple' ? null : this.state.currentTrack;
         return {
             id: this.id,
             name: this.name,
@@ -246,7 +301,8 @@ class Room {
                 artist: track.artist,
             } : null,
             isActive: true,
-            language_flag: this.metadata.language_flag
+            language_flag: this.metadata.language_flag,
+            provider: this.metadata.provider
         };
     }
 
@@ -263,6 +319,15 @@ class Room {
         if (!this.metadata.owner_id && ws.user) {
             logger.warn(`[Room ${this.id}] Missing owner_id in metadata; treating as ownerless for this session.`);
             this.state.ownerId = null;
+        }
+
+        // An Apple room needs a country before it can look anything up. Until
+        // the host's player reports the one of their Apple account, take the
+        // country the owner connects from (Cloudflare's CF-IPCountry): a room
+        // made on a phone, where no player runs, refused every suggestion.
+        if (this.metadata.provider === 'apple' && !this.metadata.apple_storefront
+            && isOwner(this, ws) && isStorefront(ws.country)) {
+            this.setAppleStorefront(ws.country, { guessed: true });
         }
 
         try {
@@ -366,6 +431,96 @@ class Room {
 
     removeClient(ws) {
         this.clients.delete(ws);
+        // The player left: another owner device on standby takes over.
+        if (this.applePlayer && this.applePlayer.ws === ws) {
+            this.applePlayer = null;
+            const standby = [...this.clients].reverse().find(client => client.applePlayerState && isOwner(this, client));
+            if (standby) this.grantApplePlayer(standby);
+            this.followApplePlayer();
+        }
+    }
+
+    // ---- Apple Music: the one player of the room ---------------------------
+
+    isApplePlayerReady() {
+        const player = this.applePlayer;
+        return !!player && this.clients.has(player.ws)
+            && Date.now() - player.lastSeen < APPLE_PLAYER_STALE_MS
+            && (player.state === 'playing' || player.state === 'ready');
+    }
+
+    // Errors, durations and the storefront count only from the room's player.
+    // With no player known (a client from before players reported), from any
+    // owner socket.
+    isApplePlayerSocket(ws) {
+        return !this.applePlayer || this.applePlayer.ws === ws;
+    }
+
+    sendApplePlayerLease(ws) {
+        if (ws.readyState !== 1) return;
+        const active = !!this.applePlayer && this.applePlayer.ws === ws;
+        ws.send(JSON.stringify({ type: "APPLE_PLAYER_LEASE", payload: { active } }));
+    }
+
+    // This owner socket plays the room from now on; every other owner device
+    // stops and offers to take over. Apple streams one account on one device
+    // at a time: two players cut each other off (14.11.2026).
+    grantApplePlayer(ws) {
+        this.applePlayer = { ws, state: ws.applePlayerState || 'blocked', lastSeen: Date.now() };
+        logger.info(`[Room ${this.id}] Apple player: ${ws.id}`);
+        for (const client of this.clients) {
+            if (client.applePlayerState) this.sendApplePlayerLease(client);
+        }
+    }
+
+    handleApplePlayerStatus(ws, state) {
+        ws.applePlayerState = state;
+        const player = this.applePlayer;
+        const playerGone = !player || !this.clients.has(player.ws) || Date.now() - player.lastSeen >= APPLE_PLAYER_STALE_MS;
+        if (playerGone && (!player || player.ws !== ws)) this.grantApplePlayer(ws);
+        if (this.applePlayer.ws === ws) {
+            this.applePlayer.state = state;
+            this.applePlayer.lastSeen = Date.now();
+        }
+        // Every report gets the answer: a lost one is put right by the next.
+        this.sendApplePlayerLease(ws);
+        this.followApplePlayer();
+        // The host is back to an empty room: the Auto-DJ, which waited for
+        // them, may fill it now.
+        if (this.isApplePlayerReady() && !this.state.currentTrack && this.state.queue.length === 0
+            && this.state.autoRefill && this.state.history.length > 0 && !this.state.isRefilling) {
+            this.populateQueueFromHistory();
+        }
+    }
+
+    // A playing Apple room keeps its clock going only while its player can
+    // play. The server cannot hear whether anything plays: with the host's
+    // tab closed, the laptop asleep or only a phone (which never plays), the
+    // room went on silently through every request and into the Auto-DJ
+    // (13./14.11.2026). After a short grace it now holds its position until
+    // the player is back.
+    followApplePlayer() {
+        if (this.metadata.provider !== 'apple') return;
+        if (!this.state.currentTrack || !this.state.isPlaying) {
+            this.hostMissingSince = null;
+            if (this.state.waitingForHost) this.updateState({ waitingForHost: false });
+            return;
+        }
+        if (this.isApplePlayerReady()) {
+            this.hostMissingSince = null;
+            if (this.state.waitingForHost) {
+                this.setTrackPosition(this.state.progress || 0);
+                this.updateState({ waitingForHost: false });
+                logger.info(`[Room ${this.id}] The Apple player is back: playing on.`);
+            }
+            return;
+        }
+        if (!this.hostMissingSince) this.hostMissingSince = Date.now();
+        if (!this.state.waitingForHost && Date.now() - this.hostMissingSince >= APPLE_HOST_GRACE_MS) {
+            this.updateState({ waitingForHost: true, progress: this.currentPosition() });
+            logger.info(`[Room ${this.id}] No Apple player can play: waiting for the host.`);
+        }
+        if (this.state.waitingForHost) this.setTrackPosition(this.state.progress || 0);
     }
 
     // Send one socket the state as that viewer may see it. Used when ws.user
@@ -409,9 +564,41 @@ class Room {
         }
     }
 
+    // Seconds into the current track by its clock (startedAt).
+    currentPosition() {
+        const track = this.state.currentTrack;
+        if (!track || !track.startedAt) return this.state.progress || 0;
+        return Math.max(0, Math.floor((Date.now() - track.startedAt) / 1000));
+    }
+
+    // Moves the clock of the current track so that it stands at `seconds` now.
+    setTrackPosition(seconds) {
+        const track = this.state.currentTrack;
+        if (!track) return;
+        this.state.currentTrack = { ...track, startedAt: Date.now() - (seconds * 1000) };
+        if (this.state.queue[0] && this.state.queue[0].id === track.id) {
+            this.state.queue = [this.state.currentTrack, ...this.state.queue.slice(1)];
+        }
+    }
+
     updateState(newState) {
+        // A pause stops the clock of the current track, play starts it again
+        // where it stopped. The clock is startedAt: left alone, a pause counted
+        // as played time, and a long one skipped the track on play (14.11.2026).
+        if ('isPlaying' in newState && !('currentTrack' in newState) && this.state.currentTrack
+            && !!newState.isPlaying !== !!this.state.isPlaying) {
+            if (newState.isPlaying) {
+                this.setTrackPosition(this.state.progress || 0);
+            } else {
+                newState = { ...newState, progress: this.currentPosition() };
+            }
+        }
         const trackChanged = 'currentTrack' in newState
             && newState.currentTrack !== this.state.currentTrack;
+        // Another queue entry, not the same one with a new duration.
+        if ('currentTrack' in newState && newState.currentTrack?.id !== this.state.currentTrack?.id) {
+            this.currentTrackSince = Date.now();
+        }
         this.state = { ...this.state, ...newState };
         if (trackChanged) this.persistLobbyPreview();
         this.broadcastDelta(newState);
@@ -422,7 +609,9 @@ class Room {
     }
 
     persistLobbyPreview() {
-        const track = this.state.currentTrack;
+        // Apple Music artwork and titles may only appear next to playback, so an
+        // Apple room's lobby card never shows what is playing.
+        const track = this.metadata.provider === 'apple' ? null : this.state.currentTrack;
         const newKey = track ? `${track.thumbnail}\0${track.title}\0${track.artist}` : '';
         if (newKey === this._lastLobbyPreviewKey) return;
         this._lastLobbyPreviewKey = newKey;
@@ -438,6 +627,9 @@ class Room {
     }
 
     tick() {
+        // An Apple room holds still while no host player can play.
+        this.followApplePlayer();
+        if (this.state.waitingForHost) return;
         if (this.state.isPlaying && this.state.currentTrack) {
             // FIX: Timestamp Stability
             // If startedAt is missing (legacy track or server restart), back-fill it
@@ -536,6 +728,21 @@ class Room {
                 this.updateState({ isRefilling: false });
                 return;
             }
+            // Without the host's country nothing can be checked, and an Apple
+            // room would queue songs its host may not be able to play.
+            if (this.metadata.provider === 'apple' && !this.metadata.apple_storefront) {
+                logger.info(`[AutoRefill] Apple room ${this.id} has no storefront yet. Abort.`);
+                this.updateState({ isRefilling: false });
+                return;
+            }
+            // Only the host's player plays an Apple room: without it nobody
+            // would hear the picks. It refills once the player reports back.
+            if (this.metadata.provider === 'apple' && !this.isApplePlayerReady()) {
+                logger.info(`[AutoRefill] Apple room ${this.id} has no player that can play. Abort.`);
+                this.updateState({ isRefilling: false });
+                return;
+            }
+            const isBanned = (videoId) => (this.state.bannedVideos || []).some(b => b.videoId === videoId);
 
             // User: "Fill the playlist with half of its queue size."
             const targetFillSize = Math.floor((maxQueueSize > 0 ? maxQueueSize : 50) / 2); // Default to 25 if unlimited
@@ -569,7 +776,7 @@ class Room {
             for (const track of shuffledHistory) {
                 if (candidates.length >= needed) break;
 
-                if (!track.videoId) continue;
+                if (!track.videoId || isBanned(track.videoId)) continue;
 
                 // Duration Check (skip if known; null duration passes through for API re-fetch)
                 if (maxDuration > 0 && track.duration && track.duration > maxDuration) continue;
@@ -600,7 +807,7 @@ class Room {
                 logger.info(`[AutoRefill] No candidates after strict filtering. Relaxing checks for small library (${uniqueHistory.length} unique videos).`);
                 for (const track of shuffledHistory) {
                     if (candidates.length >= needed) break;
-                    if (!track.videoId) continue;
+                    if (!track.videoId || isBanned(track.videoId)) continue;
                     if (maxDuration > 0 && track.duration && track.duration > maxDuration) continue;
                     const ipEntry = this.ipBlockedVideos.get(track.videoId);
                     if (ipEntry && (Date.now() - ipEntry.lastFailedAt) < 1800000) continue;
@@ -621,7 +828,9 @@ class Room {
             // here may carry null title/artist. That's fine — when no one is watching
             // we don't re-fetch, and the next viewer's rehydrateVisibleMetadata() fills
             // the gaps on join. Full API validation also runs here when viewers are present.
-            const validVideos = this.hasViewers()
+            // Apple's catalog has no daily quota, and an Apple pick that the
+            // host's country does not offer would fail on the host: always check.
+            const validVideos = (this.hasViewers() || this.metadata.provider === 'apple')
                 ? await this.checkVideoAvailability(videoIdsToCheck)
                 : new Map(videoIdsToCheck.map(id => [id, null]));
 
@@ -637,7 +846,7 @@ class Room {
                         id: crypto.randomUUID(),
                         score: 0,
                         voters: {},
-                        suggestedBy: 'System',
+                        suggestedBy: AUTO_DJ,
                         suggestedByUsername: 'Channel Mix'
                     });
                 } else {
@@ -649,6 +858,8 @@ class Room {
             if (invalidVideoIds.size > 0) {
                 const cleanedHistory = this.state.history.filter(t => !invalidVideoIds.has(t.videoId));
                 this.updateState({ history: cleanedHistory });
+                // From the stored library too, or they come back when the room loads again.
+                this.forgetInHistoryDb(invalidVideoIds);
                 logger.info(`[AutoRefill] Removed ${invalidVideoIds.size} invalid videos from history.`);
             }
 
@@ -667,7 +878,9 @@ class Room {
                     isRefilling: false
                 };
 
-                if (!this.state.isPlaying && newQueue.length > 0) {
+                // Nothing current: start the first pick. (A play pressed while
+                // the refill ran makes isPlaying true without a track.)
+                if (!this.state.currentTrack && newQueue.length > 0) {
                     newState.currentTrack = { ...newQueue[0], startedAt: Date.now() };
                     newQueue[0] = newState.currentTrack;
                     newState.queue = newQueue;
@@ -688,7 +901,89 @@ class Room {
         }
     }
 
+    /**
+     * The country whose Apple Music catalog the room plays from. The host's
+     * player reports the one of their account; until it has, the owner's
+     * country stands in (`guessed`), so a channel made on a phone takes
+     * suggestions straight away. Whatever is queued is checked again in a new
+     * storefront.
+     */
+    setAppleStorefront(storefront, { guessed = false } = {}) {
+        if (!isStorefront(storefront) || this.metadata.apple_storefront === storefront) return;
+        const previous = this.metadata.apple_storefront;
+        this.metadata.apple_storefront = storefront;
+        try {
+            db.updateRoomAppleStorefront(this.id, storefront);
+        } catch (e) {
+            logger.error(`[Room ${this.id}] Failed to store the Apple storefront: ${e && e.message}`);
+        }
+        this.updateState({ appleStorefront: storefront });
+        logger.info(`[Room ${this.id}] Apple Music storefront: ${storefront}${guessed ? " (the owner's country, until their player reports the account)" : ''}`);
+        if (previous) {
+            this.recheckAppleQueue().catch(e => logger.error(`[Room ${this.id}] Re-checking the queue failed: ${e && e.message}`));
+        }
+    }
+
+    // After a storefront change: every waiting entry is looked up again in the
+    // new storefront, moved to the id it has there, or dropped when the host
+    // cannot play it. The current track is left to the host's player, which
+    // reports it if it fails.
+    async recheckAppleQueue() {
+        const waiting = [...this.state.queue.slice(1), ...(this.state.pendingSuggestions || [])];
+        const keys = [...new Set(waiting.map(t => t.videoId).filter(Boolean))];
+        if (keys.length === 0) return;
+        const checked = await this.checkAppleAvailability(keys);
+        const update = (track) => {
+            if (!keys.includes(track.videoId)) return track; // queued meanwhile, checked when it came in
+            if (!checked.has(track.videoId)) return null;
+            const fresh = checked.get(track.videoId);
+            return fresh ? { ...track, ...fresh } : track;
+        };
+        // State may have moved on during the lookups: apply to what is there now.
+        const current = this.state.queue[0];
+        const queue = [current, ...this.state.queue.slice(1).map(update).filter(Boolean)].filter(Boolean);
+        const pendingSuggestions = (this.state.pendingSuggestions || []).map(update).filter(Boolean);
+        const dropped = (this.state.queue.length - queue.length) + ((this.state.pendingSuggestions || []).length - pendingSuggestions.length);
+        this.updateState({ queue, pendingSuggestions });
+        logger.info(`[Room ${this.id}] Queue checked in storefront ${this.metadata.apple_storefront}: ${dropped} not available there.`);
+    }
+
+    // Same contract as checkVideoAvailability, for Apple keys: a key maps to
+    // fresh metadata, to null when it could not be checked (no catalog, no
+    // storefront yet, Apple unreachable), and is absent when Apple confirmed it
+    // cannot be played in the host's country. A key the storefront knows under
+    // another id maps to metadata carrying that `videoId`.
+    async checkAppleAvailability(keys) {
+        const storefront = this.metadata.apple_storefront;
+        const unchecked = () => new Map(keys.map(key => [key, null]));
+        if (!appleCatalog || !storefront || keys.length === 0) return unchecked();
+        let found;
+        let equivalent = new Map();
+        try {
+            found = await appleCatalog.lookup(storefront, keys);
+            const missing = keys.filter(key => !found.has(key));
+            if (missing.length > 0 && appleCatalog.equivalents) {
+                equivalent = await appleCatalog.equivalents(storefront, missing);
+            }
+        } catch (e) {
+            logger.error(`[Room ${this.id}] Apple Music lookup failed: ${e && e.code} ${e && e.message}`);
+            return unchecked();
+        }
+        const result = new Map();
+        for (const key of keys) {
+            const track = found.get(key) || equivalent.get(key);
+            if (!track) continue;
+            const meta = { title: track.title, artist: track.artist, thumbnail: track.thumbnail, duration: track.duration };
+            result.set(key, track.videoId === key ? meta : { ...meta, videoId: track.videoId });
+            try {
+                db.upsertVideo({ id: track.videoId, ...meta, category_id: null, language: null });
+            } catch (e) { /* ignore cache refresh errors */ }
+        }
+        return result;
+    }
+
     async checkVideoAvailability(videoIds) {
+        if (this.metadata.provider === 'apple') return this.checkAppleAvailability(videoIds);
         if (!this.apiKey || videoIds.length === 0) return new Map(videoIds.map(id => [id, null]));
 
         const validVideos = new Map();
@@ -791,19 +1086,59 @@ class Room {
                     this.handleNextTrack();
                 }
                 break;
-            case "PLAYBACK_ERROR":
-                if (isOwner(this, ws)) {
-                    await this.handlePlaybackError(ws, message.payload);
+            case "PLAYBACK_ERROR": {
+                const r = schemas.PlaybackErrorPayload.safeParse(message.payload);
+                if (!r.success) break;
+                if (isOwner(this, ws) && (this.metadata.provider !== 'apple' || this.isApplePlayerSocket(ws))) {
+                    await this.handlePlaybackError(ws, r.data);
                 }
                 break;
+            }
+            case "APPLE_STOREFRONT": {
+                // The host's MusicKit reports the country of their Apple account.
+                // Suggestions are looked up there, where the host can play them.
+                if (this.metadata.provider !== 'apple' || !isOwner(this, ws) || !this.isApplePlayerSocket(ws)) break;
+                if (!isStorefront(message.payload)) break;
+                this.setAppleStorefront(message.payload);
+                break;
+            }
+            case "APPLE_PLAYER_STATUS": {
+                // The owner's player says whether it can play (see followApplePlayer).
+                const r = schemas.ApplePlayerStatusPayload.safeParse(message.payload);
+                if (!r.success || this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
+                this.handleApplePlayerStatus(ws, r.data.state);
+                break;
+            }
+            case "APPLE_PLAYER_CLAIM": {
+                // "Play here" on an owner device that is on standby.
+                if (this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
+                ws.applePlayerState = ws.applePlayerState || 'blocked';
+                this.grantApplePlayer(ws);
+                this.followApplePlayer();
+                break;
+            }
+            case "APPLE_PLAY_AS_SONG": {
+                // The room's player cannot play the current music video.
+                const r = schemas.ApplePlayAsSongPayload.safeParse(message.payload);
+                if (!r.success || this.metadata.provider !== 'apple' || !isOwner(this, ws) || !this.isApplePlayerSocket(ws)) break;
+                await this.playAppleVideoAsSong(r.data);
+                break;
+            }
             case "UPDATE_DURATION": {
                 const r = schemas.UpdateDurationPayload.safeParse(message.payload);
                 if (!r.success) break;
-                if (isOwner(this, ws) && this.state.currentTrack) {
+                if (isOwner(this, ws) && this.state.currentTrack
+                    && (this.metadata.provider !== 'apple' || this.isApplePlayerSocket(ws))) {
+                    const { duration, trackId } = typeof r.data === 'number' ? { duration: r.data } : r.data;
+                    // A late report for an entry that is no longer current.
+                    if (trackId && trackId !== this.state.currentTrack.id) break;
                     this.consecutiveIPErrors = 0;
                     this.networkThrottleUntil = 0;
+                    // Apple's catalog gives the exact length. The player's report
+                    // only fills a gap: a stale one ended the next track early.
+                    if (this.metadata.provider === 'apple' && this.state.currentTrack.duration > 0) break;
                     this.updateState({
-                        currentTrack: { ...this.state.currentTrack, duration: r.data },
+                        currentTrack: { ...this.state.currentTrack, duration },
                     });
                 }
                 break;
@@ -811,10 +1146,11 @@ class Room {
             case "SEEK_TO": {
                 const r = schemas.SeekToPayload.safeParse(message.payload);
                 if (!r.success) break;
+                if (Date.now() - (this.currentTrackSince || 0) < SEEK_AFTER_CHANGE_MS) break;
                 if (isOwner(this, ws) && this.state.currentTrack) {
                     const duration = this.state.currentTrack.duration || 0;
                     const clamped = duration > 0 ? Math.min(r.data, duration) : r.data;
-                    this.state.currentTrack = { ...this.state.currentTrack, startedAt: Date.now() - (clamped * 1000) };
+                    this.setTrackPosition(clamped);
                     this.updateState({ progress: clamped });
                 }
                 break;
@@ -902,6 +1238,8 @@ class Room {
 
     async handleFetchSuggestions(ws, { videoId }) {
         if (!videoId) return;
+        // "More from this artist" is a YouTube search; Apple rooms do not offer it.
+        if (this.metadata.provider === 'apple') return;
 
         // The most expensive call in the room: a cache miss is a Search at ~100
         // of the 10.000 daily quota units. Suggesting and voting were opened to
@@ -1008,7 +1346,9 @@ class Room {
         // run here: the title only exists once the video has been resolved, so
         // it happens after that step and before anything joins the queue.
 
-        let indexToRemove = -1; // Declared here to survive past video verification
+        // A low-scored track to drop when the queue is full. Kept by id, not by
+        // index: the lookup below awaits, and the queue can move meanwhile.
+        let trackToReplaceId = null;
 
         // Check Max Queue Size
         if (this.state.maxQueueSize > 0 && !canBypass && this.state.queue.length >= this.state.maxQueueSize) {
@@ -1030,8 +1370,8 @@ class Room {
                 });
 
                 if (worstTrackIndex !== -1) {
-                    // Found a bad video to replace, mark its index for potential removal later
-                    indexToRemove = worstTrackIndex;
+                    // Found a bad video to replace, mark it for removal later
+                    trackToReplaceId = this.state.queue[worstTrackIndex].id;
                 } else {
                     ws.send(JSON.stringify({ type: "error", message: `Queue is full. Max size is ${this.state.maxQueueSize}.` }));
                     return;
@@ -1049,6 +1389,13 @@ class Room {
             return;
         }
         ws.lastSuggestionTime = now;
+
+        // Apple Music rooms resolve suggestions in Apple's catalog, never on YouTube.
+        if (this.metadata.provider === 'apple') {
+            const appleTrack = await this.resolveAppleSuggestion(ws, query, canBypass);
+            if (appleTrack) this.queueSuggestion(ws, appleTrack, { canBypass, isUserOwner, trackToReplaceId });
+            return;
+        }
 
         // const { query } = payload; // Already destructured above
         const userId = ws.user.id; // Trust server-side user object
@@ -1242,8 +1589,84 @@ class Room {
             }
         }
 
+        // A video id that resolved to no metadata: no API key, a quota refusal,
+        // or a video that is gone. Reject rather than queue something unverified.
+        if (!track) {
+            ws.send(JSON.stringify({ type: "error", message: "Server could not verify video details." }));
+            return;
+        }
+
+        this.queueSuggestion(ws, track, { canBypass, isUserOwner, trackToReplaceId });
+    }
+
+    // Finds what a suggestion in an Apple Music room means: a music.apple.com
+    // link, or a search in the host's country that prefers the original music
+    // video (bestMatch). Sends the error itself and returns null when there is
+    // nothing to queue.
+    async resolveAppleSuggestion(ws, query, canBypass) {
+        const fail = (message, code) => {
+            ws.send(JSON.stringify(code ? { type: "error", code, message } : { type: "error", message }));
+            return null;
+        };
+        const storefront = this.metadata.apple_storefront;
+        if (!appleCatalog) return fail("Apple Music is not available on this server.", "APPLE_MUSIC_UNAVAILABLE");
+        if (!storefront) return fail("The host has to connect Apple Music first.", "APPLE_MUSIC_NOT_CONNECTED");
+        const isBanned = (key) => this.state.bannedVideos.some(b => b.videoId === key);
+
+        let found = null;
+        try {
+            const link = parseAppleMusicLink(query);
+            if (link) {
+                const key = appleTrackKey(link.kind, link.id);
+                if (isBanned(key)) return fail("This video has been banned from this channel.");
+                found = (await appleCatalog.lookup(storefront, [key])).get(key) || null;
+                // A link from another country may carry an id the host's
+                // storefront files the same recording under another one.
+                if (!found) found = (await appleCatalog.equivalents(storefront, [key])).get(key) || null;
+                if (!found) return fail("This title is not available on Apple Music in the host's country.", "APPLE_MUSIC_NOT_IN_STOREFRONT");
+            } else if (isAppleMusicPage(query)) {
+                return fail("Paste a link to a single song or music video, or search by name.", "APPLE_MUSIC_LINK_UNSUPPORTED");
+            } else if (looksLikeLink(query) || /(?:youtube\.com|youtu\.be)\//i.test(query)) {
+                // Searching a Spotify or YouTube link as text found some
+                // unrelated song (14.11.2026).
+                return fail("This channel plays Apple Music. Paste a music.apple.com link or search by name.", "APPLE_MUSIC_ROOM");
+            } else {
+                // Ten of each: the original is often not among Apple's first few.
+                found = bestMatch(query, await appleCatalog.search(storefront, query, { limit: 10 }));
+                if (!found) return fail("Could not find this on Apple Music.", "APPLE_MUSIC_NOT_FOUND");
+            }
+        } catch (e) {
+            logger.error(`[Room ${this.id}] Apple Music catalog: ${e && e.code} ${e && e.message}`);
+            return fail("Apple Music did not answer. Please try again.", "APPLE_MUSIC_CATALOG_ERROR");
+        }
+
+        if (isBanned(found.videoId)) return fail("This video has been banned from this channel.");
+        if (this.state.maxDuration > 0 && !canBypass && found.duration > this.state.maxDuration) {
+            const maxMinutes = Math.floor(this.state.maxDuration / 60);
+            return fail(`Video is too long. Max duration is ${maxMinutes} minutes.`);
+        }
+
+        return {
+            id: crypto.randomUUID(),
+            videoId: found.videoId,
+            title: found.title,
+            artist: found.artist,
+            thumbnail: found.thumbnail,
+            duration: found.duration,
+            score: 0,
+            voters: {},
+            suggestedBy: ws.user.id,
+            suggestedByUsername: ws.user.name,
+            suggestedByIsGuest: !!ws.user.isGuest,
+            suggestedByGuestTag: ws.user.guestTag,
+        };
+    }
+
+    // What every suggestion goes through once it is resolved, whatever the
+    // provider: the duplicate check, smart replacement, manual review, the queue.
+    queueSuggestion(ws, track, { canBypass, isUserOwner, trackToReplaceId }) {
         // Duplicate Title Check (After we have track details)
-        if (track && track.title && this.state.duplicateCooldown > 0 && !canBypass) {
+        if (track.title && this.state.duplicateCooldown > 0 && !canBypass) {
             const cooldown = this.state.duplicateCooldown;
             const titleToCheck = track.title.toLowerCase().trim();
 
@@ -1268,60 +1691,50 @@ class Room {
             }
         }
 
-        // A video id that resolved to no metadata: no API key, a quota refusal,
-        // or a video that is gone. Reject rather than queue something unverified.
-        if (!track && videoId) {
-            ws.send(JSON.stringify({ type: "error", message: "Server could not verify video details." }));
-            return;
+        // Apply Smart Replacement if needed. Never index 0, the track playing now.
+        if (trackToReplaceId) {
+            const replaceIndex = this.state.queue.findIndex((t, i) => i > 0 && t.id === trackToReplaceId);
+            if (replaceIndex > 0) {
+                this.state.queue.splice(replaceIndex, 1);
+            }
         }
 
-        if (track) {
-            // Apply Smart Replacement if needed
-            if (indexToRemove !== -1) {
-                // Ensure index is still valid (it should be, synchronous flow)
-                if (indexToRemove < this.state.queue.length) {
-                    this.state.queue.splice(indexToRemove, 1);
-                }
-            }
-
-            // Manual Review Check
-            if (this.state.suggestionMode === 'manual' && !canBypass) {
-                // Check if video is known and auto-approve is enabled
-                const isKnown = this.knownVideos.has(track.videoId);
-                if (this.state.autoApproveKnown && isKnown) {
-                    // Auto-approve: Skip adding to pending, proceed to queue
-                    logger.info(`[Auto-Approve] Video ${track.title} (${track.videoId}) is known. Bypassing review.`);
-                    // Fallthrough to add to queue and send success at the end
-                } else {
-                    const newPending = [...(this.state.pendingSuggestions || []), track];
-                    this.updateState({ pendingSuggestions: newPending });
-                    ws.send(JSON.stringify({ type: "info", message: "Submitted" }));
-                    return;
-                }
-            }
-
-            // Priority Check
-            if (this.state.ownerQueueBypass && isUserOwner) {
-                track.isOwnerPriority = true;
-            }
-
-            const newQueue = [...this.state.queue, track];
-            const newState = { queue: newQueue };
-            if (newQueue.length === 1) {
-                newState.currentTrack = { ...newQueue[0], startedAt: Date.now() };
-                newQueue[0] = newState.currentTrack;
-                newState.isPlaying = true;
-                newState.progress = 0;
+        // Manual Review Check
+        if (this.state.suggestionMode === 'manual' && !canBypass) {
+            // Check if video is known and auto-approve is enabled
+            const isKnown = this.knownVideos.has(track.videoId);
+            if (this.state.autoApproveKnown && isKnown) {
+                // Auto-approve: Skip adding to pending, proceed to queue
+                logger.info(`[Auto-Approve] Video ${track.title} (${track.videoId}) is known. Bypassing review.`);
+                // Fallthrough to add to queue and send success at the end
             } else {
-                // Re-order: the track just added may be a priority pick.
-                newState.queue = sortUpcoming(newQueue);
+                const newPending = [...(this.state.pendingSuggestions || []), track];
+                this.updateState({ pendingSuggestions: newPending });
+                ws.send(JSON.stringify({ type: "info", message: "Submitted" }));
+                return;
             }
-            this.updateState(newState);
-
-            // Send Success Message (For all successful queue additions: Owner Bypass, Auto-Approve, or Auto-Mode)
-            ws.send(JSON.stringify({ type: "success", message: "Added" }));
         }
 
+        // Priority Check
+        if (this.state.ownerQueueBypass && isUserOwner) {
+            track.isOwnerPriority = true;
+        }
+
+        const newQueue = [...this.state.queue, track];
+        const newState = { queue: newQueue };
+        if (newQueue.length === 1) {
+            newState.currentTrack = { ...newQueue[0], startedAt: Date.now() };
+            newQueue[0] = newState.currentTrack;
+            newState.isPlaying = true;
+            newState.progress = 0;
+        } else {
+            // Re-order: the track just added may be a priority pick.
+            newState.queue = sortUpcoming(newQueue);
+        }
+        this.updateState(newState);
+
+        // Send Success Message (For all successful queue additions: Owner Bypass, Auto-Approve, or Auto-Mode)
+        ws.send(JSON.stringify({ type: "success", message: "Added" }));
     }
 
     handleVote(ws, { trackId, voteType }) {
@@ -1369,12 +1782,14 @@ class Room {
         }
     }
 
-    handleNextTrack() {
+    // saveToHistory: false for a track that never played (an Apple item the
+    // host's storefront does not offer): history feeds the library and Auto-DJ.
+    handleNextTrack({ saveToHistory = true } = {}) {
         const newQueue = [...this.state.queue];
 
         // Move current track to history
         let newHistory = [...this.state.history];
-        if (this.state.currentTrack) {
+        if (this.state.currentTrack && saveToHistory) {
             const trackToSave = { ...this.state.currentTrack, playedAt: Date.now() };
             newHistory.push(trackToSave);
 
@@ -1412,7 +1827,113 @@ class Room {
         }
     }
 
-    async handlePlaybackError(ws, { videoId, errorCode: _errorCode }) {
+    // Apple playback fails on the host's side far more often than per item:
+    // sign-in, subscription, DRM, another device streaming on the account. The
+    // next track would fail the same way, so the room pauses and tells the host,
+    // and skips only when this one item cannot be played.
+    handleApplePlaybackError({ videoId, errorCode, trackId }) {
+        const current = this.state.currentTrack;
+        if (!current || current.videoId !== videoId) return;
+        // A late error for an earlier entry of the same song.
+        if (trackId && current.id !== trackId) return;
+        const code = typeof errorCode === 'string' && errorCode ? errorCode : 'UNKNOWN_ERROR';
+        // Item errors one after another point at the host (a browser without
+        // video support, a VPN) rather than at the songs: stop before the
+        // whole queue is thrown away.
+        const now = Date.now();
+        this.appleItemErrors = (this.appleItemErrors || []).filter(at => now - at < APPLE_ITEM_ERROR_WINDOW_MS);
+        if (APPLE_ITEM_ERRORS.has(code) && this.appleItemErrors.length < APPLE_ITEM_ERROR_LIMIT - 1) {
+            this.appleItemErrors.push(now);
+            logger.info(`[PlaybackError] Apple item ${videoId} cannot be played (${code}). Skipping.`);
+            this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: 'unavailable', title: current.title || null } });
+            // It never played here: keep it out of history and the library, or
+            // the Auto-DJ queues it straight back (13.11.2026).
+            const history = this.state.history.filter(t => t.videoId !== videoId);
+            if (history.length !== this.state.history.length) this.updateState({ history });
+            this.forgetInHistoryDb([videoId]);
+            this.handleNextTrack({ saveToHistory: false });
+            return;
+        }
+        this.appleItemErrors = [];
+        logger.warn(`[PlaybackError] Apple playback stopped on the host's side (${code}). Pausing.`);
+        this.updateState({ isPlaying: false });
+        for (const client of this.clients) {
+            if (isOwner(this, client) && client.readyState === 1) {
+                client.send(JSON.stringify({ type: "APPLE_PLAYBACK_PROBLEM", payload: { code } }));
+            }
+        }
+    }
+
+    // The room's player cannot play music videos: MusicKit JS plays none on
+    // Android, phones and TVs alike (checked 14.11.2026). It asks for the song
+    // instead, and the current entry becomes that song, with the song's title,
+    // cover and length, so the clock ends it when the song ends. Same entry, so
+    // votes and who suggested it stay; the position is kept.
+    async playAppleVideoAsSong({ videoId, trackId }) {
+        const current = this.state.currentTrack;
+        if (!current || current.videoId !== videoId || (trackId && current.id !== trackId)) return;
+        const parsed = parseTrackKey(videoId);
+        if (!parsed || parsed.provider !== 'apple' || parsed.kind !== 'musicVideo') return;
+        if (this.appleSongLookup === current.id) return; // asked again while looking
+        this.appleSongLookup = current.id;
+        let song = null;
+        let failed = false;
+        try {
+            const storefront = this.metadata.apple_storefront;
+            if (appleCatalog && appleCatalog.songForVideo && isStorefront(storefront)) {
+                song = await appleCatalog.songForVideo(storefront, videoId, { title: current.title, artist: current.artist });
+            }
+        } catch (e) {
+            failed = true;
+            logger.error(`[Room ${this.id}] Looking up the song of ${videoId} failed: ${e && e.code} ${e && e.message}`);
+        } finally {
+            if (this.appleSongLookup === current.id) this.appleSongLookup = null;
+        }
+        // The room may have moved on during the lookup.
+        const now = this.state.currentTrack;
+        if (!now || now.id !== current.id || now.videoId !== videoId) return;
+        if (!song) {
+            // Nothing this player can play: skipped like any item it cannot play.
+            this.handleApplePlaybackError({ videoId, errorCode: failed ? 'CONTENT_UNAVAILABLE' : 'NOT_FOUND', trackId: now.id });
+            return;
+        }
+        const position = Math.min(this.currentPosition(), Math.max(0, song.duration - 5));
+        const swapped = {
+            ...now,
+            videoId: song.videoId,
+            title: song.title,
+            artist: song.artist,
+            thumbnail: song.thumbnail,
+            duration: song.duration,
+            startedAt: Date.now() - position * 1000,
+        };
+        const queue = this.state.queue[0] && this.state.queue[0].id === now.id
+            ? [swapped, ...this.state.queue.slice(1)]
+            : this.state.queue;
+        this.updateState({ currentTrack: swapped, queue, progress: position });
+        try {
+            db.upsertVideo({ id: song.videoId, title: song.title, artist: song.artist, thumbnail: song.thumbnail, duration: song.duration, category_id: null, language: null });
+        } catch (e) { /* metadata cache only */ }
+        logger.info(`[Room ${this.id}] ${videoId} plays as the song ${song.videoId}: this player cannot play music videos.`);
+    }
+
+    // Removes these items from the stored library as well, which the room
+    // reads back the next time it loads.
+    forgetInHistoryDb(videoIds) {
+        for (const videoId of videoIds) {
+            try {
+                db.removeFromRoomHistory(this.id, videoId);
+            } catch (err) {
+                logger.error(`[Room ${this.id}] Failed to remove ${videoId} from the stored history: ${err && err.message}`);
+            }
+        }
+    }
+
+    async handlePlaybackError(ws, { videoId, errorCode, trackId }) {
+        if (this.metadata.provider === 'apple') {
+            this.handleApplePlaybackError({ videoId, errorCode, trackId });
+            return;
+        }
         if (!videoId || !this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
 
         const now = Date.now();
@@ -1488,7 +2009,9 @@ class Room {
         // now would skip a track that never failed.
         if (!this.state.currentTrack || this.state.currentTrack.videoId !== videoId) return;
 
-        this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: reason } });
+        // The title travels along: by the time clients show the notice, the
+        // next track may already be current.
+        this.broadcast({ type: "VIDEO_STATUS", payload: { videoId, status: reason, title: this.state.currentTrack.title || null } });
 
         if (isGenuinelyUnavailable) {
             logger.info(`[PlaybackError] Video ${videoId} genuinely unavailable (${reason}). Skipping with history.`);
@@ -1756,8 +2279,12 @@ class Room {
      * If the account has already voted on a track (from another device), the
      * guest's vote is removed and its contribution taken back out of the score,
      * so one person is counted once.
+     *
+     * `toName` is the account's display name. A re-attributed suggestion takes
+     * it over; otherwise the track kept showing "Guest AB12" in English after
+     * the guest marker that lets clients translate that label was gone.
      */
-    mergeIdentity(fromId, toId) {
+    mergeIdentity(fromId, toId, toName) {
         if (!fromId || !toId || fromId === toId) return false;
 
         let changed = false;
@@ -1788,6 +2315,7 @@ class Room {
             if (updated.suggestedBy === fromId) {
                 const { suggestedByGuestTag: _tag, ...rest } = updated;
                 updated = { ...rest, suggestedBy: toId, suggestedByIsGuest: false };
+                if (toName) updated.suggestedByUsername = toName;
             }
 
             return updated;
@@ -1863,5 +2391,8 @@ class Room {
         try { db.saveRoomState(this.id, this.state); } catch (e) { /* ignore */ }
     }
 }
+
+// index.js hands over the Apple Music catalog when MusicKit is configured.
+Room.setAppleCatalog = (catalog) => { appleCatalog = catalog || null; };
 
 module.exports = Room;

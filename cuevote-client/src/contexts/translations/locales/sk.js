@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Tento kanál vyžaduje prihlásený účet.",
 		"accountRequired": "Na túto akciu sa prosím prihláste.",
 		"sessionNotReady": "Vaša relácia ešte nie je pripravená. Načítajte stránku znova.",
-		"guestLimit": "Príliš veľa nových hostí v tejto sieti. Pokračujte po prihlásení."
+		"guestLimit": "Príliš veľa nových hostí v tejto sieti. Pokračujte po prihlásení.",
+		"appleMusicUnavailable": "Apple Music nie je na tomto serveri k dispozícii.",
+		"appleMusicNotConnected": "Hostiteľ musí najprv pripojiť Apple Music.",
+		"appleMusicRoom": "Tento kanál prehráva Apple Music. Vložte odkaz z music.apple.com alebo hľadajte podľa názvu.",
+		"appleMusicNotFound": "V Apple Music sa to nenašlo.",
+		"appleMusicLinkUnsupported": "Vložte odkaz na jednu skladbu alebo hudobné video, alebo hľadajte podľa názvu.",
+		"appleMusicNotInStorefront": "Táto skladba nie je v Apple Music v krajine hostiteľa dostupná.",
+		"appleMusicCatalogError": "Apple Music neodpovedá. Skúste to znova."
 	},
 	"connectAi": {
 		"willSendTo": "Súhlas sa odošle na",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Prihláste sa pre vytvorenie",
 		"noChannelsFound": "Neboli nájdené žiadne kanály pre",
 		"live": "Živo",
+		"hostedBy": "Hostiteľ: {name}",
+		"wrongPassword": "Nesprávne heslo",
 		"createNewChannel": "Vytvoriť Nový Kanál",
 		"channelName": "Názov Kanála",
 		"channelNamePlaceholder": "napr. Nočná Pohoda",
@@ -81,13 +90,25 @@ export default {
 		"description": "Na prehrávanie hudby musíme načítať prehrávač YouTube. Toto sa pripája k serverom Google.",
 		"policy": "Prečítajte si naše Zásady ochrany osobných údajov",
 		"accept": "Prijať a prehrať hudbu",
-		"youtubeConsent": "Potrebujeme váš súhlas na načítanie prehrávača YouTube. Prijmite súbory cookie nižšie."
+		"youtubeConsent": "Potrebujeme váš súhlas na načítanie prehrávača YouTube. Prijmite súbory cookie nižšie.",
+		"signInDescription": "Na prihlásenie cez Google načítame prihlásenie Google, ktoré sa pripája k serverom Googlu. Rovnaký súhlas načítava v kanáloch YouTube aj prehrávač YouTube.",
+		"signInAccept": "Prijať"
+	},
+	"join": {
+		"welcome": "Vitajte v {brand}",
+		"youtubeTitle": "Povoliť zvuk a video",
+		"youtubeBody": "Aby sme mohli prehrávať hudbu z YouTube a vy ste sa mohli zapojiť do playlistu, potrebujeme používať cookies.",
+		"accept": "Povoliť a pridať sa k párty",
+		"agree": "Pripojením súhlasíte s našimi {policy}.",
+		"policy": "zásadami ochrany osobných údajov",
+		"checking": "Kontrola kanála…"
 	},
 	"header": {
 		"profileSettings": "Profil a Nastavenia",
 		"signIn": "Prihlásiť cez Google",
 		"acceptCookies": "Prijať cookies pre prihlásenie",
 		"legal": "Právne Informácie",
+		"player": "Prehrávač",
 		"playlist": "Zoznam Skladieb",
 		"library": "Knižnica",
 		"share": "Zdieľať",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žiadne pripojenie na internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Okno je príliš malé",
+		"windowTooSmallMessage": "Zväčšite okno, aby ste mohli CueVote ďalej používať.",
+		"backToRadio": "Späť na rádio",
 		"retry": "Skúsiť pripojenie znova",
 		"switching": "Prepínanie Kanála...",
 		"channelNotFound": "Kanál neexistuje",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Zmazať",
 		"watch": "Sledovať na YouTube",
 		"recommend": "Získať návrhy",
-		"guest": "Hosť"
+		"guest": "Hosť",
+		"voteUp": "Hlasovať za",
+		"voteDown": "Hlasovať proti"
 	},
 	"library": {
 		"searchPlaceholder": "Hľadať v knižnici...",
@@ -199,6 +222,7 @@ export default {
 			"other": "{count} skladieb"
 		},
 		"inLibrary": "v knižnici",
+		"about": "O knižnici",
 		"info1": "Táto knižnica zobrazuje unikátne skladby prehrané za posledných <strong>28 dní</strong>.",
 		"info2": "Staršie skladby sú skryté pre čerstvosť metadát, ale <strong>nikdy nie sú zmazané</strong>. Funkcia <strong>Auto-DJ</strong> si pamätá celú vašu históriu a automaticky vráti staršie skladby do fronty (a tohto zoznamu), keď je potrebné!",
 		"empty": "Neboli nájdené žiadne skladby"
@@ -228,6 +252,13 @@ export default {
 		"history": "História",
 		"last50": "Posledných 50 (z {count})",
 		"nowPlaying": "Práve Hrá",
+		"play": "Prehrať",
+		"pause": "Pozastaviť",
+		"mute": "Stlmiť",
+		"unmute": "Zapnúť zvuk",
+		"volume": "Hlasitosť",
+		"cinemaMode": "Režim kina",
+		"exitCinemaMode": "Ukončiť režim kina",
 		"upNext": "Ďalšie",
 		"queueEmpty": "Fronta je prázdna",
 		"errorNotFound": "Video sa nenašlo",
@@ -280,6 +311,28 @@ export default {
 		"emptySubtitle": "Videá zakázané z požiadaviek sa zobrazia tu.",
 		"bannedOn": "Zakázané {date}",
 		"unban": "Povoliť"
+	},
+	"appleMusic": {
+		"source": "Zdroj hudby",
+		"sourceHint": "Apple Music hrá na vašom počítači a vyžaduje predplatné Apple Music.",
+		"connect": "Pripojiť Apple Music",
+		"connectHint": "Prihláste sa účtom Apple, ku ktorému patrí vaše predplatné Apple Music.",
+		"signInFailed": "Prihlásenie sa nepodarilo.",
+		"start": "Spustiť prehrávanie",
+		"startHint": "Prehliadač prehrá zvuk až po kliknutí.",
+		"loading": "Načítava sa Apple Music…",
+		"loadFailed": "Apple Music sa nepodarilo načítať.",
+		"problemSubscription": "Na prehrávanie je potrebné aktívne predplatné Apple Music.",
+		"switchAccount": "Použiť iný účet",
+		"problemOtherDevice": "Váš účet Apple práve prehráva na inom zariadení.",
+		"problemGeneric": "Prehrávanie v Apple Music sa zastavilo.",
+		"contentNotice": "Obaly albumov a náhľady v tomto kanáli pochádzajú od Apple. Pri ich načítaní Apple vidí vašu IP adresu.",
+		"contentAccept": "Zapnúť",
+		"previewFailed": "Tento náhľad nie je možné prehrať.",
+		"standby": "Tento kanál sa práve prehráva na inom vašom zariadení.",
+		"playHere": "Prehrávať tu",
+		"waitingForHost": "Pozastavené, kým hostiteľ znova nespustí prehrávanie.",
+		"playsOnComputer": "Apple Music sa prehráva na počítači. Otvorte tam tento kanál a pripojte Apple Music."
 	},
 	"attribution": {
 		"youtube": "Vyvinuté s YouTube"

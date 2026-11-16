@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Този канал изисква влизане в акаунт.",
 		"accountRequired": "Влезте, за да направите това.",
 		"sessionNotReady": "Сесията ви още не е готова. Презаредете страницата.",
-		"guestLimit": "Твърде много нови гости в тази мрежа. Влезте, за да продължите."
+		"guestLimit": "Твърде много нови гости в тази мрежа. Влезте, за да продължите.",
+		"appleMusicUnavailable": "Този сървър не поддържа Apple Music.",
+		"appleMusicNotConnected": "Домакинът първо трябва да свърже Apple Music.",
+		"appleMusicRoom": "В този канал свири Apple Music. Поставете връзка от music.apple.com или търсете по име.",
+		"appleMusicNotFound": "Не е намерено в Apple Music.",
+		"appleMusicLinkUnsupported": "Поставете връзка към една песен или музикален клип или търсете по име.",
+		"appleMusicNotInStorefront": "Тази песен не е достъпна в Apple Music в страната на домакина.",
+		"appleMusicCatalogError": "Apple Music не отговаря. Опитайте отново."
 	},
 	"connectAi": {
 		"willSendTo": "Одобрението ще бъде изпратено до",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Влез, за да създадешь",
 		"noChannelsFound": "Няма намерени канали за",
 		"live": "На живо",
+		"hostedBy": "Домакин: {name}",
+		"wrongPassword": "Грешна парола",
 		"createNewChannel": "Създай нов канал",
 		"channelName": "Име на канала",
 		"channelNamePlaceholder": "напр. Нощни вибрации",
@@ -81,13 +90,25 @@ export default {
 		"description": "За да пуснем музика, трябва да заредим YouTube плейъра. Това се свързва със сървърите на Google.",
 		"policy": "Прочетете нашата Политика за поверителност",
 		"accept": "Приеми и пусни музика",
-		"youtubeConsent": "Нуждаем се от вашето съгласие, за да заредим YouTube плейъра. Моля, приемете бисквитките по-долу."
+		"youtubeConsent": "Нуждаем се от вашето съгласие, за да заредим YouTube плейъра. Моля, приемете бисквитките по-долу.",
+		"signInDescription": "За вход с Google зареждаме входа на Google, който се свързва със сървърите на Google. Същото съгласие зарежда и плейъра на YouTube в каналите с YouTube.",
+		"signInAccept": "Приемам"
+	},
+	"join": {
+		"welcome": "Добре дошли в {brand}",
+		"youtubeTitle": "Разрешете звук и видео",
+		"youtubeBody": "За да пускаме музика от YouTube и да участвате в плейлиста, трябва да използваме бисквитки.",
+		"accept": "Разреши и се присъедини към партито",
+		"agree": "С присъединяването си приемате нашата {policy}.",
+		"policy": "Политика за поверителност",
+		"checking": "Проверка на канала…"
 	},
 	"header": {
 		"profileSettings": "Профил и настройки",
 		"signIn": "Вход с Google",
 		"acceptCookies": "Приемете бисквитки за вход",
 		"legal": "Правна информация",
+		"player": "Плейър",
 		"playlist": "Плейлист",
 		"library": "Библиотека",
 		"share": "Сподели",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Няма интернет връзка",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Прозорецът е твърде малък",
+		"windowTooSmallMessage": "Уголемете прозореца, за да продължите да използвате CueVote.",
+		"backToRadio": "Обратно към радиото",
 		"retry": "Опитайте отново връзката",
 		"switching": "Смяна на канал...",
 		"channelNotFound": "Каналът не съществува",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Изтрий",
 		"watch": "Гледай в YouTube",
 		"recommend": "Получи препоръки",
-		"guest": "Гост"
+		"guest": "Гост",
+		"voteUp": "Гласувай за",
+		"voteDown": "Гласувай против"
 	},
 	"library": {
 		"searchPlaceholder": "Търсене в библиотеката...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} песни"
 		},
 		"inLibrary": "в библиотеката",
+		"about": "За библиотеката",
 		"info1": "Тази библиотека показва уникални видео, пускани през последните <strong>28 дни</strong>.",
 		"info2": "По-старите видео се скриват за актуалност на данните, но <strong>никога не се изтриват</strong>. Функцията <strong>Auto-DJ</strong> помни цялата ви история и автоматично ще върне стари видео в опашката (и в този списък), когато е необходимо!",
 		"empty": "Няма намерени видео"
@@ -224,6 +248,13 @@ export default {
 		"history": "История",
 		"last50": "Последно 50 (от {count})",
 		"nowPlaying": "Свири сега",
+		"play": "Пусни",
+		"pause": "Пауза",
+		"mute": "Без звук",
+		"unmute": "Включи звука",
+		"volume": "Сила на звука",
+		"cinemaMode": "Кино режим",
+		"exitCinemaMode": "Изход от кино режима",
 		"upNext": "Следващо",
 		"queueEmpty": "Опашката е празна",
 		"errorNotFound": "Видеото не е намерено",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Видеа, забранени от заявки, ще се появят тук.",
 		"bannedOn": "Забранено на {date}",
 		"unban": "Отмени забраната"
+	},
+	"appleMusic": {
+		"source": "Източник на музика",
+		"sourceHint": "Apple Music свири на вашия компютър и изисква абонамент за Apple Music.",
+		"connect": "Свържи Apple Music",
+		"connectHint": "Влезте с Apple акаунта, в който е абонаментът ви за Apple Music.",
+		"signInFailed": "Входът не беше успешен.",
+		"start": "Стартирай възпроизвеждането",
+		"startHint": "Браузърът пуска звук едва след щракване.",
+		"loading": "Зареждане на Apple Music…",
+		"loadFailed": "Apple Music не можа да се зареди.",
+		"problemSubscription": "За възпроизвеждане е нужен активен абонамент за Apple Music.",
+		"switchAccount": "Използвай друг акаунт",
+		"problemOtherDevice": "Вашият Apple акаунт възпроизвежда на друго устройство.",
+		"problemGeneric": "Apple Music спря възпроизвеждането.",
+		"contentNotice": "Обложките и прегледите в този канал идват от Apple. При зареждането им Apple вижда вашия IP адрес.",
+		"contentAccept": "Включване",
+		"previewFailed": "Този преглед не може да бъде пуснат.",
+		"standby": "Този канал в момента свири на друго ваше устройство.",
+		"playHere": "Пусни тук",
+		"waitingForHost": "На пауза, докато домакинът отново пусне музиката.",
+		"playsOnComputer": "Apple Music се възпроизвежда на компютър. Отворете канала там и свържете Apple Music."
 	},
 	"attribution": {
 		"youtube": "Създадено с YouTube"

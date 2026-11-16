@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Dit kanaal vereist een ingelogd account.",
 		"accountRequired": "Log in om dat te doen.",
 		"sessionNotReady": "Je sessie is nog niet klaar. Herlaad de pagina.",
-		"guestLimit": "Te veel nieuwe gasten op dit netwerk. Log in om door te gaan."
+		"guestLimit": "Te veel nieuwe gasten op dit netwerk. Log in om door te gaan.",
+		"appleMusicUnavailable": "Apple Music is niet beschikbaar op deze server.",
+		"appleMusicNotConnected": "De host moet eerst Apple Music verbinden.",
+		"appleMusicRoom": "Dit kanaal speelt Apple Music. Plak een link van music.apple.com of zoek op naam.",
+		"appleMusicNotFound": "Niet gevonden op Apple Music.",
+		"appleMusicLinkUnsupported": "Plak een link naar één nummer of muziekvideo, of zoek op naam.",
+		"appleMusicNotInStorefront": "Dit nummer is niet beschikbaar op Apple Music in het land van de host.",
+		"appleMusicCatalogError": "Apple Music reageerde niet. Probeer het opnieuw."
 	},
 	"connectAi": {
 		"willSendTo": "Goedkeuring wordt gestuurd naar",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Log in om te Maken",
 		"noChannelsFound": "Geen kanalen gevonden voor",
 		"live": "Live",
+		"hostedBy": "Host: {name}",
+		"wrongPassword": "Onjuist wachtwoord",
 		"createNewChannel": "Nieuw Kanaal Maken",
 		"channelName": "Kanaalnaam",
 		"channelNamePlaceholder": "bijv. Laatavond Sfeer",
@@ -81,7 +90,18 @@ export default {
 		"description": "Om muziek af te spelen, moeten we de YouTube-speler laden. Dit maakt verbinding met Google-servers.",
 		"policy": "Lees ons privacybeleid",
 		"accept": "Accepteren & Muziek luisteren",
-		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies."
+		"youtubeConsent": "We hebben je toestemming nodig om de YouTube-speler te laden. Accepteer hieronder cookies.",
+		"signInDescription": "Om in te loggen met Google laden we de inlogfunctie van Google. Dit maakt verbinding met de servers van Google. Met dezelfde toestemming laden we in YouTube-kanalen ook de YouTube-speler.",
+		"signInAccept": "Accepteren"
+	},
+	"join": {
+		"welcome": "Welkom bij {brand}",
+		"youtubeTitle": "Audio & video inschakelen",
+		"youtubeBody": "Om muziek van YouTube af te spelen en mee te doen aan de afspeellijst, hebben we cookies nodig.",
+		"accept": "Inschakelen & meedoen",
+		"agree": "Door mee te doen ga je akkoord met ons {policy}.",
+		"policy": "privacybeleid",
+		"checking": "Kanaal wordt gecontroleerd…"
 	},
 	"header": {
 		"back": "Terug",
@@ -92,6 +112,7 @@ export default {
 		"signIn": "Inloggen met Google",
 		"acceptCookies": "Accepteer cookies om in te loggen",
 		"legal": "Juridische Informatie",
+		"player": "Speler",
 		"playlist": "Afspeellijst",
 		"library": "Bibliotheek",
 		"share": "Deel Kanaal",
@@ -170,9 +191,9 @@ export default {
 		"listenMusic": "Muziek luisteren",
 		"unmuteAndPlay": "Geluid aan & Start",
 		"noInternet": "Geen internetverbinding",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Venster te klein",
+		"windowTooSmallMessage": "Maak het venster groter om CueVote te blijven gebruiken.",
+		"backToRadio": "Terug naar de radio",
 		"retry": "Opnieuw proberen",
 		"retrying": "Opnieuw proberen...",
 		"connecting": "Verbinden met server...",
@@ -195,7 +216,9 @@ export default {
 		"delete": "Verwijder",
 		"watch": "Op YouTube",
 		"recommend": "Krijg Suggesties",
-		"guest": "Gast"
+		"guest": "Gast",
+		"voteUp": "Omhoog stemmen",
+		"voteDown": "Omlaag stemmen"
 	},
 	"library": {
 		"searchPlaceholder": "Zoek in bibliotheek...",
@@ -204,6 +227,7 @@ export default {
 			"other": "{count} videos"
 		},
 		"inLibrary": "in bibliotheek",
+		"about": "Over de bibliotheek",
 		"info1": "Deze bibliotheek toont unieke videos gespeeld in de laatste <strong>28 dagen</strong>.",
 		"info2": "Oudere videos worden verborgen voor metadata-versheid, maar worden <strong>nooit verwijderd</strong>. De <strong>Auto-DJ</strong>-functie onthoudt je volledige geschiedenis en zet oudere videos automatisch terug in de wachtrij (en deze lijst) wanneer nodig!",
 		"empty": "Geen videos gevonden"
@@ -231,6 +255,13 @@ export default {
 		"history": "Geschiedenis",
 		"last50": "Laatste 50 van {count}",
 		"nowPlaying": "Nu Spelend",
+		"play": "Afspelen",
+		"pause": "Pauzeren",
+		"mute": "Geluid uit",
+		"unmute": "Geluid aan",
+		"volume": "Volume",
+		"cinemaMode": "Bioscoopmodus",
+		"exitCinemaMode": "Bioscoopmodus verlaten",
 		"channelSuffix": "Kanaal",
 		"upNext": "Volgende",
 		"queueEmpty": "Wachtrij leeg",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Video's die geblokkeerd zijn voor aanvragen verschijnen hier.",
 		"bannedOn": "Geblokkeerd op {date}",
 		"unban": "Deblokkeren"
+	},
+	"appleMusic": {
+		"source": "Muziekbron",
+		"sourceHint": "Apple Music speelt af op je computer en vereist een Apple Music-abonnement.",
+		"connect": "Apple Music verbinden",
+		"connectHint": "Log in met het Apple-account van je Apple Music-abonnement.",
+		"signInFailed": "Inloggen is niet gelukt.",
+		"start": "Afspelen starten",
+		"startHint": "De browser speelt pas geluid af na een klik.",
+		"loading": "Apple Music laden…",
+		"loadFailed": "Apple Music kon niet worden geladen.",
+		"problemSubscription": "Apple Music heeft een actief abonnement nodig om dit af te spelen.",
+		"switchAccount": "Ander account gebruiken",
+		"problemOtherDevice": "Je Apple-account speelt af op een ander apparaat.",
+		"problemGeneric": "Apple Music heeft het afspelen gestopt.",
+		"contentNotice": "Albumhoezen en voorbeelden in dit kanaal komen van Apple. Bij het laden ziet Apple je IP-adres.",
+		"contentAccept": "Aanzetten",
+		"previewFailed": "Dit voorbeeld kan niet worden afgespeeld.",
+		"standby": "Dit kanaal speelt nu op een ander apparaat van je.",
+		"playHere": "Hier afspelen",
+		"waitingForHost": "Gepauzeerd tot de host weer afspeelt.",
+		"playsOnComputer": "Apple Music speelt op een computer. Open dit kanaal daar en verbind Apple Music."
 	},
 	"attribution": {
 		"youtube": "Ontwikkeld met YouTube"

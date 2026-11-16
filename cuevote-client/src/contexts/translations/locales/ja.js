@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "このチャンネルにはログイン済みのアカウントが必要です。",
 		"accountRequired": "実行するにはログインしてください。",
 		"sessionNotReady": "セッションの準備ができていません。ページを再読み込みしてください。",
-		"guestLimit": "このネットワークからの新規ゲストが多すぎます。ログインして続けてください。"
+		"guestLimit": "このネットワークからの新規ゲストが多すぎます。ログインして続けてください。",
+		"appleMusicUnavailable": "このサーバーではApple Musicを利用できません。",
+		"appleMusicNotConnected": "主催者が先にApple Musicを接続する必要があります。",
+		"appleMusicRoom": "このチャンネルではApple Musicを再生します。music.apple.comのリンクを貼り付けるか、名前で検索してください。",
+		"appleMusicNotFound": "Apple Musicで見つかりませんでした。",
+		"appleMusicLinkUnsupported": "1曲またはミュージックビデオ1本へのリンクを貼り付けるか、名前で検索してください。",
+		"appleMusicNotInStorefront": "この曲は主催者の国のApple Musicでは利用できません。",
+		"appleMusicCatalogError": "Apple Musicから応答がありませんでした。もう一度お試しください。"
 	},
 	"connectAi": {
 		"willSendTo": "承認の送信先",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "ログインして作成",
 		"noChannelsFound": "チャンネルが見つかりません:",
 		"live": "ライブ",
+		"hostedBy": "ホスト: {name}",
+		"wrongPassword": "パスワードが違います",
 		"createNewChannel": "新規チャンネル作成",
 		"channelName": "チャンネル名",
 		"channelNamePlaceholder": "例: 深夜のバイブス",
@@ -81,13 +90,25 @@ export default {
 		"description": "音楽を再生するには、YouTubeプレーヤーを読み込む必要があります。これはGoogleのサーバーに接続します。",
 		"policy": "プライバシーポリシーを読む",
 		"accept": "同意して音楽を再生",
-		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。"
+		"youtubeConsent": "YouTubeプレーヤーを読み込むには、お客様の同意が必要です。以下でCookieを許可してください。",
+		"signInDescription": "Googleでログインするために、Googleのログイン機能を読み込みます。これによりGoogleのサーバーに接続します。同じ同意により、YouTubeチャンネルではYouTubeプレーヤーも読み込まれます。",
+		"signInAccept": "同意する"
+	},
+	"join": {
+		"welcome": "{brand}へようこそ",
+		"youtubeTitle": "オーディオとビデオを有効にする",
+		"youtubeBody": "YouTubeの音楽を再生してプレイリストに参加するには、Cookieを使用する必要があります。",
+		"accept": "有効にしてパーティーに参加",
+		"agree": "参加すると、{policy}に同意したものとみなされます。",
+		"policy": "プライバシーポリシー",
+		"checking": "チャンネルを確認しています…"
 	},
 	"header": {
 		"profileSettings": "プロフィール設定",
 		"signIn": "Googleでログイン",
 		"acceptCookies": "ログインしてCookieを許可",
 		"legal": "法的情報",
+		"player": "プレーヤー",
 		"playlist": "プレイリスト",
 		"library": "ライブラリ",
 		"share": "共有",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "インターネット接続がありません",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "ウィンドウが小さすぎます",
+		"windowTooSmallMessage": "CueVoteを引き続き使うには、ウィンドウを大きくしてください。",
+		"backToRadio": "ラジオに戻る",
 		"retry": "接続を再試行",
 		"retrying": "再試行中...",
 		"connecting": "サーバーに接続中...",
@@ -188,7 +209,9 @@ export default {
 		"delete": "削除",
 		"watch": "YouTubeで見る",
 		"recommend": "おすすめを取得",
-		"guest": "ゲスト"
+		"guest": "ゲスト",
+		"voteUp": "賛成に投票",
+		"voteDown": "反対に投票"
 	},
 	"library": {
 		"searchPlaceholder": "ライブラリを検索...",
@@ -196,6 +219,7 @@ export default {
 			"other": "{count} 動画"
 		},
 		"inLibrary": "ライブラリ内",
+		"about": "ライブラリについて",
 		"info1": "このライブラリは過去 <strong>28日間</strong> に再生されたユニークな動画を表示します。",
 		"info2": "メタデータを最新に保つため古い動画は非表示になりますが、<strong>削除されることはありません</strong>。<strong>Auto-DJ</strong>機能は全履歴を記憶しており、必要な時に自動的に古い動画をキュー（およびこのリスト）に戻します！",
 		"empty": "動画が見つかりません"
@@ -222,6 +246,13 @@ export default {
 		"history": "履歴",
 		"last50": "最近の50動画 (全 {count} 動画)",
 		"nowPlaying": "再生中",
+		"play": "再生",
+		"pause": "一時停止",
+		"mute": "ミュート",
+		"unmute": "ミュート解除",
+		"volume": "音量",
+		"cinemaMode": "シネマモード",
+		"exitCinemaMode": "シネマモードを終了",
 		"channelSuffix": "チャンネル",
 		"upNext": "次へ",
 		"queueEmpty": "キューは空です",
@@ -274,6 +305,28 @@ export default {
 		"emptySubtitle": "リクエストから禁止された動画がここに表示されます。",
 		"bannedOn": "{date} に禁止",
 		"unban": "禁止解除"
+	},
+	"appleMusic": {
+		"source": "音楽ソース",
+		"sourceHint": "Apple Musicはお使いのコンピュータで再生され、Apple Musicのサブスクリプションが必要です。",
+		"connect": "Apple Musicを接続",
+		"connectHint": "Apple Musicのサブスクリプションに登録しているAppleアカウントでログインしてください。",
+		"signInFailed": "ログインできませんでした。",
+		"start": "再生を開始",
+		"startHint": "ブラウザはクリックするまで音声を再生しません。",
+		"loading": "Apple Musicを読み込み中…",
+		"loadFailed": "Apple Musicを読み込めませんでした。",
+		"problemSubscription": "再生するには有効なApple Musicのサブスクリプションが必要です。",
+		"switchAccount": "別のアカウントを使う",
+		"problemOtherDevice": "お使いのAppleアカウントが別のデバイスで再生中です。",
+		"problemGeneric": "Apple Musicの再生が停止しました。",
+		"contentNotice": "このチャンネルのカバーアートと試聴はAppleから読み込まれます。その際、Appleにお客様のIPアドレスが伝わります。",
+		"contentAccept": "オンにする",
+		"previewFailed": "この試聴は再生できません。",
+		"standby": "このチャンネルは現在、あなたの別のデバイスで再生中です。",
+		"playHere": "ここで再生",
+		"waitingForHost": "主催者が再生を再開するまで一時停止中です。",
+		"playsOnComputer": "Apple Musicはコンピュータで再生されます。そこでこのチャンネルを開き、Apple Musicを接続してください。"
 	},
 	"attribution": {
 		"youtube": "YouTube と共に開発"

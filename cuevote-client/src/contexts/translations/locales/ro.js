@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Acest canal necesită un cont autentificat.",
 		"accountRequired": "Autentifică-te pentru a face asta.",
 		"sessionNotReady": "Sesiunea ta nu este încă gata. Reîncarcă pagina.",
-		"guestLimit": "Prea mulți invitați noi în această rețea. Autentifică-te pentru a continua."
+		"guestLimit": "Prea mulți invitați noi în această rețea. Autentifică-te pentru a continua.",
+		"appleMusicUnavailable": "Apple Music nu este disponibil pe acest server.",
+		"appleMusicNotConnected": "Gazda trebuie mai întâi să conecteze Apple Music.",
+		"appleMusicRoom": "Acest canal redă Apple Music. Lipește un link de pe music.apple.com sau caută după nume.",
+		"appleMusicNotFound": "Nu a fost găsit pe Apple Music.",
+		"appleMusicLinkUnsupported": "Lipește linkul unei singure melodii sau al unui videoclip muzical ori caută după nume.",
+		"appleMusicNotInStorefront": "Această piesă nu este disponibilă pe Apple Music în țara gazdei.",
+		"appleMusicCatalogError": "Apple Music nu a răspuns. Încearcă din nou."
 	},
 	"connectAi": {
 		"willSendTo": "Aprobarea va fi trimisă către",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Autentifică-te pentru a crea",
 		"noChannelsFound": "Nu s-au găsit canale pentru",
 		"live": "Live",
+		"hostedBy": "Gazdă: {name}",
+		"wrongPassword": "Parolă greșită",
 		"createNewChannel": "Creează Canal Nou",
 		"channelName": "Nume Canal",
 		"channelNamePlaceholder": "ex. Vibe de Noapte",
@@ -81,13 +90,25 @@ export default {
 		"description": "Pentru a reda muzică, trebuie să încărcăm playerul YouTube. Acesta se conectează la serverele Google.",
 		"policy": "Citiți Politica noastră de Confidențialitate",
 		"accept": "Acceptă și Redă Muzica",
-		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos."
+		"youtubeConsent": "Avem nevoie de consimțământul dvs. pentru a încărca playerul YouTube. Vă rugăm să acceptați cookie-urile de mai jos.",
+		"signInDescription": "Pentru conectarea cu Google încărcăm autentificarea Google, care se conectează la serverele Google. Același consimțământ încarcă și playerul YouTube în canalele YouTube.",
+		"signInAccept": "Accept"
+	},
+	"join": {
+		"welcome": "Bine ai venit pe {brand}",
+		"youtubeTitle": "Activează audio și video",
+		"youtubeBody": "Pentru a reda muzică de pe YouTube și a participa la playlist, trebuie să folosim cookie-uri.",
+		"accept": "Activează și intră la petrecere",
+		"agree": "Alăturându-te, ești de acord cu {policy}.",
+		"policy": "Politica noastră de Confidențialitate",
+		"checking": "Se verifică canalul…"
 	},
 	"header": {
 		"profileSettings": "Profil și Setări",
 		"signIn": "Autentificare cu Google",
 		"acceptCookies": "Acceptă cookie-uri pentru autentificare",
 		"legal": "Informații Legale",
+		"player": "Player",
 		"playlist": "Listă de Redare",
 		"library": "Bibliotecă",
 		"share": "Partajează",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Fără conexiune la internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Fereastra este prea mică",
+		"windowTooSmallMessage": "Mărește fereastra pentru a folosi în continuare CueVote.",
+		"backToRadio": "Înapoi la radio",
 		"retry": "Reîncearcă conexiunea",
 		"switching": "Schimbare Canal...",
 		"channelNotFound": "Canalul nu există",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Șterge",
 		"watch": "Vezi pe YouTube",
 		"recommend": "Obține sugestii",
-		"guest": "Invitat"
+		"guest": "Invitat",
+		"voteUp": "Votează pentru",
+		"voteDown": "Votează împotrivă"
 	},
 	"library": {
 		"searchPlaceholder": "Caută în bibliotecă...",
@@ -198,6 +221,7 @@ export default {
 			"other": "{count} videoclipuri"
 		},
 		"inLibrary": "în bibliotecă",
+		"about": "Despre bibliotecă",
 		"info1": "Această bibliotecă afișează videoclipurile unice redate în ultimele <strong>28 de zile</strong>.",
 		"info2": "Videoclipurile mai vechi sunt ascunse pentru prospețimea datelor, dar <strong>nu sunt șterse niciodată</strong>. Funcția <strong>Auto-DJ</strong> ține minte întregul istoric și va aduce automat videoclipurile vechi înapoi în coadă (și în această listă) când este nevoie!",
 		"empty": "Nu s-au găsit videoclipuri"
@@ -226,6 +250,13 @@ export default {
 		"history": "Istoric",
 		"last50": "Ultimele 50 (din {count})",
 		"nowPlaying": "Cântă Acum",
+		"play": "Redă",
+		"pause": "Pauză",
+		"mute": "Dezactivează sunetul",
+		"unmute": "Activează sunetul",
+		"volume": "Volum",
+		"cinemaMode": "Mod cinema",
+		"exitCinemaMode": "Ieși din modul cinema",
 		"upNext": "Urmează",
 		"queueEmpty": "Coadă goală",
 		"errorNotFound": "Videoclipul nu a fost găsit",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "Videoclipurile interzise din solicitări vor apărea aici.",
 		"bannedOn": "Interzis pe {date}",
 		"unban": "Anulează interdicția"
+	},
+	"appleMusic": {
+		"source": "Sursa muzicii",
+		"sourceHint": "Apple Music se redă pe computerul tău și necesită un abonament Apple Music.",
+		"connect": "Conectează Apple Music",
+		"connectHint": "Autentifică-te cu contul Apple pe care ai abonamentul Apple Music.",
+		"signInFailed": "Autentificarea nu a reușit.",
+		"start": "Pornește redarea",
+		"startHint": "Browserul redă sunet doar după un clic.",
+		"loading": "Se încarcă Apple Music…",
+		"loadFailed": "Apple Music nu a putut fi încărcat.",
+		"problemSubscription": "Apple Music necesită un abonament activ pentru a reda acest conținut.",
+		"switchAccount": "Folosește alt cont",
+		"problemOtherDevice": "Contul tău Apple redă muzică pe alt dispozitiv.",
+		"problemGeneric": "Apple Music a oprit redarea.",
+		"contentNotice": "Copertele și previzualizările din acest canal vin de la Apple. La încărcarea lor, Apple vede adresa ta IP.",
+		"contentAccept": "Activează",
+		"previewFailed": "Această previzualizare nu poate fi redată.",
+		"standby": "Acest canal rulează acum pe un alt dispozitiv al tău.",
+		"playHere": "Redă aici",
+		"waitingForHost": "În pauză până când gazda pornește din nou redarea.",
+		"playsOnComputer": "Apple Music se redă pe un computer. Deschide canalul acolo și conectează Apple Music."
 	},
 	"attribution": {
 		"youtube": "Dezvoltat cu YouTube"

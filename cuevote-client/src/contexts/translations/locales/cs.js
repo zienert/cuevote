@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Tento kanál vyžaduje přihlášený účet.",
 		"accountRequired": "Pro tuto akci se prosím přihlaste.",
 		"sessionNotReady": "Vaše relace ještě není připravena. Načtěte stránku znovu.",
-		"guestLimit": "Příliš mnoho nových hostů v této síti. Pokračujte po přihlášení."
+		"guestLimit": "Příliš mnoho nových hostů v této síti. Pokračujte po přihlášení.",
+		"appleMusicUnavailable": "Apple Music není na tomto serveru k dispozici.",
+		"appleMusicNotConnected": "Hostitel musí nejdřív připojit Apple Music.",
+		"appleMusicRoom": "Tento kanál přehrává Apple Music. Vložte odkaz z music.apple.com nebo hledejte podle názvu.",
+		"appleMusicNotFound": "V Apple Music nebylo nalezeno.",
+		"appleMusicLinkUnsupported": "Vložte odkaz na jednu skladbu nebo hudební video, nebo hledejte podle názvu.",
+		"appleMusicNotInStorefront": "Tato skladba není v Apple Music v zemi hostitele dostupná.",
+		"appleMusicCatalogError": "Apple Music neodpovídá. Zkuste to znovu."
 	},
 	"connectAi": {
 		"willSendTo": "Souhlas bude odeslán na",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Přihlaste se pro vytvoření",
 		"noChannelsFound": "Nebyly nalezeny žádné kanály pro",
 		"live": "Živě",
+		"hostedBy": "Hostitel: {name}",
+		"wrongPassword": "Nesprávné heslo",
 		"createNewChannel": "Vytvořit Nový Kanál",
 		"channelName": "Název Kanálu",
 		"channelNamePlaceholder": "např. Noční Atmosféra",
@@ -81,13 +90,25 @@ export default {
 		"description": "Pro přehrávání hudby musíme načíst přehrávač YouTube. To se připojuje k serverům Google.",
 		"policy": "Přečtěte si naše zásady ochrany osobních údajů",
 		"accept": "Přijmout a hrát hudbu",
-		"youtubeConsent": "Potřebujeme váš souhlas s načtením přehrávače YouTube. Přijměte prosím soubory cookie níže."
+		"youtubeConsent": "Potřebujeme váš souhlas s načtením přehrávače YouTube. Přijměte prosím soubory cookie níže.",
+		"signInDescription": "Pro přihlášení přes Google načteme přihlášení Google, které se připojuje k serverům Googlu. Stejný souhlas načítá v kanálech YouTube také přehrávač YouTube.",
+		"signInAccept": "Přijmout"
+	},
+	"join": {
+		"welcome": "Vítejte v {brand}",
+		"youtubeTitle": "Povolit zvuk a video",
+		"youtubeBody": "Abychom mohli přehrávat hudbu z YouTube a vy se mohli zapojit do playlistu, potřebujeme používat cookies.",
+		"accept": "Povolit a připojit se k párty",
+		"agree": "Připojením souhlasíte s našimi {policy}.",
+		"policy": "zásadami ochrany osobních údajů",
+		"checking": "Kontrola kanálu…"
 	},
 	"header": {
 		"profileSettings": "Profil a Nastavení",
 		"signIn": "Přihlásit přes Google",
 		"acceptCookies": "Přijmout cookies pro přihlášení",
 		"legal": "Právní Informace",
+		"player": "Přehrávač",
 		"playlist": "Seznam Skladeb",
 		"library": "Knihovna",
 		"share": "Sdílet",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žádné připojení k internetu",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Okno je příliš malé",
+		"windowTooSmallMessage": "Zvětšete okno, abyste mohli CueVote dál používat.",
+		"backToRadio": "Zpět k rádiu",
 		"retry": "Zkusit připojení znovu",
 		"switching": "Přepínání Kanálu...",
 		"channelNotFound": "Kanál neexistuje",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Smazat",
 		"watch": "Sledovat na YouTube",
 		"recommend": "Získat návrhy",
-		"guest": "Host"
+		"guest": "Host",
+		"voteUp": "Hlasovat pro",
+		"voteDown": "Hlasovat proti"
 	},
 	"library": {
 		"searchPlaceholder": "Hledat v knihovně...",
@@ -199,6 +222,7 @@ export default {
 			"other": "{count} skladeb"
 		},
 		"inLibrary": "v knihovně",
+		"about": "O knihovně",
 		"info1": "Tato knihovna zobrazuje unikátní skladby přehrané za posledních <strong>28 dní</strong>.",
 		"info2": "Starší skladby jsou skryty pro čerstvost metadat, ale <strong>nikdy nejsou smazány</strong>. Funkce <strong>Auto-DJ</strong> si pamatuje celou vaši historii a automaticky vrátí starší skladby do fronty (a tohoto seznamu), když je potřeba!",
 		"empty": "Nebyly nalezeny žádné skladby"
@@ -228,6 +252,13 @@ export default {
 		"history": "Historie",
 		"last50": "Posledních 50 (z {count})",
 		"nowPlaying": "Právě Hraje",
+		"play": "Přehrát",
+		"pause": "Pozastavit",
+		"mute": "Ztlumit",
+		"unmute": "Zapnout zvuk",
+		"volume": "Hlasitost",
+		"cinemaMode": "Režim kina",
+		"exitCinemaMode": "Ukončit režim kina",
 		"upNext": "Další",
 		"queueEmpty": "Fronta je prázdná",
 		"errorNotFound": "Video nenalezeno",
@@ -280,6 +311,28 @@ export default {
 		"emptySubtitle": "Videa zakázaná z požadavků se zobrazí zde.",
 		"bannedOn": "Zakázáno {date}",
 		"unban": "Povolit"
+	},
+	"appleMusic": {
+		"source": "Zdroj hudby",
+		"sourceHint": "Apple Music hraje na vašem počítači a vyžaduje předplatné Apple Music.",
+		"connect": "Připojit Apple Music",
+		"connectHint": "Přihlaste se účtem Apple, ke kterému patří vaše předplatné Apple Music.",
+		"signInFailed": "Přihlášení se nezdařilo.",
+		"start": "Spustit přehrávání",
+		"startHint": "Prohlížeč přehraje zvuk až po kliknutí.",
+		"loading": "Načítání Apple Music…",
+		"loadFailed": "Apple Music se nepodařilo načíst.",
+		"problemSubscription": "K přehrání je potřeba aktivní předplatné Apple Music.",
+		"switchAccount": "Použít jiný účet",
+		"problemOtherDevice": "Váš účet Apple právě přehrává na jiném zařízení.",
+		"problemGeneric": "Přehrávání v Apple Music se zastavilo.",
+		"contentNotice": "Obaly alb a náhledy v tomto kanálu pocházejí od Apple. Při jejich načtení Apple vidí vaši IP adresu.",
+		"contentAccept": "Zapnout",
+		"previewFailed": "Tento náhled nelze přehrát.",
+		"standby": "Tento kanál se právě přehrává na jiném vašem zařízení.",
+		"playHere": "Přehrávat zde",
+		"waitingForHost": "Pozastaveno, dokud hostitel znovu nespustí přehrávání.",
+		"playsOnComputer": "Apple Music se přehrává na počítači. Otevřete tam tento kanál a připojte Apple Music."
 	},
 	"attribution": {
 		"youtube": "Vyvinuto s YouTube"

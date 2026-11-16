@@ -32,10 +32,11 @@ const cache = new Map();
  * parsed object — switching back and forth costs nothing after the first load.
  * Rejects for a code with no locale file; callers should check LANGUAGE_CODES.
  *
- * A FAILED load is evicted rather than remembered. Caching the promise itself
- * is what makes repeat calls cheap, but a rejected promise cached forever means
- * one dropped request on venue wifi pins that language to an error for the rest
- * of the session — including a later attempt to switch back to it.
+ * A FAILED load is evicted rather than remembered, so a later call asks again.
+ * Within one page that is not a real retry, though: the browser keeps a failed
+ * module import and answers the same URL with the same error, without another
+ * request. LanguageContext therefore reloads the page when a failed language is
+ * picked again.
  */
 export function loadLanguage(code) {
 	const cached = cache.get(code);

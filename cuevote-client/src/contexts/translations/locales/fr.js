@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Ce canal nécessite un compte connecté.",
 		"accountRequired": "Connectez-vous pour faire cela.",
 		"sessionNotReady": "Votre session n'est pas encore prête. Rechargez la page.",
-		"guestLimit": "Trop de nouveaux invités sur ce réseau. Connectez-vous pour continuer."
+		"guestLimit": "Trop de nouveaux invités sur ce réseau. Connectez-vous pour continuer.",
+		"appleMusicUnavailable": "Apple Music n'est pas disponible sur ce serveur.",
+		"appleMusicNotConnected": "L'hôte doit d'abord connecter Apple Music.",
+		"appleMusicRoom": "Cette chaîne diffuse Apple Music. Collez un lien music.apple.com ou recherchez par nom.",
+		"appleMusicNotFound": "Introuvable sur Apple Music.",
+		"appleMusicLinkUnsupported": "Collez le lien d'un seul titre ou d'un clip, ou recherchez par nom.",
+		"appleMusicNotInStorefront": "Ce titre n'est pas disponible sur Apple Music dans le pays de l'hôte.",
+		"appleMusicCatalogError": "Apple Music n'a pas répondu. Réessayez."
 	},
 	"connectAi": {
 		"willSendTo": "L'autorisation sera envoyée à",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Se connecter pour créer",
 		"noChannelsFound": "Aucune chaîne trouvée pour",
 		"live": "En direct",
+		"hostedBy": "Hôte : {name}",
+		"wrongPassword": "Mot de passe incorrect",
 		"createNewChannel": "Créer une Nouvelle Chaîne",
 		"channelName": "Nom de la Chaîne",
 		"channelNamePlaceholder": "ex. Ambiance Nocturne",
@@ -81,7 +90,18 @@ export default {
 		"description": "Pour lire la musique, nous devons charger le lecteur YouTube. Cela se connecte aux serveurs de Google.",
 		"policy": "Lire notre politique de confidentialité",
 		"accept": "Accepter & Lire la musique",
-		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous."
+		"youtubeConsent": "Nous avons besoin de votre consentement pour charger les lecteur YouTube. Veuillez accepter les cookies ci-dessous.",
+		"signInDescription": "Pour vous connecter avec Google, nous chargeons la connexion Google, qui se connecte aux serveurs de Google. Le même consentement charge aussi le lecteur YouTube dans les chaînes YouTube.",
+		"signInAccept": "Accepter"
+	},
+	"join": {
+		"welcome": "Bienvenue sur {brand}",
+		"youtubeTitle": "Activer l'audio et la vidéo",
+		"youtubeBody": "Pour lire la musique depuis YouTube et participer à la playlist, nous devons utiliser des cookies.",
+		"accept": "Activer et rejoindre la fête",
+		"agree": "En rejoignant, vous acceptez notre {policy}.",
+		"policy": "politique de confidentialité",
+		"checking": "Vérification de la chaîne…"
 	},
 	"header": {
 		"back": "Retour",
@@ -92,6 +112,7 @@ export default {
 		"signIn": "Se connecter avec Google",
 		"acceptCookies": "Accepter les cookies pour se connecter",
 		"legal": "Informations Légales",
+		"player": "Lecteur",
 		"playlist": "Playlist",
 		"library": "Bibliothèque",
 		"share": "Partager",
@@ -170,9 +191,9 @@ export default {
 		"listenMusic": "Écouter de la musique",
 		"unmuteAndPlay": "Son & Lecture",
 		"noInternet": "Pas de connexion internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Fenêtre trop petite",
+		"windowTooSmallMessage": "Agrandissez la fenêtre pour continuer à utiliser CueVote.",
+		"backToRadio": "Retour à la radio",
 		"retry": "Réessayer",
 		"retrying": "Tentative...",
 		"connecting": "Connexion au serveur...",
@@ -195,7 +216,9 @@ export default {
 		"delete": "Supprimer",
 		"watch": "Sur YouTube",
 		"recommend": "Obtenir des suggestions",
-		"guest": "Invité"
+		"guest": "Invité",
+		"voteUp": "Voter pour",
+		"voteDown": "Voter contre"
 	},
 	"library": {
 		"searchPlaceholder": "Chercher dans la bibliothèque...",
@@ -205,6 +228,7 @@ export default {
 			"other": "{count} vidéos"
 		},
 		"inLibrary": "dans la bibliothèque",
+		"about": "À propos de la bibliothèque",
 		"info1": "Cette bibliothèque affiche les vidéos uniques jouées au cours des <strong>28 derniers jours</strong>.",
 		"info2": "Les anciennes vidéos sont masquées pour garantir la fraîcheur des métadonnées, mais elles ne sont <strong>jamais supprimées</strong>. La fonction <strong>Auto-DJ</strong> se souvient de tout votre historique et ramènera automatiquement les anciennes vidéos dans la file d'attente (et cette liste) si nécessaire !",
 		"empty": "Aucune vidéo trouvée"
@@ -233,6 +257,13 @@ export default {
 		"history": "Historique",
 		"last50": "Derniers 50 sur {count}",
 		"nowPlaying": "Lecture en cours",
+		"play": "Lire",
+		"pause": "Mettre en pause",
+		"mute": "Couper le son",
+		"unmute": "Activer le son",
+		"volume": "Volume",
+		"cinemaMode": "Mode cinéma",
+		"exitCinemaMode": "Quitter le mode cinéma",
 		"channelSuffix": "Chaîne",
 		"upNext": "À suivre",
 		"queueEmpty": "File d'attente vide",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "Les vidéos bannies des requêtes apparaîtront ici.",
 		"bannedOn": "Bannie le {date}",
 		"unban": "Débannir"
+	},
+	"appleMusic": {
+		"source": "Source musicale",
+		"sourceHint": "Avec Apple Music, la lecture se fait sur votre ordinateur et nécessite un abonnement Apple Music.",
+		"connect": "Connecter Apple Music",
+		"connectHint": "Connectez-vous avec le compte Apple lié à votre abonnement Apple Music.",
+		"signInFailed": "La connexion n'a pas abouti.",
+		"start": "Lancer la lecture",
+		"startHint": "Le navigateur ne lit le son qu'après un clic.",
+		"loading": "Chargement d'Apple Music…",
+		"loadFailed": "Impossible de charger Apple Music.",
+		"problemSubscription": "Apple Music nécessite un abonnement actif pour lire ce titre.",
+		"switchAccount": "Utiliser un autre compte",
+		"problemOtherDevice": "La lecture est en cours sur un autre appareil avec votre compte Apple.",
+		"problemGeneric": "Apple Music a arrêté la lecture.",
+		"contentNotice": "Les pochettes et les aperçus de cette chaîne viennent d'Apple. Lors de leur chargement, Apple voit votre adresse IP.",
+		"contentAccept": "Activer",
+		"previewFailed": "Impossible de lire cet aperçu.",
+		"standby": "Cette chaîne est en cours de lecture sur un autre de vos appareils.",
+		"playHere": "Lire ici",
+		"waitingForHost": "En pause jusqu'à ce que l'hôte relance la lecture.",
+		"playsOnComputer": "Apple Music se lit sur un ordinateur. Ouvrez cette chaîne sur celui-ci et connectez Apple Music."
 	},
 	"attribution": {
 		"youtube": "Développé avec YouTube"

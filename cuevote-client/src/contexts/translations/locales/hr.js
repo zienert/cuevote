@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Ovaj kanal zahtijeva prijavljeni račun.",
 		"accountRequired": "Prijavite se da biste to učinili.",
 		"sessionNotReady": "Vaša sesija još nije spremna. Ponovno učitajte stranicu.",
-		"guestLimit": "Previše novih gostiju na ovoj mreži. Prijavite se za nastavak."
+		"guestLimit": "Previše novih gostiju na ovoj mreži. Prijavite se za nastavak.",
+		"appleMusicUnavailable": "Apple Music nije dostupan na ovom poslužitelju.",
+		"appleMusicNotConnected": "Domaćin najprije mora povezati Apple Music.",
+		"appleMusicRoom": "Ovaj kanal reproducira Apple Music. Zalijepite poveznicu s music.apple.com ili pretražujte po nazivu.",
+		"appleMusicNotFound": "Nije pronađeno na Apple Musicu.",
+		"appleMusicLinkUnsupported": "Zalijepite poveznicu na jednu pjesmu ili glazbeni spot ili pretražujte po nazivu.",
+		"appleMusicNotInStorefront": "Ova pjesma nije dostupna na Apple Musicu u zemlji domaćina.",
+		"appleMusicCatalogError": "Apple Music ne odgovara. Pokušajte ponovno."
 	},
 	"connectAi": {
 		"willSendTo": "Odobrenje će biti poslano na",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Prijavi se za stvaranje",
 		"noChannelsFound": "Nema pronađenih kanala za",
 		"live": "Uživo",
+		"hostedBy": "Domaćin: {name}",
+		"wrongPassword": "Pogrešna lozinka",
 		"createNewChannel": "Stvori Novi Kanal",
 		"channelName": "Naziv Kanala",
 		"channelNamePlaceholder": "npr. Noćne Vibracije",
@@ -81,13 +90,25 @@ export default {
 		"description": "Za reprodukciju glazbe moramo učitati YouTube player. Ovo se povezuje s Googleovim poslužiteljima.",
 		"policy": "Pročitajte našu Politiku privatnosti",
 		"accept": "Prihvati i reproduciraj",
-		"youtubeConsent": "Trebamo vaš pristanak za učitavanje YouTube playera. Prihvatite kolačiće u nastavku."
+		"youtubeConsent": "Trebamo vaš pristanak za učitavanje YouTube playera. Prihvatite kolačiće u nastavku.",
+		"signInDescription": "Za prijavu putem Googlea učitavamo Googleovu prijavu, koja se povezuje s Googleovim poslužiteljima. Ista privola u YouTube kanalima učitava i YouTube player.",
+		"signInAccept": "Prihvati"
+	},
+	"join": {
+		"welcome": "Dobro došli na {brand}",
+		"youtubeTitle": "Omogući zvuk i video",
+		"youtubeBody": "Za reprodukciju glazbe s YouTubea i sudjelovanje u playlisti moramo koristiti kolačiće.",
+		"accept": "Omogući i pridruži se zabavi",
+		"agree": "Pridruživanjem prihvaćate našu {policy}.",
+		"policy": "Politiku privatnosti",
+		"checking": "Provjera kanala…"
 	},
 	"header": {
 		"profileSettings": "Profil i Postavke",
 		"signIn": "Prijavi se putem Googlea",
 		"acceptCookies": "Prihvatite kolačiće za prijavu",
 		"legal": "Pravne Informacije",
+		"player": "Reprodukcija",
 		"playlist": "Popis Pjesama",
 		"library": "Knjižnica",
 		"share": "Podijeli",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nema internetske veze",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Prozor je premalen",
+		"windowTooSmallMessage": "Povećajte prozor da biste nastavili koristiti CueVote.",
+		"backToRadio": "Natrag na radio",
 		"retry": "Pokušaj ponovno povezivanje",
 		"switching": "Promjena Kanala...",
 		"channelNotFound": "Kanal ne postoji",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Izbriši",
 		"watch": "Gledaj na YouTubeu",
 		"recommend": "Dobij prijedloge",
-		"guest": "Gost"
+		"guest": "Gost",
+		"voteUp": "Glasaj za",
+		"voteDown": "Glasaj protiv"
 	},
 	"library": {
 		"searchPlaceholder": "Traži u knjižnici...",
@@ -198,6 +221,7 @@ export default {
 			"other": "{count} pjesama"
 		},
 		"inLibrary": "u knjižnici",
+		"about": "O knjižnici",
 		"info1": "Ova knjižnica prikazuje jedinstvene pjesme svirane u zadnjih <strong>28 dana</strong>.",
 		"info2": "Starije pjesme su skrivene radi svježine podataka, ali <strong>nikada nisu izbrisane</strong>. Značajka <strong>Auto-DJ</strong> pamti cijelu vašu povijest i automatski će vratiti starije pjesme u red (i ovaj popis) kada je potrebno!",
 		"empty": "Nisu pronađene pjesme"
@@ -226,6 +250,13 @@ export default {
 		"history": "Povijest",
 		"last50": "Zadnjih 50 (od {count})",
 		"nowPlaying": "Sada Svira",
+		"play": "Reproduciraj",
+		"pause": "Pauziraj",
+		"mute": "Isključi zvuk",
+		"unmute": "Uključi zvuk",
+		"volume": "Glasnoća",
+		"cinemaMode": "Kino način",
+		"exitCinemaMode": "Izađi iz kino načina",
 		"upNext": "Sljedeće",
 		"queueEmpty": "Red je prazan",
 		"errorNotFound": "Video nije pronađen",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "Videi zabranjeni iz zahtjeva pojavit će se ovdje.",
 		"bannedOn": "Zabranjeno {date}",
 		"unban": "Ukloni zabranu"
+	},
+	"appleMusic": {
+		"source": "Izvor glazbe",
+		"sourceHint": "Apple Music svira na vašem računalu i zahtijeva pretplatu na Apple Music.",
+		"connect": "Poveži Apple Music",
+		"connectHint": "Prijavite se Apple računom na kojem imate pretplatu na Apple Music.",
+		"signInFailed": "Prijava nije uspjela.",
+		"start": "Pokreni reprodukciju",
+		"startHint": "Preglednik reproducira zvuk tek nakon klika.",
+		"loading": "Apple Music se učitava…",
+		"loadFailed": "Apple Music nije moguće učitati.",
+		"problemSubscription": "Za reprodukciju je potrebna aktivna pretplata na Apple Music.",
+		"switchAccount": "Koristi drugi račun",
+		"problemOtherDevice": "Vaš Apple račun reproducira glazbu na drugom uređaju.",
+		"problemGeneric": "Apple Music je zaustavio reprodukciju.",
+		"contentNotice": "Omoti i pregledi u ovom kanalu dolaze od Applea. Pri njihovu učitavanju Apple vidi vašu IP adresu.",
+		"contentAccept": "Uključi",
+		"previewFailed": "Ovaj pregled nije moguće reproducirati.",
+		"standby": "Ovaj se kanal trenutno reproducira na drugom vašem uređaju.",
+		"playHere": "Reproduciraj ovdje",
+		"waitingForHost": "Pauzirano dok domaćin ponovno ne pokrene reprodukciju.",
+		"playsOnComputer": "Apple Music reproducira se na računalu. Otvorite ovaj kanal ondje i povežite Apple Music."
 	},
 	"attribution": {
 		"youtube": "Razvijeno uz YouTube"

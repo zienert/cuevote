@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Kailangan ng channel na ito ng naka-log in na account.",
 		"accountRequired": "Mag-log in para gawin iyon.",
 		"sessionNotReady": "Hindi pa handa ang iyong session. I-reload ang pahina.",
-		"guestLimit": "Masyadong maraming bagong bisita sa network na ito. Mag-log in para magpatuloy."
+		"guestLimit": "Masyadong maraming bagong bisita sa network na ito. Mag-log in para magpatuloy.",
+		"appleMusicUnavailable": "Hindi available ang Apple Music sa server na ito.",
+		"appleMusicNotConnected": "Kailangan munang ikonekta ng host ang Apple Music.",
+		"appleMusicRoom": "Apple Music ang tumutugtog sa channel na ito. Mag-paste ng link mula sa music.apple.com o maghanap ayon sa pangalan.",
+		"appleMusicNotFound": "Hindi ito nahanap sa Apple Music.",
+		"appleMusicLinkUnsupported": "Mag-paste ng link sa iisang kanta o music video, o maghanap ayon sa pangalan.",
+		"appleMusicNotInStorefront": "Hindi available ang kantang ito sa Apple Music sa bansa ng host.",
+		"appleMusicCatalogError": "Hindi sumagot ang Apple Music. Pakisubukang muli."
 	},
 	"connectAi": {
 		"willSendTo": "Ipapadala ang pag-apruba sa",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Mag-login upang Gumawa",
 		"noChannelsFound": "Walang channel na nahanap",
 		"live": "Live",
+		"hostedBy": "Host: {name}",
+		"wrongPassword": "Maling password",
 		"createNewChannel": "Gumawa ng Bagong Channel",
 		"channelName": "Pangalan ng Channel",
 		"channelNamePlaceholder": "hal. Late Night Vibes",
@@ -81,13 +90,25 @@ export default {
 		"description": "Upang magpatugtog ng musika, kailangan naming i-load ang YouTube Player. Kumokonekta ito sa mga server ng Google.",
 		"policy": "Basahin ang aming Patakaran sa Privacy",
 		"accept": "Tanggapin at Magpatugtog ng Musika",
-		"youtubeConsent": "Kailangan namin ang iyong pahintulot upang i-load ang YouTube Player. Mangyaring tanggapin ang cookies sa ibaba."
+		"youtubeConsent": "Kailangan namin ang iyong pahintulot upang i-load ang YouTube Player. Mangyaring tanggapin ang cookies sa ibaba.",
+		"signInDescription": "Para makapag-sign in gamit ang Google, nilo-load namin ang sign-in ng Google, na kumokonekta sa mga server ng Google. Ang parehong pahintulot ay naglo-load din ng YouTube player sa mga YouTube channel.",
+		"signInAccept": "Tanggapin"
+	},
+	"join": {
+		"welcome": "Maligayang pagdating sa {brand}",
+		"youtubeTitle": "I-enable ang Audio at Video",
+		"youtubeBody": "Para makapagpatugtog ng musika mula sa YouTube at makasali sa playlist, kailangan naming gumamit ng cookies.",
+		"accept": "I-enable at Sumali sa Party",
+		"agree": "Sa pagsali, sumasang-ayon ka sa aming {policy}.",
+		"policy": "Patakaran sa Privacy",
+		"checking": "Sinusuri ang channel…"
 	},
 	"header": {
 		"profileSettings": "Profile at Mga Setting",
 		"signIn": "Mag-sign in gamit ang Google",
 		"acceptCookies": "Tanggapin ang cookies upang mag-sign in",
 		"legal": "Legal na Impormasyon",
+		"player": "Player",
 		"playlist": "Playlist",
 		"library": "Library",
 		"share": "Ibahagi",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Walang Koneksyon sa Internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Masyadong maliit ang window",
+		"windowTooSmallMessage": "Palakihin ang window para magpatuloy sa paggamit ng CueVote.",
+		"backToRadio": "Bumalik sa Radyo",
 		"retry": "Subukan Muli ang Koneksyon",
 		"switching": "Nagpapalit ng Channel...",
 		"channelNotFound": "Wala ang channel",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Tanggalin",
 		"watch": "Panoorin sa YouTube",
 		"recommend": "Kumuha ng mga mungkahi",
-		"guest": "Bisita"
+		"guest": "Bisita",
+		"voteUp": "Bumoto pabor",
+		"voteDown": "Bumoto laban"
 	},
 	"library": {
 		"searchPlaceholder": "Maghanap sa library...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} kanta"
 		},
 		"inLibrary": "nasa library",
+		"about": "Tungkol sa library",
 		"info1": "Ipinapakita ng library na ito ang mga natatanging kanta na pinatugtog sa nakaraang <strong>28 araw</strong>.",
 		"info2": "Ang mga lumang kanta ay nakatago para sa pagiging bago ng metadata, ngunit <strong>hindi kailanman tatanggalin</strong>. Ang tampok na <strong>Auto-DJ</strong> ay naaalala pa rin ang iyong buong kasaysayan at awtomatikong ibabalik ang mga lumang kanta sa pila (at sa listahang ito) kapag kailangan!",
 		"empty": "Walang kanta na nahanap"
@@ -224,6 +248,13 @@ export default {
 		"history": "Kasaysayan",
 		"last50": "Huling 50 (ng {count})",
 		"nowPlaying": "Tumutugtog Ngayon",
+		"play": "I-play",
+		"pause": "I-pause",
+		"mute": "I-mute",
+		"unmute": "I-unmute",
+		"volume": "Volume",
+		"cinemaMode": "Cinema mode",
+		"exitCinemaMode": "Lumabas sa cinema mode",
 		"upNext": "Susunod",
 		"queueEmpty": "Walang laman ang pila",
 		"errorNotFound": "Hindi nahanap ang video",
@@ -276,6 +307,28 @@ export default {
 		"footerCta": "Kunin ang app",
 		"modalTitle": "Mas marami sa app",
 		"later": "Sa susunod"
+	},
+	"appleMusic": {
+		"source": "Pinagmulan ng musika",
+		"sourceHint": "Sa computer mo tumutugtog ang Apple Music at kailangan nito ng Apple Music subscription.",
+		"connect": "Ikonekta ang Apple Music",
+		"connectHint": "Mag-sign in gamit ang Apple account na may Apple Music subscription mo.",
+		"signInFailed": "Hindi natuloy ang pag-sign in.",
+		"start": "Simulan ang pagpapatugtog",
+		"startHint": "Nagpapatugtog lang ng tunog ang browser pagkatapos ng isang click.",
+		"loading": "Nilo-load ang Apple Music…",
+		"loadFailed": "Hindi ma-load ang Apple Music.",
+		"problemSubscription": "Kailangan ng aktibong Apple Music subscription para ma-play ito.",
+		"switchAccount": "Gumamit ng ibang account",
+		"problemOtherDevice": "Ginagamit ang Apple account mo para magpatugtog sa ibang device.",
+		"problemGeneric": "Itinigil ng Apple Music ang pagpapatugtog.",
+		"contentNotice": "Galing sa Apple ang mga cover art at preview sa channel na ito. Habang nilo-load ang mga ito, nakikita ng Apple ang iyong IP address.",
+		"contentAccept": "I-on",
+		"previewFailed": "Hindi ma-play ang preview na ito.",
+		"standby": "Tumutugtog ang channel na ito sa isa pang device mo.",
+		"playHere": "I-play dito",
+		"waitingForHost": "Naka-pause hanggang tumugtog muli ang host.",
+		"playsOnComputer": "Sa computer tumutugtog ang Apple Music. Buksan doon ang channel na ito at ikonekta ang Apple Music."
 	},
 	"attribution": {
 		"youtube": "Binuo gamit ang YouTube"

@@ -28,6 +28,13 @@ const GUEST_KEY = "cuevote_guest_token";
 const ACKABLE_TYPES = ["VOTE", "SUGGEST_SONG", "JOIN_ROOM", "LOGIN", "RESUME_SESSION", "GUEST_SESSION"];
 const QUEUEABLE_TYPES = ["VOTE", "SUGGEST_SONG", "JOIN_ROOM", "PLAY_PAUSE", "NEXT_TRACK", "LOGIN", "RESUME_SESSION", "GUEST_SESSION"];
 
+// Claims a guest identity: the stored one if this device has been a guest
+// before, otherwise a fresh one from the server.
+const guestSessionMessage = (guestToken) => JSON.stringify({
+  type: "GUEST_SESSION",
+  payload: guestToken ? { token: guestToken } : {},
+});
+
 export function WebSocketProvider({ children }) {
   const [state, setState] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -41,6 +48,13 @@ export function WebSocketProvider({ children }) {
   const [connectionQuality, setConnectionQuality] = useState('good');
   const sessionTokenRef = useRef(localStorage.getItem(SESSION_KEY));
   const guestTokenRef = useRef(localStorage.getItem(GUEST_KEY));
+  // A guest identity is claimed when a room is joined, not on page load: the
+  // lobby needs none, and a visitor who only looks around should not get an id
+  // stored on their device. Set by the first JOIN_ROOM of this page and kept,
+  // so reconnects, a logout or an expired session inside a room re-claim one.
+  const joinedRoomRef = useRef(false);
+  // Mirrors `user` for code that runs outside React's render (sendMessage).
+  const userRef = useRef(null);
   const [clientId] = useState(() => {
     let id = localStorage.getItem("cuevote_client_id");
     if (!id) {
@@ -58,8 +72,26 @@ export function WebSocketProvider({ children }) {
   const pendingAcks = useRef(new Map());
   const ackCounter = useRef(0);
   const progressRef = useRef(0);
+  // When progressRef last came from the server: it arrives every few seconds,
+  // and a player comparing against it has to add the time since.
+  const progressAtRef = useRef(0);
+  // Apple rooms: whether this socket is the room's player (true), on standby
+  // (false), or not told yet (null). Kept here, not in lastMessage, which a
+  // following message can overwrite before anyone reads it.
+  const [applePlayerLease, setApplePlayerLease] = useState(null);
+  const leaseRoomRef = useRef(null);
 
   const sendMessage = useCallback((message) => {
+    if (message.type === "JOIN_ROOM") {
+      joinedRoomRef.current = true;
+      // Entering a room without an account: claim the guest identity first, on
+      // the same socket, so the first tap on a vote button works. A socket that
+      // is not open yet gets it from handleOpen, ahead of the queued JOIN_ROOM.
+      if (!sessionTokenRef.current && !userRef.current && ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.send(guestSessionMessage(guestTokenRef.current));
+      }
+    }
+
     const isAckable = ACKABLE_TYPES.includes(message.type);
     if (isAckable) {
       const msgId = `${++ackCounter.current}`;
@@ -92,12 +124,15 @@ export function WebSocketProvider({ children }) {
       localStorage.removeItem(SESSION_KEY);
     }
     setUser(null);
+    userRef.current = null;
     // Signing out drops the account, not the ability to take part: pick the
     // guest identity back up so voting keeps working in an open room.
-    sendMessage({
-      type: "GUEST_SESSION",
-      payload: guestTokenRef.current ? { token: guestTokenRef.current } : {},
-    });
+    if (joinedRoomRef.current) {
+      sendMessage({
+        type: "GUEST_SESSION",
+        payload: guestTokenRef.current ? { token: guestTokenRef.current } : {},
+      });
+    }
   }, [sendMessage]);
 
   useEffect(() => {
@@ -138,13 +173,11 @@ export function WebSocketProvider({ children }) {
         const token = sessionTokenRef.current;
         if (token) {
           socket.send(JSON.stringify({ type: "RESUME_SESSION", payload: { token } }));
-        } else {
-          // Nobody is signed in: claim a guest identity right away so the first
+        } else if (joinedRoomRef.current) {
+          // Nobody is signed in and this page is (or was) in a room: claim the
+          // guest identity before the queued JOIN_ROOM goes out, so the first
           // tap on a vote button works instead of bouncing off an auth wall.
-          socket.send(JSON.stringify({
-            type: "GUEST_SESSION",
-            payload: guestTokenRef.current ? { token: guestTokenRef.current } : {},
-          }));
+          socket.send(guestSessionMessage(guestTokenRef.current));
         }
         while (messageQueue.current.length > 0) {
           const queued = messageQueue.current.shift();
@@ -205,13 +238,23 @@ export function WebSocketProvider({ children }) {
           if (message.type === "state") {
             setState(message.payload);
             progressRef.current = message.payload.progress || 0;
+            progressAtRef.current = Date.now();
+            // Another room: its player has yet to be settled.
+            if (message.payload?.roomId !== leaseRoomRef.current) {
+              leaseRoomRef.current = message.payload?.roomId ?? null;
+              setApplePlayerLease(null);
+            }
           } else if (message.type === "state_delta") {
             setState(prev => prev ? { ...prev, ...message.payload } : message.payload);
             if ('progress' in message.payload) {
               progressRef.current = message.payload.progress || 0;
+              progressAtRef.current = Date.now();
             }
           } else if (message.type === "progress") {
             progressRef.current = message.payload;
+            progressAtRef.current = Date.now();
+          } else if (message.type === "APPLE_PLAYER_LEASE") {
+            setApplePlayerLease(!!message.payload?.active);
           } else if (message.type === "LOGIN_SUCCESS") {
             // Auth handled inline rather than via setLastMessage, because the
             // shared `lastMessage` state can be overwritten by a subsequent
@@ -224,6 +267,7 @@ export function WebSocketProvider({ children }) {
               console.log("Backend Login Success:", message.payload.user);
             }
             setUser(message.payload.user);
+            userRef.current = message.payload.user;
             if (message.payload.sessionToken) {
               sessionTokenRef.current = message.payload.sessionToken;
               localStorage.setItem(SESSION_KEY, message.payload.sessionToken);
@@ -236,18 +280,17 @@ export function WebSocketProvider({ children }) {
               localStorage.setItem(GUEST_KEY, message.payload.guestToken);
             }
             setUser(message.payload.user);
+            userRef.current = message.payload.user;
           } else if (message.type === "SESSION_INVALID") {
             console.warn("Session Invalid/Expired");
             sessionTokenRef.current = null;
             localStorage.removeItem(SESSION_KEY);
             setUser(null);
-            // An expired session must not drop the participant back to having no
-            // identity at all — fall back to a guest one.
-            if (socket.readyState === WebSocket.OPEN) {
-              socket.send(JSON.stringify({
-                type: "GUEST_SESSION",
-                payload: guestTokenRef.current ? { token: guestTokenRef.current } : {},
-              }));
+            userRef.current = null;
+            // An expired session must not drop someone in a room back to having
+            // no identity at all — fall back to a guest one.
+            if (joinedRoomRef.current && socket.readyState === WebSocket.OPEN) {
+              socket.send(guestSessionMessage(guestTokenRef.current));
             }
           } else {
             setLastMessage(message);
@@ -365,7 +408,7 @@ export function WebSocketProvider({ children }) {
   }, [clientId]);
 
   return (
-    <WebSocketContext.Provider value={{ state, isConnected, sendMessage, lastError, lastErrorCode, lastErrorTimestamp, lastMessage, clientId, user, handleLoginSuccess, handleLogout, clearMessage: () => setLastMessage(null), reconnectAttempt, forceReconnect: () => { if (window.cuevoteReconnect) window.cuevoteReconnect(); }, connectionQuality, progressRef }}>
+    <WebSocketContext.Provider value={{ state, isConnected, sendMessage, lastError, lastErrorCode, lastErrorTimestamp, lastMessage, clientId, user, handleLoginSuccess, handleLogout, clearMessage: () => setLastMessage(null), reconnectAttempt, forceReconnect: () => { if (window.cuevoteReconnect) window.cuevoteReconnect(); }, connectionQuality, progressRef, progressAtRef, applePlayerLease }}>
       {children}
     </WebSocketContext.Provider>
   );

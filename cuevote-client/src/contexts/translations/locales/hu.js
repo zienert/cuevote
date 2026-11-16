@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Ehhez a csatornához bejelentkezett fiók szükséges.",
 		"accountRequired": "Jelentkezz be, hogy ezt megtedd.",
 		"sessionNotReady": "A munkameneted még nem áll készen. Töltsd újra az oldalt.",
-		"guestLimit": "Túl sok új vendég ezen a hálózaton. A folytatáshoz jelentkezz be."
+		"guestLimit": "Túl sok új vendég ezen a hálózaton. A folytatáshoz jelentkezz be.",
+		"appleMusicUnavailable": "Az Apple Music nem érhető el ezen a szerveren.",
+		"appleMusicNotConnected": "A házigazdának előbb csatlakoztatnia kell az Apple Musicot.",
+		"appleMusicRoom": "Ez a csatorna az Apple Musicot használja. Illessz be egy music.apple.com linket, vagy keress név alapján.",
+		"appleMusicNotFound": "Nem található az Apple Musicon.",
+		"appleMusicLinkUnsupported": "Illessz be egy linket egyetlen dalhoz vagy videoklipphez, vagy keress név alapján.",
+		"appleMusicNotInStorefront": "Ez a szám a házigazda országában nem érhető el az Apple Musicon.",
+		"appleMusicCatalogError": "Az Apple Music nem válaszolt. Próbáld újra."
 	},
 	"connectAi": {
 		"willSendTo": "A jóváhagyás ide megy",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Jelentkezz be a létrehozáshoz",
 		"noChannelsFound": "Nem található csatorna ehhez",
 		"live": "Élő",
+		"hostedBy": "Házigazda: {name}",
+		"wrongPassword": "Hibás jelszó",
 		"createNewChannel": "Új Csatorna Létrehozása",
 		"channelName": "Csatorna Neve",
 		"channelNamePlaceholder": "pl. Késő Esti Hangulat",
@@ -81,13 +90,25 @@ export default {
 		"description": "A zene lejátszásához be kell töltenünk a YouTube lejátszót. Ez csatlakozik a Google szervereihez.",
 		"policy": "Olvassa el Adatvédelmi irányelveinket",
 		"accept": "Elfogadás és Zenelejátszás",
-		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább."
+		"youtubeConsent": "A YouTube lejátszó betöltéséhez az Ön hozzájárulása szükséges. Kérjük, fogadja el a sütiket alább.",
+		"signInDescription": "A Google-bejelentkezéshez betöltjük a Google bejelentkezését, amely a Google szervereihez kapcsolódik. Ugyanez a hozzájárulás a YouTube-csatornákon a YouTube-lejátszót is betölti.",
+		"signInAccept": "Elfogadom"
+	},
+	"join": {
+		"welcome": "Üdvözöl a {brand}",
+		"youtubeTitle": "Hang és videó engedélyezése",
+		"youtubeBody": "Ahhoz, hogy zenét játszhassunk a YouTube-ról, és részt vehess a lejátszási listában, sütiket kell használnunk.",
+		"accept": "Engedélyezés és csatlakozás a bulihoz",
+		"agree": "A csatlakozással elfogadod {policy}.",
+		"policy": "adatvédelmi irányelveinket",
+		"checking": "Csatorna ellenőrzése…"
 	},
 	"header": {
 		"profileSettings": "Profil és Beállítások",
 		"signIn": "Bejelentkezés Google-lel",
 		"acceptCookies": "A bejelentkezéshez fogadd el a sütiket",
 		"legal": "Jogi Információk",
+		"player": "Lejátszó",
 		"playlist": "Lejátszási Lista",
 		"library": "Könyvtár",
 		"share": "Megosztás",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nincs internetkapcsolat",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Az ablak túl kicsi",
+		"windowTooSmallMessage": "Nagyítsd az ablakot a CueVote további használatához.",
+		"backToRadio": "Vissza a rádióhoz",
 		"retry": "Kapcsolat újrapróbálása",
 		"switching": "Csatorna Váltása...",
 		"channelNotFound": "A csatorna nem létezik",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Törlés",
 		"watch": "Megtekintés YouTube-on",
 		"recommend": "Javaslatok kérése",
-		"guest": "Vendég"
+		"guest": "Vendég",
+		"voteUp": "Szavazás mellette",
+		"voteDown": "Szavazás ellene"
 	},
 	"library": {
 		"searchPlaceholder": "Keresés a könyvtárban...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} dal"
 		},
 		"inLibrary": "a könyvtárban",
+		"about": "A könyvtárról",
 		"info1": "Ez a könyvtár az elmúlt <strong>28 napban</strong> lejátszott egyedi dalokat jeleníti meg.",
 		"info2": "A régebbi dalok el vannak rejtve az adatok frissessége érdekében, de <strong>soha nem törlődnek</strong>. Az <strong>Auto-DJ</strong> funkció emlékszik a teljes előzményekre, és szükség esetén automatikusan visszahozza a régebbi dalokat a sorba (és ebbe a listába)!",
 		"empty": "Nem található dal"
@@ -224,6 +248,13 @@ export default {
 		"history": "Előzmények",
 		"last50": "Utolsó 50 ({count}-ből)",
 		"nowPlaying": "Most Játszott",
+		"play": "Lejátszás",
+		"pause": "Szünet",
+		"mute": "Némítás",
+		"unmute": "Némítás feloldása",
+		"volume": "Hangerő",
+		"cinemaMode": "Mozi mód",
+		"exitCinemaMode": "Kilépés a mozi módból",
 		"upNext": "Következő",
 		"queueEmpty": "A sor üres",
 		"errorNotFound": "A videó nem található",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "A kérésekből letiltott videók itt jelennek meg.",
 		"bannedOn": "Letiltva: {date}",
 		"unban": "Tiltás feloldása"
+	},
+	"appleMusic": {
+		"source": "Zeneforrás",
+		"sourceHint": "Az Apple Music a számítógépeden szól, és Apple Music-előfizetés kell hozzá.",
+		"connect": "Apple Music csatlakoztatása",
+		"connectHint": "Jelentkezz be azzal az Apple-fiókkal, amelyhez az Apple Music-előfizetésed tartozik.",
+		"signInFailed": "A bejelentkezés nem sikerült.",
+		"start": "Lejátszás indítása",
+		"startHint": "A böngésző csak egy kattintás után játszik le hangot.",
+		"loading": "Apple Music betöltése…",
+		"loadFailed": "Nem sikerült betölteni az Apple Musicot.",
+		"problemSubscription": "Ennek lejátszásához aktív Apple Music-előfizetés kell.",
+		"switchAccount": "Másik fiók használata",
+		"problemOtherDevice": "Az Apple-fiókod éppen egy másik eszközön játszik zenét.",
+		"problemGeneric": "Az Apple Music leállította a lejátszást.",
+		"contentNotice": "A csatorna borítói és előnézetei az Apple-től származnak. Betöltésükkor az Apple látja az IP-címedet.",
+		"contentAccept": "Bekapcsolás",
+		"previewFailed": "Ez az előnézet nem játszható le.",
+		"standby": "Ez a csatorna most egy másik eszközödön szól.",
+		"playHere": "Lejátszás itt",
+		"waitingForHost": "Szünetel, amíg a házigazda újra nem indítja a lejátszást.",
+		"playsOnComputer": "Az Apple Music számítógépen szól. Nyisd meg ott ezt a csatornát, és csatlakoztasd az Apple Musicot."
 	},
 	"attribution": {
 		"youtube": "YouTube-val fejlesztve"

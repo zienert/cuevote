@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "ערוץ זה מחייב חשבון מחובר.",
 		"accountRequired": "יש להתחבר כדי לעשות זאת.",
 		"sessionNotReady": "הפעלה שלך עדיין לא מוכנה. יש לרענן את הדף.",
-		"guestLimit": "יותר מדי אורחים חדשים ברשת הזו. יש להתחבר כדי להמשיך."
+		"guestLimit": "יותר מדי אורחים חדשים ברשת הזו. יש להתחבר כדי להמשיך.",
+		"appleMusicUnavailable": "Apple Music אינו זמין בשרת הזה.",
+		"appleMusicNotConnected": "על המארח לחבר קודם את Apple Music.",
+		"appleMusicRoom": "הערוץ הזה מנגן Apple Music. יש להדביק קישור מ-music.apple.com או לחפש לפי שם.",
+		"appleMusicNotFound": "לא נמצא ב-Apple Music.",
+		"appleMusicLinkUnsupported": "יש להדביק קישור לשיר בודד או לקליפ, או לחפש לפי שם.",
+		"appleMusicNotInStorefront": "השיר הזה אינו זמין ב-Apple Music במדינה של המארח.",
+		"appleMusicCatalogError": "Apple Music לא הגיב. יש לנסות שוב."
 	},
 	"connectAi": {
 		"willSendTo": "האישור יישלח אל",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "התחבר ליצירה",
 		"noChannelsFound": "לא נמצאו ערוצים עבור",
 		"live": "חי",
+		"hostedBy": "מארח: {name}",
+		"wrongPassword": "סיסמה שגויה",
 		"createNewChannel": "צור ערוץ חדש",
 		"channelName": "שם הערוץ",
 		"channelNamePlaceholder": "למשל, לילה רגוע",
@@ -81,13 +90,25 @@ export default {
 		"description": "כדי לנגן מוזיקה, עלינו לטעון את נגן YouTube. זה מתחבר לשרתים של Google.",
 		"policy": "קרא את מדיניות הפרטיות שלנו",
 		"accept": "אשר ונגן מוזיקה",
-		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה."
+		"youtubeConsent": "אנו זקוקים להסכמתך לטעינת נגן YouTube. אנא אשר את העוגיות למטה.",
+		"signInDescription": "כדי להתחבר עם Google אנחנו טוענים את ההתחברות של Google, שמתחברת לשרתים של Google. אותה הסכמה טוענת גם את נגן YouTube בערוצי YouTube.",
+		"signInAccept": "אישור"
+	},
+	"join": {
+		"welcome": "ברוכים הבאים ל-{brand}",
+		"youtubeTitle": "הפעלת שמע ווידאו",
+		"youtubeBody": "כדי לנגן מוזיקה מ-YouTube ולהשתתף ברשימת ההשמעה, עלינו להשתמש בעוגיות.",
+		"accept": "הפעל והצטרף למסיבה",
+		"agree": "בהצטרפותך, אתה מסכים ל{policy} שלנו.",
+		"policy": "מדיניות הפרטיות",
+		"checking": "בודקים את הערוץ…"
 	},
 	"header": {
 		"profileSettings": "פרופיל והגדרות",
 		"signIn": "התחבר עם Google",
 		"acceptCookies": "קבל עוגיות כדי להתחבר",
 		"legal": "מידע משפטי",
+		"player": "נגן",
 		"playlist": "פלייליסט",
 		"library": "ספרייה",
 		"share": "שתף",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "אין חיבור לאינטרנט",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "החלון קטן מדי",
+		"windowTooSmallMessage": "הגדילו את החלון כדי להמשיך להשתמש ב-CueVote.",
+		"backToRadio": "חזרה לרדיו",
 		"retry": "נסה להתחבר שוב",
 		"switching": "מחליף ערוץ...",
 		"channelNotFound": "ערוץ לא קיים",
@@ -188,7 +209,9 @@ export default {
 		"delete": "מחק",
 		"watch": "צפה ב-YouTube",
 		"recommend": "קבל הצעות",
-		"guest": "אורח"
+		"guest": "אורח",
+		"voteUp": "הצבעה בעד",
+		"voteDown": "הצבעה נגד"
 	},
 	"library": {
 		"searchPlaceholder": "חפש בספרייה...",
@@ -198,6 +221,7 @@ export default {
 			"other": "{count} סרטונים"
 		},
 		"inLibrary": "בספרייה",
+		"about": "על הספרייה",
 		"info1": "ספרייה זו מציגה סרטונים ייחודיים שנוגנו ב-<strong>28 הימים</strong> האחרונים.",
 		"info2": "סרטונים ישנים יותר מוסתרים לרעננות מטא-נתונים, אך הם <strong>לעולם לא נמחקים</strong>. תכונת <strong>Auto-DJ</strong> זוכרת את כל ההיסטוריה שלך ותחזיר אוטומטית סרטונים ישנים לתור (ולרשימה זו) בעת הצורך!",
 		"empty": "לא נמצאו סרטונים"
@@ -226,6 +250,13 @@ export default {
 		"history": "היסטוריה",
 		"last50": "50 האחרונים ({count})",
 		"nowPlaying": "מנגן עכשיו",
+		"play": "נגן",
+		"pause": "השהה",
+		"mute": "השתק",
+		"unmute": "בטל השתקה",
+		"volume": "עוצמת קול",
+		"cinemaMode": "מצב קולנוע",
+		"exitCinemaMode": "יציאה ממצב קולנוע",
 		"upNext": "הבא",
 		"queueEmpty": "התור ריק",
 		"errorNotFound": "הסרטון לא נמצא",
@@ -278,6 +309,28 @@ export default {
 		"emptySubtitle": "סרטונים שנחסמו מבקשות יופיעו כאן.",
 		"bannedOn": "נחסם בתאריך {date}",
 		"unban": "בטל חסימה"
+	},
+	"appleMusic": {
+		"source": "מקור המוזיקה",
+		"sourceHint": "Apple Music מתנגן במחשב שלך ודורש מינוי ל-Apple Music.",
+		"connect": "חיבור Apple Music",
+		"connectHint": "יש להתחבר עם חשבון Apple שיש בו מינוי ל-Apple Music.",
+		"signInFailed": "ההתחברות לא הצליחה.",
+		"start": "התחלת ניגון",
+		"startHint": "הדפדפן מנגן קול רק אחרי לחיצה.",
+		"loading": "Apple Music נטען…",
+		"loadFailed": "לא ניתן לטעון את Apple Music.",
+		"problemSubscription": "כדי לנגן את זה צריך מינוי פעיל ל-Apple Music.",
+		"switchAccount": "שימוש בחשבון אחר",
+		"problemOtherDevice": "חשבון ה-Apple שלך מנגן כרגע במכשיר אחר.",
+		"problemGeneric": "Apple Music עצר את הניגון.",
+		"contentNotice": "עטיפות האלבומים והתצוגות המקדימות בערוץ הזה מגיעות מ-Apple. בזמן הטעינה Apple רואה את כתובת ה-IP שלך.",
+		"contentAccept": "הפעלה",
+		"previewFailed": "לא ניתן להפעיל את התצוגה המקדימה הזו.",
+		"standby": "הערוץ הזה מתנגן כעת במכשיר אחר שלך.",
+		"playHere": "לנגן כאן",
+		"waitingForHost": "מושהה עד שהמארח ינגן שוב.",
+		"playsOnComputer": "Apple Music מתנגן במחשב. יש לפתוח את הערוץ שם ולחבר את Apple Music."
 	},
 	"attribution": {
 		"youtube": "פותח עם YouTube"

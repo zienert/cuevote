@@ -7,6 +7,117 @@
   --sab: env(safe-area-inset-bottom, 0px);
   --sal: env(safe-area-inset-left, 0px);
   --sar: env(safe-area-inset-right, 0px);
+
+  /* Colours, as RGB channels (tailwind.config.js turns them into classes).
+     One neutral ramp, a little warm like a room at night with the TV on:
+     page, card, raised. Three text roles. One accent, the brand's orange,
+     with dark text on it (white on this orange reaches only 2.8 : 1). */
+  --cv-page: 9 9 8;
+  --cv-card: 22 21 20;
+  --cv-raised: 34 32 30;
+  --cv-ink: 245 241 235;
+  --cv-ink-2: 172 166 158;
+  --cv-ink-3: 145 140 133;
+  --cv-accent: 249 115 22;
+  --cv-accent-ink: 26 13 3;
+
+  /* Motion: three curves, used by name everywhere. Things that enter or
+     answer a press ease out, things that change place on screen ease in and
+     out, a sheet follows the curve of an iOS drawer. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html {
+  /* No grey flash over a tapped element; every control has its own pressed
+     look instead. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+button,
+a,
+[role="button"] {
+  /* A tap is a tap at once, never the start of a double-tap zoom. */
+  touch-action: manipulation;
+}
+
+button,
+[role="button"] {
+  /* A long press on a control does not select its label or open the
+     system's menu for it. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+:where(button, a, [role="button"]):focus-visible {
+  outline: 2px solid rgb(var(--cv-accent));
+  outline-offset: 2px;
+}
+
+/* Touch: a control smaller than a fingertip keeps its look and gets an
+   invisible area of 44 px to hit. Phones and tablets only, a mouse pointer is
+   precise enough. In the components layer, so that a control placed with
+   `absolute` or `fixed` stays where it is. */
+@layer components {
+  @media (pointer: coarse) {
+    .cv-hit {
+      position: relative;
+    }
+
+    .cv-hit::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+@media (pointer: coarse) {
+  /* A field with text under 16 px makes iOS zoom into the page on focus. */
+  input.text-sm,
+  input.text-xs,
+  textarea.text-sm,
+  textarea.text-xs,
+  select.text-sm,
+  select.text-xs {
+    font-size: 16px;
+  }
+}
+
+@layer components {
+  /* Text that people wrote (titles, names), used with dir="auto": its own
+     writing direction decides at which end it is cut off, the page's
+     direction where it is aligned. */
+  .cv-bidi {
+    text-align: left;
+    text-align: -webkit-match-parent;
+    text-align: match-parent;
+  }
+
+  /* The buttons of the lobby and the room: one height, one radius, a small
+     step down when pressed. */
+  .cv-btn {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium transition-[background-color,border-color,color,opacity,transform] duration-150 ease-cv active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
+  }
+
+  .cv-btn-accent {
+    @apply bg-accent text-accent-ink hover:bg-[#fb8b3c];
+  }
+
+  .cv-btn-quiet {
+    @apply border border-line bg-raised text-ink hover:bg-[#2b2927];
+  }
+
+  .cv-btn-ghost {
+    @apply text-ink-2 hover:bg-raised hover:text-ink;
+  }
 }
 
 /* Fallback: If on mobile, ensure at least 24px top padding if env() returns 0px (broken support) */
@@ -17,7 +128,7 @@
 html,
 body,
 #root {
-  background-color: black;
+  background-color: rgb(var(--cv-page));
   margin: 0;
   padding: 0;
   width: 100%;
@@ -40,101 +151,43 @@ body,
   display: none;
 }
 
+/* Everything that enters (dialogs, menus, hints: animate-in) eases out
+   unless it names a curve of its own. */
+@layer components {
+  .animate-in {
+    animation-timing-function: var(--ease-out);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateY(-8px);
   }
 }
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -20px) scale(0.9);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translate(-50%, 5px) scale(1.02);
-  }
-
-  100% {
-    transform: translate(-50%, 0) scale(1);
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  display: inline-block;
-  white-space: nowrap;
-  animation: marquee 20s linear infinite;
-}
-
-/* Pause animation on hover if desired */
-/* .animate-marquee:hover {
-  animation-play-state: paused;
-} */
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.25s var(--ease-out) both;
 }
 
-.animate-fadeOut {
-  animation: fadeOut 0.3s ease-out forwards;
-}
-
-.animate-bounceIn {
-  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes billboard {
-
-  0%,
-  5% {
-    transform: translateX(0);
-  }
-
-  85%,
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-billboard {
+/* A number that has just changed rises into place (a vote count). A
+   transition from its starting style, so a second vote right after the first
+   picks up where the first one is. */
+.cv-tick {
   display: inline-block;
-  white-space: nowrap;
-  animation: billboard 15s linear infinite;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
 }
 
-.mask-linear-fade {
-  mask-image: linear-gradient(to right, black 0px, black calc(100% - 24px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 0px, black calc(100% - 24px), transparent 100%);
+@starting-style {
+  .cv-tick {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+
+  /* A count that shrank comes down from above. */
+  .cv-tick.cv-tick-down {
+    transform: translateY(-40%);
+  }
 }
 
 @keyframes pulse-slow {
@@ -153,20 +206,88 @@ body,
   animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes bounce-subtle {
-
-  0%,
-  100% {
-    transform: translateY(-3%);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+/* Placeholders for content that is on its way (Skeletons.jsx): a soft light
+   passes over each one. The colour of the placeholder itself comes from its
+   own classes. */
+@keyframes skeleton-light {
+  0% {
+    transform: translateX(-100%);
   }
 
-  50% {
-    transform: none;
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  60%,
+  100% {
+    transform: translateX(100%);
   }
 }
 
-.animate-bounce-subtle {
-  animation: bounce-subtle 2s infinite;
+@layer components {
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+/* The light is a layer of its own that only moves, so nothing is painted
+   again while it passes. --skeleton-delay staggers a group (Skeletons.jsx). */
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: skeleton-light 1.8s ease-in-out infinite;
+  animation-delay: var(--skeleton-delay, 0ms);
+}
+
+/* A picture that has just loaded takes the place of its placeholder
+   (CoverImage.jsx). */
+@keyframes cover-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.cover-in {
+  animation: cover-in 0.25s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn {
+    animation-name: cover-in;
+  }
+
+  .cv-tick {
+    transition: none;
+  }
+
+  .skeleton::after {
+    display: none;
+  }
+
+  .cover-in {
+    animation: none;
+  }
+}
+
+/* "Reduce transparency" on the device: bars are solid and nothing behind a
+   layer is blurred. */
+@media (prefers-reduced-transparency: reduce) {
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .bg-page\/95 {
+    background-color: rgb(var(--cv-page));
+  }
+}
+
+/* "Increase contrast" on the device: brighter secondary text, firmer lines. */
+@media (prefers-contrast: more) {
+  :root {
+    --cv-ink-2: 214 209 202;
+    --cv-ink-3: 190 185 178;
+    --cv-line-alpha: 0.32;
+  }
 }

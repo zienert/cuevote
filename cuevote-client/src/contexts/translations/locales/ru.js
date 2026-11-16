@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Для этого канала нужен вход в аккаунт.",
 		"accountRequired": "Войдите, чтобы сделать это.",
 		"sessionNotReady": "Ваш сеанс ещё не готов. Обновите страницу.",
-		"guestLimit": "Слишком много новых гостей в этой сети. Войдите, чтобы продолжить."
+		"guestLimit": "Слишком много новых гостей в этой сети. Войдите, чтобы продолжить.",
+		"appleMusicUnavailable": "Этот сервер не поддерживает Apple Music.",
+		"appleMusicNotConnected": "Организатор должен сначала подключить Apple Music.",
+		"appleMusicRoom": "В этом канале играет Apple Music. Вставьте ссылку с music.apple.com или найдите по названию.",
+		"appleMusicNotFound": "Не найдено в Apple Music.",
+		"appleMusicLinkUnsupported": "Вставьте ссылку на одну песню или музыкальный клип или найдите по названию.",
+		"appleMusicNotInStorefront": "Этот трек недоступен в Apple Music в стране организатора.",
+		"appleMusicCatalogError": "Apple Music не отвечает. Попробуйте ещё раз."
 	},
 	"connectAi": {
 		"willSendTo": "Подтверждение будет отправлено на",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Войдите, чтобы создать",
 		"noChannelsFound": "Каналы не найдены по запросу",
 		"live": "Эфир",
+		"hostedBy": "Ведущий: {name}",
+		"wrongPassword": "Неверный пароль",
 		"createNewChannel": "Создать новый канал",
 		"channelName": "Название канала",
 		"channelNamePlaceholder": "напр., Ночные ритмы",
@@ -81,13 +90,25 @@ export default {
 		"description": "Для воспроизведения музыки нам нужно загрузить плеер YouTube. Это соединяет с серверами Google.",
 		"policy": "Читайте нашу Политику конфиденциальности",
 		"accept": "Принять и играть музыку",
-		"youtubeConsent": "Нам нужно ваше согласие для загрузки плеера YouTube. Пожалуйста, примите файлы cookie ниже."
+		"youtubeConsent": "Нам нужно ваше согласие для загрузки плеера YouTube. Пожалуйста, примите файлы cookie ниже.",
+		"signInDescription": "Для входа через Google мы загружаем вход Google, который подключается к серверам Google. Это же согласие загружает и плеер YouTube в каналах YouTube.",
+		"signInAccept": "Принять"
+	},
+	"join": {
+		"welcome": "Добро пожаловать в {brand}",
+		"youtubeTitle": "Включить звук и видео",
+		"youtubeBody": "Чтобы воспроизводить музыку с YouTube и участвовать в плейлисте, нам нужно использовать файлы cookie.",
+		"accept": "Включить и присоединиться к вечеринке",
+		"agree": "Присоединяясь, вы принимаете нашу {policy}.",
+		"policy": "Политику конфиденциальности",
+		"checking": "Проверяем канал…"
 	},
 	"header": {
 		"profileSettings": "Профиль и настройки",
 		"signIn": "Войти через Google",
 		"acceptCookies": "Примите куки для входа",
 		"legal": "Юридическая информация",
+		"player": "Плеер",
 		"playlist": "Плейлист",
 		"library": "Библиотека",
 		"share": "Поделиться",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Нет подключения к интернету",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Окно слишком маленькое",
+		"windowTooSmallMessage": "Увеличьте окно, чтобы продолжить пользоваться CueVote.",
+		"backToRadio": "Назад к радио",
 		"retry": "Повторить попытку подключения",
 		"switching": "Переключение канала...",
 		"channelNotFound": "Канал не существует",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Удалить",
 		"watch": "Смотреть на YouTube",
 		"recommend": "Получить рекомендации",
-		"guest": "Гость"
+		"guest": "Гость",
+		"voteUp": "Голосовать за",
+		"voteDown": "Голосовать против"
 	},
 	"library": {
 		"searchPlaceholder": "Поиск в библиотеке...",
@@ -199,6 +222,7 @@ export default {
 			"other": "{count} видео"
 		},
 		"inLibrary": "в библиотеке",
+		"about": "О библиотеке",
 		"info1": "Эта библиотека отображает уникальные видео, проигранные за последние <strong>28 дней</strong>.",
 		"info2": "Старые видео скрываются для свежести метаданных, но <strong>никогда не удаляются</strong>. Функция <strong>Auto-DJ</strong> помнит всю вашу историю и автоматически вернет старые видео в очередь (и этот список) при необходимости!",
 		"empty": "Видео не найдены"
@@ -228,6 +252,13 @@ export default {
 		"history": "История",
 		"last50": "Последние 50 (из {count})",
 		"nowPlaying": "Сейчас играет",
+		"play": "Воспроизвести",
+		"pause": "Пауза",
+		"mute": "Выключить звук",
+		"unmute": "Включить звук",
+		"volume": "Громкость",
+		"cinemaMode": "Режим кинотеатра",
+		"exitCinemaMode": "Выйти из режима кинотеатра",
 		"upNext": "Далее",
 		"queueEmpty": "Очередь пуста",
 		"errorNotFound": "Видео не найдено",
@@ -280,6 +311,28 @@ export default {
 		"emptySubtitle": "Видео, заблокированные из запросов, появятся здесь.",
 		"bannedOn": "Заблокировано {date}",
 		"unban": "Разблокировать"
+	},
+	"appleMusic": {
+		"source": "Источник музыки",
+		"sourceHint": "Apple Music играет на вашем компьютере и требует подписки Apple Music.",
+		"connect": "Подключить Apple Music",
+		"connectHint": "Войдите в аккаунт Apple, на котором оформлена ваша подписка Apple Music.",
+		"signInFailed": "Не удалось войти.",
+		"start": "Начать воспроизведение",
+		"startHint": "Браузер воспроизводит звук только после нажатия.",
+		"loading": "Загрузка Apple Music…",
+		"loadFailed": "Не удалось загрузить Apple Music.",
+		"problemSubscription": "Для воспроизведения нужна активная подписка Apple Music.",
+		"switchAccount": "Использовать другой аккаунт",
+		"problemOtherDevice": "Ваш аккаунт Apple сейчас воспроизводит музыку на другом устройстве.",
+		"problemGeneric": "Воспроизведение в Apple Music остановлено.",
+		"contentNotice": "Обложки и превью в этом канале загружаются от Apple. При загрузке Apple видит ваш IP-адрес.",
+		"contentAccept": "Включить",
+		"previewFailed": "Не удалось воспроизвести это превью.",
+		"standby": "Этот канал сейчас воспроизводится на другом вашем устройстве.",
+		"playHere": "Воспроизводить здесь",
+		"waitingForHost": "Пауза, пока организатор снова не включит воспроизведение.",
+		"playsOnComputer": "Apple Music воспроизводится на компьютере. Откройте этот канал там и подключите Apple Music."
 	},
 	"attribution": {
 		"youtube": "Разработано с YouTube"
