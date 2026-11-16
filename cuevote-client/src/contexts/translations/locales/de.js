@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Dieser Kanal erfordert ein angemeldetes Konto.",
 		"accountRequired": "Bitte melde dich an, um das zu tun.",
 		"sessionNotReady": "Deine Sitzung ist noch nicht bereit. Bitte lade die Seite neu.",
-		"guestLimit": "Zu viele neue Gäste in diesem Netzwerk. Bitte melde dich an."
+		"guestLimit": "Zu viele neue Gäste in diesem Netzwerk. Bitte melde dich an.",
+		"appleMusicUnavailable": "Apple Music ist auf diesem Server nicht verfügbar.",
+		"appleMusicNotConnected": "Der Host muss zuerst Apple Music verbinden.",
+		"appleMusicRoom": "In diesem Kanal läuft Apple Music. Füge einen Link von music.apple.com ein oder suche nach dem Namen.",
+		"appleMusicNotFound": "Das wurde auf Apple Music nicht gefunden.",
+		"appleMusicLinkUnsupported": "Füge einen Link zu einem einzelnen Song oder Musikvideo ein oder suche nach dem Namen.",
+		"appleMusicNotInStorefront": "Dieser Titel ist im Land des Hosts nicht auf Apple Music verfügbar.",
+		"appleMusicCatalogError": "Apple Music hat nicht geantwortet. Bitte versuche es erneut."
 	},
 	"connectAi": {
 		"willSendTo": "Bestätigung geht an",
@@ -32,13 +39,15 @@ export default {
 		"public": "Öffentlich",
 		"private": "Privat",
 		"myChannels": "Meine Kanäle",
-		"searchPlaceholder": "Kanäle suchen...",
+		"searchPlaceholder": "Kanäle suchen",
 		"connecting": "Verbinde mit Server...",
 		"createChannel": "Kanal erstellen",
 		"acceptCookies": "Cookies akzeptieren",
-		"loginToCreate": "Anmelden zum Erstellen",
+		"loginToCreate": "Zum Erstellen anmelden",
 		"noChannelsFound": "Keine Kanäle gefunden für",
 		"live": "Live",
+		"hostedBy": "Gastgeber: {name}",
+		"wrongPassword": "Falsches Passwort",
 		"createNewChannel": "Neuen Kanal erstellen",
 		"channelName": "Kanalname",
 		"channelNamePlaceholder": "z.B. Late Night Vibes",
@@ -47,7 +56,7 @@ export default {
 		"passwordPlaceholder": "Leer lassen für ungelisteten Kanal",
 		"cancel": "Abbrechen",
 		"enterPassword": "Passwort eingeben",
-		"passwordInputPlaceholder": "Kanalpasswort...",
+		"passwordInputPlaceholder": "Kanalpasswort",
 		"unlockJoin": "Entsperren & beitreten",
 		"welcome": "Willkommen",
 		"signOut": "Abmelden",
@@ -63,7 +72,7 @@ export default {
 		"terms": "Rechtliches",
 		"videoLanguage": "Videosprache",
 		"international": "International",
-		"searchCountries": "Länder suchen..."
+		"searchCountries": "Länder suchen"
 	},
 	"player": {
 		"errorGeneric": "Ein Fehler ist bei der Wiedergabe aufgetreten.",
@@ -81,7 +90,18 @@ export default {
 		"description": "Um Musik abzuspielen, müssen wir den YouTube-Player laden. Dies stellt eine Verbindung zu Google-Servern her.",
 		"policy": "Datenschutzerklärung lesen",
 		"accept": "Akzeptieren & Musik abspielen",
-		"youtubeConsent": "Wir benötigen deine Zustimmung, um den YouTube-Player zu laden. Bitte akzeptiere unten die Cookies."
+		"youtubeConsent": "Wir benötigen deine Zustimmung, um den YouTube-Player zu laden. Bitte akzeptiere unten die Cookies.",
+		"signInDescription": "Für die Anmeldung mit Google laden wir die Google-Anmeldung. Dabei wird eine Verbindung zu Googles Servern hergestellt. Dieselbe Zustimmung lädt in YouTube-Kanälen auch den YouTube-Player.",
+		"signInAccept": "Akzeptieren"
+	},
+	"join": {
+		"welcome": "Willkommen bei {brand}",
+		"youtubeTitle": "Audio & Video aktivieren",
+		"youtubeBody": "Um Musik von YouTube abzuspielen und bei der Playlist mitzumachen, brauchen wir Cookies.",
+		"accept": "Aktivieren & mitfeiern",
+		"agree": "Mit dem Beitritt stimmst du unserer {policy} zu.",
+		"policy": "Datenschutzerklärung",
+		"checking": "Kanal wird geprüft…"
 	},
 	"header": {
 		"back": "Zurück",
@@ -92,6 +112,7 @@ export default {
 		"signIn": "Mit Google anmelden",
 		"acceptCookies": "Cookies akzeptieren zum Anmelden",
 		"legal": "Rechtliche Informationen",
+		"player": "Player",
 		"playlist": "Wiedergabeliste",
 		"library": "Bibliothek",
 		"share": "Kanal teilen",
@@ -116,7 +137,7 @@ export default {
 		"autoRefill": "Auto-DJ",
 		"autoRefillTooltip": "Hält deinen Kanal live — spielt automatisch gemischte Tracks aus deiner Bibliothek, wenn die Warteschlange leer wird.",
 		"venueMode": "Partymodus",
-		"venueModeTooltip": "Partymodus: Gäste sehen nur Playlist (kein Video)",
+		"venueModeTooltip": "Partymodus: Gäste sehen nur die Playlist (kein Video)",
 		"allowPrelisten": "Vorhören erlauben",
 		"allowVoting": "Abstimmen erlauben",
 		"ownerTools": "Besitzer-Tools",
@@ -141,7 +162,7 @@ export default {
 		"requireLoginTooltip": "Gäste müssen sich anmelden, um abzustimmen und vorzuschlagen. Aus: Alle im Kanal können mitmachen."
 	},
 	"suggest": {
-		"placeholder": "Videotitel eingeben...",
+		"placeholder": "Videotitel eingeben",
 		"disabledPlaceholder": "Vorschläge deaktiviert",
 		"submit": "Senden",
 		"adding": "Hinzufügen...",
@@ -171,7 +192,7 @@ export default {
 		"unmuteAndPlay": "Ton an & Start",
 		"noInternet": "Keine Internetverbindung",
 		"windowTooSmall": "Fenster zu klein",
-		"windowTooSmallMessage": "Bitte vergrößere das Fenster, um CueVote weiter zu nutzen.",
+		"windowTooSmallMessage": "Vergrößere das Fenster, um CueVote weiter zu nutzen.",
 		"backToRadio": "Zurück zum Radio",
 		"retry": "Verbindung wiederholen",
 		"retrying": "Wiederholen...",
@@ -195,7 +216,9 @@ export default {
 		"delete": "Löschen",
 		"watch": "Auf YouTube",
 		"recommend": "Vorschläge erhalten",
-		"guest": "Gast"
+		"guest": "Gast",
+		"voteUp": "Dafür stimmen",
+		"voteDown": "Dagegen stimmen"
 	},
 	"library": {
 		"searchPlaceholder": "Bibliothek durchsuchen...",
@@ -204,6 +227,7 @@ export default {
 			"other": "{count} Videos"
 		},
 		"inLibrary": "in der Bibliothek",
+		"about": "Über die Bibliothek",
 		"info1": "Diese Bibliothek zeigt alle Videos, die in den letzten <strong>28 Tagen</strong> gespielt wurden.",
 		"info2": "Ältere Videos werden ausgeblendet, um die Aktualität der Metadaten zu gewährleisten, aber sie werden <strong>niemals gelöscht</strong>. Die <strong>Auto-Fill</strong>-Funktion merkt sich weiterhin deinen gesamten Verlauf und bringt ältere Videos bei Bedarf automatisch zurück in die Warteschlange (und diese Liste)!",
 		"empty": "Keine Videos gefunden"
@@ -230,9 +254,16 @@ export default {
 		"close": "Playlist schließen",
 		"history": "Verlauf",
 		"last50": "Letzte 50 von {count}",
-		"nowPlaying": "Jetzt gespielt",
+		"nowPlaying": "Läuft gerade",
+		"play": "Abspielen",
+		"pause": "Pausieren",
+		"mute": "Ton aus",
+		"unmute": "Ton an",
+		"volume": "Lautstärke",
+		"cinemaMode": "Kinomodus",
+		"exitCinemaMode": "Kinomodus verlassen",
 		"channelSuffix": "Kanal",
-		"upNext": "Als nächstes",
+		"upNext": "Als Nächstes",
 		"queueEmpty": "Warteschlange leer",
 		"errorNotFound": "Video nicht gefunden",
 		"errorRestricted": "Video in deinem Land nicht verfügbar",
@@ -242,7 +273,7 @@ export default {
 		"addVideos": "Füge Videos hinzu, um zu starten"
 	},
 	"mobile": {
-		"tagline": "Die Demokratische Jukebox",
+		"tagline": "Die demokratische Jukebox",
 		"tvDescription": "Verwandle diesen Bildschirm in die ultimative Jukebox. Lass deine Gäste über die Musik abstimmen.",
 		"mobileDescription": "Stimme über Videos ab, erstelle gemeinsam die Playlist und lass die beste Musik gewinnen.",
 		"tvFeatureTitle": "Kinomodus",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Videos, die von Anfragen ausgeschlossen wurden, erscheinen hier.",
 		"bannedOn": "Gesperrt am {date}",
 		"unban": "Entsperren"
+	},
+	"appleMusic": {
+		"source": "Musikquelle",
+		"sourceHint": "Apple Music läuft auf deinem Computer und braucht ein Abo.",
+		"connect": "Apple Music verbinden",
+		"connectHint": "Melde dich mit dem Apple-Konto an, mit dem du Apple Music abonniert hast.",
+		"signInFailed": "Die Anmeldung hat nicht geklappt.",
+		"start": "Wiedergabe starten",
+		"startHint": "Der Browser spielt Ton erst nach einem Klick ab.",
+		"loading": "Apple Music wird geladen…",
+		"loadFailed": "Apple Music konnte nicht geladen werden.",
+		"problemSubscription": "Zum Abspielen braucht Apple Music ein aktives Abo.",
+		"switchAccount": "Anderes Konto verwenden",
+		"problemOtherDevice": "Dein Apple-Konto spielt gerade auf einem anderen Gerät Musik ab.",
+		"problemGeneric": "Apple Music hat die Wiedergabe gestoppt.",
+		"contentNotice": "Cover und Vorschauen in diesem Kanal kommen von Apple. Beim Laden sieht Apple deine IP-Adresse.",
+		"contentAccept": "Einschalten",
+		"previewFailed": "Diese Vorschau lässt sich nicht abspielen.",
+		"standby": "Dieser Kanal läuft gerade auf einem anderen deiner Geräte.",
+		"playHere": "Hier abspielen",
+		"waitingForHost": "Pausiert, bis der Host wieder abspielt.",
+		"playsOnComputer": "Apple Music spielt am Computer. Öffne diesen Kanal dort und verbinde Apple Music."
 	},
 	"attribution": {
 		"youtube": "Entwickelt mit YouTube"

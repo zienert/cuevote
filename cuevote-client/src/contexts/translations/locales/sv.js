@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Den här kanalen kräver ett inloggat konto.",
 		"accountRequired": "Logga in för att göra det.",
 		"sessionNotReady": "Din session är inte redo än. Ladda om sidan.",
-		"guestLimit": "För många nya gäster på det här nätverket. Logga in för att fortsätta."
+		"guestLimit": "För många nya gäster på det här nätverket. Logga in för att fortsätta.",
+		"appleMusicUnavailable": "Apple Music är inte tillgängligt på den här servern.",
+		"appleMusicNotConnected": "Värden måste först ansluta Apple Music.",
+		"appleMusicRoom": "Den här kanalen spelar Apple Music. Klistra in en länk från music.apple.com eller sök på namn.",
+		"appleMusicNotFound": "Hittades inte på Apple Music.",
+		"appleMusicLinkUnsupported": "Klistra in en länk till en enskild låt eller musikvideo, eller sök på namn.",
+		"appleMusicNotInStorefront": "Den här låten är inte tillgänglig på Apple Music i värdens land.",
+		"appleMusicCatalogError": "Apple Music svarade inte. Försök igen."
 	},
 	"connectAi": {
 		"willSendTo": "Godkännandet skickas till",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Logga in för att skapa",
 		"noChannelsFound": "Inga kanaler hittades för",
 		"live": "Live",
+		"hostedBy": "Värd: {name}",
+		"wrongPassword": "Fel lösenord",
 		"createNewChannel": "Skapa ny kanal",
 		"channelName": "Kanalnamn",
 		"channelNamePlaceholder": "t.ex. Late Night Vibes",
@@ -81,13 +90,25 @@ export default {
 		"description": "För att spela musik måste vi ladda YouTube-spelaren. Detta ansluter till Googles servrar.",
 		"policy": "Läs vår integritetspolicy",
 		"accept": "Acceptera & Spela musik",
-		"youtubeConsent": "Vi behöver ditt samtycke för att ladda YouTube-spelaren. Acceptera cookies nedan."
+		"youtubeConsent": "Vi behöver ditt samtycke för att ladda YouTube-spelaren. Acceptera cookies nedan.",
+		"signInDescription": "För att logga in med Google laddar vi Googles inloggning, som ansluter till Googles servrar. Samma samtycke laddar även YouTube-spelaren i YouTube-kanaler.",
+		"signInAccept": "Godkänn"
+	},
+	"join": {
+		"welcome": "Välkommen till {brand}",
+		"youtubeTitle": "Aktivera ljud och video",
+		"youtubeBody": "För att spela musik från YouTube och vara med i spellistan behöver vi använda cookies.",
+		"accept": "Aktivera och gå med i festen",
+		"agree": "Genom att gå med godkänner du vår {policy}.",
+		"policy": "integritetspolicy",
+		"checking": "Kontrollerar kanalen…"
 	},
 	"header": {
 		"profileSettings": "Profil & Inställningar",
 		"signIn": "Logga in med Google",
 		"acceptCookies": "Acceptera cookies för att logga in",
 		"legal": "Juridisk information",
+		"player": "Spelare",
 		"playlist": "Spellista",
 		"library": "Bibliotek",
 		"share": "Dela",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internetanslutning",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Fönstret är för litet",
+		"windowTooSmallMessage": "Gör fönstret större för att fortsätta använda CueVote.",
+		"backToRadio": "Tillbaka till radion",
 		"retry": "Försök ansluta igen",
 		"switching": "Byter kanal...",
 		"channelNotFound": "Kanalen finns inte",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Ta bort",
 		"watch": "Titta på YouTube",
 		"recommend": "Hämta förslag",
-		"guest": "Gäst"
+		"guest": "Gäst",
+		"voteUp": "Rösta upp",
+		"voteDown": "Rösta ned"
 	},
 	"library": {
 		"searchPlaceholder": "Sök i biblioteket...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} låtar"
 		},
 		"inLibrary": "i biblioteket",
+		"about": "Om biblioteket",
 		"info1": "Detta bibliotek visar unika låtar som spelats de senaste <strong>28 dagarna</strong>.",
 		"info2": "Äldre låtar döljs för metadata-färskhet, men de <strong>raderas aldrig</strong>. Funktionen <strong>Autopåfyllning</strong> kommer ihåg hela din historik och hämtar automatiskt tillbaka äldre låtar till kön (och denna lista) vid behov!",
 		"empty": "Inga låtar hittades"
@@ -224,6 +248,13 @@ export default {
 		"history": "Historik",
 		"last50": "Senaste 50 (av {count})",
 		"nowPlaying": "Spelas nu",
+		"play": "Spela upp",
+		"pause": "Pausa",
+		"mute": "Stäng av ljud",
+		"unmute": "Slå på ljud",
+		"volume": "Volym",
+		"cinemaMode": "Bioläge",
+		"exitCinemaMode": "Avsluta bioläge",
 		"upNext": "Nästa",
 		"queueEmpty": "Kön är tom",
 		"errorNotFound": "Video hittades inte",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Videor som bannats från förfrågningar visas här.",
 		"bannedOn": "Bannad {date}",
 		"unban": "Avbanna"
+	},
+	"appleMusic": {
+		"source": "Musikkälla",
+		"sourceHint": "Apple Music spelas upp på din dator och kräver ett Apple Music-abonnemang.",
+		"connect": "Anslut Apple Music",
+		"connectHint": "Logga in med det Apple-konto som har ditt Apple Music-abonnemang.",
+		"signInFailed": "Inloggningen misslyckades.",
+		"start": "Starta uppspelning",
+		"startHint": "Webbläsaren spelar upp ljud först efter ett klick.",
+		"loading": "Laddar Apple Music…",
+		"loadFailed": "Det gick inte att ladda Apple Music.",
+		"problemSubscription": "Apple Music kräver ett aktivt abonnemang för att spela upp det här.",
+		"switchAccount": "Använd ett annat konto",
+		"problemOtherDevice": "Ditt Apple-konto spelar upp på en annan enhet.",
+		"problemGeneric": "Apple Music stoppade uppspelningen.",
+		"contentNotice": "Omslag och förhandsgranskningar i den här kanalen kommer från Apple. När de laddas ser Apple din IP-adress.",
+		"contentAccept": "Slå på",
+		"previewFailed": "Den här förhandsgranskningen kan inte spelas upp.",
+		"standby": "Den här kanalen spelas just nu på en annan av dina enheter.",
+		"playHere": "Spela här",
+		"waitingForHost": "Pausad tills värden spelar igen.",
+		"playsOnComputer": "Apple Music spelas upp på en dator. Öppna kanalen där och anslut Apple Music."
 	},
 	"attribution": {
 		"youtube": "Utvecklad med YouTube"

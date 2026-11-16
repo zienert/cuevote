@@ -15,6 +15,9 @@ lerna-debug.log*
 # Build output
 dist
 dist-ssr
+# update_server.sh stages the next build and keeps the previous one
+dist.next
+dist.prev
 
 # Local config
 *.local
@@ -56,3 +59,6 @@ certs/
 *.pem
 *.key
 *.crt
+
+# Apple MusicKit private keys (AuthKey_*.p8, must never be committed)
+*.p8

@@ -22,6 +22,7 @@ import { config } from "./config.js";
 import { CueVoteBridge } from "./wsClient.js";
 import { registerDjTools } from "./tools/dj.js";
 import { provider, finalizeAuthorization } from "./oauth/provider.js";
+import { registerGuard } from "./oauth/registerGuard.js";
 import { audit } from "./audit.js";
 import { mintSessionToken } from "./minter.js";
 
@@ -52,6 +53,8 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 const app = express();
+// No framework banner on a public endpoint.
+app.disable("x-powered-by");
 const issuerUrl = new URL(config.http.publicUrl);
 
 // DNS-rebinding protection: when CUEVOTE_HTTP_ALLOWED_HOSTS is set, reject any
@@ -77,6 +80,8 @@ if (config.http.allowedHosts.length) {
 }
 
 // OAuth 2.1 endpoints: /.well-known/*, /authorize, /token, /register, /revoke.
+// Client registrations pass the size limits in registerGuard first.
+app.post("/register", registerGuard);
 app.use(
   mcpAuthRouter({
     provider,
@@ -102,10 +107,21 @@ app.post("/oauth/finalize", express.json(), (req: Request, res: Response) => {
     });
     return void res.status(401).json({ error: "unauthorized" });
   }
-  const body = (req.body ?? {}) as { handle?: string; userId?: string };
+  const body = (req.body ?? {}) as {
+    handle?: string;
+    userId?: string;
+    shownClient?: unknown;
+    shownHost?: unknown;
+  };
   if (!body.handle || !body.userId) return void res.status(400).json({ error: "missing handle or userId" });
+  // What the consent page displayed. Missing values count as empty, so a page
+  // that sends none can only approve a client without name and host.
+  const shown = {
+    client: typeof body.shownClient === "string" ? body.shownClient : "",
+    host: typeof body.shownHost === "string" ? body.shownHost : "",
+  };
   try {
-    res.json({ redirectTo: finalizeAuthorization(String(body.handle), String(body.userId)) });
+    res.json({ redirectTo: finalizeAuthorization(String(body.handle), String(body.userId), shown) });
   } catch (e) {
     res.status(400).json({ error: e instanceof Error ? e.message : "finalize_failed" });
   }

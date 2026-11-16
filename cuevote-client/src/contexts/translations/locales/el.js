@@ -7,7 +7,14 @@ export default {
 		"loginRequired": "Αυτό το κανάλι απαιτεί συνδεδεμένο λογαριασμό.",
 		"accountRequired": "Συνδεθείτε για να το κάνετε αυτό.",
 		"sessionNotReady": "Η συνεδρία σας δεν είναι ακόμη έτοιμη. Ανανεώστε τη σελίδα.",
-		"guestLimit": "Πάρα πολλοί νέοι επισκέπτες σε αυτό το δίκτυο. Συνδεθείτε για να συνεχίσετε."
+		"guestLimit": "Πάρα πολλοί νέοι επισκέπτες σε αυτό το δίκτυο. Συνδεθείτε για να συνεχίσετε.",
+		"appleMusicUnavailable": "Το Apple Music δεν είναι διαθέσιμο σε αυτόν τον διακομιστή.",
+		"appleMusicNotConnected": "Ο οικοδεσπότης πρέπει πρώτα να συνδέσει το Apple Music.",
+		"appleMusicRoom": "Αυτό το κανάλι παίζει Apple Music. Επικολλήστε έναν σύνδεσμο από το music.apple.com ή αναζητήστε με όνομα.",
+		"appleMusicNotFound": "Δεν βρέθηκε στο Apple Music.",
+		"appleMusicLinkUnsupported": "Επικολλήστε σύνδεσμο για ένα μόνο τραγούδι ή μουσικό βίντεο ή αναζητήστε με το όνομα.",
+		"appleMusicNotInStorefront": "Αυτό το κομμάτι δεν είναι διαθέσιμο στο Apple Music στη χώρα του οικοδεσπότη.",
+		"appleMusicCatalogError": "Το Apple Music δεν απάντησε. Δοκιμάστε ξανά."
 	},
 	"connectAi": {
 		"willSendTo": "Η έγκριση θα σταλεί στο",
@@ -39,6 +46,8 @@ export default {
 		"loginToCreate": "Συνδεθείτε για Δημιουργία",
 		"noChannelsFound": "Δεν βρέθηκαν κανάλια για",
 		"live": "Ζωντανά",
+		"hostedBy": "Οικοδεσπότης: {name}",
+		"wrongPassword": "Λάθος κωδικός",
 		"createNewChannel": "Δημιουργία Νέου Καναλιού",
 		"channelName": "Όνομα Καναλιού",
 		"channelNamePlaceholder": "π.χ. Late Night Vibes",
@@ -81,13 +90,25 @@ export default {
 		"description": "Για την αναπαραγωγή μουσικής, πρέπει να φορτώσουμε το YouTube Player. Αυτό συνδέεται με διακομιστές της Google.",
 		"policy": "Διαβάστε την Πολιτική Απορρήτου",
 		"accept": "Αποδοχή & Αναπαραγωγή",
-		"youtubeConsent": "Χρειαζόμαστε τη συγκατάθεσή σας για τη φόρτωση του YouTube Player. Παρακαλούμε αποδεχτείτε τα cookies παρακάτω."
+		"youtubeConsent": "Χρειαζόμαστε τη συγκατάθεσή σας για τη φόρτωση του YouTube Player. Παρακαλούμε αποδεχτείτε τα cookies παρακάτω.",
+		"signInDescription": "Για σύνδεση με Google φορτώνουμε τη σύνδεση της Google, η οποία συνδέεται στους διακομιστές της Google. Η ίδια συγκατάθεση φορτώνει επίσης το πρόγραμμα αναπαραγωγής YouTube στα κανάλια YouTube.",
+		"signInAccept": "Αποδοχή"
+	},
+	"join": {
+		"welcome": "Καλώς ήρθατε στο {brand}",
+		"youtubeTitle": "Ενεργοποίηση ήχου και βίντεο",
+		"youtubeBody": "Για να παίζουμε μουσική από το YouTube και να συμμετέχετε στη λίστα αναπαραγωγής, χρειάζεται να χρησιμοποιούμε cookies.",
+		"accept": "Ενεργοποίηση και συμμετοχή στο πάρτι",
+		"agree": "Συμμετέχοντας, αποδέχεστε την {policy} μας.",
+		"policy": "Πολιτική Απορρήτου",
+		"checking": "Έλεγχος καναλιού…"
 	},
 	"header": {
 		"profileSettings": "Προφίλ & Ρυθμίσεις",
 		"signIn": "Σύνδεση με Google",
 		"acceptCookies": "Αποδεχτείτε cookies για σύνδεση",
 		"legal": "Νομικές Πληροφορίες",
+		"player": "Αναπαραγωγή",
 		"playlist": "Λίστα Αναπαραγωγής",
 		"library": "Βιβλιοθήκη",
 		"share": "Κοινοποίηση",
@@ -153,9 +174,9 @@ export default {
 	},
 	"app": {
 		"noInternet": "Χωρίς σύνδεση στο διαδίκτυο",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
-		"backToRadio": "Back to Radio",
+		"windowTooSmall": "Το παράθυρο είναι πολύ μικρό",
+		"windowTooSmallMessage": "Μεγαλώστε το παράθυρο για να συνεχίσετε να χρησιμοποιείτε το CueVote.",
+		"backToRadio": "Πίσω στο ραδιόφωνο",
 		"retry": "Επαναпроσπάθεια σύνδεσης",
 		"switching": "Αλλαγή Καναλιού...",
 		"channelNotFound": "Το κανάλι δεν υπάρχει",
@@ -188,7 +209,9 @@ export default {
 		"delete": "Διαγραφή",
 		"watch": "Δείτε στο YouTube",
 		"recommend": "Λήψη προτάσεων",
-		"guest": "Επισκέπτης"
+		"guest": "Επισκέπτης",
+		"voteUp": "Ψήφος υπέρ",
+		"voteDown": "Ψήφος κατά"
 	},
 	"library": {
 		"searchPlaceholder": "Αναζήτηση βιβλιοθήκης...",
@@ -197,6 +220,7 @@ export default {
 			"other": "{count} κομμάτια"
 		},
 		"inLibrary": "στη βιβλιοθήκη",
+		"about": "Σχετικά με τη βιβλιοθήκη",
 		"info1": "Αυτή η βιβλιοθήκη εμφανίζει μοναδικά κομμάτια που παίχτηκαν τις τελευταίες <strong>28 ημέρες</strong>.",
 		"info2": "Τα παλαιότερα κομμάτια κρύβονται για φρεσκάδα δεδομένων, αλλά <strong>δεν διαγράφονται ποτέ</strong>. Η λειτουργία <strong>Αυτόματο Γέμισμα</strong> θυμάται ολόκληρο το ιστορικό σας και θα επαναφέρει αυτόματα παλιά κομμάτια στην ουρά (και σε αυτή τη λίστα) όταν χρειαστεί!",
 		"empty": "Δεν βρέθηκαν κομμάτια"
@@ -224,6 +248,13 @@ export default {
 		"history": "Ιστορικό",
 		"last50": "Τελευταία 50 (από {count})",
 		"nowPlaying": "Παίζει Τώρα",
+		"play": "Αναπαραγωγή",
+		"pause": "Παύση",
+		"mute": "Σίγαση",
+		"unmute": "Κατάργηση σίγασης",
+		"volume": "Ένταση",
+		"cinemaMode": "Λειτουργία σινεμά",
+		"exitCinemaMode": "Έξοδος από λειτουργία σινεμά",
 		"upNext": "Επόμενο",
 		"queueEmpty": "Η ουρά είναι άδεια",
 		"errorNotFound": "Το βίντεο δεν βρέθηκε",
@@ -276,6 +307,28 @@ export default {
 		"emptySubtitle": "Τα βίντεο που έχουν αποκλειστεί από τα αιτήματα θα εμφανιστούν εδώ.",
 		"bannedOn": "Αποκλεισμένο στις {date}",
 		"unban": "Άρση αποκλεισμού"
+	},
+	"appleMusic": {
+		"source": "Πηγή μουσικής",
+		"sourceHint": "Το Apple Music παίζει στον υπολογιστή σας και απαιτεί συνδρομή στο Apple Music.",
+		"connect": "Σύνδεση Apple Music",
+		"connectHint": "Συνδεθείτε με τον λογαριασμό Apple που έχει τη συνδρομή σας στο Apple Music.",
+		"signInFailed": "Η σύνδεση δεν ολοκληρώθηκε.",
+		"start": "Έναρξη αναπαραγωγής",
+		"startHint": "Το πρόγραμμα περιήγησης παίζει ήχο μόνο μετά από ένα κλικ.",
+		"loading": "Φόρτωση του Apple Music…",
+		"loadFailed": "Δεν ήταν δυνατή η φόρτωση του Apple Music.",
+		"problemSubscription": "Για την αναπαραγωγή απαιτείται ενεργή συνδρομή στο Apple Music.",
+		"switchAccount": "Χρήση άλλου λογαριασμού",
+		"problemOtherDevice": "Ο λογαριασμός σας Apple αναπαράγει μουσική σε άλλη συσκευή.",
+		"problemGeneric": "Το Apple Music διέκοψε την αναπαραγωγή.",
+		"contentNotice": "Τα εξώφυλλα και οι προεπισκοπήσεις σε αυτό το κανάλι προέρχονται από την Apple. Κατά τη φόρτωσή τους, η Apple βλέπει τη διεύθυνση IP σας.",
+		"contentAccept": "Ενεργοποίηση",
+		"previewFailed": "Δεν είναι δυνατή η αναπαραγωγή αυτής της προεπισκόπησης.",
+		"standby": "Αυτό το κανάλι παίζει τώρα σε άλλη συσκευή σας.",
+		"playHere": "Αναπαραγωγή εδώ",
+		"waitingForHost": "Σε παύση μέχρι ο οικοδεσπότης να παίξει ξανά.",
+		"playsOnComputer": "Το Apple Music παίζει σε υπολογιστή. Ανοίξτε εκεί αυτό το κανάλι και συνδέστε το Apple Music."
 	},
 	"attribution": {
 		"youtube": "Αναπτύχθηκε με το YouTube"
