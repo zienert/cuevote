@@ -93,6 +93,7 @@ private const val REQUEST_NOTIFICATIONS = 1
 //   marked         the page says this device is the channel's player, sounding
 //                  or not: data-apple-player on <html>, set by web clients that
 //                  know of it. A frame cannot set it.
+//   youtube        there is a YouTube player on the page
 //   title, artist  of what MusicKit plays or has loaded
 private const val PLAYBACK_PROBE_JS = """
 (function () {
@@ -107,6 +108,7 @@ private const val PLAYBACK_PROBE_JS = """
     return {
       playing: playing,
       marked: mark === 'playing' || mark === 'paused',
+      youtube: !!document.querySelector('iframe[src*="youtube"]'),
       title: item ? String(item.title || '') : '',
       artist: item ? String(item.artistName || '') : ''
     };
@@ -117,7 +119,7 @@ private const val PLAYBACK_PROBE_JS = """
 """
 
 // What the probe found on the page.
-private class ApplePlayer(val playing: Boolean, val marked: Boolean, val title: String, val artist: String)
+private class ApplePlayer(val playing: Boolean, val marked: Boolean, val youtube: Boolean, val title: String, val artist: String)
 
 class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
@@ -512,6 +514,12 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             // No Apple player on the page: a service that runs gives up after
             // its grace period.
             val player = parseApplePlayer(result) ?: return@evaluateJavascript
+            // Nothing goes on in the background on a page with a YouTube
+            // player, whatever else is on it.
+            if (player.youtube) {
+                PlaybackService.stop()
+                return@evaluateJavascript
+            }
             if (player.marked) markSeen = true
             // This device is the channel's player although nothing sounds
             // (paused, or nothing to play): the page says so itself, or, on a
@@ -536,6 +544,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             ApplePlayer(
                 playing = found.optBoolean("playing"),
                 marked = found.optBoolean("marked"),
+                youtube = found.optBoolean("youtube"),
                 title = notificationText(found.optString("title")),
                 artist = notificationText(found.optString("artist")),
             )
