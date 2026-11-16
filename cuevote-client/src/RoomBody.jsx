@@ -1925,7 +1925,9 @@ function RoomBody() {
         }}
       >
         <div
-          className={`absolute inset-0 border-4 ${previewTrack ? "border-green-500" : "border-transparent"} transition-colors duration-300 box-border pointer-events-none z-20`}
+          // A preview is framed in the brand's orange; green belongs to the
+          // title that plays in the channel.
+          className={`absolute inset-0 border-2 ${previewTrack ? "border-accent/70" : "border-transparent"} transition-colors duration-200 box-border pointer-events-none z-20`}
         ></div>
         {/* The owner's Apple player stays mounted in every view and is only
             hidden: MusicKit's video lives in its container, and a video taken
@@ -2070,41 +2072,46 @@ function RoomBody() {
 
       {
         previewTrack ? (
-          <div className="fixed bottom-0 left-0 w-full bg-green-900/95 backdrop-blur-md border-t border-green-700 px-3 py-2 sm:px-6 sm:py-3 flex items-center justify-between z-[80] select-none">
-            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+          // The bar of a preview: a quiet surface, the word "Preview" in
+          // orange before the title, and the way back as the one orange button.
+          <div className="fixed bottom-0 left-0 z-[80] flex w-full select-none items-center justify-between gap-3 border-t border-line bg-card px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] pt-2 sm:px-6 sm:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pt-3">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
               <button
                 onClick={handleStopPreview}
-                className="bg-white text-green-900 hover:bg-gray-100 transition-colors rounded-full p-2 sm:p-3 shadow-lg flex-shrink-0 flex items-center gap-2"
+                className="cv-btn cv-btn-accent cv-hit h-10 flex-none rounded-full px-4 font-semibold shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] max-sm:w-10 max-sm:px-0"
                 title={t('app.backToRadio')}
+                aria-label={t('app.backToRadio')}
               >
-                <ArrowLeft size={18} className="sm:w-6 sm:h-6" />
-                <span className="font-bold pr-2 hidden sm:inline">{t('app.backToRadio')}</span>
+                <ArrowLeft size={18} aria-hidden="true" />
+                <span className="max-sm:hidden">{t('app.backToRadio')}</span>
               </button>
-              <div className="truncate min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 items-baseline gap-2">
+                  <span className="flex-none text-xs font-semibold text-accent">{t('track.preview')}</span>
                   {previewTrack.title ? (
-                    <h3 className="font-bold text-white text-sm sm:text-base leading-tight truncate">{previewTrack.title}</h3>
+                    <h3 dir="auto" className="cv-bidi truncate text-sm font-semibold leading-tight text-ink sm:text-base">{previewTrack.title}</h3>
                   ) : (
-                    <Skeleton className="h-4 w-32 max-w-full bg-green-700/60" />
+                    <Skeleton className="h-4 w-32 max-w-full" />
                   )}
-                  <span className="bg-green-500 text-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold flex-shrink-0">{t('track.preview')}</span>
                 </div>
                 {previewTrack.artist ? (
-                  <p className="text-green-200 text-xs sm:text-sm truncate">{previewTrack.artist}</p>
+                  <p dir="auto" className="cv-bidi truncate text-xs text-ink-2 sm:text-sm">{previewTrack.artist}</p>
                 ) : (
-                  <Skeleton className="h-3 w-20 max-w-full mt-1 bg-green-700/50" />
+                  <Skeleton className="mt-1 h-3 w-20 max-w-full" />
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 text-green-200 pl-2 sm:pl-4 flex-shrink-0">
+            <div className="flex flex-none items-center gap-1 text-ink-2 sm:gap-2">
               <button
                 onClick={(event) => {
                   event.stopPropagation();
                   handleMuteToggle();
                 }}
-                className="hover:text-white transition-colors"
+                aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                className="cv-hit flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-150 hover:bg-raised hover:text-ink"
               >
-                {isMuted ? <VolumeX /> : <Volume2 />}
+                {isMuted ? <VolumeX size={20} aria-hidden="true" /> : <Volume2 size={20} aria-hidden="true" />}
               </button>
               <input
                 type="range"
@@ -2113,7 +2120,8 @@ function RoomBody() {
                 step="1"
                 value={volume}
                 onChange={handleVolumeChange}
-                className={`accent-green-500 w-24 ${isMuted ? "opacity-50" : ""} `}
+                aria-label={t('playlist.volume')}
+                className={`w-24 accent-accent ${isMuted ? "opacity-50" : ""}`}
                 onClick={(event) => event.stopPropagation()}
               />
             </div>

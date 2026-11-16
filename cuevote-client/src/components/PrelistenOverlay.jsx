@@ -41,28 +41,22 @@ export function PrelistenOverlay({ hasConsent, playbackError, playerContainerRef
 		<div className={`fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center ${paddingTop} ${paddingBottom} px-4 animate-fadeIn`}>
 			<div
 				ref={containerRef}
-				className="w-full max-w-5xl aspect-video max-h-full bg-black rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 relative"
+				className="relative aspect-video max-h-full w-full max-w-5xl overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-line"
 			>
 				{isTooSmall ? (
 					<div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black p-4 text-center animate-fadeIn">
-						<div className="mx-auto w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-3">
-							<Maximize2 size={20} />
-						</div>
-						<h2 className="text-sm font-bold text-white mb-1">Window Too Small</h2>
-						<p className="text-xs text-neutral-400">
-							Resize to view
-						</p>
+						<Maximize2 size={20} className="mb-3 text-accent" aria-hidden="true" />
+						<h2 className="mb-1 text-sm font-semibold text-ink">{t('app.windowTooSmall')}</h2>
+						<p className="text-xs text-ink-2">{t('app.windowTooSmallMessage')}</p>
 					</div>
 				) : (
 					<PlayerErrorBoundary>
 						{hasConsent ? (
 							playbackError ? (
-								<div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900 text-center p-6 space-y-4">
-									<div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400">
-										<AlertTriangle size={24} />
-									</div>
+								<div className="flex h-full w-full flex-col items-center justify-center space-y-3 bg-card p-6 text-center">
+									<AlertTriangle size={24} className="text-ink-2" aria-hidden="true" />
 									<div>
-										<p className="text-white font-medium mb-1">
+										<p className="mb-1 font-medium text-ink">
 											{playbackError === 100 ? t('player.errorNotFound') : (playbackError === 101 || playbackError === 150 ? t('player.errorRestricted') : t('player.errorGeneric'))}
 										</p>
 									</div>
@@ -72,7 +66,7 @@ export function PrelistenOverlay({ hasConsent, playbackError, playerContainerRef
 									playerContainerRef={playerContainerRef}
 								/>
 							)
-						) : (CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="absolute inset-0 flex items-center justify-center bg-black text-neutral-500">Loading…</div>)}
+						) : (CookieBlockedPlaceholderComponent ? <CookieBlockedPlaceholderComponent /> : <div className="absolute inset-0 flex items-center justify-center bg-black text-ink-3">Loading…</div>)}
 					</PlayerErrorBoundary>
 				)}
 			</div>
