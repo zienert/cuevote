@@ -52,6 +52,12 @@ const RELOAD_FINISHED_MS = 10000;
 // server below 12 h).
 const TOKEN_RENEW_BEFORE_MS = 60 * 60 * 1000;
 
+// On <html> while this device plays the room: "playing" when the room is meant
+// to sound, "paused" when it is paused or has nothing to play. For the app
+// wrappers, which read it in the main frame to know that a silent page is
+// between two titles or paused, and not done. A frame cannot set it.
+const PLAYER_MARK = 'data-apple-player';
+
 // MusicKit keeps the signed-in user's token here (key: music.<id>.media-user-token).
 const STORED_USER_TOKEN = /^music\.[^.]+\.media-user-token$/;
 
@@ -615,6 +621,14 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		}, JOIN_FIRST_MS);
 		return () => clearTimeout(timer);
 	}, [asked, enabled, isPlaying, connected, setAsked, tellRoom]);
+
+	// Tell the app wrappers that this device plays the room (PLAYER_MARK).
+	useEffect(() => {
+		if (!canPlay) return undefined;
+		const sounding = asked ? asked === 'play' : !!isPlaying && !!currentKey;
+		document.documentElement.setAttribute(PLAYER_MARK, sounding ? 'playing' : 'paused');
+		return () => document.documentElement.removeAttribute(PLAYER_MARK);
+	}, [canPlay, asked, isPlaying, currentKey]);
 
 	// The system's media controls, while this device plays the room.
 	useEffect(() => {
