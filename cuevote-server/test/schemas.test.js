@@ -69,6 +69,19 @@ describe('Zod Schemas', () => {
       assert.ok(!result.success);
     });
 
+    // Lobby builds already in browsers send null for a public room's password.
+    it('should accept a public room with a null password', () => {
+      const result = schemas.CreateRoomPayload.safeParse({ name: 'Open Room', isPrivate: false, password: null });
+      assert.ok(result.success);
+      assert.equal(result.data.password, null);
+    });
+
+    // bcrypt ignores everything past 72 bytes.
+    it('should reject a password longer than 72 chars', () => {
+      assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'R', isPrivate: true, password: 'x'.repeat(72) }).success);
+      assert.ok(!schemas.CreateRoomPayload.safeParse({ name: 'R', isPrivate: true, password: 'x'.repeat(73) }).success);
+    });
+
     it('should accept the two providers and nothing else', () => {
       assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'A', provider: 'apple' }).success);
       assert.ok(schemas.CreateRoomPayload.safeParse({ name: 'Y', provider: 'youtube' }).success);

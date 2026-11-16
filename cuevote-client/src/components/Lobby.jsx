@@ -613,7 +613,7 @@ export function Lobby() {
                 description: `Hosted by ${user.name}`,
                 color: "from-gray-700 to-black",
                 isPrivate,
-                password: isPrivate ? createPassword : null,
+                ...(isPrivate ? { password: createPassword } : {}),
                 languageFlag,
                 provider: appleMusicAvailable ? provider : 'youtube'
             }
