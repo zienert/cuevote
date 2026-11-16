@@ -37,7 +37,11 @@
 //                     link asks for the password (any password opens it).
 //   ?offline          the device has no internet
 //   ?lang=de          the language
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+//   ?v=1..4           PROPOSALS: the loudness controls of an Apple Music channel
+//                     (1 today, 2 tidy, 3 hint, 4 mute), with a picker to flip
+//                     between them; ?picker=0 hides the picker, ?hint=stay keeps
+//                     the hint line of proposal 3 up
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import RoomBody from '../RoomBody';
 import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
@@ -45,6 +49,7 @@ import { Consent } from '../contexts/ConsentContext';
 import { Language } from '../contexts/LanguageContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
 import { deviceDetection } from '../utils/deviceDetection';
+import { VOLUME_PROPOSALS, volumeProposal } from '../utils/volumeProposal';
 
 const PARAMS = new URLSearchParams(window.location.search);
 const CONNECTION = PARAMS.get('conn') || '';
@@ -56,9 +61,10 @@ if (PARAMS.has('offline')) {
 // What the device detection answers, per ?device. Set before the room renders:
 // RoomBody and Header ask while rendering.
 const DEVICES = {
-	phone: { isIOS: true, isMobile: true, isMobileWebBrowser: true },
+	phone: { isIOS: true, isMobile: true, isMobileWebBrowser: true, isVolumeLocked: true },
 	android: { isAndroid: true, isMobile: true, isMobileWebBrowser: true },
-	app: { isIOS: true, isMobile: true, isNativeApp: true },
+	// The iPhone app: a page cannot set the volume there.
+	app: { isIOS: true, isMobile: true, isNativeApp: true, isVolumeLocked: true },
 	desktop: {},
 };
 const DEVICE = DEVICES[PARAMS.get('device')];
@@ -288,6 +294,78 @@ function fakeYouTube(progressRef) {
 	return { Player };
 }
 
+// PROPOSALS: the picker to flip between the proposals. Its look and behaviour
+// are fixed harness chrome, not part of the design.
+const PICKER_NAMES = ['Heute', 'Aufgeräumt', 'Hinweis', 'Stumm'];
+const PICKER_CSS = `
+.proto-picker { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(10, 10, 10, 0.82); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 8px 24px rgba(0, 0, 0, 0.24), 0 2px 6px rgba(0, 0, 0, 0.12); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; line-height: 1; -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none; }
+.proto-picker-highlight { position: absolute; top: 4px; left: 0; height: 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
+.proto-picker[data-ready] .proto-picker-highlight { transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1), width 250ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (prefers-reduced-motion: reduce) { .proto-picker[data-ready] .proto-picker-highlight { transition: none; } }
+.proto-picker-item { position: relative; display: flex; align-items: center; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.55); font: inherit; cursor: pointer; transition: color 150ms ease-out, transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (hover: hover) and (pointer: fine) { .proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); } }
+.proto-picker-item:active { transform: scale(0.97); }
+.proto-picker-item:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+.proto-picker-item[data-active] { color: #fff; }
+.proto-picker[data-position="top"] { bottom: auto; top: 24px; }
+`;
+
+function ProposalPicker({ current, onPick }) {
+	const navRef = useRef(null);
+	const [ready, setReady] = useState(false);
+	const [box, setBox] = useState({ width: 0, left: 0 });
+	useLayoutEffect(() => {
+		const measure = () => {
+			const item = navRef.current?.querySelectorAll('.proto-picker-item')[current];
+			if (item) setBox({ width: item.offsetWidth, left: item.offsetLeft });
+		};
+		measure();
+		window.addEventListener('resize', measure);
+		return () => window.removeEventListener('resize', measure);
+	}, [current]);
+	// The highlight slides only after the first paint.
+	useEffect(() => {
+		const frame = requestAnimationFrame(() => requestAnimationFrame(() => setReady(true)));
+		return () => cancelAnimationFrame(frame);
+	}, []);
+	useEffect(() => {
+		const onKey = (event) => {
+			if (/^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+			if (event.metaKey || event.ctrlKey || event.altKey) return;
+			const number = parseInt(event.key, 10);
+			if (number >= 1 && number <= PICKER_NAMES.length) onPick(number - 1);
+			else if (event.key === 'ArrowRight') onPick((current + 1) % PICKER_NAMES.length);
+			else if (event.key === 'ArrowLeft') onPick((current - 1 + PICKER_NAMES.length) % PICKER_NAMES.length);
+		};
+		document.addEventListener('keydown', onKey);
+		return () => document.removeEventListener('keydown', onKey);
+	}, [current, onPick]);
+	return (
+		// At the top: the bar under test sits at the bottom of the screen.
+		<nav ref={navRef} className="proto-picker" aria-label="Prototype variants" data-position="top" data-ready={ready ? '' : undefined}>
+			<style>{PICKER_CSS}</style>
+			<span className="proto-picker-highlight" aria-hidden="true" style={{ width: box.width, transform: `translateX(${box.left}px)` }} />
+			{PICKER_NAMES.map((name, index) => (
+				<button
+					key={name}
+					type="button"
+					className="proto-picker-item"
+					data-active={index === current ? '' : undefined}
+					aria-current={index === current ? 'true' : undefined}
+					onClick={() => onPick(index)}
+				>
+					{name}
+				</button>
+			))}
+		</nav>
+	);
+}
+
+function initialProposal() {
+	const requested = parseInt(PARAMS.get('v'), 10);
+	return requested >= 1 && requested <= VOLUME_PROPOSALS.length ? requested - 1 : 0;
+}
+
 export default function RoomPreview() {
 	const provider = PARAMS.get('provider') === 'apple' ? 'apple' : 'youtube';
 	const isOwner = PARAMS.get('role') === 'owner';
@@ -307,6 +385,24 @@ export default function RoomPreview() {
 	const progressRef = useRef(47);
 	const progressAtRef = useRef(Date.now());
 	const added = useRef(0);
+
+	// PROPOSALS: the proposal in use, kept in ?v= so a reload stays on it.
+	const [proposal, setProposal] = useState(() => {
+		const index = initialProposal();
+		volumeProposal.set(VOLUME_PROPOSALS[index]);
+		// The hint of proposal 3 shows once per device: every preview is a first time.
+		try { window.localStorage.removeItem('cuevote_volume_hint_seen'); } catch { /* no storage */ }
+		return index;
+	});
+	const pickProposal = useCallback((index) => {
+		if (index < 0 || index >= VOLUME_PROPOSALS.length) return;
+		volumeProposal.set(VOLUME_PROPOSALS[index]);
+		try { window.localStorage.removeItem('cuevote_volume_hint_seen'); } catch { /* no storage */ }
+		const url = new URL(window.location.href);
+		url.searchParams.set('v', index + 1);
+		window.history.replaceState(null, '', url);
+		setProposal(index);
+	}, []);
 
 	const sendMessage = useCallback((message) => {
 		const payload = message.payload;
@@ -493,8 +589,10 @@ export default function RoomPreview() {
 	return (
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
-				<RoomBody />
+				{/* Switching mounts the room afresh; the swap itself is instant. */}
+				<RoomBody key={proposal} />
 			</WebSocketContext.Provider>
+			{PARAMS.get('picker') !== '0' && <ProposalPicker current={proposal} onPick={pickProposal} />}
 		</ConsentContext.Provider>
 	);
 }

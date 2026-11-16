@@ -53,7 +53,7 @@ function useShownProblem(problem, entryId) {
  * Whatever keeps it from playing is shown over the dimmed picture: a card
  * with the next step when the host has something to do, a quiet line when not.
  */
-export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
+export function AppleMusicHostPlayer({ apple, currentTrack, onRetry, standbyHint }) {
 	const { t } = Language.useLanguage();
 	const parsed = parseTrackKey(currentTrack?.videoId);
 	const isSong = parsed?.provider === 'apple' && parsed.kind === 'song';
@@ -87,7 +87,7 @@ export function AppleMusicHostPlayer({ apple, currentTrack, onRetry }) {
 	if (status === 'standby') {
 		// Another owner device plays the room: Apple streams one at a time.
 		card = (
-			<StatusCard icon={MonitorSmartphone} title={t('appleMusic.standby')}>
+			<StatusCard icon={MonitorSmartphone} title={t('appleMusic.standby')} text={standbyHint}>
 				<StatusButton icon={Play} onClick={claim}>{t('appleMusic.playHere')}</StatusButton>
 			</StatusCard>
 		);
@@ -179,4 +179,6 @@ AppleMusicHostPlayer.propTypes = {
 	currentTrack: PropTypes.object,
 	// "Try again" on a playback problem: asks the room to play again.
 	onRetry: PropTypes.func,
+	// PROPOSALS: a second line on the standby card (where the volume is set).
+	standbyHint: PropTypes.string,
 };

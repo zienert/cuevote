@@ -16,6 +16,7 @@ import { ApplePreviewOverlay } from "./components/ApplePreviewOverlay";
 import { StatusBar, StatusBarButton } from "./components/PlayerStatus";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
 import { useApplePreview } from "./hooks/useApplePreview";
+import { useVolumeProposal, volumeHintText } from "./utils/volumeProposal";
 import { parseTrackKey } from "./utils/trackKeys";
 import { Queue } from "./components/Queue";
 import { Suggestions } from "./components/Suggestions";
@@ -79,7 +80,7 @@ function RoomBody() {
   // const [hasConsent, setHasConsent] = useState(() => !!localStorage.getItem("cuevote_cookie_consent"));
   const consent = Consent.useConsent();
   const { hasConsent, hasAppleConsent, giveAppleConsent } = consent;
-  const { t } = Language.useLanguage();
+  const { t, language } = Language.useLanguage();
 
   // console.log("App Component MOUNTED, Room:", activeRoomId);
 
@@ -1300,12 +1301,50 @@ function RoomBody() {
   // only the YouTube start state (browsers allow muted autoplay); the Apple
   // host starts with a click and sound on.
   const setAppleVolume = apple.setVolume;
+  const setAppleMuted = apple.setMuted;
   useEffect(() => {
     if (isAppleRoom) setIsMuted(false);
   }, [isAppleRoom]);
+
+  // PROPOSALS (see utils/volumeProposal.js): what the loudness controls of an
+  // Apple Music channel do. One owner device plays the room; a device on
+  // standby changes nothing that is heard, and neither does an iPhone's page:
+  // its volume is locked to the device's buttons.
+  const volumeProposal = useVolumeProposal();
+  const volumeLocked = deviceDetection.isVolumeLocked();
+  const appleStandby = isAppleRoom && apple.status === 'standby';
+  let volumeControl = 'full';
+  if (isAppleRoom && volumeProposal !== 'today') {
+    if (appleStandby || (volumeLocked && volumeProposal !== 'mute')) volumeControl = 'none';
+  }
+  const muteThroughElement = isAppleRoom && volumeProposal === 'mute' && volumeLocked;
   useEffect(() => {
-    if (isAppleRoom) setAppleVolume(isMuted ? 0 : volume / 100);
-  }, [isAppleRoom, isMuted, volume, setAppleVolume]);
+    if (!isAppleRoom) return;
+    setAppleVolume(isMuted ? 0 : volume / 100);
+    // A locked volume leaves `muted` as the one thing a page can set.
+    setAppleMuted(muteThroughElement && isMuted);
+  }, [isAppleRoom, isMuted, volume, setAppleVolume, setAppleMuted, muteThroughElement]);
+
+  // 'hint': the room says once, on the device that plays it, where the volume
+  // is set. Shown for a few seconds the first time this device plays a channel.
+  const volumeHintDue = volumeProposal === 'hint' && isAppleRoom && volumeLocked && apple.status === 'ready';
+  const [volumeHintShown, setVolumeHintShown] = useState(false);
+  useEffect(() => {
+    if (!volumeHintDue) {
+      setVolumeHintShown(false);
+      return undefined;
+    }
+    let seen = false;
+    try { seen = window.localStorage.getItem('cuevote_volume_hint_seen') === '1'; } catch { /* no storage */ }
+    if (seen) return undefined;
+    setVolumeHintShown(true);
+    if (new URLSearchParams(window.location.search).get('hint') === 'stay') return undefined; // for pictures
+    const timer = setTimeout(() => {
+      setVolumeHintShown(false);
+      try { window.localStorage.setItem('cuevote_volume_hint_seen', '1'); } catch { /* no storage */ }
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [volumeHintDue]);
 
   // Event Handlers
 
@@ -1810,6 +1849,9 @@ function RoomBody() {
             hasPlayerView={!isVenueMode}
           />
           {connectionBar}
+          {volumeHintShown && (
+            <StatusBar icon={Volume2}>{volumeHintText(language, 'onDevice')}</StatusBar>
+          )}
           {showThrottleBar && (
             <div className="bg-yellow-600/95 text-white text-center py-1.5 text-xs font-medium">
               <div className="flex items-center justify-center gap-2 px-2">
@@ -1936,6 +1978,7 @@ function RoomBody() {
               <AppleMusicHostPlayer
                 apple={apple}
                 currentTrack={currentTrack}
+                standbyHint={volumeProposal === 'hint' ? volumeHintText(language, 'onOtherDevice') : undefined}
                 // Playing again loads the track afresh (useAppleMusicHost).
                 onRetry={() => sendMessage({ type: "PLAY_PAUSE", payload: true })}
               />
@@ -2141,6 +2184,8 @@ function RoomBody() {
               onHeightChange={handleControlsHeightChange}
               canShowControls={canShowControls}
               docked={isPhoneLayout}
+              volumeControl={volumeControl}
+              mutedAccent={muteThroughElement}
             />
           )
         )

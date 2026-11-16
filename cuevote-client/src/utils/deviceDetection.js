@@ -89,4 +89,17 @@ function isMobile() {
 	);
 }
 
-export const deviceDetection = { isTV, isTablet, isIOS, isNativeApp, isMobile, isAndroid, isMobileWebBrowser };
+// Whether a page's volume setting is ignored here. An iPhone leaves loudness to
+// its buttons: HTMLMediaElement.volume cannot be set, only `muted`. WebKit says
+// so with the :volume-locked pseudo-class; a browser that does not know the
+// selector throws, and sets the volume like any other.
+function isVolumeLocked() {
+	if (typeof document === 'undefined') return false;
+	try {
+		return document.createElement('audio').matches(':volume-locked');
+	} catch {
+		return false;
+	}
+}
+
+export const deviceDetection = { isTV, isTablet, isIOS, isNativeApp, isMobile, isAndroid, isMobileWebBrowser, isVolumeLocked };

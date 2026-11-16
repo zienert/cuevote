@@ -30,6 +30,12 @@ export function PlaybackControls({
   // On phones the bar is part of the room's column, above the suggest field,
   // instead of floating over the bottom edge.
   docked = false,
+  // What the bar offers for loudness: 'full' is the mute button (and the slider
+  // on a computer); 'none' where nothing on this device changes what is heard.
+  volumeControl = 'full',
+  // The mute button shows a muted player in the accent colour: where muting is
+  // the only loudness control, a silent room must not look like a quiet icon.
+  mutedAccent = false,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [tempVisible, setTempVisible] = useState(false);
@@ -223,17 +229,20 @@ export function PlaybackControls({
           </div>
 
           <div className="flex items-center gap-2 text-neutral-400 flex-shrink-0">
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                onMuteToggle();
-              }}
-              className="hover:text-orange-400 transition-colors"
-              disabled={!currentTrack}
-            >
-              {isMuted ? <VolumeX /> : <Volume2 />}
-            </button>
-            {!deviceDetection.isMobile() && (
+            {volumeControl === 'full' && (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onMuteToggle();
+                }}
+                className={`transition-colors ${mutedAccent && isMuted ? 'text-orange-400' : 'hover:text-orange-400'}`}
+                disabled={!currentTrack}
+                aria-pressed={isMuted}
+              >
+                {isMuted ? <VolumeX /> : <Volume2 />}
+              </button>
+            )}
+            {volumeControl === 'full' && !deviceDetection.isMobile() && (
               <input
                 type="range"
                 min="0"
@@ -303,4 +312,6 @@ PlaybackControls.propTypes = {
   onQueueToggle: PropTypes.func,
   upcomingCount: PropTypes.number,
   docked: PropTypes.bool,
+  volumeControl: PropTypes.oneOf(['full', 'none']),
+  mutedAccent: PropTypes.bool,
 };

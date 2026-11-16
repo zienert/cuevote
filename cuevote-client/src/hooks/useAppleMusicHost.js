@@ -536,5 +536,29 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		} catch { /* not ready yet */ }
 	}, [music]);
 
-	return { status, problem, connect, disconnect, start, claim, reportProblem, seek, getDuration, setVolume };
+	// Mutes the elements MusicKit plays through. MusicKit itself only ever sets
+	// `volume` (its mute() is volume = 0), which an iPhone ignores; `muted` is
+	// what a page can set there. Applied again whenever MusicKit starts an item:
+	// the video element comes and goes with music videos.
+	const mutedRef = useRef(false);
+	const applyMuted = useCallback(() => {
+		for (const element of document.querySelectorAll('#apple-music-player, #apple-music-video-player')) {
+			if (element.muted !== mutedRef.current) element.muted = mutedRef.current;
+		}
+	}, []);
+	const setMuted = useCallback((muted) => {
+		mutedRef.current = !!muted;
+		applyMuted();
+	}, [applyMuted]);
+	useEffect(() => {
+		if (!music) return undefined;
+		music.addEventListener('playbackStateDidChange', applyMuted);
+		music.addEventListener('nowPlayingItemDidChange', applyMuted);
+		return () => {
+			music.removeEventListener('playbackStateDidChange', applyMuted);
+			music.removeEventListener('nowPlayingItemDidChange', applyMuted);
+		};
+	}, [music, applyMuted]);
+
+	return { status, problem, connect, disconnect, start, claim, reportProblem, seek, getDuration, setVolume, setMuted };
 }
