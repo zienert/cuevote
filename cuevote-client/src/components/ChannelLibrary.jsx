@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Julian Zienert
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { X, Search, Library, Music2 } from "lucide-react";
+import { Search, Music2, ChevronDown } from "lucide-react";
 import { Language } from '../contexts/LanguageContext';
 import { dangerousHtml } from '../utils/sanitizeHtml';
 import { Track } from "./Track";
@@ -20,6 +20,8 @@ export function ChannelLibrary({
 }) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [expandedTrackId, setExpandedTrackId] = useState(null);
+	// What the library holds and why older videos leave it: closed until asked for.
+	const [aboutOpen, setAboutOpen] = useState(false);
 	const { t } = Language.useLanguage();
 
 	// Infinite Scroll State
@@ -97,38 +99,60 @@ export function ChannelLibrary({
 
 
 	return (
-		<div className="w-full h-full flex flex-col bg-[#0a0a0a] text-white md:animate-in md:fade-in md:slide-in-from-bottom-10 md:duration-300">
+		<div className="flex h-full w-full flex-col bg-page text-ink">
 
-			{/* Search */}
-			<div className="p-4 border-b border-neutral-800 bg-black/20 backdrop-blur-md">
-				<div className="relative max-w-2xl mx-auto">
-					<Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" size={18} />
-					<input
-						type="text"
-						placeholder={t('library.searchPlaceholder')}
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						className="w-full bg-neutral-900 border border-neutral-800 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-orange-500 transition-colors"
-					/>
+			{/* Search, the count, and the explanation behind a small switch */}
+			<div className="border-b border-line px-3 py-3 sm:px-4">
+				<div className="mx-auto max-w-3xl">
+					<div className="relative">
+						<Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" size={18} aria-hidden="true" />
+						<input
+							type="text"
+							placeholder={t('library.searchPlaceholder')}
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="block h-11 w-full rounded-xl border border-line bg-card pl-10 pr-3 text-base text-ink placeholder:text-ink-3 transition-[border-color,box-shadow] duration-150 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-accent/70 sm:h-10 sm:text-sm"
+						/>
+					</div>
+					<div className="mt-3 flex items-center justify-between gap-3 px-1">
+						<p className="text-[13px] text-ink-2">
+							<span className="font-medium tabular-nums text-accent">
+								{t('library.videos', { count: filteredVideos.length })}
+							</span>{' '}
+							{t('library.inLibrary')}
+						</p>
+						{!searchQuery && (
+							<button
+								type="button"
+								aria-expanded={aboutOpen}
+								aria-controls="library-about"
+								onClick={() => setAboutOpen((open) => !open)}
+								className="cv-hit flex flex-none items-center gap-1 rounded-md text-[13px] text-ink-2 transition-colors duration-150 hover:text-ink"
+							>
+								{t('library.about')}
+								<ChevronDown size={14} className={`transition-transform duration-150 ${aboutOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+							</button>
+						)}
+					</div>
+					{!searchQuery && (
+						<div
+							id="library-about"
+							className={`grid transition-[grid-template-rows] duration-200 ease-cv motion-reduce:transition-none ${aboutOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+						>
+							<div className="min-h-0 overflow-hidden" inert={!aboutOpen}>
+								<div className="space-y-2 px-1 pt-3 text-[13px] leading-relaxed text-ink-2 [&_strong]:font-medium [&_strong]:text-ink">
+									<p dangerouslySetInnerHTML={dangerousHtml(t('library.info1'))}></p>
+									<p dangerouslySetInnerHTML={dangerousHtml(t('library.info2'))}></p>
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
-				<p className="text-xs text-neutral-500 text-center mt-3 font-medium">
-					<span className="text-orange-500">
-						{t('library.videos', { count: filteredVideos.length })}
-					</span>{' '}
-					{t('library.inLibrary')}
-				</p>
 			</div>
 
 			{/* Content */}
-			<div className="flex-1 overflow-y-auto custom-scrollbar p-4">
-				{!searchQuery && (
-					<div className="mb-6 max-w-lg mx-auto bg-neutral-900/40 p-4 rounded-xl border border-neutral-800/50">
-						<p className="text-sm text-neutral-400 text-center leading-relaxed" dangerouslySetInnerHTML={dangerousHtml(t('library.info1'))}></p>
-						<p className="text-xs text-neutral-500 text-center mt-2 leading-relaxed px-4" dangerouslySetInnerHTML={dangerousHtml(t('library.info2'))}></p>
-					</div>
-				)}
-
-				<div className="space-y-2 max-w-3xl mx-auto">
+			<div className="custom-scrollbar flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-4">
+				<div className="mx-auto max-w-3xl space-y-1">
 					{visibleVideos.length > 0 ? (
 						<>
 							{visibleVideos.map((track, i) => (
@@ -155,9 +179,9 @@ export function ChannelLibrary({
 							<div ref={observerTarget} className="h-4 w-full" />
 						</>
 					) : (
-						<div className="flex flex-col items-center justify-center py-20 text-neutral-600 gap-4">
-							<Music2 size={48} className="opacity-20" />
-							<p>{t('library.empty')}</p>
+						<div className="flex flex-col items-center justify-center gap-3 py-16 text-ink-2">
+							<Music2 size={32} strokeWidth={1.5} className="text-ink-3" aria-hidden="true" />
+							<p className="text-sm">{t('library.empty')}</p>
 						</div>
 					)}
 				</div>
