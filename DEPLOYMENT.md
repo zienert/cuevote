@@ -119,8 +119,9 @@ ACTIVE_CHANNEL_DAYS=60
 
 > **MCP ops server (optional):** rather than setting `ADMIN_TOKEN` by hand, run
 > `./setup-mcp.sh` from the repo root after deploying — it generates the token,
-> builds the MCP, writes its `.env`, verifies the admin API, and prints the
-> client command. See [cuevote-mcp/README.md](cuevote-mcp/README.md).
+> builds the MCP, sets the admin keys in `cuevote-mcp/.env` (every other line
+> there stays), verifies the admin API, and prints the client command. Running
+> it again is safe. See [cuevote-mcp/README.md](cuevote-mcp/README.md).
 
 ### Start Backend
 ```bash
@@ -489,15 +490,18 @@ The **public** "AI DJ" endpoint (`cuevote-mcp/src/http.ts`, served at
 
 **1. Server env** (`cuevote-server/.env`) — then restart the server:
 ```ini
-MCP_SESSION_SECRET=<random>                 # already set if you ran setup-mcp.sh
+MCP_SESSION_SECRET=<random>                 # NEW; setup-mcp.sh does not set it
 CUEVOTE_OAUTH_FINALIZE_SECRET=<random>      # NEW; the MCP must use the same value
 MCP_INTERNAL_URL=http://127.0.0.1:8082      # where the remote MCP listens
 ```
+Generate each `<random>` with `openssl rand -hex 32`. `setup-mcp.sh` creates
+only `ADMIN_TOKEN`.
 ```bash
 pm2 restart cuevote-server
 ```
 
-**2. Remote-MCP env** (`cuevote-mcp/.env`):
+**2. Remote-MCP env** (`cuevote-mcp/.env`, the file `setup-mcp.sh` also writes;
+a re-run of it changes only its three admin keys and keeps these):
 ```ini
 CUEVOTE_HTTP_HOST=127.0.0.1
 CUEVOTE_HTTP_PORT=8082
