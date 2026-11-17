@@ -276,6 +276,26 @@ describe('Room', () => {
       assert.ok(room.state.progress >= 60 && room.state.progress <= 61, `goes on at 60 s, got ${room.state.progress}`);
       room.destroy();
     });
+
+    it('tells the clients where a paused track goes on', async () => {
+      const room = new Room('pause-told-room', 'Pause', null, { owner_id: 'owner-1' });
+      const owner = mockWs({ id: 'owner-1', name: 'Owner' });
+      room.addClient(owner);
+      room.state.queue = [{ id: 'current', videoId: 'v1', title: 'Current', score: 0, voters: {}, duration: 210, artist: 'A', thumbnail: 'x' }];
+      room.state.currentTrack = { ...room.state.queue[0], startedAt: Date.now() - 60000 };
+      room.state.isPlaying = true;
+      room.tick();
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: false });
+
+      // A player counts on from the last position it was told, and from the
+      // moment it was told. Told nothing on play, it added the pause.
+      owner._messages.length = 0;
+      await room.handleMessage(owner, { type: 'PLAY_PAUSE', payload: true });
+      const delta = owner._messages.find(m => m.type === 'state_delta' && m.payload.isPlaying === true);
+      assert.ok(delta, 'a play delta is sent');
+      assert.equal(delta.payload.progress, 60);
+      room.destroy();
+    });
   });
 
   describe('Playback Error Handling', () => {
@@ -1251,8 +1271,11 @@ describe('Room', () => {
       assert.equal(room.state.currentTrack.videoId, 'am:video:1');
       assert.equal(room.state.progress, held);
 
+      owner._messages.length = 0;
       await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'playing' } });
       assert.equal(room.state.waitingForHost, false);
+      const back = owner._messages.find(m => m.type === 'state_delta' && m.payload.waitingForHost === false);
+      assert.equal(back?.payload.progress, held, 'the clients are told where it goes on');
       room.tick();
       assert.equal(room.state.currentTrack.videoId, 'am:video:1', 'not skipped');
       assert.ok(room.state.progress >= held && room.state.progress <= held + 1, `goes on at ${held}, got ${room.state.progress}`);

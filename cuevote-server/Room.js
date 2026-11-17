@@ -502,7 +502,8 @@ class Room {
             this.hostMissingSince = null;
             if (this.state.waitingForHost) {
                 this.setTrackPosition(this.state.progress || 0);
-                this.updateState({ waitingForHost: false });
+                // With the position, as on play (updateState): the clock starts again.
+                this.updateState({ waitingForHost: false, progress: this.state.progress || 0 });
                 logger.info(`[Room ${this.id}] The Apple player is back: playing on.`);
             }
             return;
@@ -581,6 +582,11 @@ class Room {
             && !!newState.isPlaying !== !!this.state.isPlaying) {
             if (newState.isPlaying) {
                 this.setTrackPosition(this.state.progress || 0);
+                // The position goes out with the play: a player counts on from
+                // the last position it was told and from when it was told.
+                // Told nothing here, it added the pause and jumped ahead for
+                // a few seconds (17.11.2026).
+                newState = { ...newState, progress: this.state.progress || 0 };
             } else {
                 newState = { ...newState, progress: this.currentPosition() };
             }
