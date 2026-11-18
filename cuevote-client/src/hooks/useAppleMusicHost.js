@@ -48,6 +48,8 @@ const OWN_ECHO_MS = 600;
 // correct. This far from the room twice in a row, the reports are not
 // getting through, and the room's clock decides after all.
 const FAR_OFF_S = 8;
+// The system's position display is put right once it is this far off.
+const SHOWN_POSITION_SLACK_S = 1.2;
 const SONG_ASK_AGAIN_MS = 10000;
 // The host's own controls (hostPlay): how often the room is asked again until
 // it has followed, and for how long.
@@ -56,8 +58,6 @@ const ASK_GIVE_UP_MS = 30000;
 // A socket that just came back joins the room first; the server refuses a
 // room message ahead of that.
 const JOIN_FIRST_MS = 1500;
-// The step of the system's skip buttons where it names none.
-const SEEK_STEP_S = 15;
 // A seek this soon after a track change was aimed at the previous track,
 // whose bar was still showing. The server drops it as well.
 const SEEK_AFTER_CHANGE_MS = 2000;
@@ -797,6 +797,16 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		seekHere(target);
 	}, [music, sendRef, currentEntryRef, seekHere]);
 
+	// The system's "next track": the room moves on, as when the owner clicks
+	// the end of the bar. "Previous track" starts the current one again.
+	const hostNext = useCallback(() => {
+		if (!currentEntryRef.current) return;
+		// Pressed again because nothing seemed to happen: aimed at the track
+		// before, like a second click on the end of the bar.
+		if (Date.now() - entrySinceRef.current < SEEK_AFTER_CHANGE_MS) return;
+		sendRef.current({ type: 'NEXT_TRACK' });
+	}, [sendRef, currentEntryRef]);
+
 	// An ask stands until the room has followed. tellRoom sends it at once
 	// over an open socket; this sends it again: after a reconnect (the phone
 	// slept through its pause) or when a message got lost.
@@ -834,26 +844,72 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		const set = (action, handler) => {
 			try { session.setActionHandler(action, handler); } catch { /* an action this browser does not know */ }
 		};
-		const seekBy = (step) => hostSeek((music.currentPlaybackTime || 0) + step);
 		const apply = () => {
 			set('play', hostPlay);
 			set('pause', hostPause);
 			set('stop', hostPause);
 			set('seekto', (details) => hostSeek(details?.seekTime));
-			set('seekforward', (details) => seekBy(details?.seekOffset || SEEK_STEP_S));
-			set('seekbackward', (details) => seekBy(-(details?.seekOffset || SEEK_STEP_S)));
 			// MusicKit's own would skip within its one-item queue: the end of it.
-			set('nexttrack', null);
-			set('previoustrack', null);
+			set('nexttrack', hostNext);
+			set('previoustrack', () => hostSeek(0));
+			// Not the steps of a few seconds: a phone's lock screen has room for
+			// one pair of buttons and shows the steps in place of the tracks.
+			// The bar there seeks.
+			set('seekforward', null);
+			set('seekbackward', null);
 		};
 		apply();
 		// MusicKit puts its handlers back whenever what it can do changes.
 		music.addEventListener('capabilitiesChanged', apply);
 		return () => {
 			music.removeEventListener('capabilitiesChanged', apply);
-			['play', 'pause', 'stop', 'seekto', 'seekforward', 'seekbackward'].forEach(action => set(action, null));
+			['play', 'pause', 'stop', 'seekto', 'nexttrack', 'previoustrack'].forEach(action => set(action, null));
 		};
-	}, [canPlay, music, hostPlay, hostPause, hostSeek]);
+	}, [canPlay, music, hostPlay, hostPause, hostSeek, hostNext]);
+
+	// What the system shows for this player: playing or paused, and where in
+	// the track. Left to the browser, the display went by whichever media
+	// element it took for the main one, and on a phone's lock screen that is
+	// not always MusicKit's (18.11.2026).
+	useEffect(() => {
+		const session = typeof navigator !== 'undefined' ? navigator.mediaSession : null;
+		if (!canPlay || !session) return undefined;
+		let shown = null; // { duration, position, at, sounding }
+		const update = () => {
+			const sounding = askedRef.current ? askedRef.current === 'play' : isPlayingRef.current && !!currentKeyRef.current;
+			try { session.playbackState = sounding ? 'playing' : 'paused'; } catch { /* not supported */ }
+			if (typeof session.setPositionState !== 'function') return;
+			const entry = currentEntryRef.current;
+			const holds = !!entry && readyEntryRef.current === entry && holdsCurrentItem();
+			const duration = (holds && music.currentPlaybackDuration) || roomDurationRef.current || 0;
+			if (!(duration > 0)) {
+				if (shown) {
+					shown = null;
+					try { session.setPositionState(); } catch { /* not supported */ }
+				}
+				return;
+			}
+			// What is heard here; while it loads, where the room is.
+			const position = Math.min(duration, Math.max(0, holds ? music.currentPlaybackTime || 0 : roomPosition()));
+			if (shown && shown.duration === duration && shown.sounding === sounding) {
+				const counted = shown.position + (shown.sounding ? (Date.now() - shown.at) / 1000 : 0);
+				if (Math.abs(counted - position) < SHOWN_POSITION_SLACK_S) return;
+			}
+			try {
+				session.setPositionState({ duration, playbackRate: 1, position });
+				shown = { duration, position, at: Date.now(), sounding };
+			} catch { /* an odd duration: the browser's own display stays */ }
+		};
+		update();
+		const timer = setInterval(update, 1000);
+		music.addEventListener('playbackStateDidChange', update);
+		return () => {
+			clearInterval(timer);
+			music.removeEventListener('playbackStateDidChange', update);
+			try { session.setPositionState(); } catch { /* not supported */ }
+			try { session.playbackState = 'none'; } catch { /* not supported */ }
+		};
+	}, [canPlay, music, isPlayingRef, currentKeyRef, currentEntryRef, roomDurationRef, holdsCurrentItem, roomPosition]);
 
 	// Sign-in opens Apple's window. Its answer does not always reach this page
 	// (Chrome, 13.11.2026), although MusicKit has stored the user token: then a
