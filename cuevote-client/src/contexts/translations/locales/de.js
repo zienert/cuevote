@@ -267,7 +267,7 @@ export default {
 		"queueEmpty": "Warteschlange leer",
 		"errorNotFound": "Video nicht gefunden",
 		"errorRestricted": "Video in deinem Land nicht verfügbar",
-		"skippedRestricted": "'{title}' übersprungen (Nicht verfügbar)",
+		"skippedRestricted": "'{title}' übersprungen (nicht verfügbar)",
 		"skippedIPBlocked": "'{title}' übersprungen — YouTube beschränkt dieses Netzwerk",
 		"backToNow": "Zurück zum Aktuellen",
 		"addVideos": "Füge Videos hinzu, um zu starten"
