@@ -63,9 +63,10 @@ if (PARAMS.has('offline')) {
 // What the device detection answers, per ?device. Set before the room renders:
 // RoomBody and Header ask while rendering.
 const DEVICES = {
-	phone: { isIOS: true, isMobile: true, isMobileWebBrowser: true },
+	// An iPhone: pages cannot set the volume there.
+	phone: { isIOS: true, isMobile: true, isMobileWebBrowser: true, isVolumeLocked: true },
 	android: { isAndroid: true, isMobile: true, isMobileWebBrowser: true },
-	app: { isIOS: true, isMobile: true, isNativeApp: true },
+	app: { isIOS: true, isMobile: true, isNativeApp: true, isVolumeLocked: true },
 	desktop: {},
 };
 const DEVICE = DEVICES[PARAMS.get('device')];
