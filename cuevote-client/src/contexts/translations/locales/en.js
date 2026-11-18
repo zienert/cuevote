@@ -159,7 +159,15 @@ export default {
 		"close": "Close",
 		"changeLanguage": "Change Language",
 		"requireLogin": "Login required",
-		"requireLoginTooltip": "Guests must sign in to vote and suggest. Off: anyone in the channel can join in."
+		"requireLoginTooltip": "Guests must sign in to vote and suggest. Off: anyone in the channel can join in.",
+		"standbyThisPhone": "This phone only",
+		"standbyChannelScope": "For the channel, on all devices",
+		"standbyName": "Stay ready when paused",
+		"standbyUntilLeave": "Until I leave the channel",
+		"standbyLead": "When the channel is paused, this phone waits. While it waits, you can start playback from your computer. Once the time is up, you have to open the app on the phone first.",
+		"standbyAwake": "While the phone waits, it stays awake, even with the screen locked. This uses battery.",
+		"standbyNotice": "The CueVote notification stays visible the whole time.",
+		"standbyCharger": "For long waits, leave the phone on the charger."
 	},
 	"suggest": {
 		"placeholder": "Type a video name",

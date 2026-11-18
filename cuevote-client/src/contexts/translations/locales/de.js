@@ -159,7 +159,15 @@ export default {
 		"captionsTooltip": "Untertitel standardmäßig für alle Nutzer anzeigen, wenn sie den Player laden.",
 		"changeLanguage": "Sprache ändern",
 		"requireLogin": "Anmeldung erforderlich",
-		"requireLoginTooltip": "Gäste müssen sich anmelden, um abzustimmen und vorzuschlagen. Aus: Alle im Kanal können mitmachen."
+		"requireLoginTooltip": "Gäste müssen sich anmelden, um abzustimmen und vorzuschlagen. Aus: Alle im Kanal können mitmachen.",
+		"standbyThisPhone": "Nur dieses Handy",
+		"standbyChannelScope": "Für den Kanal, auf allen Geräten",
+		"standbyName": "Bei Pause bereit bleiben",
+		"standbyUntilLeave": "Bis ich den Kanal verlasse",
+		"standbyLead": "Wenn der Kanal pausiert ist, wartet dieses Handy. Solange es wartet, startest du die Wiedergabe vom Computer aus. Ist die Zeit um, musst du erst die App am Handy öffnen.",
+		"standbyAwake": "Solange das Handy wartet, bleibt es wach, auch mit gesperrtem Bildschirm. Das kostet Akku.",
+		"standbyNotice": "Die Benachrichtigung von CueVote bleibt so lange sichtbar.",
+		"standbyCharger": "Lass das Handy bei langen Zeiten am Ladegerät."
 	},
 	"suggest": {
 		"placeholder": "Videotitel eingeben",

@@ -26,7 +26,11 @@ import { Language } from './contexts/LanguageContext.jsx';
 import { ConditionalGoogleOAuthProvider } from './components/ConditionalGoogleOAuthProvider.jsx';
 
 import { MobileRedirectGuard } from './components/MobileRedirectGuard.jsx';
+import { markAppleStandby } from './utils/appleStandby';
 // ... previous imports
+
+// The Android app reads this device's standby choice from the page.
+markAppleStandby();
 
 createRoot(document.getElementById('root')).render(
   <ErrorBoundary>

@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Alati vlasnika",
 		"changeLanguage": "Promijeni jezik",
 		"requireLogin": "Potrebna prijava",
-		"requireLoginTooltip": "Gosti se moraju prijaviti za glasanje i predlaganje. Isključeno: svatko u kanalu može sudjelovati."
+		"requireLoginTooltip": "Gosti se moraju prijaviti za glasanje i predlaganje. Isključeno: svatko u kanalu može sudjelovati.",
+		"standbyThisPhone": "Samo ovaj telefon",
+		"standbyChannelScope": "Za kanal, na svim uređajima",
+		"standbyName": "Spremnost tijekom pauze",
+		"standbyUntilLeave": "Dok ne napustim kanal",
+		"standbyLead": "Kad je kanal pauziran, ovaj telefon čeka. Dok čeka, reprodukciju možete pokrenuti s računala. Kad vrijeme istekne, najprije morate otvoriti aplikaciju na telefonu.",
+		"standbyAwake": "Dok telefon čeka, ne prelazi u stanje mirovanja, čak ni kad je zaslon zaključan. To troši bateriju.",
+		"standbyNotice": "Obavijest aplikacije CueVote vidljiva je cijelo to vrijeme.",
+		"standbyCharger": "Pri dugom čekanju ostavite telefon na punjaču."
 	},
 	"suggest": {
 		"placeholder": "Upišite naslov...",

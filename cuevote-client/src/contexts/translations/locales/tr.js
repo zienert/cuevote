@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Sahip Araçları",
 		"changeLanguage": "Dili değiştir",
 		"requireLogin": "Giriş gerekli",
-		"requireLoginTooltip": "Misafirlerin oy vermek ve öneri yapmak için giriş yapması gerekir. Kapalı: kanaldaki herkes katılabilir."
+		"requireLoginTooltip": "Misafirlerin oy vermek ve öneri yapmak için giriş yapması gerekir. Kapalı: kanaldaki herkes katılabilir.",
+		"standbyThisPhone": "Sadece bu telefon",
+		"standbyChannelScope": "Kanal için, tüm cihazlarda",
+		"standbyName": "Duraklatıldığında hazır kal",
+		"standbyUntilLeave": "Kanaldan ayrılana kadar",
+		"standbyLead": "Kanal duraklatıldığında bu telefon bekler. Telefon beklerken oynatmayı bilgisayarınızdan başlatabilirsiniz. Süre dolduğunda önce telefonda uygulamayı açmanız gerekir.",
+		"standbyAwake": "Telefon beklerken ekran kilitliyken bile uyku moduna geçmez. Bu durum pil tüketir.",
+		"standbyNotice": "CueVote bildirimi bu süre boyunca görünür kalır.",
+		"standbyCharger": "Uzun beklemelerde telefonu şarjda bırakın."
 	},
 	"suggest": {
 		"placeholder": "Bir başlık yazın...",

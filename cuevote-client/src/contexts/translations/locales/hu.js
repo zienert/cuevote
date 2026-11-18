@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Tulajdonosi eszközök",
 		"changeLanguage": "Nyelv módosítása",
 		"requireLogin": "Bejelentkezés szükséges",
-		"requireLoginTooltip": "A vendégeknek be kell jelentkezniük a szavazáshoz és a javaslattételhez. Kikapcsolva: a csatornán bárki részt vehet."
+		"requireLoginTooltip": "A vendégeknek be kell jelentkezniük a szavazáshoz és a javaslattételhez. Kikapcsolva: a csatornán bárki részt vehet.",
+		"standbyThisPhone": "Csak ez a telefon",
+		"standbyChannelScope": "Az egész csatornára, minden eszközön",
+		"standbyName": "Készenlét szünet alatt",
+		"standbyUntilLeave": "Amíg el nem hagyom a csatornát",
+		"standbyLead": "Ha a csatorna szünetel, ez a telefon vár. Amíg vár, a számítógépedről indíthatod a lejátszást. Ha lejárt az idő, előbb meg kell nyitnod az alkalmazást a telefonon.",
+		"standbyAwake": "Amíg a telefon vár, nem megy alvó módba, zárolt képernyővel sem. Ez akkumulátort fogyaszt.",
+		"standbyNotice": "A CueVote-értesítés egész idő alatt látható marad.",
+		"standbyCharger": "Hosszú várakozásnál hagyd a telefont a töltőn."
 	},
 	"suggest": {
 		"placeholder": "Írj be egy címet...",

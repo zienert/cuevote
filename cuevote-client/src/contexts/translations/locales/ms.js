@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Alat Pemilik",
 		"changeLanguage": "Tukar bahasa",
 		"requireLogin": "Log masuk diperlukan",
-		"requireLoginTooltip": "Tetamu mesti log masuk untuk mengundi dan mencadangkan. Mati: sesiapa dalam saluran boleh menyertai."
+		"requireLoginTooltip": "Tetamu mesti log masuk untuk mengundi dan mencadangkan. Mati: sesiapa dalam saluran boleh menyertai.",
+		"standbyThisPhone": "Telefon ini sahaja",
+		"standbyChannelScope": "Untuk saluran, pada semua peranti",
+		"standbyName": "Kekal sedia semasa dijeda",
+		"standbyUntilLeave": "Sehingga saya keluar dari saluran",
+		"standbyLead": "Apabila saluran dijeda, telefon ini menunggu. Semasa ia menunggu, anda boleh memulakan main balik dari komputer anda. Apabila masa tamat, anda perlu membuka apl pada telefon dahulu.",
+		"standbyAwake": "Semasa telefon menunggu, ia tidak masuk ke mod tidur, walaupun skrin dikunci. Ini menggunakan bateri.",
+		"standbyNotice": "Pemberitahuan CueVote kekal kelihatan sepanjang masa itu.",
+		"standbyCharger": "Untuk masa menunggu yang lama, biarkan telefon pada pengecas."
 	},
 	"suggest": {
 		"placeholder": "Taip tajuk video...",

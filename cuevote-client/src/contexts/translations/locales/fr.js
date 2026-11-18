@@ -159,7 +159,15 @@ export default {
 		"captionsTooltip": "Afficher les sous-titres par défaut pour tous les utilisateurs lorsqu'ils chargent le lecteur.",
 		"changeLanguage": "Changer de langue",
 		"requireLogin": "Connexion requise",
-		"requireLoginTooltip": "Les invités doivent se connecter pour voter et proposer. Désactivé : tout le monde dans le canal peut participer."
+		"requireLoginTooltip": "Les invités doivent se connecter pour voter et proposer. Désactivé : tout le monde dans le canal peut participer.",
+		"standbyThisPhone": "Ce téléphone uniquement",
+		"standbyChannelScope": "Pour la chaîne, sur tous les appareils",
+		"standbyName": "Rester prêt pendant la pause",
+		"standbyUntilLeave": "Jusqu'à ce que je quitte la chaîne",
+		"standbyLead": "Quand la chaîne est en pause, ce téléphone reste en attente. Pendant cette attente, vous pouvez lancer la lecture depuis votre ordinateur. Une fois le délai écoulé, vous devez d'abord ouvrir l'app sur le téléphone.",
+		"standbyAwake": "Pendant l'attente, le téléphone ne se met pas en veille, même avec l'écran verrouillé. Cela consomme de la batterie.",
+		"standbyNotice": "La notification de CueVote reste visible pendant tout ce temps.",
+		"standbyCharger": "Pour une longue attente, laissez le téléphone en charge."
 	},
 	"suggest": {
 		"placeholder": "Tapez un titre...",

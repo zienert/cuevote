@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "所有者工具",
 		"changeLanguage": "切换语言",
 		"requireLogin": "需要登录",
-		"requireLoginTooltip": "访客必须登录才能投票和推荐。关闭时，频道内任何人都可以参与。"
+		"requireLoginTooltip": "访客必须登录才能投票和推荐。关闭时，频道内任何人都可以参与。",
+		"standbyThisPhone": "仅限此手机",
+		"standbyChannelScope": "适用于整个频道和所有设备",
+		"standbyName": "暂停时保持就绪",
+		"standbyUntilLeave": "直到我离开频道",
+		"standbyLead": "频道暂停时，这部手机将处于等待状态。等待期间，你可以从电脑上开始播放。时间到了以后，你需要先在手机上打开应用。",
+		"standbyAwake": "等待期间，手机不会休眠，锁屏时也一样。这会消耗电量。",
+		"standbyNotice": "在此期间，CueVote 的通知会一直显示。",
+		"standbyCharger": "等待时间较长时，请让手机保持充电。"
 	},
 	"suggest": {
 		"placeholder": "输入動画名...",

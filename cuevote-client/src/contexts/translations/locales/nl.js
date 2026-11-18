@@ -159,7 +159,15 @@ export default {
 		"captionsTooltip": "Toon standaard ondertitels voor alle gebruikers wanneer ze de speler laden.",
 		"changeLanguage": "Taal wijzigen",
 		"requireLogin": "Inloggen vereist",
-		"requireLoginTooltip": "Gasten moeten inloggen om te stemmen en voor te stellen. Uit: iedereen in het kanaal kan meedoen."
+		"requireLoginTooltip": "Gasten moeten inloggen om te stemmen en voor te stellen. Uit: iedereen in het kanaal kan meedoen.",
+		"standbyThisPhone": "Alleen deze telefoon",
+		"standbyChannelScope": "Voor het kanaal, op alle apparaten",
+		"standbyName": "Klaarstaan tijdens pauze",
+		"standbyUntilLeave": "Tot ik het kanaal verlaat",
+		"standbyLead": "Als het kanaal gepauzeerd is, wacht deze telefoon. Zolang hij wacht, kun je het afspelen starten vanaf je computer. Als de tijd om is, moet je eerst de app op de telefoon openen.",
+		"standbyAwake": "Zolang de telefoon wacht, gaat hij niet in slaapstand, ook niet als het scherm vergrendeld is. Dat kost batterij.",
+		"standbyNotice": "De melding van CueVote blijft al die tijd zichtbaar.",
+		"standbyCharger": "Leg de telefoon bij lange wachttijden aan de oplader."
 	},
 	"suggest": {
 		"placeholder": "Typ een titel...",

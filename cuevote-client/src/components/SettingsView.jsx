@@ -4,6 +4,8 @@ import React, { useEffect, useId, useState } from "react";
 import PropTypes from "prop-types";
 import { HelpCircle, ChevronLeft } from "lucide-react";
 import { Language } from '../contexts/LanguageContext';
+import { appKeepsChannelReady } from '../utils/appleStandby';
+import { StandbySetting } from './StandbySetting';
 
 // One setting: its name, an optional explanation that opens under the name
 // when the question mark is tapped (a hover bubble cannot be reached on a
@@ -169,6 +171,10 @@ export function SettingsView({
 					<div className="h-5 w-px bg-line" aria-hidden="true" />
 					<h2 className="text-base font-semibold text-ink">{t('header.settings')}</h2>
 				</div>
+
+				{/* This phone's own setting, in the Android app only: how long it
+				    keeps the paused channel ready. Works without a connection. */}
+				{isAppleRoom && appKeepsChannelReady() && <StandbySetting />}
 
 				<div className={`grid grid-cols-1 gap-6 transition-opacity duration-200 lg:grid-cols-3 ${!isConnected ? "pointer-events-none opacity-50 grayscale" : ""}`}>
 					{/* Column 1: Requests & Suggestions */}

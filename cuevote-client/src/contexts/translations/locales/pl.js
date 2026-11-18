@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Narzędzia właściciela",
 		"changeLanguage": "Zmień język",
 		"requireLogin": "Wymagane logowanie",
-		"requireLoginTooltip": "Goście muszą się zalogować, aby głosować i proponować. Wyłączone: każdy w kanale może dołączyć."
+		"requireLoginTooltip": "Goście muszą się zalogować, aby głosować i proponować. Wyłączone: każdy w kanale może dołączyć.",
+		"standbyThisPhone": "Tylko ten telefon",
+		"standbyChannelScope": "Dla kanału, na wszystkich urządzeniach",
+		"standbyName": "Gotowość podczas pauzy",
+		"standbyUntilLeave": "Dopóki nie opuszczę kanału",
+		"standbyLead": "Gdy kanał jest wstrzymany, ten telefon czeka. W tym czasie możesz rozpocząć odtwarzanie z komputera. Po upływie czasu musisz najpierw otworzyć aplikację na telefonie.",
+		"standbyAwake": "Gdy telefon czeka, nie przechodzi w tryb uśpienia, nawet przy zablokowanym ekranie. To zużywa baterię.",
+		"standbyNotice": "Powiadomienie CueVote jest widoczne przez cały ten czas.",
+		"standbyCharger": "Przy długim czekaniu zostaw telefon podłączony do ładowarki."
 	},
 	"suggest": {
 		"placeholder": "Wpisz tytuł...",

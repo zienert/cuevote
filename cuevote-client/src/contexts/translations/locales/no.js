@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Eierverktøy",
 		"changeLanguage": "Bytt språk",
 		"requireLogin": "Innlogging kreves",
-		"requireLoginTooltip": "Gjester må logge inn for å stemme og foreslå. Av: alle i kanalen kan delta."
+		"requireLoginTooltip": "Gjester må logge inn for å stemme og foreslå. Av: alle i kanalen kan delta.",
+		"standbyThisPhone": "Kun denne telefonen",
+		"standbyChannelScope": "For kanalen, på alle enheter",
+		"standbyName": "Stå klar ved pause",
+		"standbyUntilLeave": "Til jeg forlater kanalen",
+		"standbyLead": "Når kanalen er satt på pause, venter denne telefonen. Mens den venter, kan du starte avspillingen fra datamaskinen din. Når tiden er ute, må du først åpne appen på telefonen.",
+		"standbyAwake": "Mens telefonen venter, går den ikke i hvilemodus, heller ikke når skjermen er låst. Det bruker batteri.",
+		"standbyNotice": "Varselet fra CueVote vises hele tiden.",
+		"standbyCharger": "La telefonen stå på lading ved lange ventetider."
 	},
 	"suggest": {
 		"placeholder": "Skriv en tittel...",

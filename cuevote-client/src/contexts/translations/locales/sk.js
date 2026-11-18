@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Nástroje vlastníka",
 		"changeLanguage": "Zmeniť jazyk",
 		"requireLogin": "Vyžaduje sa prihlásenie",
-		"requireLoginTooltip": "Hostia sa musia prihlásiť, aby mohli hlasovať a navrhovať. Vypnuté: zapojiť sa môže ktokoľvek v kanáli."
+		"requireLoginTooltip": "Hostia sa musia prihlásiť, aby mohli hlasovať a navrhovať. Vypnuté: zapojiť sa môže ktokoľvek v kanáli.",
+		"standbyThisPhone": "Iba tento telefón",
+		"standbyChannelScope": "Pre kanál, na všetkých zariadeniach",
+		"standbyName": "Zostať pripravený pri pozastavení",
+		"standbyUntilLeave": "Kým neopustím kanál",
+		"standbyLead": "Keď je kanál pozastavený, tento telefón čaká. Kým čaká, môžete spustiť prehrávanie z počítača. Keď čas uplynie, musíte najprv otvoriť aplikáciu v telefóne.",
+		"standbyAwake": "Kým telefón čaká, neprejde do režimu spánku, ani keď je obrazovka zamknutá. To spotrebúva batériu.",
+		"standbyNotice": "Upozornenie CueVote zostáva celý čas viditeľné.",
+		"standbyCharger": "Pri dlhom čakaní nechajte telefón na nabíjačke."
 	},
 	"suggest": {
 		"placeholder": "Zadajte názov...",
