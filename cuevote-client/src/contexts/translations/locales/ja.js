@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "ログインして作成",
 		"noChannelsFound": "チャンネルが見つかりません:",
 		"live": "ライブ",
+		"hostedBy": "ホスト: {name}",
+		"wrongPassword": "パスワードが違います",
 		"createNewChannel": "新規チャンネル作成",
 		"channelName": "チャンネル名",
 		"channelNamePlaceholder": "例: 深夜のバイブス",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "インターネット接続がありません",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "ウィンドウが小さすぎます",
+		"windowTooSmallMessage": "CueVoteを引き続き使うには、ウィンドウを大きくしてください。",
 		"backToRadio": "ラジオに戻る",
 		"retry": "接続を再試行",
 		"retrying": "再試行中...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "削除",
 		"watch": "YouTubeで見る",
 		"recommend": "おすすめを取得",
-		"guest": "ゲスト"
+		"guest": "ゲスト",
+		"voteUp": "賛成に投票",
+		"voteDown": "反対に投票"
 	},
 	"library": {
 		"searchPlaceholder": "ライブラリを検索...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} 動画"
 		},
 		"inLibrary": "ライブラリ内",
+		"about": "ライブラリについて",
 		"info1": "このライブラリは過去 <strong>28日間</strong> に再生されたユニークな動画を表示します。",
 		"info2": "メタデータを最新に保つため古い動画は非表示になりますが、<strong>削除されることはありません</strong>。<strong>自動補充</strong>機能は全履歴を記憶しており、必要な時に自動的に古い動画をキュー（およびこのリスト）に戻します！",
 		"empty": "動画が見つかりません"
@@ -241,6 +246,13 @@ export default {
 		"history": "履歴",
 		"last50": "最近の50動画 (全 {count} 動画)",
 		"nowPlaying": "再生中",
+		"play": "再生",
+		"pause": "一時停止",
+		"mute": "ミュート",
+		"unmute": "ミュート解除",
+		"volume": "音量",
+		"cinemaMode": "シネマモード",
+		"exitCinemaMode": "シネマモードを終了",
 		"channelSuffix": "チャンネル",
 		"upNext": "次へ",
 		"queueEmpty": "キューは空です",

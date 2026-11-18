@@ -36,7 +36,7 @@ export function Suggestions({ suggestions, onAdd, onPreview, queueVideoIds }) {
 				return (
 					<div
 						key={video.videoId}
-						className={`group relative flex-shrink-0 w-40 snap-start bg-white/5 rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer border border-white/5 ${isAdded ? 'opacity-50 grayscale' : ''}`}
+						className={`group relative flex-shrink-0 w-40 snap-start bg-white/5 rounded-xl overflow-hidden hover:bg-white/10 transition-colors duration-150 cursor-pointer border border-white/5 ${isAdded ? 'opacity-50 grayscale' : ''}`}
 						onClick={(e) => !isAdded && handleAdd(e, video.videoId)}
 					>
 						{/* Thumbnail */}
@@ -46,7 +46,6 @@ export function Suggestions({ suggestions, onAdd, onPreview, queueVideoIds }) {
 								fallbackSrc={buildThumbnailUrl(video.videoId)}
 								alt={video.title}
 								className="w-full h-full"
-								imgClassName="group-hover:scale-105 transition-transform duration-500"
 								loading="lazy"
 							/>
 							{/* Overlay Icons */}
@@ -61,7 +60,7 @@ export function Suggestions({ suggestions, onAdd, onPreview, queueVideoIds }) {
 												e.stopPropagation();
 												onPreview(video);
 											}}
-											className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors hover:scale-110 active:scale-95"
+											className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-[background-color,transform] duration-150 ease-cv active:scale-95"
 											title={t('track.preview')}
 										>
 											<Headphones size={20} />
@@ -69,7 +68,7 @@ export function Suggestions({ suggestions, onAdd, onPreview, queueVideoIds }) {
 									)}
 									<button
 										onClick={(e) => handleAdd(e, video.videoId)}
-										className="p-2 rounded-full bg-orange-500 hover:bg-orange-400 text-white transition-colors hover:scale-110 active:scale-95 shadow-lg"
+										className="p-2 rounded-full bg-accent hover:bg-[#fb8b3c] text-accent-ink transition-[background-color,transform] duration-150 ease-cv active:scale-95"
 										title={t('track.add')}
 									>
 										<Plus size={20} />
@@ -78,8 +77,8 @@ export function Suggestions({ suggestions, onAdd, onPreview, queueVideoIds }) {
 							)}
 							{isAdded && (
 								<div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[1px]">
-									<div className="bg-green-500 rounded-full p-1 shadow-lg animate-in zoom-in duration-200">
-										<Check size={20} className="text-white" strokeWidth={3} />
+									<div className="bg-accent text-accent-ink rounded-full p-1 animate-in fade-in zoom-in-90 duration-200 ease-cv">
+										<Check size={20} strokeWidth={3} />
 									</div>
 								</div>
 							)}

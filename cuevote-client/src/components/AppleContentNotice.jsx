@@ -16,19 +16,19 @@ export function AppleContentNotice({ onAccept, layout = 'bar' }) {
 	return (
 		<div className={isCard
 			? 'mx-auto max-w-sm space-y-4 p-6 text-center'
-			: 'flex-none border-b border-neutral-800 bg-neutral-900/80 px-4 py-2'}
+			: 'flex-none border-b border-line bg-card px-4 py-2'}
 		>
 			<div className={isCard ? 'space-y-4' : 'max-w-3xl mx-auto flex items-center gap-3'}>
-				<p className={`${isCard ? 'text-sm text-neutral-300' : 'flex-1 text-xs text-neutral-400'} leading-snug`}>
+				<p className={`${isCard ? 'text-sm' : 'flex-1 text-xs'} leading-snug text-ink-2`}>
 					{t('appleMusic.contentNotice')}{' '}
-					<a href="/legal?tab=privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-200">
+					<a href="/legal?tab=privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition-colors duration-150 hover:text-ink">
 						{t('join.policy')}
 					</a>
 				</p>
 				<button
 					type="button"
 					onClick={onAccept}
-					className="shrink-0 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-black hover:bg-neutral-200 transition-colors"
+					className="cv-btn cv-btn-accent cv-hit h-9 shrink-0 font-semibold"
 				>
 					{t('appleMusic.contentAccept')}
 				</button>

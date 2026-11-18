@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Log ind for at oprette",
 		"noChannelsFound": "Ingen kanaler fundet for",
 		"live": "Live",
+		"hostedBy": "Vært: {name}",
+		"wrongPassword": "Forkert adgangskode",
 		"createNewChannel": "Opret ny kanal",
 		"channelName": "Kanalnavn",
 		"channelNamePlaceholder": "f.eks. Late Night Vibes",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internetforbindelse",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Vinduet er for lille",
+		"windowTooSmallMessage": "Gør vinduet større for at fortsætte med CueVote.",
 		"backToRadio": "Tilbage til radioen",
 		"retry": "Prøv forbindelse igen",
 		"switching": "Skifter kanal...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Slet",
 		"watch": "Se på YouTube",
 		"recommend": "Hent forslag",
-		"guest": "Gæst"
+		"guest": "Gæst",
+		"voteUp": "Stem op",
+		"voteDown": "Stem ned"
 	},
 	"library": {
 		"searchPlaceholder": "Søg i bibliotek...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} sange"
 		},
 		"inLibrary": "i bibliotek",
+		"about": "Om biblioteket",
 		"info1": "Dette bibliotek viser unikke sange spillet i de sidste <strong>28 dage</strong>.",
 		"info2": "Ældre sange skjules for at holde metadata friske, men de <strong>slettes aldrig</strong>. Funktionen <strong>Autooppfyldning</strong> husker stadig hele din historik og vil automatisk bringe ældre sange tilbage i køen (og denne liste) når det er nødvendigt!",
 		"empty": "Ingen sange fundet"
@@ -243,6 +248,13 @@ export default {
 		"history": "Historik",
 		"last50": "Sidste 50 (af {count})",
 		"nowPlaying": "Spiller nu",
+		"play": "Afspil",
+		"pause": "Pause",
+		"mute": "Slå lyd fra",
+		"unmute": "Slå lyd til",
+		"volume": "Lydstyrke",
+		"cinemaMode": "Biograftilstand",
+		"exitCinemaMode": "Forlad biograftilstand",
 		"upNext": "Næste",
 		"queueEmpty": "Kø er tom",
 		"errorNotFound": "Video ikke fundet",

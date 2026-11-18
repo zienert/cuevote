@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Mag-login upang Gumawa",
 		"noChannelsFound": "Walang channel na nahanap",
 		"live": "Live",
+		"hostedBy": "Host: {name}",
+		"wrongPassword": "Maling password",
 		"createNewChannel": "Gumawa ng Bagong Channel",
 		"channelName": "Pangalan ng Channel",
 		"channelNamePlaceholder": "hal. Late Night Vibes",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Walang Koneksyon sa Internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Masyadong maliit ang window",
+		"windowTooSmallMessage": "Palakihin ang window para magpatuloy sa paggamit ng CueVote.",
 		"backToRadio": "Bumalik sa Radyo",
 		"retry": "Subukan Muli ang Koneksyon",
 		"switching": "Nagpapalit ng Channel...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Tanggalin",
 		"watch": "Panoorin sa YouTube",
 		"recommend": "Kumuha ng mga mungkahi",
-		"guest": "Bisita"
+		"guest": "Bisita",
+		"voteUp": "Bumoto pabor",
+		"voteDown": "Bumoto laban"
 	},
 	"library": {
 		"searchPlaceholder": "Maghanap sa library...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} kanta"
 		},
 		"inLibrary": "nasa library",
+		"about": "Tungkol sa library",
 		"info1": "Ipinapakita ng library na ito ang mga natatanging kanta na pinatugtog sa nakaraang <strong>28 araw</strong>.",
 		"info2": "Ang mga lumang kanta ay nakatago para sa pagiging bago ng metadata, ngunit <strong>hindi kailanman tatanggalin</strong>. Ang tampok na <strong>Auto Refill</strong> ay naaalala pa rin ang iyong buong kasaysayan at awtomatikong ibabalik ang mga lumang kanta sa pila (at sa listahang ito) kapag kailangan!",
 		"empty": "Walang kanta na nahanap"
@@ -243,6 +248,13 @@ export default {
 		"history": "Kasaysayan",
 		"last50": "Huling 50 (ng {count})",
 		"nowPlaying": "Tumutugtog Ngayon",
+		"play": "I-play",
+		"pause": "I-pause",
+		"mute": "I-mute",
+		"unmute": "I-unmute",
+		"volume": "Volume",
+		"cinemaMode": "Cinema mode",
+		"exitCinemaMode": "Lumabas sa cinema mode",
 		"upNext": "Susunod",
 		"queueEmpty": "Walang laman ang pila",
 		"errorNotFound": "Hindi nahanap ang video",

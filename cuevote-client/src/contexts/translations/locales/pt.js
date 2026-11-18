@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Login para Criar",
 		"noChannelsFound": "Nenhum canal encontrado para",
 		"live": "Ao vivo",
+		"hostedBy": "Anfitrião: {name}",
+		"wrongPassword": "Palavra-passe incorreta",
 		"createNewChannel": "Criar Novo Canal",
 		"channelName": "Nome do Canal",
 		"channelNamePlaceholder": "ex. Vibe da Noite",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Sem conexão com a internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Janela demasiado pequena",
+		"windowTooSmallMessage": "Aumente a janela para continuar a usar o CueVote.",
 		"backToRadio": "Voltar à rádio",
 		"retry": "Tentar novamente",
 		"retrying": "Tentando...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Excluir",
 		"watch": "No YouTube",
 		"recommend": "Obter sugestões",
-		"guest": "Convidado"
+		"guest": "Convidado",
+		"voteUp": "Votar a favor",
+		"voteDown": "Votar contra"
 	},
 	"library": {
 		"searchPlaceholder": "Buscar na biblioteca...",
@@ -217,6 +221,7 @@ export default {
 			"other": "{count} vídeos"
 		},
 		"inLibrary": "na biblioteca",
+		"about": "Sobre a biblioteca",
 		"info1": "Esta biblioteca exibe vídeos únicas tocadas nos últimos <strong>28 dias</strong>.",
 		"info2": "Vídeos mais antigas são ocultadas para garantir a atualização dos metadados, mas <strong>nunca são excluídas</strong>. O recurso de <strong>Preenchimento Automático</strong> lembra de todo o seu histórico e trará automaticamente vídeos antigas de volta para a fila (e para esta lista) quando necessário!",
 		"empty": "Nenhuma vídeo encontrada"
@@ -245,6 +250,13 @@ export default {
 		"history": "Histórico",
 		"last50": "Últimas 50 de {count}",
 		"nowPlaying": "Tocando agora",
+		"play": "Reproduzir",
+		"pause": "Pausar",
+		"mute": "Silenciar",
+		"unmute": "Ativar som",
+		"volume": "Volume",
+		"cinemaMode": "Modo cinema",
+		"exitCinemaMode": "Sair do modo cinema",
 		"upNext": "A seguir",
 		"queueEmpty": "Fila vazia",
 		"errorNotFound": "Vídeo não encontrado",

@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Увійдіть, щоб створити",
 		"noChannelsFound": "Каналів не знайдено за запитом",
 		"live": "Наживо",
+		"hostedBy": "Ведучий: {name}",
+		"wrongPassword": "Неправильний пароль",
 		"createNewChannel": "Створити новий канал",
 		"channelName": "Назва каналу",
 		"channelNamePlaceholder": "напр., Нічні вібрації",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Немає підключення до інтернету",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Вікно замале",
+		"windowTooSmallMessage": "Збільште вікно, щоб і далі користуватися CueVote.",
 		"backToRadio": "Назад до радіо",
 		"retry": "Повторити спробу підключення",
 		"switching": "Перемикання каналу...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Видалити",
 		"watch": "Дивитися на YouTube",
 		"recommend": "Отримати рекомендації",
-		"guest": "Гість"
+		"guest": "Гість",
+		"voteUp": "Голосувати за",
+		"voteDown": "Голосувати проти"
 	},
 	"library": {
 		"searchPlaceholder": "Пошук у бібліотеці...",
@@ -218,6 +222,7 @@ export default {
 			"other": "{count} пісень"
 		},
 		"inLibrary": "у бібліотеці",
+		"about": "Про бібліотеку",
 		"info1": "Ця бібліотека відображає унікальні пісні, відтворені за останні <strong>28 днів</strong>.",
 		"info2": "Старі пісні приховуються для свіжості метаданих, але <strong>ніколи не видаляються</strong>. Функція <strong>Автозаповнення</strong> пам'ятає всю вашу історію і автоматично поверне старі пісні до черги (і цього списку) за потреби!",
 		"empty": "Пісень не знайдено"
@@ -247,6 +252,13 @@ export default {
 		"history": "Історія",
 		"last50": "Останні 50 (з {count})",
 		"nowPlaying": "Зараз грає",
+		"play": "Відтворити",
+		"pause": "Пауза",
+		"mute": "Вимкнути звук",
+		"unmute": "Увімкнути звук",
+		"volume": "Гучність",
+		"cinemaMode": "Режим кінотеатру",
+		"exitCinemaMode": "Вийти з режиму кінотеатру",
 		"channelSuffix": "Канал",
 		"upNext": "Далі",
 		"queueEmpty": "Черга порожня",

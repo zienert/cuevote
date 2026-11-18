@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Se connecter pour créer",
 		"noChannelsFound": "Aucune chaîne trouvée pour",
 		"live": "En direct",
+		"hostedBy": "Hôte : {name}",
+		"wrongPassword": "Mot de passe incorrect",
 		"createNewChannel": "Créer une Nouvelle Chaîne",
 		"channelName": "Nom de la Chaîne",
 		"channelNamePlaceholder": "ex. Ambiance Nocturne",
@@ -189,8 +191,8 @@ export default {
 		"listenMusic": "Écouter de la musique",
 		"unmuteAndPlay": "Son & Lecture",
 		"noInternet": "Pas de connexion internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Fenêtre trop petite",
+		"windowTooSmallMessage": "Agrandissez la fenêtre pour continuer à utiliser CueVote.",
 		"backToRadio": "Retour à la radio",
 		"retry": "Réessayer",
 		"retrying": "Tentative...",
@@ -214,7 +216,9 @@ export default {
 		"delete": "Supprimer",
 		"watch": "Sur YouTube",
 		"recommend": "Obtenir des suggestions",
-		"guest": "Invité"
+		"guest": "Invité",
+		"voteUp": "Voter pour",
+		"voteDown": "Voter contre"
 	},
 	"library": {
 		"searchPlaceholder": "Chercher dans la bibliothèque...",
@@ -224,6 +228,7 @@ export default {
 			"other": "{count} vidéos"
 		},
 		"inLibrary": "dans la bibliothèque",
+		"about": "À propos de la bibliothèque",
 		"info1": "Cette bibliothèque affiche les vidéos uniques jouées au cours des <strong>28 derniers jours</strong>.",
 		"info2": "Les anciennes vidéos sont masquées pour garantir la fraîcheur des métadonnées, mais elles ne sont <strong>jamais supprimées</strong>. La fonction <strong>Remplissage Auto</strong> se souvient de tout votre historique et ramènera automatiquement les anciennes vidéos dans la file d'attente (et cette liste) si nécessaire !",
 		"empty": "Aucune vidéo trouvée"
@@ -252,6 +257,13 @@ export default {
 		"history": "Historique",
 		"last50": "Derniers 50 sur {count}",
 		"nowPlaying": "Lecture en cours",
+		"play": "Lire",
+		"pause": "Mettre en pause",
+		"mute": "Couper le son",
+		"unmute": "Activer le son",
+		"volume": "Volume",
+		"cinemaMode": "Mode cinéma",
+		"exitCinemaMode": "Quitter le mode cinéma",
 		"channelSuffix": "Chaîne",
 		"upNext": "À suivre",
 		"queueEmpty": "File d'attente vide",

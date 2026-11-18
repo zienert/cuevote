@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "로그인하여 만들기",
 		"noChannelsFound": "채널을 찾을 수 없음:",
 		"live": "라이브",
+		"hostedBy": "호스트: {name}",
+		"wrongPassword": "비밀번호가 틀렸습니다",
 		"createNewChannel": "새 채널 만들기",
 		"channelName": "채널 이름",
 		"channelNamePlaceholder": "예: 늦은 밤 감성",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "인터넷에 연결되지 않음",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "창이 너무 작습니다",
+		"windowTooSmallMessage": "CueVote를 계속 사용하려면 창을 키워 주세요.",
 		"backToRadio": "라디오로 돌아가기",
 		"retry": "연결 재시도",
 		"retrying": "재시도 중...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "삭제",
 		"watch": "YouTube에서 보기",
 		"recommend": "추천 받기",
-		"guest": "게스트"
+		"guest": "게스트",
+		"voteUp": "찬성 투표",
+		"voteDown": "반대 투표"
 	},
 	"library": {
 		"searchPlaceholder": "라이브러리 검색...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} 동영상"
 		},
 		"inLibrary": "라이브러리에",
+		"about": "라이브러리 정보",
 		"info1": "이 라이브러리는 최근 <strong>28일</strong> 동안 재생된 고유한 동영상을 표시합니다.",
 		"info2": "메타데이터 최신화를 위해 오래된 동영상은 숨겨지지만, <strong>절대 삭제되지 않습니다</strong>. <strong>자동 리필</strong> 기능은 전체 기록을 기억하며 필요할 때 오래된 동영상을 대기열(및 이 목록)로 다시 가져옵니다!",
 		"empty": "동영상을 찾을 수 없음"
@@ -241,6 +246,13 @@ export default {
 		"history": "기록",
 		"last50": "최근 50동영상 (총 {count})",
 		"nowPlaying": "현재 재생",
+		"play": "재생",
+		"pause": "일시정지",
+		"mute": "음소거",
+		"unmute": "음소거 해제",
+		"volume": "음량",
+		"cinemaMode": "시네마 모드",
+		"exitCinemaMode": "시네마 모드 종료",
 		"channelSuffix": "채널",
 		"upNext": "다음 동영상",
 		"queueEmpty": "대기열 비었음",

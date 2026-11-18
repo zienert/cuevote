@@ -56,6 +56,12 @@ export function CoverImage({ src, fallbackSrc, alt = "", className = "", imgClas
 	const onLoad = () => {
 		if (now.phase === "loading") setSeen({ ...now, phase: "loaded" });
 	};
+	// The fade has run: forget it. A row that changes its place is taken out of
+	// the page and put back in, and a picture that still carried the fade would
+	// blink in again.
+	const onFaded = () => {
+		if (now.phase === "loaded") setSeen({ ...now, phase: "instant" });
+	};
 	const onError = () => {
 		if (fallbackSrc && now.url !== fallbackSrc) setSeen({ src, url: fallbackSrc, phase: "loading" });
 		else setSeen({ ...now, phase: "failed" });
@@ -82,6 +88,7 @@ export function CoverImage({ src, fallbackSrc, alt = "", className = "", imgClas
 					loading={loading}
 					onLoad={onLoad}
 					onError={onError}
+					onAnimationEnd={onFaded}
 					className={`block h-full w-full object-cover ${waiting ? "opacity-0" : ""} ${now.phase === "loaded" ? "cover-in" : ""} ${imgClassName}`}
 				/>
 			)}

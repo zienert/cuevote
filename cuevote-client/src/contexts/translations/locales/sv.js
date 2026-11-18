@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Logga in för att skapa",
 		"noChannelsFound": "Inga kanaler hittades för",
 		"live": "Live",
+		"hostedBy": "Värd: {name}",
+		"wrongPassword": "Fel lösenord",
 		"createNewChannel": "Skapa ny kanal",
 		"channelName": "Kanalnamn",
 		"channelNamePlaceholder": "t.ex. Late Night Vibes",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ingen internetanslutning",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Fönstret är för litet",
+		"windowTooSmallMessage": "Gör fönstret större för att fortsätta använda CueVote.",
 		"backToRadio": "Tillbaka till radion",
 		"retry": "Försök ansluta igen",
 		"switching": "Byter kanal...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Ta bort",
 		"watch": "Titta på YouTube",
 		"recommend": "Hämta förslag",
-		"guest": "Gäst"
+		"guest": "Gäst",
+		"voteUp": "Rösta upp",
+		"voteDown": "Rösta ned"
 	},
 	"library": {
 		"searchPlaceholder": "Sök i biblioteket...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} låtar"
 		},
 		"inLibrary": "i biblioteket",
+		"about": "Om biblioteket",
 		"info1": "Detta bibliotek visar unika låtar som spelats de senaste <strong>28 dagarna</strong>.",
 		"info2": "Äldre låtar döljs för metadata-färskhet, men de <strong>raderas aldrig</strong>. Funktionen <strong>Autopåfyllning</strong> kommer ihåg hela din historik och hämtar automatiskt tillbaka äldre låtar till kön (och denna lista) vid behov!",
 		"empty": "Inga låtar hittades"
@@ -243,6 +248,13 @@ export default {
 		"history": "Historik",
 		"last50": "Senaste 50 (av {count})",
 		"nowPlaying": "Spelas nu",
+		"play": "Spela upp",
+		"pause": "Pausa",
+		"mute": "Stäng av ljud",
+		"unmute": "Slå på ljud",
+		"volume": "Volym",
+		"cinemaMode": "Bioläge",
+		"exitCinemaMode": "Avsluta bioläge",
 		"upNext": "Nästa",
 		"queueEmpty": "Kön är tom",
 		"errorNotFound": "Video hittades inte",

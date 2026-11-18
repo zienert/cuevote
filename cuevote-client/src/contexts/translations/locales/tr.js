@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Oluşturmak İçin Giriş Yap",
 		"noChannelsFound": "Kanal bulunamadı:",
 		"live": "Canlı",
+		"hostedBy": "Ev sahibi: {name}",
+		"wrongPassword": "Yanlış şifre",
 		"createNewChannel": "Yeni Kanal Oluştur",
 		"channelName": "Kanal Adı",
 		"channelNamePlaceholder": "ör. Gece Modu",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "İnternet bağlantısı yok",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Pencere çok küçük",
+		"windowTooSmallMessage": "CueVote'u kullanmaya devam etmek için pencereyi büyütün.",
 		"backToRadio": "Radyoya dön",
 		"retry": "Bağlantıyı tekrar dene",
 		"switching": "Kanal Değiştiriliyor...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Sil",
 		"watch": "YouTube'da İzle",
 		"recommend": "Önerileri al",
-		"guest": "Misafir"
+		"guest": "Misafir",
+		"voteUp": "Olumlu oy ver",
+		"voteDown": "Olumsuz oy ver"
 	},
 	"library": {
 		"searchPlaceholder": "Kütüphanede ara...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "kütüphanede",
+		"about": "Kütüphane hakkında",
 		"info1": "Bu kütüphane son <strong>28 gün</strong> içinde çalınan benzersiz videoları görüntüler.",
 		"info2": "Eski videolar meta veri tazeliği için gizlenir, ancak <strong>asla silinmezler</strong>. <strong>Otomatik Doldurma</strong> özelliği tüm geçmişinizi hatırlar ve gerektiğinde eski videoları kuyruğa (ve bu listeye) otomatik olarak geri getirir!",
 		"empty": "Video bulunamadı"
@@ -243,6 +248,13 @@ export default {
 		"history": "Geçmiş",
 		"last50": "Son 50 ({count} içinden)",
 		"nowPlaying": "Şimdi Çalıyor",
+		"play": "Oynat",
+		"pause": "Duraklat",
+		"mute": "Sesi kapat",
+		"unmute": "Sesi aç",
+		"volume": "Ses düzeyi",
+		"cinemaMode": "Sinema modu",
+		"exitCinemaMode": "Sinema modundan çık",
 		"upNext": "Sıradaki",
 		"queueEmpty": "Kuyruk boş",
 		"errorNotFound": "Video bulunamadı",

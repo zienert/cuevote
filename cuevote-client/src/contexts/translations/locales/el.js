@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Συνδεθείτε για Δημιουργία",
 		"noChannelsFound": "Δεν βρέθηκαν κανάλια για",
 		"live": "Ζωντανά",
+		"hostedBy": "Οικοδεσπότης: {name}",
+		"wrongPassword": "Λάθος κωδικός",
 		"createNewChannel": "Δημιουργία Νέου Καναλιού",
 		"channelName": "Όνομα Καναλιού",
 		"channelNamePlaceholder": "π.χ. Late Night Vibes",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Χωρίς σύνδεση στο διαδίκτυο",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Το παράθυρο είναι πολύ μικρό",
+		"windowTooSmallMessage": "Μεγαλώστε το παράθυρο για να συνεχίσετε να χρησιμοποιείτε το CueVote.",
 		"backToRadio": "Πίσω στο ραδιόφωνο",
 		"retry": "Επαναпроσπάθεια σύνδεσης",
 		"switching": "Αλλαγή Καναλιού...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Διαγραφή",
 		"watch": "Δείτε στο YouTube",
 		"recommend": "Λήψη προτάσεων",
-		"guest": "Επισκέπτης"
+		"guest": "Επισκέπτης",
+		"voteUp": "Ψήφος υπέρ",
+		"voteDown": "Ψήφος κατά"
 	},
 	"library": {
 		"searchPlaceholder": "Αναζήτηση βιβλιοθήκης...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} κομμάτια"
 		},
 		"inLibrary": "στη βιβλιοθήκη",
+		"about": "Σχετικά με τη βιβλιοθήκη",
 		"info1": "Αυτή η βιβλιοθήκη εμφανίζει μοναδικά κομμάτια που παίχτηκαν τις τελευταίες <strong>28 ημέρες</strong>.",
 		"info2": "Τα παλαιότερα κομμάτια κρύβονται για φρεσκάδα δεδομένων, αλλά <strong>δεν διαγράφονται ποτέ</strong>. Η λειτουργία <strong>Αυτόματο Γέμισμα</strong> θυμάται ολόκληρο το ιστορικό σας και θα επαναφέρει αυτόματα παλιά κομμάτια στην ουρά (και σε αυτή τη λίστα) όταν χρειαστεί!",
 		"empty": "Δεν βρέθηκαν κομμάτια"
@@ -243,6 +248,13 @@ export default {
 		"history": "Ιστορικό",
 		"last50": "Τελευταία 50 (από {count})",
 		"nowPlaying": "Παίζει Τώρα",
+		"play": "Αναπαραγωγή",
+		"pause": "Παύση",
+		"mute": "Σίγαση",
+		"unmute": "Κατάργηση σίγασης",
+		"volume": "Ένταση",
+		"cinemaMode": "Λειτουργία σινεμά",
+		"exitCinemaMode": "Έξοδος από λειτουργία σινεμά",
 		"upNext": "Επόμενο",
 		"queueEmpty": "Η ουρά είναι άδεια",
 		"errorNotFound": "Το βίντεο δεν βρέθηκε",

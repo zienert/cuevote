@@ -40,6 +40,13 @@ const legacyCodes = {
 	he: 'IL', dan: 'DK',
 };
 
+/** Whether a channel's country is one the lobby has a flag for. */
+export function hasFlag(code) {
+	if (!code || code === 'international') return false;
+	const resolved = legacyCodes[code] || code;
+	return countryCodes.includes(String(resolved).toUpperCase());
+}
+
 export function getFlagEmoji(code) {
 	if (!code || code === 'international') return '🌐';
 	const resolved = legacyCodes[code] || code;

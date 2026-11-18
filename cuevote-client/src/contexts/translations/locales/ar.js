@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "تسجيل الدخول للإنشاء",
 		"noChannelsFound": "لم يتم العثور على قنوات لـ",
 		"live": "مباشر",
+		"hostedBy": "يستضيفها {name}",
+		"wrongPassword": "كلمة المرور غير صحيحة",
 		"createNewChannel": "إنشاء قناة جديدة",
 		"channelName": "اسم القناة",
 		"channelNamePlaceholder": "مثلاً: أجواء ليلية",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "لا يوجد اتصال بالإنترنت",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "النافذة صغيرة جدًا",
+		"windowTooSmallMessage": "كبّر النافذة لمتابعة استخدام CueVote.",
 		"backToRadio": "العودة إلى الراديو",
 		"retry": "أعد محاولة الاتصال",
 		"switching": "جارٍ تبديل القناة...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "حذف",
 		"watch": "مشاهدة على YouTube",
 		"recommend": "الحصول على اقتراحات",
-		"guest": "ضيف"
+		"guest": "ضيف",
+		"voteUp": "تصويت مؤيد",
+		"voteDown": "تصويت معارض"
 	},
 	"library": {
 		"searchPlaceholder": "بحث في المكتبة...",
@@ -220,6 +224,7 @@ export default {
 			"other": "{count} مقاطع فيديو"
 		},
 		"inLibrary": "في المكتبة",
+		"about": "عن المكتبة",
 		"info1": "تعرض هذه المكتبة مقاطع الفيديو الفريدة التي تم تشغيلها في آخر <strong>28 يومًا</strong>.",
 		"info2": "يتم إخفاء مقاطع الفيديو القديمة لتحديث البيانات الوصفية، ولكن <strong>لا يتم حذفها أبدًا</strong>. ميزة <strong>إعادة التعبئة التلقائية</strong> تتذكر سجلك بالكامل وستعيد مقاطع الفيديو القديمة تلقائيًا إلى القائمة (وهذه القائمة) عند الحاجة!",
 		"empty": "لم يتم العثور على مقاطع فيديو"
@@ -251,6 +256,13 @@ export default {
 		"history": "السجل",
 		"last50": "آخر 50 (من {count})",
 		"nowPlaying": "يعمل الآن",
+		"play": "تشغيل",
+		"pause": "إيقاف مؤقت",
+		"mute": "كتم الصوت",
+		"unmute": "إلغاء كتم الصوت",
+		"volume": "مستوى الصوت",
+		"cinemaMode": "وضع السينما",
+		"exitCinemaMode": "الخروج من وضع السينما",
 		"upNext": "التالي",
 		"queueEmpty": "قائمة الانتظار فارغة",
 		"errorNotFound": "الفيديو غير موجود",

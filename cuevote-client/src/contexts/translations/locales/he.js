@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "התחבר ליצירה",
 		"noChannelsFound": "לא נמצאו ערוצים עבור",
 		"live": "חי",
+		"hostedBy": "מארח: {name}",
+		"wrongPassword": "סיסמה שגויה",
 		"createNewChannel": "צור ערוץ חדש",
 		"channelName": "שם הערוץ",
 		"channelNamePlaceholder": "למשל, לילה רגוע",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "אין חיבור לאינטרנט",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "החלון קטן מדי",
+		"windowTooSmallMessage": "הגדילו את החלון כדי להמשיך להשתמש ב-CueVote.",
 		"backToRadio": "חזרה לרדיו",
 		"retry": "נסה להתחבר שוב",
 		"switching": "מחליף ערוץ...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "מחק",
 		"watch": "צפה ב-YouTube",
 		"recommend": "קבל הצעות",
-		"guest": "אורח"
+		"guest": "אורח",
+		"voteUp": "הצבעה בעד",
+		"voteDown": "הצבעה נגד"
 	},
 	"library": {
 		"searchPlaceholder": "חפש בספרייה...",
@@ -217,6 +221,7 @@ export default {
 			"other": "{count} סרטונים"
 		},
 		"inLibrary": "בספרייה",
+		"about": "על הספרייה",
 		"info1": "ספרייה זו מציגה סרטונים ייחודיים שנוגנו ב-<strong>28 הימים</strong> האחרונים.",
 		"info2": "סרטונים ישנים יותר מוסתרים לרעננות מטא-נתונים, אך הם <strong>לעולם לא נמחקים</strong>. תכונת <strong>מילוי אוטומטי</strong> זוכרת את כל ההיסטוריה שלך ותחזיר אוטומטית סרטונים ישנים לתור (ולרשימה זו) בעת הצורך!",
 		"empty": "לא נמצאו סרטונים"
@@ -245,6 +250,13 @@ export default {
 		"history": "היסטוריה",
 		"last50": "50 האחרונים ({count})",
 		"nowPlaying": "מנגן עכשיו",
+		"play": "נגן",
+		"pause": "השהה",
+		"mute": "השתק",
+		"unmute": "בטל השתקה",
+		"volume": "עוצמת קול",
+		"cinemaMode": "מצב קולנוע",
+		"exitCinemaMode": "יציאה ממצב קולנוע",
 		"upNext": "הבא",
 		"queueEmpty": "התור ריק",
 		"errorNotFound": "הסרטון לא נמצא",
