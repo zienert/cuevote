@@ -5,6 +5,7 @@ This is a native Android wrapper for the CueVote web application.
 ## Purpose
 - **Always On Screen**: Keeps the device awake while the app is open.
 - **Autoplay Fix**: Disables the "User Gesture Requirement" so videos play automatically.
+- **Apple Music in the background**: An Apple Music channel that the device plays keeps playing when the app leaves the screen or the screen is switched off, and stays ready there for up to two hours while it is paused or has nothing to play, so that it can be steered from another device (a foreground service, see `PlaybackService.kt`). YouTube channels stop in the background, as YouTube's terms require.
 
 ## How to Build
 
