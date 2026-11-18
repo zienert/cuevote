@@ -1306,6 +1306,11 @@ function RoomBody() {
   useEffect(() => {
     if (isAppleRoom) setAppleVolume(isMuted ? 0 : volume / 100);
   }, [isAppleRoom, isMuted, volume, setAppleVolume]);
+  // Where they would change nothing that is heard, the bar leaves them out: on
+  // a device another owner device plays the room for, and where pages cannot
+  // set the volume (an iPhone: its buttons set it; MusicKit only sets the
+  // media element's volume, 16.11.2026).
+  const showVolume = !isAppleRoom || (applePlayerLease !== false && !deviceDetection.isVolumeLocked());
 
   // Event Handlers
 
@@ -2149,6 +2154,7 @@ function RoomBody() {
               onHeightChange={handleControlsHeightChange}
               canShowControls={canShowControls}
               docked={isPhoneLayout}
+              showVolume={showVolume}
             />
           )
         )

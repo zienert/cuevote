@@ -29,6 +29,9 @@ export function PlaybackControls({
   // On phones the bar is part of the room's column, above the suggest field,
   // instead of floating over the bottom edge.
   docked = false,
+  // The mute button and the volume slider. Off where they would change
+  // nothing that is heard.
+  showVolume = true,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [tempVisible, setTempVisible] = useState(false);
@@ -223,19 +226,21 @@ export function PlaybackControls({
           </div>
 
           <div className="flex items-center gap-1 text-ink-2 flex-shrink-0">
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                onMuteToggle();
-              }}
-              className="cv-hit flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
-              disabled={!currentTrack}
-              aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
-              title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
-            >
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-            {!deviceDetection.isMobile() && (
+            {showVolume && (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onMuteToggle();
+                }}
+                className="cv-hit flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
+                disabled={!currentTrack}
+                aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+            )}
+            {showVolume && !deviceDetection.isMobile() && (
               <input
                 type="range"
                 min="0"
@@ -309,4 +314,5 @@ PlaybackControls.propTypes = {
   onQueueToggle: PropTypes.func,
   upcomingCount: PropTypes.number,
   docked: PropTypes.bool,
+  showVolume: PropTypes.bool,
 };
