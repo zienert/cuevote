@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Công cụ chủ sở hữu",
 		"changeLanguage": "Đổi ngôn ngữ",
 		"requireLogin": "Yêu cầu đăng nhập",
-		"requireLoginTooltip": "Khách phải đăng nhập để bình chọn và đề xuất. Tắt: bất kỳ ai trong kênh đều có thể tham gia."
+		"requireLoginTooltip": "Khách phải đăng nhập để bình chọn và đề xuất. Tắt: bất kỳ ai trong kênh đều có thể tham gia.",
+		"standbyThisPhone": "Chỉ điện thoại này",
+		"standbyChannelScope": "Cho cả kênh, trên mọi thiết bị",
+		"standbyName": "Giữ sẵn sàng khi tạm dừng",
+		"standbyUntilLeave": "Cho đến khi tôi rời kênh",
+		"standbyLead": "Khi kênh tạm dừng, điện thoại này sẽ chờ. Trong lúc chờ, bạn có thể bắt đầu phát từ máy tính. Khi hết thời gian, bạn phải mở ứng dụng trên điện thoại trước.",
+		"standbyAwake": "Trong lúc chờ, điện thoại không chuyển sang chế độ ngủ, kể cả khi màn hình đã khóa. Việc này tốn pin.",
+		"standbyNotice": "Thông báo của CueVote vẫn hiển thị suốt thời gian đó.",
+		"standbyCharger": "Nếu phải chờ lâu, hãy cắm sạc cho điện thoại."
 	},
 	"suggest": {
 		"placeholder": "Nhập tên bài hát...",

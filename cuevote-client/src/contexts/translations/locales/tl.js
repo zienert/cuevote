@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Mga kasangkapan ng may-ari",
 		"changeLanguage": "Baguhin ang wika",
 		"requireLogin": "Kailangan mag-log in",
-		"requireLoginTooltip": "Kailangang mag-log in ang mga bisita para bumoto at magmungkahi. Naka-off: sinuman sa channel ay puwedeng sumali."
+		"requireLoginTooltip": "Kailangang mag-log in ang mga bisita para bumoto at magmungkahi. Naka-off: sinuman sa channel ay puwedeng sumali.",
+		"standbyThisPhone": "Ang phone na ito lang",
+		"standbyChannelScope": "Para sa channel, sa lahat ng device",
+		"standbyName": "Manatiling handa kapag naka-pause",
+		"standbyUntilLeave": "Hanggang umalis ako sa channel",
+		"standbyLead": "Kapag naka-pause ang channel, naghihintay ang phone na ito. Habang naghihintay ito, puwede mong simulan ang pagpapatugtog mula sa computer mo. Kapag tapos na ang oras, kailangan mo munang buksan ang app sa phone.",
+		"standbyAwake": "Habang naghihintay ang phone, hindi ito napupunta sa sleep mode, kahit naka-lock ang screen. Gumagamit ito ng baterya.",
+		"standbyNotice": "Mananatiling nakikita ang notification ng CueVote sa buong oras na iyon.",
+		"standbyCharger": "Para sa matagal na paghihintay, iwanang nakasaksak sa charger ang phone."
 	},
 	"suggest": {
 		"placeholder": "Mag-type ng pamagat...",

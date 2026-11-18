@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Alat Pemilik",
 		"changeLanguage": "Ubah bahasa",
 		"requireLogin": "Wajib login",
-		"requireLoginTooltip": "Tamu harus login untuk memilih dan menyarankan. Nonaktif: siapa pun di kanal dapat ikut serta."
+		"requireLoginTooltip": "Tamu harus login untuk memilih dan menyarankan. Nonaktif: siapa pun di kanal dapat ikut serta.",
+		"standbyThisPhone": "Hanya ponsel ini",
+		"standbyChannelScope": "Untuk kanal, di semua perangkat",
+		"standbyName": "Tetap siap saat dijeda",
+		"standbyUntilLeave": "Sampai saya keluar dari kanal",
+		"standbyLead": "Saat kanal dijeda, ponsel ini menunggu. Selama menunggu, Anda dapat memulai pemutaran dari komputer. Setelah waktunya habis, Anda harus membuka aplikasi di ponsel terlebih dahulu.",
+		"standbyAwake": "Selama menunggu, ponsel tidak masuk ke mode tidur, bahkan saat layar terkunci. Ini menggunakan daya baterai.",
+		"standbyNotice": "Notifikasi CueVote tetap terlihat selama itu.",
+		"standbyCharger": "Untuk waktu tunggu yang lama, biarkan ponsel tetap terhubung ke pengisi daya."
 	},
 	"suggest": {
 		"placeholder": "Ketik judul video...",

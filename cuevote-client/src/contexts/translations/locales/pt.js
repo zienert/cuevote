@@ -159,7 +159,15 @@ export default {
 		"captionsTooltip": "Mostrar legendas por padrão para todos os usuários quando carregarem o player.",
 		"changeLanguage": "Alterar idioma",
 		"requireLogin": "Login obrigatório",
-		"requireLoginTooltip": "Os convidados precisam fazer login para votar e sugerir. Desativado: qualquer pessoa no canal pode participar."
+		"requireLoginTooltip": "Os convidados precisam fazer login para votar e sugerir. Desativado: qualquer pessoa no canal pode participar.",
+		"standbyThisPhone": "Apenas este celular",
+		"standbyChannelScope": "Para o canal, em todos os dispositivos",
+		"standbyName": "Ficar pronto durante a pausa",
+		"standbyUntilLeave": "Até eu sair do canal",
+		"standbyLead": "Quando o canal está pausado, este celular fica em espera. Enquanto ele espera, você pode iniciar a reprodução pelo seu computador. Quando o tempo acabar, você precisa abrir o app no celular primeiro.",
+		"standbyAwake": "Enquanto espera, o celular não entra em modo de suspensão, mesmo com a tela bloqueada. Isso gasta bateria.",
+		"standbyNotice": "A notificação do CueVote fica visível o tempo todo.",
+		"standbyCharger": "Para esperas longas, deixe o celular no carregador."
 	},
 	"suggest": {
 		"placeholder": "Digite um título...",

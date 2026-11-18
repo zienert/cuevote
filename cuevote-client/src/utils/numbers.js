@@ -21,3 +21,23 @@ export function formatCount(value, language) {
 	}
 	return formatter.format(number);
 }
+
+const hourFormatters = new Map();
+
+/**
+ * Hours, written out as the reader's language says them: "2 hours",
+ * "2 Stunden", "2 часа", "ساعتان". The plural form is the language's own.
+ */
+export function formatHours(value, language) {
+	let formatter = hourFormatters.get(language);
+	if (!formatter) {
+		const options = { style: 'unit', unit: 'hour', unitDisplay: 'long', numberingSystem: 'latn' };
+		try {
+			formatter = new Intl.NumberFormat(language === 'sr' ? 'sr-Latn' : language, options);
+		} catch {
+			formatter = new Intl.NumberFormat('en', options);
+		}
+		hourFormatters.set(language, formatter);
+	}
+	return formatter.format(Number(value) || 0);
+}

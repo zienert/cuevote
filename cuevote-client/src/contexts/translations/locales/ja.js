@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "オーナーツール",
 		"changeLanguage": "言語を変更",
 		"requireLogin": "ログインが必要",
-		"requireLoginTooltip": "ゲストは投票やリクエストにログインが必要です。オフの場合、チャンネル内の誰でも参加できます。"
+		"requireLoginTooltip": "ゲストは投票やリクエストにログインが必要です。オフの場合、チャンネル内の誰でも参加できます。",
+		"standbyThisPhone": "このスマートフォンのみ",
+		"standbyChannelScope": "チャンネル全体、すべてのデバイスに適用",
+		"standbyName": "一時停止中も待機する",
+		"standbyUntilLeave": "チャンネルを退出するまで",
+		"standbyLead": "チャンネルが一時停止中は、このスマートフォンが待機します。待機中は、コンピュータから再生を開始できます。時間が過ぎたら、先にスマートフォンでアプリを開く必要があります。",
+		"standbyAwake": "待機中は、画面がロックされていてもスマートフォンがスリープしません。その分バッテリーを消費します。",
+		"standbyNotice": "その間、CueVoteの通知は表示されたままです。",
+		"standbyCharger": "長時間待機する場合は、スマートフォンを充電器につないでおいてください。"
 	},
 	"suggest": {
 		"placeholder": "動画名を入力...",

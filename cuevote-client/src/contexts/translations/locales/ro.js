@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Instrumente proprietar",
 		"changeLanguage": "Schimbă limba",
 		"requireLogin": "Autentificare necesară",
-		"requireLoginTooltip": "Invitații trebuie să se autentifice pentru a vota și a sugera. Dezactivat: oricine din canal poate participa."
+		"requireLoginTooltip": "Invitații trebuie să se autentifice pentru a vota și a sugera. Dezactivat: oricine din canal poate participa.",
+		"standbyThisPhone": "Doar acest telefon",
+		"standbyChannelScope": "Pentru canal, pe toate dispozitivele",
+		"standbyName": "Pregătit în timpul pauzei",
+		"standbyUntilLeave": "Până părăsesc canalul",
+		"standbyLead": "Când canalul este în pauză, acest telefon așteaptă. Cât timp așteaptă, poți porni redarea de pe computerul tău. După ce timpul expiră, trebuie mai întâi să deschizi aplicația pe telefon.",
+		"standbyAwake": "Cât timp telefonul așteaptă, nu intră în modul de repaus, nici măcar cu ecranul blocat. Asta consumă baterie.",
+		"standbyNotice": "Notificarea CueVote rămâne vizibilă tot acest timp.",
+		"standbyCharger": "Pentru așteptări lungi, lasă telefonul la încărcat."
 	},
 	"suggest": {
 		"placeholder": "Scrie un titlu...",

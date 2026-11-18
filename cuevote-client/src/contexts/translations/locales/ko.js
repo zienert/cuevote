@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "소유자 도구",
 		"changeLanguage": "언어 변경",
 		"requireLogin": "로그인 필요",
-		"requireLoginTooltip": "게스트가 투표하고 추천하려면 로그인해야 합니다. 끄면 채널의 누구나 참여할 수 있습니다."
+		"requireLoginTooltip": "게스트가 투표하고 추천하려면 로그인해야 합니다. 끄면 채널의 누구나 참여할 수 있습니다.",
+		"standbyThisPhone": "이 휴대폰만",
+		"standbyChannelScope": "채널 전체, 모든 기기에 적용",
+		"standbyName": "일시 정지 중 준비 상태 유지",
+		"standbyUntilLeave": "채널을 나갈 때까지",
+		"standbyLead": "채널이 일시 정지되면 이 휴대폰이 대기합니다. 대기하는 동안 컴퓨터에서 재생을 시작할 수 있습니다. 시간이 지나면 먼저 휴대폰에서 앱을 열어야 합니다.",
+		"standbyAwake": "대기하는 동안 휴대폰은 화면이 잠겨 있어도 깨어 있는 상태를 유지합니다. 그만큼 배터리가 소모됩니다.",
+		"standbyNotice": "그동안 CueVote 알림이 계속 표시됩니다.",
+		"standbyCharger": "오래 대기할 때는 휴대폰을 충전기에 연결해 두세요."
 	},
 	"suggest": {
 		"placeholder": "제목 입력...",

@@ -159,7 +159,15 @@ export default {
 		"captionsTooltip": "Mostra i sottotitoli per impostazione predefinita a tutti gli utenti quando caricano il player.",
 		"changeLanguage": "Cambia lingua",
 		"requireLogin": "Accesso obbligatorio",
-		"requireLoginTooltip": "Gli ospiti devono accedere per votare e proporre. Disattivato: chiunque nel canale può partecipare."
+		"requireLoginTooltip": "Gli ospiti devono accedere per votare e proporre. Disattivato: chiunque nel canale può partecipare.",
+		"standbyThisPhone": "Solo questo telefono",
+		"standbyChannelScope": "Per il canale, su tutti i dispositivi",
+		"standbyName": "Resta pronto in pausa",
+		"standbyUntilLeave": "Finché non lascio il canale",
+		"standbyLead": "Quando il canale è in pausa, questo telefono resta in attesa. Mentre è in attesa, puoi avviare la riproduzione dal tuo computer. Quando il tempo è scaduto, devi prima aprire l'app sul telefono.",
+		"standbyAwake": "Mentre è in attesa, il telefono non entra in sospensione, nemmeno con lo schermo bloccato. Questo consuma batteria.",
+		"standbyNotice": "La notifica di CueVote resta visibile per tutto il tempo.",
+		"standbyCharger": "Per attese lunghe, lascia il telefono in carica."
 	},
 	"suggest": {
 		"placeholder": "Scrivi un titolo...",

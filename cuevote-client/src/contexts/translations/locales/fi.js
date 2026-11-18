@@ -159,7 +159,15 @@ export default {
 		"ownerTools": "Omistajan työkalut",
 		"changeLanguage": "Vaihda kieli",
 		"requireLogin": "Kirjautuminen vaaditaan",
-		"requireLoginTooltip": "Vieraiden on kirjauduttava äänestääkseen ja ehdottaakseen. Pois: kuka tahansa kanavalla voi osallistua."
+		"requireLoginTooltip": "Vieraiden on kirjauduttava äänestääkseen ja ehdottaakseen. Pois: kuka tahansa kanavalla voi osallistua.",
+		"standbyThisPhone": "Vain tämä puhelin",
+		"standbyChannelScope": "Koko kanavalle, kaikilla laitteilla",
+		"standbyName": "Pysy valmiina tauon aikana",
+		"standbyUntilLeave": "Kunnes poistun kanavalta",
+		"standbyLead": "Kun kanava on tauolla, tämä puhelin odottaa. Odotuksen aikana voit aloittaa toiston tietokoneeltasi. Kun aika on kulunut, sinun täytyy ensin avata sovellus puhelimessa.",
+		"standbyAwake": "Odotuksen aikana puhelin ei siirry lepotilaan, ei edes lukitulla näytöllä. Tämä kuluttaa akkua.",
+		"standbyNotice": "CueVote-ilmoitus näkyy koko ajan.",
+		"standbyCharger": "Pitkissä odotuksissa jätä puhelin laturiin."
 	},
 	"suggest": {
 		"placeholder": "Kirjoita nimi...",

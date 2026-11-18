@@ -10,10 +10,11 @@
 // Query parameters:
 //   ?provider=apple   an Apple Music channel (default: a YouTube channel)
 //   ?role=owner       the host (default: a guest)
-//   ?device=phone|android|app|desktop
+//   ?device=phone|android|app|android-app|desktop
 //                     what the device detection answers: a phone browser, an
-//                     Android browser, the phone app, a computer (default: the
-//                     real device)
+//                     Android browser, the iPhone app, the Android app (whose
+//                     Apple Music channels have "Stay ready when paused" in the
+//                     settings), a computer (default: the real device)
 //   ?apple=...        what Apple Music does for the host of an Apple channel:
 //                     signed-out (default), cancel (the sign-in window is
 //                     closed), signin-failed, ready, needs-start, problem,
@@ -67,8 +68,14 @@ const DEVICES = {
 	phone: { isIOS: true, isMobile: true, isMobileWebBrowser: true, isVolumeLocked: true },
 	android: { isAndroid: true, isMobile: true, isMobileWebBrowser: true },
 	app: { isIOS: true, isMobile: true, isNativeApp: true, isVolumeLocked: true },
+	'android-app': { isAndroid: true, isMobile: true, isNativeApp: true },
 	desktop: {},
 };
+// The Android app's interface on the page, as far as the room asks it: it
+// keeps a paused Apple Music channel ready (utils/appleStandby).
+if (PARAMS.get('device') === 'android-app') {
+	window.CueVoteAndroid = { isNative: () => true, keepsChannelReady: () => true, toggleQRButton: () => {} };
+}
 const DEVICE = DEVICES[PARAMS.get('device')];
 if (DEVICE) {
 	for (const name of Object.keys(deviceDetection)) {
