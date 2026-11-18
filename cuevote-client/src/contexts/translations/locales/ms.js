@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Log masuk untuk Cipta",
 		"noChannelsFound": "Tiada saluran dijumpai",
 		"live": "Langsung",
+		"hostedBy": "Hos: {name}",
+		"wrongPassword": "Kata laluan salah",
 		"createNewChannel": "Cipta Saluran Baru",
 		"channelName": "Nama Saluran",
 		"channelNamePlaceholder": "cth. Rentak Malam",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Tiada sambungan internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Tetingkap terlalu kecil",
+		"windowTooSmallMessage": "Besarkan tetingkap untuk terus menggunakan CueVote.",
 		"backToRadio": "Kembali ke Radio",
 		"retry": "Cuba semula sambungan",
 		"switching": "Menukar Saluran...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Padam",
 		"watch": "Tonton di YouTube",
 		"recommend": "Dapatkan cadangan",
-		"guest": "Tetamu"
+		"guest": "Tetamu",
+		"voteUp": "Undi sokong",
+		"voteDown": "Undi bantah"
 	},
 	"library": {
 		"searchPlaceholder": "Cari pustaka...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "dalam pustaka",
+		"about": "Tentang pustaka",
 		"info1": "Pustaka ini memaparkan video unik yang dimainkan dalam <strong>28 hari</strong> lepas.",
 		"info2": "Video lama disembunyikan untuk kesegaran data, tetapi <strong>tidak pernah dipadam</strong>. Ciri <strong>Isi Semula Auto</strong> masih mengingati sejarah penuh anda dan akan mengembalikan video lama apabila diperlukan!",
 		"empty": "Tiada video ditemui"
@@ -241,6 +246,13 @@ export default {
 		"history": "Sejarah",
 		"last50": "50 Terakhir (daripada {count})",
 		"nowPlaying": "Sedang Main",
+		"play": "Main",
+		"pause": "Jeda",
+		"mute": "Senyapkan",
+		"unmute": "Nyahsenyap",
+		"volume": "Kelantangan",
+		"cinemaMode": "Mod pawagam",
+		"exitCinemaMode": "Keluar daripada mod pawagam",
 		"upNext": "Seterusnya",
 		"queueEmpty": "Barisan kovideo",
 		"errorNotFound": "Video tidak dijumpai",

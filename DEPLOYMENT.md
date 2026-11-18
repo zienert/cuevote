@@ -119,8 +119,9 @@ ACTIVE_CHANNEL_DAYS=60
 
 > **MCP ops server (optional):** rather than setting `ADMIN_TOKEN` by hand, run
 > `./setup-mcp.sh` from the repo root after deploying — it generates the token,
-> builds the MCP, writes its `.env`, verifies the admin API, and prints the
-> client command. See [cuevote-mcp/README.md](cuevote-mcp/README.md).
+> builds the MCP, sets the admin keys in `cuevote-mcp/.env` (every other line
+> there stays), verifies the admin API, and prints the client command. Running
+> it again is safe. See [cuevote-mcp/README.md](cuevote-mcp/README.md).
 
 ### Start Backend
 ```bash
@@ -456,18 +457,19 @@ cat /var/log/unattended-upgrades/unattended-upgrades.log
 `unattended-upgrades` only covers **apt packages**. The app's npm dependencies are pinned by `package-lock.json`, and `npm ci` (used by `update_server.sh`) installs exactly those pinned versions — a deploy never bumps anything by itself. That is deliberate (reproducible builds), but it means a known vulnerability in a dependency stays on the server until someone acts:
 
 ```bash
-# check (run in cuevote-server/ and cuevote-client/)
+# check (run in cuevote-server/, cuevote-client/ and cuevote-mcp/)
 npm audit --omit=dev
 
 # fix within semver ranges, then prove the project still passes
 npm audit fix && npm ci
 
 # then, per project:
-npm run build          # cuevote-client, cuevote-mcp
+npm run build              # cuevote-client
 npm run lint && npm test   # cuevote-server (it has no build step)
+npm test && npm run build  # cuevote-mcp
 ```
 
-Commit the resulting `package-lock.json`, merge, then deploy with `bash update_server.sh` as usual. Run the audit on a schedule (monthly works) and/or enable GitHub Dependabot alerts on the repository, so new advisories reach you instead of waiting to be discovered.
+Commit the resulting `package-lock.json`, merge, then deploy with `bash update_server.sh` as usual. Run the audit on a schedule (monthly works), and keep Dependabot alerts and Dependabot security updates enabled on the repository (Settings → Code security), so new advisories reach you instead of waiting to be discovered. `.github/dependabot.yml` points Dependabot at all three npm projects and limits it to security updates.
 
 ### Use SSH Keys (Best Practice)
 For maximum security, disable password login entirely and use SSH keys.
@@ -489,15 +491,18 @@ The **public** "AI DJ" endpoint (`cuevote-mcp/src/http.ts`, served at
 
 **1. Server env** (`cuevote-server/.env`) — then restart the server:
 ```ini
-MCP_SESSION_SECRET=<random>                 # already set if you ran setup-mcp.sh
+MCP_SESSION_SECRET=<random>                 # NEW; setup-mcp.sh does not set it
 CUEVOTE_OAUTH_FINALIZE_SECRET=<random>      # NEW; the MCP must use the same value
 MCP_INTERNAL_URL=http://127.0.0.1:8082      # where the remote MCP listens
 ```
+Generate each `<random>` with `openssl rand -hex 32`. `setup-mcp.sh` creates
+only `ADMIN_TOKEN`.
 ```bash
 pm2 restart cuevote-server
 ```
 
-**2. Remote-MCP env** (`cuevote-mcp/.env`):
+**2. Remote-MCP env** (`cuevote-mcp/.env`, the file `setup-mcp.sh` also writes;
+a re-run of it changes only its three admin keys and keeps these):
 ```ini
 CUEVOTE_HTTP_HOST=127.0.0.1
 CUEVOTE_HTTP_PORT=8082
@@ -550,8 +555,8 @@ hidden, like the apex domain.
 **6. Connect.** In an MCP client (Claude, …) add the remote server
 `https://mcp.cuevote.com/mcp`; it discovers OAuth via
 `/.well-known/oauth-authorization-server`, the user signs in on `/connect-ai`,
-and the `cv_*` DJ tools become available. Re-run `pm2 restart cuevote-mcp-dj`
-after each deploy that rebuilds the MCP.
+and the `cv_*` DJ tools become available. From then on `update_server.sh`
+rebuilds, restarts and health-checks the service on every deploy (section 10).
 
 ---
 
@@ -563,47 +568,74 @@ Routine deploys run from the checkout on the server:
 bash update_server.sh
 ```
 
-The script is not just "pull and restart" — it refuses to leave a broken
-version serving:
+The script is not just "pull and restart": nothing goes live before the tests
+have passed, and it refuses to leave a broken version serving.
 
 | Step | What it does | On failure |
 |---|---|---|
-| 1 | Records the currently deployed commit, then `git reset --hard origin/main` | aborts before anything is built |
-| 2–3 | `npm ci` + client build, `npm ci` for the server | aborts; running server untouched |
-| 4 | **`npm test` on the server** | aborts **before** the restart — the running server never sees the new code |
-| 5 | `pm2 reload` (falls back to `restart`) | — |
-| 5 | `pm2 reload` (falls back to `restart`) | rolls back — a wedged pm2 no longer kills the script before the rollback can run |
-| 6 | **Polls `/health` for up to 15 s** | **rolls back** to the recorded commit, rebuilds, restarts and re-checks |
-| 7 | Rebuilds and restarts the MCP service | aborts |
+| 1 | Refuses a checkout with uncommitted changes or with commits `origin/main` lacks, records the deployed commit, then `git reset --hard origin/main` | stops; nothing changed (3) |
+| 2 | `npm ci` + client build into `cuevote-client/dist.next`; nginx keeps serving `dist` | stops and puts the checkout back on the recorded commit; nothing changed (3) |
+| 3 | `npm ci` + MCP build into `cuevote-mcp/dist.next` | same (3) |
+| 4 | `npm ci` + **`npm test`** for the server | same (3) |
+| 5 | `pm2 reload` of the server (falls back to `restart`), or a fresh start from this checkout when pm2 runs it from another path | **rolls back** (1) — a wedged pm2 no longer ends the script before the rollback can run |
+| 6 | **Polls the server's `/health` for up to 15 s** | **rolls back** (1) |
+| 7 | Publishes the client: `dist` becomes `dist.prev`, `dist.next` becomes `dist` | **rolls back** (1) |
+| 8 | Publishes the MCP build the same way, restarts `cuevote-mcp-dj`, polls its `/health` for up to 15 s | **rolls back** (1) if the MCP was serving before the deploy; if it was not, the site stays on the new version (4) |
 
-Exit codes distinguish the two bad outcomes, so monitoring can tell a recovered
-deploy from a dead server:
+A rollback puts everything back on the recorded commit: the checkout, the
+server's and the MCP's dependencies where the deploy changed them, the client
+and the MCP build (from `dist.prev`, no rebuild); then it restarts the server
+and the MCP and checks both again.
+
+Exit codes tell the outcomes apart, so monitoring can tell a recovered deploy
+from a dead server:
 
 | Code | Meaning |
 |---|---|
 | 0 | Deployed and healthy |
-| 1 | Deploy failed, **rolled back — the previous version is serving** |
-| 2 | Rollback failed too, or there was no rollback target: **the site needs you** |
+| 1 | Deploy failed after going live, **rolled back — the previous version is serving** |
+| 2 | **The site needs you**: the server is unhealthy after the rollback, there was no rollback target (worktree mode), the checkout could not be put back, or the script stopped unexpectedly |
+| 3 | **Nothing changed**: stopped before anything went live — not a usable checkout (see below), local work in the way of the reset, `git fetch`, an install, a build or the tests failed, or `pm2`/`curl` missing. The running processes and the served client are untouched, and the checkout is back on the recorded commit, so a restart or reboot runs what ran before |
+| 4 | **Partial**: the site is up, the MCP is not — it was already down before the deploy, did not come back after the rollback, or worktree mode has nothing to roll back to |
 
 A rollback restores the server, not the branch: `origin/main` still points at the
 bad commit, and the next run of this script will deploy it again. Revert or fix
 main before re-running.
 
-Two consequences worth knowing:
+Consequences worth knowing:
 
 * **A failing test blocks the deploy.** That is the point — but it means a red
   test suite means no deploys until it is fixed. Run `npm test` in
   `cuevote-server/` locally before pushing.
-* **The rollback needs the commit it recorded in step 1.** In worktree mode the
-  script does not own the checkout, so it skips the git steps and therefore has
-  no rollback target: an unhealthy deploy there stops with an error and leaves
-  the process for you to inspect (`pm2 logs cuevote-server`).
+* **The checkout the script lives in decides what it does**, not the directory
+  you call it from. In a linked git worktree (local testing) it deploys the
+  worktree as it is and leaves git alone, so a worktree's branch is never
+  reset, wherever you run it from. In the main checkout it only runs on `main`,
+  and it refuses (exit 3) when the reset would throw away work: uncommitted
+  changes to tracked files, or commits that `origin/main` does not have. On the
+  server neither exists; anywhere else, commit or move the work first.
+* **The rollback needs the commit it recorded in step 1.** In worktree mode
+  there is none: an unhealthy server there stops with exit 2 and leaves the
+  process for you to inspect (`pm2 logs cuevote-server`), an unhealthy MCP
+  with exit 4.
+* **Each process runs from the checkout being deployed.** Every checkout uses
+  the pm2 names `cuevote-server` and `cuevote-mcp-dj`, and `pm2 reload` or
+  `restart` re-runs the script path recorded when the process was first
+  started. When pm2 runs a process from another path (another worktree, a
+  checkout that moved or is gone), the script says so, deletes it and starts it
+  from this checkout, then runs `pm2 save`. On the server the paths match, and
+  it reloads as before.
 
-The health check calls `http://127.0.0.1:<PORT>/health` directly (bypassing
-nginx). It resolves `PORT` the same way the server does — an exported `PORT`
-wins over the file, because `dotenv` does not override an existing variable and
-`pm2 --update-env` passes the deployer's environment through — then falls back
-to `cuevote-server/.env` and finally to `8080`. Inline comments, quotes,
+`bash scripts/test-deploy-scripts.sh` runs the script against a throw-away
+sandbox (local bare repo as `origin`, stubs for `npm`, `pm2` and `curl`) and
+checks these cases.
+
+The health checks call `http://127.0.0.1:<port>/health` directly (bypassing
+nginx): `PORT` for the server, `CUEVOTE_HTTP_PORT` for the MCP. Each resolves
+the way its process does — an exported variable wins over the file, because
+`dotenv` does not override an existing variable and `pm2 --update-env` passes
+the deployer's environment through — then falls back to `cuevote-server/.env`
+(`cuevote-mcp/.env`) and finally to `8080` (`8082`). Inline comments, quotes,
 `export` and spaces around `=` are all handled; anything that is not a plain
 number is ignored rather than polled. It needs `curl`, which section 1 already
 installs.

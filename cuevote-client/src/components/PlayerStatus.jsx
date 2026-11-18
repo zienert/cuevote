@@ -64,7 +64,7 @@ export function StatusButton({ variant = "primary", icon: Icon, busy = false, ch
 		<button
 			type="button"
 			disabled={busy}
-			className={`flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 disabled:cursor-wait disabled:opacity-70 ${look}`}
+			className={`flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold transition-[background-color,opacity,transform] duration-150 ease-cv active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 disabled:cursor-wait disabled:opacity-70 ${look}`}
 			{...props}
 		>
 			{busy

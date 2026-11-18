@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "เข้าสู่ระบบเพื่อสร้าง",
 		"noChannelsFound": "ไม่พบช่อง",
 		"live": "สด",
+		"hostedBy": "โฮสต์: {name}",
+		"wrongPassword": "รหัสผ่านไม่ถูกต้อง",
 		"createNewChannel": "สร้างช่องใหม่",
 		"channelName": "ชื่อช่อง",
 		"channelNamePlaceholder": "เช่น วิดีโอฟังสบาย",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "หน้าต่างเล็กเกินไป",
+		"windowTooSmallMessage": "ขยายหน้าต่างเพื่อใช้ CueVote ต่อ",
 		"backToRadio": "กลับไปที่วิทยุ",
 		"retry": "ลองเชื่อมต่ออีกครั้ง",
 		"switching": "กำลังเปลี่ยนช่อง...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "ลบ",
 		"watch": "ดูบน YouTube",
 		"recommend": "รับคำแนะนำ",
-		"guest": "แขก"
+		"guest": "แขก",
+		"voteUp": "โหวตเห็นด้วย",
+		"voteDown": "โหวตไม่เห็นด้วย"
 	},
 	"library": {
 		"searchPlaceholder": "ค้นหาคลังวิดีโอ...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} วิดีโอ"
 		},
 		"inLibrary": "ในคลัง",
+		"about": "เกี่ยวกับคลังวิดีโอ",
 		"info1": "คลังนี้แสดงวิดีโอที่ไม่ซ้ำที่เล่นใน <strong>28 วัน</strong> ที่ผ่านมา",
 		"info2": "วิดีโอเก่าจะถูกซ่อนเพื่อความสดใหม่ของข้อมูล แต่<strong>จะไม่ถูกลบ</strong> ฟีเจอร์ <strong>เติมอัตโนมัติ</strong> ยังคงจำประวัติทั้งหมดของคุณและจะนำวิดีโอเก่ากลับมาเมื่อจำเป็น!",
 		"empty": "ไม่พบวิดีโอ"
@@ -241,6 +246,13 @@ export default {
 		"history": "ประวัติ",
 		"last50": "50 วิดีโอล่าสุด (จาก {count})",
 		"nowPlaying": "กำลังเล่น",
+		"play": "เล่น",
+		"pause": "หยุดชั่วคราว",
+		"mute": "ปิดเสียง",
+		"unmute": "เปิดเสียง",
+		"volume": "ระดับเสียง",
+		"cinemaMode": "โหมดโรงภาพยนตร์",
+		"exitCinemaMode": "ออกจากโหมดโรงภาพยนตร์",
 		"channelSuffix": "ช่อง",
 		"upNext": "ถัดไป",
 		"queueEmpty": "คิวว่าง",

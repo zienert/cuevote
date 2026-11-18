@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Đăng nhập để tạo",
 		"noChannelsFound": "Không tìm thấy kênh",
 		"live": "Trực tiếp",
+		"hostedBy": "Chủ phòng: {name}",
+		"wrongPassword": "Sai mật khẩu",
 		"createNewChannel": "Tạo Kênh Mới",
 		"channelName": "Tên Kênh",
 		"channelNamePlaceholder": "vd. Nhạc Thư Giãn",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Không có kết nối internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Cửa sổ quá nhỏ",
+		"windowTooSmallMessage": "Hãy phóng to cửa sổ để tiếp tục dùng CueVote.",
 		"backToRadio": "Quay lại radio",
 		"retry": "Thử lại kết nối",
 		"switching": "Đang chuyển kênh...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Xóa",
 		"watch": "Xem trên YouTube",
 		"recommend": "Nhận gợi ý",
-		"guest": "Khách"
+		"guest": "Khách",
+		"voteUp": "Bỏ phiếu thuận",
+		"voteDown": "Bỏ phiếu chống"
 	},
 	"library": {
 		"searchPlaceholder": "Tìm kiếm thư viện...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} bài"
 		},
 		"inLibrary": "trong thư viện",
+		"about": "Giới thiệu về thư viện",
 		"info1": "Thư viện hiển thị các bài hát duy nhất đã phát trong <strong>28 ngày</strong> qua.",
 		"info2": "Các bài cũ được ẩn để giữ dữ liệu mới, nhưng <strong>không bao giờ bị xóa</strong>. Tính năng <strong>Tự động điền</strong> vẫn nhớ toàn bộ lịch sử và sẽ tự động đưa bài cũ trở lại khi cần!",
 		"empty": "Không tìm thấy bài hát"
@@ -241,6 +246,13 @@ export default {
 		"history": "Lịch sử",
 		"last50": "50 bài gần nhất (của {count})",
 		"nowPlaying": "Đang phát",
+		"play": "Phát",
+		"pause": "Tạm dừng",
+		"mute": "Tắt tiếng",
+		"unmute": "Bật tiếng",
+		"volume": "Âm lượng",
+		"cinemaMode": "Chế độ rạp chiếu",
+		"exitCinemaMode": "Thoát chế độ rạp chiếu",
 		"channelSuffix": "Kênh",
 		"upNext": "Tiếp theo",
 		"queueEmpty": "Hàng đợi trống",

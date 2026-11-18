@@ -84,12 +84,20 @@ function projectTrack(track, viewerId) {
 // A copy of a state — or of a delta — with those fields removed and the viewer's
 // own vote added. Only keys that are actually present get touched, so deltas
 // pass through unchanged apart from the track collections they carry.
+//
+// `ownerId` is the owner's account id as well. A viewer only needs to know
+// whether it is the owner, which travels as `isOwner`; the id itself goes to
+// the owner alone, so that clients from before `isOwner` keep working for them.
 function projectState(state, viewerId) {
     if (!state || typeof state !== 'object') return state;
     const out = { ...state };
     if ('currentTrack' in out) out.currentTrack = projectTrack(out.currentTrack, viewerId);
     for (const key of TRACK_COLLECTIONS) {
         if (Array.isArray(out[key])) out[key] = out[key].map(t => projectTrack(t, viewerId));
+    }
+    if ('ownerId' in out) {
+        out.isOwner = !!viewerId && viewerId === out.ownerId;
+        if (!out.isOwner) delete out.ownerId;
     }
     return out;
 }

@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Autentifică-te pentru a crea",
 		"noChannelsFound": "Nu s-au găsit canale pentru",
 		"live": "Live",
+		"hostedBy": "Gazdă: {name}",
+		"wrongPassword": "Parolă greșită",
 		"createNewChannel": "Creează Canal Nou",
 		"channelName": "Nume Canal",
 		"channelNamePlaceholder": "ex. Vibe de Noapte",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Fără conexiune la internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Fereastra este prea mică",
+		"windowTooSmallMessage": "Mărește fereastra pentru a folosi în continuare CueVote.",
 		"backToRadio": "Înapoi la radio",
 		"retry": "Reîncearcă conexiunea",
 		"switching": "Schimbare Canal...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Șterge",
 		"watch": "Vezi pe YouTube",
 		"recommend": "Obține sugestii",
-		"guest": "Invitat"
+		"guest": "Invitat",
+		"voteUp": "Votează pentru",
+		"voteDown": "Votează împotrivă"
 	},
 	"library": {
 		"searchPlaceholder": "Caută în bibliotecă...",
@@ -217,6 +221,7 @@ export default {
 			"other": "{count} videoclipuri"
 		},
 		"inLibrary": "în bibliotecă",
+		"about": "Despre bibliotecă",
 		"info1": "Această bibliotecă afișează videoclipurile unice redate în ultimele <strong>28 de zile</strong>.",
 		"info2": "Videoclipurile mai vechi sunt ascunse pentru prospețimea datelor, dar <strong>nu sunt șterse niciodată</strong>. Funcția <strong>Reumplere Automată</strong> ține minte întregul istoric și va aduce automat videoclipurile vechi înapoi în coadă (și în această listă) când este nevoie!",
 		"empty": "Nu s-au găsit videoclipuri"
@@ -245,6 +250,13 @@ export default {
 		"history": "Istoric",
 		"last50": "Ultimele 50 (din {count})",
 		"nowPlaying": "Cântă Acum",
+		"play": "Redă",
+		"pause": "Pauză",
+		"mute": "Dezactivează sunetul",
+		"unmute": "Activează sunetul",
+		"volume": "Volum",
+		"cinemaMode": "Mod cinema",
+		"exitCinemaMode": "Ieși din modul cinema",
 		"upNext": "Urmează",
 		"queueEmpty": "Coadă goală",
 		"errorNotFound": "Videoclipul nu a fost găsit",

@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Kirjaudu luodaksesi",
 		"noChannelsFound": "Kanavia ei löytynyt haulla",
 		"live": "Live",
+		"hostedBy": "Isäntä: {name}",
+		"wrongPassword": "Väärä salasana",
 		"createNewChannel": "Luo uusi kanava",
 		"channelName": "Kanavan nimi",
 		"channelNamePlaceholder": "esim. Yöfiilikset",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Ei internetyhteyttä",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Ikkuna on liian pieni",
+		"windowTooSmallMessage": "Suurenna ikkunaa jatkaaksesi CueVoten käyttöä.",
 		"backToRadio": "Takaisin radioon",
 		"retry": "Yritä yhteyttä uudelleen",
 		"switching": "Vaihdetaan kanavaa...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Poista",
 		"watch": "Katso YouTubessa",
 		"recommend": "Hae ehdotuksia",
-		"guest": "Vieras"
+		"guest": "Vieras",
+		"voteUp": "Äänestä puolesta",
+		"voteDown": "Äänestä vastaan"
 	},
 	"library": {
 		"searchPlaceholder": "Etsi kirjastosta...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} kappaletta"
 		},
 		"inLibrary": "kirjastossa",
+		"about": "Tietoja kirjastosta",
 		"info1": "Tämä kirjasto näyttää viimeisen <strong>28 päivän</strong> aikana soitetut ainutlaatuiset kappaleet.",
 		"info2": "Vanhemmat kappaleet piilotetaan tietojen tuoreuden vuoksi, mutta niitä <strong>ei koskaan poisteta</strong>. <strong>Automaattitäyttö</strong> muistaa koko historiasi ja palauttaa vanhemmat kappaleet automaattisesti jonoon (ja tähän listaan) tarvittaessa!",
 		"empty": "Kappaleita ei löytynyt"
@@ -243,6 +248,13 @@ export default {
 		"history": "Historia",
 		"last50": "Viimeiset 50 ({count}:sta)",
 		"nowPlaying": "Nyt soi",
+		"play": "Toista",
+		"pause": "Keskeytä",
+		"mute": "Mykistä",
+		"unmute": "Poista mykistys",
+		"volume": "Äänenvoimakkuus",
+		"cinemaMode": "Elokuvatila",
+		"exitCinemaMode": "Poistu elokuvatilasta",
 		"upNext": "Seuraava",
 		"queueEmpty": "Jono tyhjä",
 		"errorNotFound": "Videota ei löydy",

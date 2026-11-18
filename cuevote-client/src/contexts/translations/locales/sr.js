@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Prijavi se za pravljenje",
 		"noChannelsFound": "Nema pronađenih kanala za",
 		"live": "Uživo",
+		"hostedBy": "Domaćin: {name}",
+		"wrongPassword": "Pogrešna lozinka",
 		"createNewChannel": "Napravi Novi Kanal",
 		"channelName": "Ime Kanala",
 		"channelNamePlaceholder": "npr. Noćne Vibracije",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nema internet veze",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Prozor je premali",
+		"windowTooSmallMessage": "Povećajte prozor da biste nastavili da koristite CueVote.",
 		"backToRadio": "Nazad na radio",
 		"retry": "Pokušaj ponovo povezivanje",
 		"switching": "Promena Kanala...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Obriši",
 		"watch": "Gledaj na YouTube-u",
 		"recommend": "Преузми предлоге",
-		"guest": "Гост"
+		"guest": "Гост",
+		"voteUp": "Glasaj za",
+		"voteDown": "Glasaj protiv"
 	},
 	"library": {
 		"searchPlaceholder": "Traži u biblioteci...",
@@ -217,6 +221,7 @@ export default {
 			"other": "{count} pesama"
 		},
 		"inLibrary": "u biblioteci",
+		"about": "O biblioteci",
 		"info1": "Ova biblioteka prikazuje jedinstvene pesme svirane u zadnjih <strong>28 dana</strong>.",
 		"info2": "Starije pesme su skrivene radi svežine podataka, ali <strong>nikada nisu obrisane</strong>. Funkcija <strong>Automatsko Punjenje</strong> pamti celu vašu istoriju i automatski će vratiti starije pesme u red (i ovu listu) kada je potrebno!",
 		"empty": "Nisu pronađene pesme"
@@ -245,6 +250,13 @@ export default {
 		"history": "Istorija",
 		"last50": "Zadnjih 50 (od {count})",
 		"nowPlaying": "Sada Svira",
+		"play": "Pusti",
+		"pause": "Pauziraj",
+		"mute": "Isključi zvuk",
+		"unmute": "Uključi zvuk",
+		"volume": "Jačina zvuka",
+		"cinemaMode": "Bioskopski režim",
+		"exitCinemaMode": "Izađi iz bioskopskog režima",
 		"upNext": "Sledeće",
 		"queueEmpty": "Red je prazan",
 		"errorNotFound": "Video nije pronađen",

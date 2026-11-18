@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "登录以创建",
 		"noChannelsFound": "未找到频道",
 		"live": "直播",
+		"hostedBy": "主持人：{name}",
+		"wrongPassword": "密码错误",
 		"createNewChannel": "创建新频道",
 		"channelName": "频道名称",
 		"channelNamePlaceholder": "例如：深夜氛围",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "无网络连接",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "窗口太小",
+		"windowTooSmallMessage": "请放大窗口以继续使用 CueVote。",
 		"backToRadio": "返回电台",
 		"retry": "重试连接",
 		"retrying": "重试中...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "删除",
 		"watch": "在 YouTube 观看",
 		"recommend": "获取推荐",
-		"guest": "访客"
+		"guest": "访客",
+		"voteUp": "投赞成票",
+		"voteDown": "投反对票"
 	},
 	"library": {
 		"searchPlaceholder": "搜索媒体库...",
@@ -215,6 +219,7 @@ export default {
 			"other": "{count} 个视频"
 		},
 		"inLibrary": "在库中",
+		"about": "关于媒体库",
 		"info1": "此库显示过去 <strong>28 天</strong> 内播放的唯一视频。",
 		"info2": "为了保持元数据新鲜度，较旧的视频会被隐藏，但<strong>绝不会被删除</strong>。<strong>自动填充</strong>功能仍会记住您的完整历史记录，并在需要时自动将旧视频带回队列（及此列表）！",
 		"empty": "未找到视频"
@@ -241,6 +246,13 @@ export default {
 		"history": "历史记录",
 		"last50": "最近 50 首（共 {count} 首）",
 		"nowPlaying": "正在播放",
+		"play": "播放",
+		"pause": "暂停",
+		"mute": "静音",
+		"unmute": "取消静音",
+		"volume": "音量",
+		"cinemaMode": "影院模式",
+		"exitCinemaMode": "退出影院模式",
 		"channelSuffix": "频道",
 		"upNext": "即将播放",
 		"queueEmpty": "队列为空",

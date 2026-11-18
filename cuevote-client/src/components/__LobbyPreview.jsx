@@ -14,6 +14,9 @@
 //   ?conn=...    the connection: connecting, or problem (it does not come: the
 //                card shows after 12 s). "Retry" connects.
 //   ?offline     the device has no internet
+//   ?data=...    a stress test (see __previewData.js): worst (the realistic
+//                worst case for every value), empty, one, many (200
+//                channels); a switch at the bottom changes it
 //
 // Thumbnails are generated SVGs, so the page loads nothing from YouTube or
 // Apple, and the cookie banner stays closed without anything being accepted.
@@ -23,8 +26,10 @@ import { WebSocketContext } from '../contexts/WebSocketContext';
 import { ConsentContext } from '../contexts/ConsentContextValue';
 import { Consent } from '../contexts/ConsentContext';
 import { DEVELOPER_TOKEN_URL } from '../utils/musicKit';
+import { DATA, WORST_CHANNELS, WORST_USER } from './__previewData';
+import { DataToggle } from './__PreviewDataToggle';
 
-const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null };
+const HOST = { id: 'preview-host', name: 'Alex', email: 'alex@example.com', picture: null, ...(DATA === 'worst' ? WORST_USER : null) };
 // Before the lobby renders: it asks navigator.onLine while rendering.
 if (new URLSearchParams(window.location.search).has('offline')) {
 	Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false });
@@ -45,7 +50,7 @@ function thumbnail(base, glowA, glowB) {
 // track there, so they never have a thumbnail.
 function channel(id, name, {
 	provider = 'youtube', listeners = 0, active = listeners > 0, thumb = null, flag = 'international',
-	isPublic = true, password = false, mine = false, host = 'Alex',
+	isPublic = true, password = false, mine = false, host = 'Alex', track = ['Preview', 'Preview'],
 } = {}) {
 	return {
 		id,
@@ -53,7 +58,7 @@ function channel(id, name, {
 		description: `Hosted by ${host}`,
 		color: COLOR,
 		listeners,
-		currentTrack: thumb && provider !== 'apple' ? { thumbnail: thumb, title: 'Preview', artist: 'Preview' } : null,
+		currentTrack: thumb && provider !== 'apple' ? { thumbnail: thumb, title: track[0], artist: track[1] } : null,
 		is_protected: password,
 		isActive: active,
 		language_flag: flag,
@@ -63,19 +68,33 @@ function channel(id, name, {
 	};
 }
 
-const CHANNELS = [
-	channel('yt-rooftop', 'Rooftop Saturday', { listeners: 14, thumb: thumbnail('#1a0b2e', '#ff6a3d', '#6b2bd9'), flag: 'de', host: 'Mia' }),
+const DEMO_CHANNELS = [
+	channel('yt-rooftop', 'Rooftop Saturday', { listeners: 14, thumb: thumbnail('#1a0b2e', '#ff6a3d', '#6b2bd9'), flag: 'de', host: 'Mia', track: ['Blinding Lights', 'The Weeknd'] }),
 	channel('am-late', 'Late Night Vibes', { provider: 'apple', listeners: 6, mine: true }),
-	channel('yt-kitchen', 'WG-Party Küche', { listeners: 9, thumb: thumbnail('#120d0a', '#ef4444', '#f97316'), flag: 'at', host: 'Lukas', mine: true }),
-	channel('yt-indie', 'Indie Dinner Party', { listeners: 3, thumb: thumbnail('#0b1d2e', '#2dd4bf', '#1e3a8a'), flag: 'fr', host: 'Léa' }),
-	channel('yt-lofi', 'Lo-fi Study Session with Friends', { listeners: 2, thumb: thumbnail('#10151f', '#f59e0b', '#be185d'), flag: 'nl', host: 'Noor' }),
+	channel('yt-kitchen', 'WG-Party Küche', { listeners: 9, thumb: thumbnail('#120d0a', '#ef4444', '#f97316'), flag: 'at', host: 'Lukas', mine: true, track: ['As It Was', 'Harry Styles'] }),
+	channel('yt-indie', 'Indie Dinner Party', { listeners: 3, thumb: thumbnail('#0b1d2e', '#2dd4bf', '#1e3a8a'), flag: 'fr', host: 'Léa', track: ['Dance Monkey', 'Tones and I'] }),
+	channel('yt-lofi', 'Lo-fi Study Session with Friends', { listeners: 2, thumb: thumbnail('#10151f', '#f59e0b', '#be185d'), flag: 'nl', host: 'Noor', track: ['Sunflower', 'Post Malone & Swae Lee'] }),
 	channel('am-brunch', 'Sunday Brunch Jazz', { provider: 'apple', listeners: 1, flag: 'it', host: 'Giulia' }),
 	channel('am-abiball', 'Abiball Afterparty 2026', { provider: 'apple', active: false, flag: 'de', host: 'Jonas' }),
 	channel('yt-90s', '90s Throwback', { active: false, flag: 'gb', host: 'Sam' }),
 	channel('am-birthday', 'Birthday Surprise', { provider: 'apple', isPublic: false, password: true, flag: 'de', mine: true }),
-	channel('yt-office', 'Office Friday', { listeners: 4, thumb: thumbnail('#0a1410', '#22c55e', '#0ea5e9'), isPublic: false, password: true, host: 'Kim' }),
+	channel('yt-office', 'Office Friday', { listeners: 4, thumb: thumbnail('#0a1410', '#22c55e', '#0ea5e9'), isPublic: false, password: true, host: 'Kim', track: ['Levitating', 'Dua Lipa'] }),
 	channel('am-pregame', 'Pregame', { provider: 'apple', isPublic: false, password: true, flag: 'ch', host: 'Nico' }),
 ];
+
+const THUMBS = DEMO_CHANNELS.map((entry) => entry.currentTrack?.thumbnail).filter(Boolean);
+const withThumb = (options) => ({ ...options, thumb: options.thumb === undefined ? null : THUMBS[options.thumb % THUMBS.length] });
+
+// The channels per ?data: the worst case, none, one, a busy evening's list.
+const CHANNELS = {
+	worst: WORST_CHANNELS.map(([name, options], i) => channel(`worst-${i}`, name, withThumb(options))),
+	empty: [],
+	one: [channel('only', 'WG-Party Küche', { listeners: 1, thumb: THUMBS[1], flag: 'at', mine: true })],
+	many: Array.from({ length: 200 }, (_, i) => {
+		const source = DEMO_CHANNELS[i % DEMO_CHANNELS.length];
+		return { ...source, id: `many-${i}`, name: `${source.name} ${i + 1}`, listeners: Math.max(0, 60 - i) };
+	}),
+}[DATA] || DEMO_CHANNELS;
 
 // The server's filters: private lists only channels with a password.
 function listFor(channels, type) {
@@ -148,10 +167,11 @@ export default function LobbyPreview() {
 	}, [outerConsent]);
 	const consent = useMemo(() => ({
 		...outerConsent,
-		hasConsent: !signedOut,
+		// ?signedOut&consent: cookies accepted, not signed in yet.
+		hasConsent: !signedOut || params.has('consent'),
 		showBanner: false,
 		askForConsent: () => {},
-	}), [outerConsent, signedOut]);
+	}), [outerConsent, signedOut, params]);
 
 	// The dialog offers Apple Music when the token route answers JSON.
 	useLayoutEffect(() => {
@@ -177,6 +197,7 @@ export default function LobbyPreview() {
 		<ConsentContext.Provider value={consent}>
 			<WebSocketContext.Provider value={socket}>
 				<Lobby />
+				<DataToggle many="200 channels" />
 			</WebSocketContext.Provider>
 		</ConsentContext.Provider>
 	);

@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "बनाने के लिए लॉग इन करें",
 		"noChannelsFound": "कोई चैनल नहीं मिला",
 		"live": "लाइव",
+		"hostedBy": "मेज़बान: {name}",
+		"wrongPassword": "गलत पासवर्ड",
 		"createNewChannel": "नया चैनल बनाएं",
 		"channelName": "चैनल का नाम",
 		"channelNamePlaceholder": "उदा. देर रात की धुन",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "कोई इंटरनेट कनेक्शन नहीं",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "विंडो बहुत छोटी है",
+		"windowTooSmallMessage": "CueVote का उपयोग जारी रखने के लिए विंडो बड़ी करें।",
 		"backToRadio": "रेडियो पर वापस जाएँ",
 		"retry": "कनेक्शन पुनः प्रयास करें",
 		"retrying": "पुनः प्रयास कर रहा है...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "हटाएं",
 		"watch": "YouTube पर देखें",
 		"recommend": "सुझाव प्राप्त करें",
-		"guest": "मेहमान"
+		"guest": "मेहमान",
+		"voteUp": "पक्ष में वोट करें",
+		"voteDown": "विपक्ष में वोट करें"
 	},
 	"library": {
 		"searchPlaceholder": "लाइब्रेरी खोजें...",
@@ -216,6 +220,7 @@ export default {
 			"other": "{count} वीडियो"
 		},
 		"inLibrary": "लाइब्रेरी में",
+		"about": "लाइब्रेरी के बारे में",
 		"info1": "यह लाइब्रेरी पिछले <strong>28 दिनों</strong> में बजाए गए अद्वितीय वीडियोों को प्रदर्शित करती है।",
 		"info2": "मेटाडेटा ताजगी के लिए पुराने वीडियो छिपाए जाते हैं, लेकिन वे <strong>कभी नहीं हटाए जाते</strong>। <strong>स्वतः भरें</strong> सुविधा आपके पूरे इतिहास को याद रखती है और आवश्यकता पड़ने पर स्वचालित रूप से पुराने वीडियोों को वापस लाती है!",
 		"empty": "कोई वीडियो नहीं मिला"
@@ -243,6 +248,13 @@ export default {
 		"history": "इतिहास",
 		"last50": "पिछले 50 ({count} में से)",
 		"nowPlaying": "अब चल रहा है",
+		"play": "चलाएँ",
+		"pause": "रोकें",
+		"mute": "म्यूट करें",
+		"unmute": "अनम्यूट करें",
+		"volume": "वॉल्यूम",
+		"cinemaMode": "सिनेमा मोड",
+		"exitCinemaMode": "सिनेमा मोड से बाहर निकलें",
 		"channelSuffix": "चैनल",
 		"upNext": "अगला",
 		"queueEmpty": "कतार खाली",

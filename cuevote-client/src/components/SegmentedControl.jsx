@@ -4,7 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * One choice out of a few, drawn as a single control with a sliding marker:
+ * One choice out of a few, drawn as a single control with a sliding marker
+ * that throws a little orange light under itself:
  * the create dialog's music source and privacy, and the views of a room on a
  * phone (`size="sm"` where three have to fit).
  *
@@ -19,11 +20,11 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 		<div
 			role="group"
 			aria-labelledby={labelledBy}
-			className="relative grid grid-flow-col auto-cols-fr rounded-xl border border-neutral-800 bg-[#050505] p-1"
+			className="relative grid grid-flow-col auto-cols-fr rounded-xl border border-line bg-page p-1"
 		>
 			<span
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-gradient-to-b from-orange-500 to-orange-600 shadow-[0_6px_18px_-6px_rgba(249,115,22,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+				className="pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-accent shadow-[0_6px_18px_-6px_rgb(249_115_22/0.7)] transition-transform duration-[250ms] ease-cv-drawer motion-reduce:transition-none"
 				style={{
 					width: `calc((100% - 0.5rem) / ${options.length})`,
 					transform: `translateX(${selectedIndex * 100}%)`,
@@ -38,7 +39,7 @@ export function SegmentedControl({ labelledBy, options, value, onChange, size = 
 						type="button"
 						aria-pressed={selected}
 						onClick={() => onChange(option.value)}
-						className={`relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:text-white ${size === 'sm' ? 'px-1.5 py-2 text-[13px] tracking-tight' : 'px-3 py-2.5 text-sm'} ${selected ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
+						className={`cv-hit relative flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/80 ${size === 'sm' ? 'h-9 px-1.5 text-[13px]' : 'h-10 px-3 text-sm'} ${selected ? 'text-accent-ink' : 'text-ink-2 hover:text-ink'}`}
 					>
 						{Icon ? <Icon size={16} className="shrink-0" /> : null}
 						<span className="truncate">{option.label}</span>

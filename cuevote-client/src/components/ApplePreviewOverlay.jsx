@@ -43,7 +43,7 @@ export function ApplePreviewOverlay({ track, preview, consent, onAccept, isCinem
 			? `fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center ${paddingTop} ${paddingBottom} px-4 animate-fadeIn`
 			: 'hidden'}
 		>
-			<div className="w-full max-w-5xl aspect-video max-h-full bg-black rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 relative">
+			<div className="relative aspect-video max-h-full w-full max-w-5xl overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-line">
 				{open && consent && isSong && track.thumbnail && (
 					<img
 						src={track.thumbnail}

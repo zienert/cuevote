@@ -48,6 +48,19 @@ export function canParticipate(user, requireLogin) {
 }
 
 /**
+ * The first letter of a name, for a picture's stand-in. A whole letter as a
+ * person reads it: "🦊 Fox" gives the fox, not half of its code.
+ */
+export function initialOf(name) {
+	const text = (name || '').trim();
+	if (!text) return '?';
+	const first = typeof Intl !== 'undefined' && Intl.Segmenter
+		? new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)[Symbol.iterator]().next().value?.segment
+		: Array.from(text)[0];
+	return (first || '?').toLocaleUpperCase();
+}
+
+/**
  * The name to show for a signed-in user or a guest.
  *
  * The server names a guest "Guest ABCD" so that clients which know nothing

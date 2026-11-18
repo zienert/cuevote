@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { Pause, Play, Volume2, VolumeX, Maximize2, Minimize2, ChevronUp, ChevronDown, ListMusic } from "lucide-react";
 import { deviceDetection } from '../utils/deviceDetection';
 import { Language } from '../contexts/LanguageContext';
-import { MarqueeText } from './MarqueeText';
 
 export function PlaybackControls({
   isPlaying,
@@ -30,6 +29,9 @@ export function PlaybackControls({
   // On phones the bar is part of the room's column, above the suggest field,
   // instead of floating over the bottom edge.
   docked = false,
+  // The mute button and the volume slider. Off where they would change
+  // nothing that is heard.
+  showVolume = true,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [tempVisible, setTempVisible] = useState(false);
@@ -169,9 +171,9 @@ export function PlaybackControls({
       )}
       <footer
         ref={footerRef}
-        className={`w-full bg-[#050505]/95 backdrop-blur-md border-t border-neutral-900 px-6 pt-3 flex flex-col gap-2 select-none ${docked
+        className={`w-full bg-page/95 backdrop-blur-md border-t border-line px-4 pt-3 flex flex-col gap-3 select-none md:px-6 ${docked
           ? 'relative flex-none pb-3'
-          : `fixed bottom-0 left-0 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-[70] transition-transform duration-500 ease-in-out ${shouldShow ? 'translate-y-0' : 'translate-y-full'}`}`}
+          : `fixed bottom-0 left-0 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-[70] transition-transform duration-300 ease-cv ${shouldShow ? 'translate-y-0' : 'translate-y-full'}`}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchInteraction}
@@ -179,61 +181,66 @@ export function PlaybackControls({
         {/* Progress Bar */}
         <div
           ref={progressBarRef}
-          className={`w-full bg-neutral-900 rounded-full h-2 overflow-hidden relative ${isOwner ? 'cursor-pointer group' : ''}`}
+          className={`w-full bg-raised rounded-full h-1.5 overflow-hidden relative ${isOwner ? 'cursor-pointer group' : ''}`}
           onClick={handleSeekClick}
           onMouseMove={isOwner ? handleMouseMove : undefined}
           onMouseLeave={() => setDragPercent(null)}
         >
+          {/* Scaled, not resized: a width that changes every second would
+              lay the bar out again each time. */}
           <div
-            className={`h-2 bg-gradient-to-r from-orange-400 to-orange-600 relative ${dragPercent === null ? 'transition-all' : ''}`}
-            style={{ width: `${dragPercent ?? progress}%` }}
-          >
-            {/* Handle for owners */}
-            {isOwner && (
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-sm transition-opacity" />
-            )}
-          </div>
+            className={`h-1.5 w-full origin-left bg-accent ${dragPercent === null ? 'transition-transform duration-300 ease-linear' : ''}`}
+            style={{ transform: `scaleX(${Math.max(0, Math.min(100, dragPercent ?? progress)) / 100})` }}
+          />
         </div>
 
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             <button
               onClick={(event) => {
                 event.stopPropagation();
                 onPlayPause();
               }}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white rounded-full p-3 transition-all shadow-lg flex-shrink-0"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink transition-[background-color,transform,opacity] duration-150 ease-cv hover:bg-[#fb8b3c] active:scale-95 disabled:opacity-50"
               disabled={!currentTrack}
+              aria-label={isPlaying ? t('playlist.pause') : t('playlist.play')}
+              title={isPlaying ? t('playlist.pause') : t('playlist.play')}
             >
-              {isPlaying ? <Pause /> : <Play />}
+              {isPlaying ? <Pause size={20} fill="currentColor" strokeWidth={0} /> : <Play size={20} fill="currentColor" strokeWidth={0} className="translate-x-px" />}
             </button>
 
             <div className="flex-1 min-w-0">
-              <MarqueeText as="h3" className="text-base font-semibold leading-tight">
+              {/* The title leads. That it is playing shows in the bar itself:
+                  the pause button and the line that fills. */}
+              <h3 dir="auto" className="cv-bidi truncate text-[15px] font-medium leading-5 text-ink" title={currentTrack?.title || undefined}>
                 {currentTrack
-                  ? `${t('playlist.nowPlaying')}${currentTrack.title ? ` · ${currentTrack.title}` : ''}`
+                  ? (currentTrack.title || t('playlist.nowPlaying'))
                   : t('playlist.queueEmpty')}
-              </MarqueeText>
-              <MarqueeText as="p" className="text-sm text-neutral-400">
+              </h3>
+              <p dir="auto" className="cv-bidi truncate text-[13px] leading-5 text-ink-2">
                 {currentTrack
-                  ? `${currentTrack.artist ? `${currentTrack.artist} • ` : ''}${activeChannel} ${t('playlist.channelSuffix')}`
+                  ? [currentTrack.artist, activeChannel].filter(Boolean).join(' · ')
                   : t('playlist.addVideos')}
-              </MarqueeText>
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-neutral-400 flex-shrink-0">
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                onMuteToggle();
-              }}
-              className="hover:text-orange-400 transition-colors"
-              disabled={!currentTrack}
-            >
-              {isMuted ? <VolumeX /> : <Volume2 />}
-            </button>
-            {!deviceDetection.isMobile() && (
+          <div className="flex items-center gap-1 text-ink-2 flex-shrink-0">
+            {showVolume && (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onMuteToggle();
+                }}
+                className="cv-hit flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
+                disabled={!currentTrack}
+                aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+            )}
+            {showVolume && !deviceDetection.isMobile() && (
               <input
                 type="range"
                 min="0"
@@ -241,7 +248,8 @@ export function PlaybackControls({
                 step="1"
                 value={volume}
                 onChange={onVolumeChange}
-                className={`accent-orange-500 w-24 ${isMuted ? "opacity-50" : ""}`}
+                aria-label={t('playlist.volume')}
+                className={`mr-1 w-24 accent-[rgb(var(--cv-accent))] ${isMuted ? "opacity-50" : ""}`}
                 onClick={(event) => event.stopPropagation()}
                 disabled={!currentTrack}
               />
@@ -252,12 +260,14 @@ export function PlaybackControls({
                   event.stopPropagation();
                   onQueueToggle();
                 }}
-                className="hover:text-white transition-colors ml-2 flex items-center gap-1.5"
-                title={isQueueMinimized ? "Show Queue" : "Hide Queue"}
+                className={`flex h-9 items-center gap-1.5 rounded-lg px-2 transition-colors duration-150 hover:bg-raised hover:text-ink ${isQueueMinimized ? '' : 'bg-raised text-ink'}`}
+                title={t('playlist.upNext')}
+                aria-label={t('playlist.upNext')}
+                aria-expanded={!isQueueMinimized}
               >
                 <ListMusic size={18} />
                 {upcomingCount > 0 && (
-                  <span className="bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 leading-none">
+                  <span className="text-sm font-semibold tabular-nums text-ink">
                     {upcomingCount}
                   </span>
                 )}
@@ -270,10 +280,11 @@ export function PlaybackControls({
                   event.stopPropagation();
                   onToggleCinemaMode();
                 }}
-                className="hover:text-white transition-colors ml-2"
-                title={isCinemaMode ? "Exit Cinema Mode" : "Cinema Mode"}
+                className="cv-hit flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-raised hover:text-ink"
+                aria-label={isCinemaMode ? t('playlist.exitCinemaMode') : t('playlist.cinemaMode')}
+                title={isCinemaMode ? t('playlist.exitCinemaMode') : t('playlist.cinemaMode')}
               >
-                {isCinemaMode ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                {isCinemaMode ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
               </button>
             )}
           </div>
@@ -303,4 +314,5 @@ PlaybackControls.propTypes = {
   onQueueToggle: PropTypes.func,
   upcomingCount: PropTypes.number,
   docked: PropTypes.bool,
+  showVolume: PropTypes.bool,
 };

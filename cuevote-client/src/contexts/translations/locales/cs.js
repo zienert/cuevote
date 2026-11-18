@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Přihlaste se pro vytvoření",
 		"noChannelsFound": "Nebyly nalezeny žádné kanály pro",
 		"live": "Živě",
+		"hostedBy": "Hostitel: {name}",
+		"wrongPassword": "Nesprávné heslo",
 		"createNewChannel": "Vytvořit Nový Kanál",
 		"channelName": "Název Kanálu",
 		"channelNamePlaceholder": "např. Noční Atmosféra",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žádné připojení k internetu",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Okno je příliš malé",
+		"windowTooSmallMessage": "Zvětšete okno, abyste mohli CueVote dál používat.",
 		"backToRadio": "Zpět k rádiu",
 		"retry": "Zkusit připojení znovu",
 		"switching": "Přepínání Kanálu...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Smazat",
 		"watch": "Sledovat na YouTube",
 		"recommend": "Získat návrhy",
-		"guest": "Host"
+		"guest": "Host",
+		"voteUp": "Hlasovat pro",
+		"voteDown": "Hlasovat proti"
 	},
 	"library": {
 		"searchPlaceholder": "Hledat v knihovně...",
@@ -218,6 +222,7 @@ export default {
 			"other": "{count} skladeb"
 		},
 		"inLibrary": "v knihovně",
+		"about": "O knihovně",
 		"info1": "Tato knihovna zobrazuje unikátní skladby přehrané za posledních <strong>28 dní</strong>.",
 		"info2": "Starší skladby jsou skryty pro čerstvost metadat, ale <strong>nikdy nejsou smazány</strong>. Funkce <strong>Automatické Doplnění</strong> si pamatuje celou vaši historii a automaticky vrátí starší skladby do fronty (a tohoto seznamu), když je potřeba!",
 		"empty": "Nebyly nalezeny žádné skladby"
@@ -247,6 +252,13 @@ export default {
 		"history": "Historie",
 		"last50": "Posledních 50 (z {count})",
 		"nowPlaying": "Právě Hraje",
+		"play": "Přehrát",
+		"pause": "Pozastavit",
+		"mute": "Ztlumit",
+		"unmute": "Zapnout zvuk",
+		"volume": "Hlasitost",
+		"cinemaMode": "Režim kina",
+		"exitCinemaMode": "Ukončit režim kina",
 		"upNext": "Další",
 		"queueEmpty": "Fronta je prázdná",
 		"errorNotFound": "Video nenalezeno",

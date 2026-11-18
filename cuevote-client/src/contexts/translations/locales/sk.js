@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Prihláste sa pre vytvorenie",
 		"noChannelsFound": "Neboli nájdené žiadne kanály pre",
 		"live": "Živo",
+		"hostedBy": "Hostiteľ: {name}",
+		"wrongPassword": "Nesprávne heslo",
 		"createNewChannel": "Vytvoriť Nový Kanál",
 		"channelName": "Názov Kanála",
 		"channelNamePlaceholder": "napr. Nočná Pohoda",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Žiadne pripojenie na internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Okno je príliš malé",
+		"windowTooSmallMessage": "Zväčšite okno, aby ste mohli CueVote ďalej používať.",
 		"backToRadio": "Späť na rádio",
 		"retry": "Skúsiť pripojenie znova",
 		"switching": "Prepínanie Kanála...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Zmazať",
 		"watch": "Sledovať na YouTube",
 		"recommend": "Získať návrhy",
-		"guest": "Hosť"
+		"guest": "Hosť",
+		"voteUp": "Hlasovať za",
+		"voteDown": "Hlasovať proti"
 	},
 	"library": {
 		"searchPlaceholder": "Hľadať v knižnici...",
@@ -218,6 +222,7 @@ export default {
 			"other": "{count} skladieb"
 		},
 		"inLibrary": "v knižnici",
+		"about": "O knižnici",
 		"info1": "Táto knižnica zobrazuje unikátne skladby prehrané za posledných <strong>28 dní</strong>.",
 		"info2": "Staršie skladby sú skryté pre čerstvosť metadát, ale <strong>nikdy nie sú zmazané</strong>. Funkcia <strong>Automatické Doplnenie</strong> si pamätá celú vašu históriu a automaticky vráti staršie skladby do fronty (a tohto zoznamu), keď je potrebné!",
 		"empty": "Neboli nájdené žiadne skladby"
@@ -247,6 +252,13 @@ export default {
 		"history": "História",
 		"last50": "Posledných 50 (z {count})",
 		"nowPlaying": "Práve Hrá",
+		"play": "Prehrať",
+		"pause": "Pozastaviť",
+		"mute": "Stlmiť",
+		"unmute": "Zapnúť zvuk",
+		"volume": "Hlasitosť",
+		"cinemaMode": "Režim kina",
+		"exitCinemaMode": "Ukončiť režim kina",
 		"upNext": "Ďalšie",
 		"queueEmpty": "Fronta je prázdna",
 		"errorNotFound": "Video sa nenašlo",

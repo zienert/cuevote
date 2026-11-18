@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Accedi per Creare",
 		"noChannelsFound": "Nessun canale trovato per",
 		"live": "Live",
+		"hostedBy": "Organizzato da {name}",
+		"wrongPassword": "Password errata",
 		"createNewChannel": "Crea Nuovo Canale",
 		"channelName": "Nome Canale",
 		"channelNamePlaceholder": "es. Late Night Vibes",
@@ -172,8 +174,8 @@ export default {
 	},
 	"app": {
 		"noInternet": "Nessuna connessione internet",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Finestra troppo piccola",
+		"windowTooSmallMessage": "Ingrandisci la finestra per continuare a usare CueVote.",
 		"backToRadio": "Torna alla radio",
 		"retry": "Riprova connessione",
 		"retrying": "Riprovo...",
@@ -207,7 +209,9 @@ export default {
 		"delete": "Elimina",
 		"watch": "Su YouTube",
 		"recommend": "Ricevi suggerimenti",
-		"guest": "Ospite"
+		"guest": "Ospite",
+		"voteUp": "Vota a favore",
+		"voteDown": "Vota contro"
 	},
 	"library": {
 		"searchPlaceholder": "Cerca nella libreria...",
@@ -217,6 +221,7 @@ export default {
 			"other": "{count} video"
 		},
 		"inLibrary": "nella libreria",
+		"about": "Informazioni sulla libreria",
 		"info1": "Questa libreria mostra brani unici riprodotti negli ultimi <strong>28 giorni</strong>.",
 		"info2": "I brani più vecchi sono nascosti per garantire la freschezza dei metadati, ma non vengono <strong>mai eliminati</strong>. La funzione <strong>Riempimento Automatico</strong> ricorda l'intera cronologia e riporterà automaticamente i vecchi brani nella coda (e in questo elenco) quando necessario!",
 		"empty": "Nessun brano trovato"
@@ -245,6 +250,13 @@ export default {
 		"history": "Cronologia",
 		"last50": "Ultime 50 di {count}",
 		"nowPlaying": "In riproduzione",
+		"play": "Riproduci",
+		"pause": "Pausa",
+		"mute": "Disattiva audio",
+		"unmute": "Attiva audio",
+		"volume": "Volume",
+		"cinemaMode": "Modalità cinema",
+		"exitCinemaMode": "Esci dalla modalità cinema",
 		"channelSuffix": "Canale",
 		"upNext": "In coda",
 		"queueEmpty": "Coda vuota",

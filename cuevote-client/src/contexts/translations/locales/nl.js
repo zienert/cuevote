@@ -46,6 +46,8 @@ export default {
 		"loginToCreate": "Log in om te Maken",
 		"noChannelsFound": "Geen kanalen gevonden voor",
 		"live": "Live",
+		"hostedBy": "Host: {name}",
+		"wrongPassword": "Onjuist wachtwoord",
 		"createNewChannel": "Nieuw Kanaal Maken",
 		"channelName": "Kanaalnaam",
 		"channelNamePlaceholder": "bijv. Laatavond Sfeer",
@@ -189,8 +191,8 @@ export default {
 		"listenMusic": "Muziek luisteren",
 		"unmuteAndPlay": "Geluid aan & Start",
 		"noInternet": "Geen internetverbinding",
-		"windowTooSmall": "Window Too Small",
-		"windowTooSmallMessage": "Please resize your window to continue using CueVote.",
+		"windowTooSmall": "Venster te klein",
+		"windowTooSmallMessage": "Maak het venster groter om CueVote te blijven gebruiken.",
 		"backToRadio": "Terug naar de radio",
 		"retry": "Opnieuw proberen",
 		"retrying": "Opnieuw proberen...",
@@ -214,7 +216,9 @@ export default {
 		"delete": "Verwijder",
 		"watch": "Op YouTube",
 		"recommend": "Krijg Suggesties",
-		"guest": "Gast"
+		"guest": "Gast",
+		"voteUp": "Omhoog stemmen",
+		"voteDown": "Omlaag stemmen"
 	},
 	"library": {
 		"searchPlaceholder": "Zoek in bibliotheek...",
@@ -223,6 +227,7 @@ export default {
 			"other": "{count} videos"
 		},
 		"inLibrary": "in bibliotheek",
+		"about": "Over de bibliotheek",
 		"info1": "Deze bibliotheek toont unieke videos gespeeld in de laatste <strong>28 dagen</strong>.",
 		"info2": "Oudere videos worden verborgen voor metadata-versheid, maar worden <strong>nooit verwijderd</strong>. De <strong>Automatisch Aanvullen</strong> functie onthoudt je volledige geschiedenis en zet oudere videos automatisch terug in de wachtrij (en deze lijst) wanneer nodig!",
 		"empty": "Geen videos gevonden"
@@ -250,6 +255,13 @@ export default {
 		"history": "Geschiedenis",
 		"last50": "Laatste 50 van {count}",
 		"nowPlaying": "Nu Spelend",
+		"play": "Afspelen",
+		"pause": "Pauzeren",
+		"mute": "Geluid uit",
+		"unmute": "Geluid aan",
+		"volume": "Volume",
+		"cinemaMode": "Bioscoopmodus",
+		"exitCinemaMode": "Bioscoopmodus verlaten",
 		"channelSuffix": "Kanaal",
 		"upNext": "Volgende",
 		"queueEmpty": "Wachtrij leeg",
