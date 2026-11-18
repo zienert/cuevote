@@ -1383,6 +1383,136 @@ describe('Room', () => {
       room.destroy();
     });
 
+    describe('the clock follows the player', () => {
+      const report = (room, ws, position, extra = {}) => room.handleMessage(ws, {
+        type: 'APPLE_PLAYER_STATUS',
+        payload: { state: 'playing', position, trackId: room.state.currentTrack.id, seeks: room.state.seeks, ...extra },
+      });
+
+      it('goes by the position its player reports', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        const guest = mockWs();
+        room.addClient(guest);
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+        // The room started the track three seconds before the player did.
+        room.setTrackPosition(3);
+
+        await report(room, owner, 0);
+        assert.ok(room.exactPosition() < 0.5, `clock at ${room.exactPosition()}`);
+        assert.equal(lastOf(guest, 'progress').payload, 0, 'every client is told');
+
+        // In step with the player: nothing to tell.
+        guest._messages.length = 0;
+        await report(room, owner, 0);
+        assert.equal(lastOf(guest, 'progress'), undefined);
+
+        // The player buffered for a while.
+        room.setTrackPosition(40);
+        await report(room, owner, 31);
+        assert.ok(Math.abs(room.exactPosition() - 31) < 0.5);
+        assert.equal(room.state.progress, 31);
+        room.destroy();
+      });
+
+      it('moves on when its player reaches the end, not before', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One', 200), video(2, 'Two')]);
+        // By the room's own count the track would be over.
+        room.setTrackPosition(200);
+        await report(room, owner, 196);
+        room.tick();
+        assert.equal(room.state.currentTrack.videoId, 'am:video:1', 'the player is not through yet');
+
+        await report(room, owner, 200);
+        room.tick();
+        assert.equal(room.state.currentTrack.videoId, 'am:video:2');
+        room.destroy();
+      });
+
+      it('keeps a seek against reports from before it, and tells the player to jump', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const phone = withPlayer(room, ownerWs());
+        const laptop = ownerWs();
+        room.addClient(laptop);
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+        room.currentTrackSince = Date.now() - 5000;
+        room.setTrackPosition(20);
+        const before = room.state.seeks;
+
+        // The laptop, on standby, seeks.
+        await room.handleMessage(laptop, { type: 'SEEK_TO', payload: 120 });
+        assert.equal(room.state.seeks, before + 1);
+        const told = phone._messages.filter(m => m.type === 'state_delta').pop();
+        assert.deepEqual(told.payload, { progress: 120, seeks: before + 1 });
+
+        // A report the phone sent before it heard of the seek.
+        await report(room, phone, 21, { seeks: before });
+        assert.ok(Math.abs(room.exactPosition() - 120) < 0.5, 'the seek stands');
+
+        // The phone has jumped and says so.
+        await report(room, phone, 123);
+        assert.ok(Math.abs(room.exactPosition() - 123) < 0.5);
+        room.destroy();
+      });
+
+      it('takes no position for another entry, from a standby device, or while paused', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const phone = withPlayer(room, ownerWs());
+        const laptop = ownerWs();
+        room.addClient(laptop);
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+        room.setTrackPosition(50);
+
+        await report(room, phone, 10, { trackId: 'q2' });
+        assert.ok(Math.abs(room.exactPosition() - 50) < 0.5, 'a report for the previous entry');
+
+        await room.handleMessage(laptop, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'playing', position: 10, trackId: 'q1', seeks: room.state.seeks } });
+        assert.ok(Math.abs(room.exactPosition() - 50) < 0.5, 'not the player');
+        assert.equal(room.applePlayer.ws, phone);
+
+        await room.handleMessage(phone, { type: 'PLAY_PAUSE', payload: false });
+        await report(room, phone, 10);
+        assert.equal(room.state.progress, 50, 'a report that crossed the pause');
+
+        // On play the clock starts where the room paused; the player then says where it is.
+        await room.handleMessage(phone, { type: 'PLAY_PAUSE', payload: true });
+        assert.ok(Math.abs(room.exactPosition() - 50) < 0.5);
+        await report(room, phone, 48);
+        assert.ok(Math.abs(room.exactPosition() - 48) < 0.5);
+        room.destroy();
+      });
+
+      it('leaves a room without a reporting player, and a YouTube room, as they were', async () => {
+        useCatalog();
+        const room = appleRoom();
+        const owner = withPlayer(room, ownerWs());
+        playing(room, [video(1, 'One'), video(2, 'Two')]);
+        room.setTrackPosition(50);
+        // A page from before players reported their position.
+        await room.handleMessage(owner, { type: 'APPLE_PLAYER_STATUS', payload: { state: 'playing' } });
+        assert.ok(Math.abs(room.exactPosition() - 50) < 0.5);
+        room.destroy();
+
+        const tube = new Room('yt-seeks', 'Tube', null, { owner_id: 'owner-1' });
+        assert.equal('seeks' in tube.state, false);
+        const tubeOwner = ownerWs();
+        tube.addClient(tubeOwner);
+        tube.state.currentTrack = { id: 'y1', videoId: 'abc', duration: 200, startedAt: Date.now() };
+        tube.state.queue = [tube.state.currentTrack];
+        tube.state.isPlaying = true;
+        tube.currentTrackSince = Date.now() - 5000;
+        await tube.handleMessage(tubeOwner, { type: 'SEEK_TO', payload: 100 });
+        assert.deepEqual(tubeOwner._messages.filter(m => m.type === 'state_delta').pop().payload, { progress: 100 });
+        tube.destroy();
+      });
+    });
+
     it('lets the Auto-DJ wait for the host and fill the room when the host is back', async () => {
       useCatalog({ items: [video(1, 'Fine')] });
       const room = appleRoom();
