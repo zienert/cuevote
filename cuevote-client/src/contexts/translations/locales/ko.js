@@ -221,7 +221,7 @@ export default {
 		"inLibrary": "라이브러리에",
 		"about": "라이브러리 정보",
 		"info1": "이 라이브러리는 최근 <strong>28일</strong> 동안 재생된 고유한 동영상을 표시합니다.",
-		"info2": "메타데이터 최신화를 위해 오래된 동영상은 숨겨지지만, <strong>절대 삭제되지 않습니다</strong>. <strong>자동 리필</strong> 기능은 전체 기록을 기억하며 필요할 때 오래된 동영상을 대기열(및 이 목록)로 다시 가져옵니다!",
+		"info2": "메타데이터 최신화를 위해 오래된 동영상은 숨겨지지만, <strong>절대 삭제되지 않습니다</strong>. <strong>Auto-DJ</strong> 기능은 전체 기록을 기억하며 필요할 때 오래된 동영상을 대기열(및 이 목록)로 다시 가져옵니다!",
 		"empty": "동영상을 찾을 수 없음"
 	},
 	"pending": {
@@ -261,7 +261,7 @@ export default {
 		"skippedRestricted": "'{title}' 건너뜀 (사용 불가)",
 		"skippedIPBlocked": "'{title}' 건너뜀 — YouTube가 이 네트워크를 제한 중",
 		"backToNow": "현재로 이동",
-		"addVideos": "동영상를 추가하여 재생 시작"
+		"addVideos": "동영상을 추가하여 재생 시작"
 	},
 	"mobile": {
 		"tagline": "민주적인 주크박스",

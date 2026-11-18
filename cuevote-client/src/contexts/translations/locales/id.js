@@ -53,7 +53,7 @@ export default {
 		"channelNamePlaceholder": "cth. Santai Malam",
 		"privacy": "Privasi",
 		"passwordOptional": "Password (Opsional)",
-		"passwordPlaceholder": "Kovideokan untuk tidak terdaftar",
+		"passwordPlaceholder": "Kosongkan untuk tidak terdaftar",
 		"cancel": "Batal",
 		"enterPassword": "Masukkan Password",
 		"passwordInputPlaceholder": "Password kanal...",
@@ -221,7 +221,7 @@ export default {
 		"inLibrary": "di pustaka",
 		"about": "Tentang pustaka",
 		"info1": "Pustaka ini menampilkan video unik yang diputar dalam <strong>28 hari</strong> terakhir.",
-		"info2": "Video lama disembunyikan agar data tetap segar, tapi <strong>tidak pernah dihapus</strong>. Fitur <strong>Isi Otomatis</strong> tetap mengingat seluruh riwayat Anda dan akan otomatis mengembalikan video lama saat dibutuhkan!",
+		"info2": "Video lama disembunyikan agar data tetap segar, tapi <strong>tidak pernah dihapus</strong>. Fitur <strong>Auto-DJ</strong> tetap mengingat seluruh riwayat Anda dan akan otomatis mengembalikan video lama saat dibutuhkan!",
 		"empty": "Video tidak ditemukan"
 	},
 	"pending": {
@@ -255,7 +255,7 @@ export default {
 		"exitCinemaMode": "Keluar dari mode bioskop",
 		"channelSuffix": "Saluran",
 		"upNext": "Berikutnya",
-		"queueEmpty": "Antrean kovideo",
+		"queueEmpty": "Antrean kosong",
 		"errorNotFound": "Video tidak ditemukan",
 		"errorRestricted": "Tidak tersedia di negara Anda",
 		"skippedRestricted": "'{title}' dilewati (Tidak tersedia)",

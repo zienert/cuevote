@@ -53,7 +53,7 @@ export default {
 		"channelNamePlaceholder": "cth. Rentak Malam",
 		"privacy": "Privasi",
 		"passwordOptional": "Kata Laluan (Pilihan)",
-		"passwordPlaceholder": "Biarkan kovideo untuk saluran tidak tersenarai",
+		"passwordPlaceholder": "Biarkan kosong untuk saluran tidak tersenarai",
 		"cancel": "Batal",
 		"enterPassword": "Masukkan Kata Laluan",
 		"passwordInputPlaceholder": "Kata laluan saluran...",
@@ -221,7 +221,7 @@ export default {
 		"inLibrary": "dalam pustaka",
 		"about": "Tentang pustaka",
 		"info1": "Pustaka ini memaparkan video unik yang dimainkan dalam <strong>28 hari</strong> lepas.",
-		"info2": "Video lama disembunyikan untuk kesegaran data, tetapi <strong>tidak pernah dipadam</strong>. Ciri <strong>Isi Semula Auto</strong> masih mengingati sejarah penuh anda dan akan mengembalikan video lama apabila diperlukan!",
+		"info2": "Video lama disembunyikan untuk kesegaran data, tetapi <strong>tidak pernah dipadam</strong>. Ciri <strong>Auto-DJ</strong> masih mengingati sejarah penuh anda dan akan mengembalikan video lama apabila diperlukan!",
 		"empty": "Tiada video ditemui"
 	},
 	"pending": {
@@ -254,7 +254,7 @@ export default {
 		"cinemaMode": "Mod pawagam",
 		"exitCinemaMode": "Keluar daripada mod pawagam",
 		"upNext": "Seterusnya",
-		"queueEmpty": "Barisan kovideo",
+		"queueEmpty": "Barisan kosong",
 		"errorNotFound": "Video tidak dijumpai",
 		"errorRestricted": "Tidak tersedia di negara anda",
 		"skippedRestricted": "'{title}' dilangkau (Tidak tersedia)",

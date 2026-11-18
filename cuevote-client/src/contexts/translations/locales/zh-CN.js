@@ -112,12 +112,12 @@ export default {
 		"playlist": "播放列表",
 		"library": "媒体库",
 		"share": "分享频道",
-		"suggest": "点動画",
-		"suggestionsDisabled": "点動画已禁用（仅供浏览）",
+		"suggest": "点视频",
+		"suggestionsDisabled": "点视频已禁用（仅供浏览）",
 		"suggestVideo": "推荐视频",
 		"settings": "频道设置",
 		"reviewRequests": "审核请求",
-		"allowSuggestions": "允许点動画",
+		"allowSuggestions": "允许点视频",
 		"manualReview": "人工审核",
 		"approveKnown": "自动批准已知",
 		"approveKnownTooltip": "自动批准之前已批准过的视频",
@@ -162,8 +162,8 @@ export default {
 		"requireLoginTooltip": "访客必须登录才能投票和推荐。关闭时，频道内任何人都可以参与。"
 	},
 	"suggest": {
-		"placeholder": "输入動画名...",
-		"disabledPlaceholder": "点動画已禁用",
+		"placeholder": "输入视频名...",
+		"disabledPlaceholder": "点视频已禁用",
 		"submit": "提交",
 		"adding": "添加中...",
 		"added": "已添加",
@@ -221,7 +221,7 @@ export default {
 		"inLibrary": "在库中",
 		"about": "关于媒体库",
 		"info1": "此库显示过去 <strong>28 天</strong> 内播放的唯一视频。",
-		"info2": "为了保持元数据新鲜度，较旧的视频会被隐藏，但<strong>绝不会被删除</strong>。<strong>自动填充</strong>功能仍会记住您的完整历史记录，并在需要时自动将旧视频带回队列（及此列表）！",
+		"info2": "为了保持元数据新鲜度，较旧的视频会被隐藏，但<strong>绝不会被删除</strong>。<strong>Auto-DJ</strong> 功能仍会记住您的完整历史记录，并在需要时自动将旧视频带回队列（及此列表）！",
 		"empty": "未找到视频"
 	},
 	"pending": {
