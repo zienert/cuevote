@@ -118,20 +118,38 @@ export function PlaybackControls({
   };
 
   // Where a drag along the bar stands. Dragging only moves the bar; the seek
-  // goes out once, with the click that ends it. Seeking on every mouse move
-  // sent dozens of seeks a second, up to the server's rate limit, and made
-  // the Apple player seek on each (Nov. 2026).
+  // goes out once, when the drag ends. Seeking on every move sent dozens of
+  // seeks a second, up to the server's rate limit, and made the Apple player
+  // seek on each (Nov. 2026).
+  //
+  // The pointer is captured for the drag: the bar is a few pixels high, and a
+  // drag that left it on the way was dropped without a seek. A finger drags
+  // the same way (18.11.2026).
   const [dragPercent, setDragPercent] = useState(null);
+  const draggingRef = useRef(false);
+  const canSeek = isOwner && !!onSeek;
 
-  const handleSeekClick = (e) => {
+  const handlePointerDown = (e) => {
+    if (!canSeek || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    draggingRef.current = true;
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* the drag still ends on the bar */ }
+    setDragPercent(percentageAt(e));
+  };
+
+  const handlePointerMove = (e) => {
+    if (draggingRef.current) setDragPercent(percentageAt(e));
+  };
+
+  const handlePointerUp = (e) => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
     setDragPercent(null);
-    if (!isOwner || !onSeek) return;
     onSeek(percentageAt(e));
   };
 
-  const handleMouseMove = (e) => {
-    if (e.buttons === 1) setDragPercent(percentageAt(e)); // left button held
-    else if (dragPercent !== null) setDragPercent(null);
+  const handlePointerCancel = () => {
+    draggingRef.current = false;
+    setDragPercent(null);
   };
 
 
@@ -178,20 +196,27 @@ export function PlaybackControls({
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchInteraction}
       >
-        {/* Progress Bar */}
+        {/* Progress Bar. The owner seeks on it: the area that takes the
+            pointer reaches above and below the line, which is too thin to hit
+            with a finger, and takes no room in the layout. */}
         <div
-          ref={progressBarRef}
-          className={`w-full bg-raised rounded-full h-1.5 overflow-hidden relative ${isOwner ? 'cursor-pointer group' : ''}`}
-          onClick={handleSeekClick}
-          onMouseMove={isOwner ? handleMouseMove : undefined}
-          onMouseLeave={() => setDragPercent(null)}
+          className={`relative -my-2.5 py-2.5 ${canSeek ? 'cursor-pointer touch-none' : ''}`}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
         >
-          {/* Scaled, not resized: a width that changes every second would
-              lay the bar out again each time. */}
           <div
-            className={`h-1.5 w-full origin-left bg-accent ${dragPercent === null ? 'transition-transform duration-300 ease-linear' : ''}`}
-            style={{ transform: `scaleX(${Math.max(0, Math.min(100, dragPercent ?? progress)) / 100})` }}
-          />
+            ref={progressBarRef}
+            className="w-full bg-raised rounded-full h-1.5 overflow-hidden relative"
+          >
+            {/* Scaled, not resized: a width that changes every second would
+                lay the bar out again each time. */}
+            <div
+              className={`h-1.5 w-full origin-left bg-accent ${dragPercent === null ? 'transition-transform duration-300 ease-linear' : ''}`}
+              style={{ transform: `scaleX(${Math.max(0, Math.min(100, dragPercent ?? progress)) / 100})` }}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between gap-3">
