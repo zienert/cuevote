@@ -204,6 +204,8 @@ struct WebView: UIViewRepresentable {
         let scriptSource = "window.CueVoteAndroid = { isNative: function() { return true; } };"
         let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         contentController.addUserScript(script)
+        // Keeps a page that may play in the background ready while it is silent.
+        contentController.addUserScript(BackgroundPlayback.carrierScript)
 
         contentController.add(context.coordinator, name: "nativeGoogleLogin")
         contentController.add(context.coordinator, name: "toggleQRButton")

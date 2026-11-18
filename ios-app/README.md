@@ -46,6 +46,7 @@ Prerequisites: **Mac with Xcode installed**.
 *   **Autoplay**: Media plays automatically (Restrictions disabled in `WKWebViewConfiguration`).
 *   **Detection**: Seamlessly detected by the web client as "Wrapper" avoiding the "Install App" block page.
 *   **Background Playback**: An Apple Music channel keeps playing when the app is in the background or the device is locked. Everything else, a YouTube channel included, is stopped until the app is back in front (`BackgroundPlayback.swift`): YouTube's terms do not allow playback in the background.
+*   **Ready While Paused**: The device that plays an Apple Music channel stays ready in the background while the channel is paused, for two hours, so that the owner can start it again from another device. The app plays a silent sound for that time; iOS stops an app that plays nothing. After that the app has to be opened again, or started from the lock screen.
 
 ## Testing Background Playback
 
