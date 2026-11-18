@@ -121,8 +121,15 @@ const PlayPausePayload = z.boolean();
 // What the owner's Apple player can do: play (playing, or ready and paused
 // with the room), not (blocked: loading, signed out, waiting for a tap, an
 // error), or stand by while another owner device plays.
+//
+// A playing player also says where it is: the seconds into the entry it
+// plays (`trackId`), and the number of seeks of the room it has followed
+// (`seeks`, the room's own count). The room's clock goes by that.
 const ApplePlayerStatusPayload = z.object({
   state: z.enum(['playing', 'ready', 'blocked', 'standby']),
+  position: z.number().finite().nonnegative().max(86400).optional(),
+  trackId: z.string().min(1).max(100).optional(),
+  seeks: z.number().int().nonnegative().optional(),
 });
 
 // The owner's Apple player cannot play the current music video (MusicKit JS

@@ -15,6 +15,7 @@ import { AppleContentNotice } from "./components/AppleContentNotice";
 import { ApplePreviewOverlay } from "./components/ApplePreviewOverlay";
 import { StatusBar, StatusBarButton } from "./components/PlayerStatus";
 import { useAppleMusicHost } from "./hooks/useAppleMusicHost";
+import { roomPositionNow } from "./utils/roomPosition";
 import { useApplePreview } from "./hooks/useApplePreview";
 import { parseTrackKey } from "./utils/trackKeys";
 import { Queue } from "./components/Queue";
@@ -198,6 +199,7 @@ function RoomBody() {
     provider = 'youtube',
     appleStorefront = null,
     waitingForHost = false,
+    seeks,
   } = serverState || {};
   // Apple Music rooms play only on the owner's device (MusicKit needs the
   // host's own subscription); everyone else gets the playlist view.
@@ -268,6 +270,9 @@ function RoomBody() {
     progressAtRef,
     sendMessage,
     lease: applePlayerLease,
+    connected: isConnected,
+    seeks,
+    waitingForHost,
   });
   // The server paused the room over a problem on the host's side.
   const reportAppleProblem = apple.reportProblem;
@@ -1282,19 +1287,28 @@ function RoomBody() {
     return () => clearInterval(interval);
   }, [isPlayerReady, progressRef]);
 
-  // The same progress bar for the host's Apple Music player.
-  const appleStatus = apple.status;
+  // The same progress bar in an Apple room, on every device of the owner: the
+  // room's clock, counted on between the server's reports. The clock goes by
+  // the device that plays; where that device is further along or behind (a
+  // track that is still loading), its own position shows. The bar stood still
+  // on a device on standby and moved in steps of five seconds on the player
+  // (18.11.2026).
   const getAppleDuration = apple.getDuration;
+  const getApplePosition = apple.getPosition;
+  const roomRunsRef = useLatestRef(isPlaying && !waitingForHost);
   useEffect(() => {
-    if (appleStatus !== 'ready') return;
+    if (!appleHostEnabled) return;
     const update = () => {
-      const duration = getAppleDuration() || currentTrackRef.current?.duration || 0;
-      setProgress(duration > 0 ? Math.min(100, (progressRef.current / duration) * 100) : 0);
+      const duration = currentTrackRef.current?.duration || getAppleDuration() || 0;
+      const heard = getApplePosition();
+      let position = roomPositionNow(progressRef, progressAtRef, roomRunsRef.current);
+      if (heard !== null && Math.abs(heard - position) > 1.5) position = heard;
+      setProgress(duration > 0 ? Math.max(0, Math.min(100, (position / duration) * 100)) : 0);
     };
     update();
-    const interval = setInterval(update, 1000);
+    const interval = setInterval(update, 500);
     return () => clearInterval(interval);
-  }, [appleStatus, getAppleDuration, progressRef]);
+  }, [appleHostEnabled, getAppleDuration, getApplePosition, progressRef, progressAtRef, roomRunsRef]);
 
   // The volume slider and mute button drive MusicKit in Apple rooms. Muted is
   // only the YouTube start state (browsers allow muted autoplay); the Apple
@@ -1509,11 +1523,19 @@ function RoomBody() {
   const handleSeek = (percentage) => {
     if (Date.now() - trackShownAtRef.current < SEEK_AFTER_CHANGE_MS) return;
     if (isAppleRoom) {
-      const duration = apple.getDuration() || currentTrack?.duration || 0;
+      // The room's length, as on the bar: the same click means the same
+      // place on every device.
+      const duration = currentTrack?.duration || apple.getDuration() || 0;
       if (!isOwner || !duration) return;
       const seconds = (percentage / 100) * duration;
       sendMessage({ type: "SEEK_TO", payload: seconds });
+      // This device's player, if it plays the room; the device that does
+      // follows the room's seek.
       apple.seek(seconds);
+      // The bar goes there now; the server's answer says the same a moment later.
+      progressRef.current = seconds;
+      progressAtRef.current = Date.now();
+      setProgress(percentage);
       return;
     }
     if (!playerRef.current) return;

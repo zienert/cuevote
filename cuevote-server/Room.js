@@ -34,6 +34,9 @@ const APPLE_PLAYER_STALE_MS = 25 * 1000;
 // How long a playing Apple room keeps its clock going without a player that
 // can play (a reload, buffering) before it waits for the host.
 const APPLE_HOST_GRACE_MS = 15 * 1000;
+// The room's clock is set to the position its player reports once the two
+// are this far apart (followApplePosition). The player reports whole seconds.
+const APPLE_POSITION_SLACK_S = 0.75;
 
 // A seek this soon after the current track changed was aimed at the previous
 // one, whose progress bar was still on screen. Clicking the end of the bar to
@@ -161,6 +164,10 @@ class Room {
             appleStorefront: this.metadata.provider === 'apple' ? this.metadata.apple_storefront : null,
             // Apple rooms: the room plays, but no host player can (followApplePlayer).
             waitingForHost: false,
+            // Apple rooms: how often an owner has moved the position by hand
+            // (SEEK_TO). The player jumps there when this goes up; any other
+            // change of the position is the room following the player.
+            ...(this.metadata.provider === 'apple' ? { seeks: 0 } : {}),
             suggestionsEnabled: true,
             musicOnly: false, // Default false
             maxDuration: 600, // Default 10 minutes
@@ -473,7 +480,8 @@ class Room {
         }
     }
 
-    handleApplePlayerStatus(ws, state) {
+    handleApplePlayerStatus(ws, report) {
+        const { state } = report;
         ws.applePlayerState = state;
         const player = this.applePlayer;
         const playerGone = !player || !this.clients.has(player.ws) || Date.now() - player.lastSeen >= APPLE_PLAYER_STALE_MS;
@@ -485,6 +493,7 @@ class Room {
         // Every report gets the answer: a lost one is put right by the next.
         this.sendApplePlayerLease(ws);
         this.followApplePlayer();
+        if (this.applePlayer.ws === ws && state === 'playing') this.followApplePosition(report);
         // The host is back to an empty room: the Auto-DJ, which waited for
         // them, may fill it now.
         if (this.isApplePlayerReady() && !this.state.currentTrack && this.state.queue.length === 0
@@ -510,7 +519,8 @@ class Room {
             this.hostMissingSince = null;
             if (this.state.waitingForHost) {
                 this.setTrackPosition(this.state.progress || 0);
-                this.updateState({ waitingForHost: false });
+                // With the position, as on play (updateState): the clock starts again.
+                this.updateState({ waitingForHost: false, progress: this.state.progress || 0 });
                 logger.info(`[Room ${this.id}] The Apple player is back: playing on.`);
             }
             return;
@@ -521,6 +531,31 @@ class Room {
             logger.info(`[Room ${this.id}] No Apple player can play: waiting for the host.`);
         }
         if (this.state.waitingForHost) this.setTrackPosition(this.state.progress || 0);
+    }
+
+    // The clock of an Apple room goes by its player. A track starts a moment
+    // after the room says so (it loads first), a player buffers, and after a
+    // pause it goes on from where it stopped, not from where the room thought
+    // it had. Left to itself, the room's clock ran ahead of what was heard:
+    // the bars on the owner's other devices showed another position than the
+    // phone that played, the end of every track was cut by its loading time,
+    // and the player was pulled along with seeks one could hear (18.11.2026).
+    //
+    // Only while the room plays this very entry, and only from a player that
+    // has followed every seek of the room: a report from before a seek would
+    // take the seek back.
+    followApplePosition({ position, trackId, seeks }) {
+        const track = this.state.currentTrack;
+        if (!track || !this.state.isPlaying || this.state.waitingForHost) return;
+        if (typeof position !== 'number' || !trackId || trackId !== track.id) return;
+        if ((seeks || 0) !== (this.state.seeks || 0)) return;
+        const duration = track.duration || 0;
+        const at = duration > 0 ? Math.min(position, duration) : position;
+        if (Math.abs(at - this.exactPosition()) < APPLE_POSITION_SLACK_S) return;
+        this.setTrackPosition(at);
+        this.state.progress = Math.floor(at);
+        this._lastProgressBroadcast = Date.now();
+        this.broadcast({ type: "progress", payload: Math.round(at * 10) / 10 });
     }
 
     // Send one socket the state as that viewer may see it. Used when ws.user
@@ -571,6 +606,13 @@ class Room {
         return Math.max(0, Math.floor((Date.now() - track.startedAt) / 1000));
     }
 
+    // The same, not cut to whole seconds.
+    exactPosition() {
+        const track = this.state.currentTrack;
+        if (!track || !track.startedAt) return this.state.progress || 0;
+        return Math.max(0, (Date.now() - track.startedAt) / 1000);
+    }
+
     // Moves the clock of the current track so that it stands at `seconds` now.
     setTrackPosition(seconds) {
         const track = this.state.currentTrack;
@@ -589,6 +631,11 @@ class Room {
             && !!newState.isPlaying !== !!this.state.isPlaying) {
             if (newState.isPlaying) {
                 this.setTrackPosition(this.state.progress || 0);
+                // The position goes out with the play: a player counts on from
+                // the last position it was told and from when it was told.
+                // Told nothing here, it added the pause and jumped ahead for
+                // a few seconds (17.11.2026).
+                newState = { ...newState, progress: this.state.progress || 0 };
             } else {
                 newState = { ...newState, progress: this.currentPosition() };
             }
@@ -695,7 +742,10 @@ class Room {
                     this.state.progress = newProgress;
                     if (!this._lastProgressBroadcast || (Date.now() - this._lastProgressBroadcast >= 5000)) {
                         this._lastProgressBroadcast = Date.now();
-                        this.broadcast({ type: "progress", payload: newProgress });
+                        // Apple rooms to the tenth of a second: the owner's
+                        // devices count on from it and show where the player is.
+                        const told = this.metadata.provider === 'apple' ? Math.round(this.exactPosition() * 10) / 10 : newProgress;
+                        this.broadcast({ type: "progress", payload: told });
                     }
                 }
             }
@@ -1106,7 +1156,7 @@ class Room {
                 // The owner's player says whether it can play (see followApplePlayer).
                 const r = schemas.ApplePlayerStatusPayload.safeParse(message.payload);
                 if (!r.success || this.metadata.provider !== 'apple' || !isOwner(this, ws)) break;
-                this.handleApplePlayerStatus(ws, r.data.state);
+                this.handleApplePlayerStatus(ws, r.data);
                 break;
             }
             case "APPLE_PLAYER_CLAIM": {
@@ -1151,7 +1201,11 @@ class Room {
                     const duration = this.state.currentTrack.duration || 0;
                     const clamped = duration > 0 ? Math.min(r.data, duration) : r.data;
                     this.setTrackPosition(clamped);
-                    this.updateState({ progress: clamped });
+                    // Apple rooms count the seek: the player goes there at once,
+                    // and its reports from before it no longer move the clock.
+                    this.updateState(this.metadata.provider === 'apple'
+                        ? { progress: clamped, seeks: (this.state.seeks || 0) + 1 }
+                        : { progress: clamped });
                 }
                 break;
             }
