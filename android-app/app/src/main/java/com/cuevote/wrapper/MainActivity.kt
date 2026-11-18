@@ -95,6 +95,10 @@ private const val REQUEST_NOTIFICATIONS = 1
 //                  know of it. A frame cannot set it.
 //   youtube        there is a YouTube player on the page
 //   title, artist  of what MusicKit plays or has loaded
+//   standby        how long this device stays ready while the channel is
+//                  paused, as the user chose it on this device: minutes, or
+//                  "channel" until the channel is left. data-apple-standby on
+//                  <html>, from web clients that offer the choice.
 private const val PLAYBACK_PROBE_JS = """
 (function () {
   try {
@@ -110,7 +114,8 @@ private const val PLAYBACK_PROBE_JS = """
       marked: mark === 'playing' || mark === 'paused',
       youtube: !!document.querySelector('iframe[src*="youtube"]'),
       title: item ? String(item.title || '') : '',
-      artist: item ? String(item.artistName || '') : ''
+      artist: item ? String(item.artistName || '') : '',
+      standby: document.documentElement.getAttribute('data-apple-standby')
     };
   } catch (e) {
     return null;
@@ -118,8 +123,25 @@ private const val PLAYBACK_PROBE_JS = """
 })()
 """
 
+// The idle limit the user chose on the page (see PLAYBACK_PROBE_JS), for
+// PlaybackService: null waits until the channel is left. Anything the page
+// does not say, or says in a way this app does not know, keeps the default.
+private fun idleLimitFrom(standby: String?): Long? {
+    if (standby == "channel") return null
+    val minutes = standby?.takeIf { it.length in 1..6 && it.all(Char::isDigit) }?.toLong()
+    if (minutes == null || minutes < 1) return PlaybackService.IDLE_LIMIT_MS
+    return minutes * 60_000L
+}
+
 // What the probe found on the page.
-private class ApplePlayer(val playing: Boolean, val marked: Boolean, val youtube: Boolean, val title: String, val artist: String)
+private class ApplePlayer(
+    val playing: Boolean,
+    val marked: Boolean,
+    val youtube: Boolean,
+    val title: String,
+    val artist: String,
+    val idleLimitMs: Long?,
+)
 
 class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
 
@@ -401,7 +423,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
         setContentView(container)
         
         // Pass WebView and FAB reference to Interface
-        webView.addJavascriptInterface(WebAppInterface(this, webView, fab, hasCamera), "CueVoteAndroid")
+        webView.addJavascriptInterface(WebAppInterface(this, webView, fab, hasCamera, keepsChannelReady = !isTelevision), "CueVoteAndroid")
         // Handle Back Press properly
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -530,8 +552,8 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
             // Android lets the service start only while the app is on screen.
             // It starts on sound or on the page's own word, never on a guess.
             if (!PlaybackService.isActive && !(resumed && (player.playing || player.marked))) return@evaluateJavascript
-            if (player.playing) PlaybackService.playing(this, player.title, player.artist)
-            else PlaybackService.standingBy(this, player.title, player.artist, onScreen = resumed)
+            if (player.playing) PlaybackService.playing(this, player.title, player.artist, player.idleLimitMs)
+            else PlaybackService.standingBy(this, player.title, player.artist, onScreen = resumed, idleLimitMs = player.idleLimitMs)
             askForNotificationsOnce()
         }
     }
@@ -547,6 +569,7 @@ class MainActivity : AppCompatActivity(), QRScannerBottomSheet.QRScanListener {
                 youtube = found.optBoolean("youtube"),
                 title = notificationText(found.optString("title")),
                 artist = notificationText(found.optString("artist")),
+                idleLimitMs = idleLimitFrom(if (found.isNull("standby")) null else found.optString("standby")),
             )
         } catch (_: org.json.JSONException) {
             null
@@ -776,12 +799,21 @@ class WebAppInterface(
     private val mContext: Context,
     private val webView: WebView,
     private val fab: FloatingActionButton,
-    private val hasCamera: Boolean
+    private val hasCamera: Boolean,
+    private val keepsChannelReady: Boolean,
 ) {
     @JavascriptInterface
     fun isNative(): Boolean {
         return true
     }
+
+    // Whether this app keeps a paused Apple Music channel ready in the
+    // background (PlaybackService): the page offers the choice how long only
+    // where this says so, and tells it back as data-apple-standby. Not on a
+    // TV, where nothing leaves the screen while a channel plays. Read-only,
+    // so any frame may ask.
+    @JavascriptInterface
+    fun keepsChannelReady(): Boolean = keepsChannelReady
 
     @JavascriptInterface
     fun toggleQRButton(show: Boolean) {

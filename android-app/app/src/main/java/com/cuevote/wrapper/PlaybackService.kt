@@ -29,10 +29,10 @@ import androidx.core.content.ContextCompat
 // The service knows nothing about the page. MainActivity watches the page and
 // reports what it finds: the channel sounding here (playing()), or this device
 // being its player while nothing sounds (standingBy()). The service runs from
-// the first report for as long as reports come, up to IDLE_LIMIT_MS off screen
-// without playback; once they stop it is gone after GRACE_MS, and at once on
-// stop(). It ends itself, so its notification cannot outlive whatever should
-// have ended it.
+// the first report for as long as reports come, up to the idle limit off
+// screen without playback (the user's choice, IDLE_LIMIT_MS without one);
+// once they stop it is gone after GRACE_MS, and at once on stop(). It ends
+// itself, so its notification cannot outlive whatever should have ended it.
 //
 // YouTube never gets here. Only an Apple Music player is reported, and
 // YouTube's terms do not allow playback in the background.
@@ -119,7 +119,8 @@ class PlaybackService : Service() {
     }
 
     // Held exactly as long as the service runs, and the service ends itself
-    // (GRACE_MS, IDLE_LIMIT_MS), so there is no timeout on the wake lock.
+    // (GRACE_MS, the idle limit, stop()), so there is no timeout on the wake
+    // lock.
     @SuppressLint("WakelockTimeout")
     private fun acquireLocks() {
         try {
@@ -218,6 +219,10 @@ class PlaybackService : Service() {
         // and a player that falls silent loses the channel to the owner's next
         // device. It still ends, so a channel left paused does not keep the
         // device awake for good.
+        //
+        // That is the wait without a choice. On the page the user can choose
+        // another for this device, or none: then the service waits until the
+        // channel is left or the app is closed (see MainActivity).
         const val IDLE_LIMIT_MS = 2 * 60 * 60 * 1000L
 
         // The channel should be kept going (the service runs or is starting).
@@ -225,8 +230,8 @@ class PlaybackService : Service() {
         // The service, once it is in the foreground.
         private var running: PlaybackService? = null
         // The service ends at the earlier of the two: GRACE_MS after the last
-        // report, IDLE_LIMIT_MS after the channel last sounded or the app was
-        // last on screen.
+        // report, the idle limit after the channel last sounded or the app
+        // was last on screen.
         private var heardUntil = 0L
         private var idleUntil = 0L
         private val deadline: Long get() = minOf(heardUntil, idleUntil)
@@ -238,23 +243,28 @@ class PlaybackService : Service() {
 
         val isActive: Boolean get() = wanted
 
-        // The channel sounds here right now.
-        fun playing(context: Context, title: String, artist: String) {
+        // The channel sounds here right now. idleLimitMs: how long to wait
+        // once it falls silent, null for as long as the channel stays open.
+        fun playing(context: Context, title: String, artist: String, idleLimitMs: Long?) {
             val now = SystemClock.elapsedRealtime()
             heardUntil = now + GRACE_MS
-            idleUntil = now + IDLE_LIMIT_MS
+            idleUntil = idleDeadline(now, idleLimitMs)
             keep(context, title, artist)
         }
 
         // This device is the channel's player, but nothing sounds: the channel
         // is paused or has nothing to play. On screen the wait costs nothing,
         // so the idle limit counts from the moment the app left the screen.
-        fun standingBy(context: Context, title: String, artist: String, onScreen: Boolean) {
+        // There the user also changes it, and the change holds at once.
+        fun standingBy(context: Context, title: String, artist: String, onScreen: Boolean, idleLimitMs: Long?) {
             val now = SystemClock.elapsedRealtime()
             heardUntil = now + GRACE_MS
-            if (onScreen) idleUntil = now + IDLE_LIMIT_MS
+            if (onScreen) idleUntil = idleDeadline(now, idleLimitMs)
             keep(context, title, artist)
         }
+
+        private fun idleDeadline(now: Long, idleLimitMs: Long?): Long =
+            if (idleLimitMs == null) Long.MAX_VALUE else now + idleLimitMs
 
         // The first report starts the service, which Android allows only
         // while the app is on screen (the caller sees to that); every further
