@@ -43,7 +43,7 @@ const languages = [
 	{ code: 'ro', label: 'Română' },
 	{ code: 'bg', label: 'Български' },
 	{ code: 'hr', label: 'Hrvatski' },
-	{ code: 'sr', label: 'Српски' },
+	{ code: 'sr', label: 'Srpski' },
 	{ code: 'sk', label: 'Slovenčina' },
 	{ code: 'ar', label: 'العربية' },
 	{ code: 'he', label: 'עברית' }

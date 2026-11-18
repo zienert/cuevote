@@ -24,7 +24,9 @@ import { deviceDetection } from '../utils/deviceDetection';
 
 function useLocalizedCountries(uiLanguage) {
     return useMemo(() => {
-        const displayNames = new Intl.DisplayNames([uiLanguage, 'en'], { type: 'region' });
+        // ICU reads a bare 'sr' as Serbian Cyrillic; the Serbian UI strings are Latin.
+        const locale = uiLanguage === 'sr' ? 'sr-Latn' : uiLanguage;
+        const displayNames = new Intl.DisplayNames([locale, 'en'], { type: 'region' });
         const enDisplayNames = new Intl.DisplayNames(['en'], { type: 'region' });
         return channelLanguages.map(lang => {
             if (lang.code === 'international') {
