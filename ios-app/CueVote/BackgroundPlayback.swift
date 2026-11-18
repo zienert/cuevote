@@ -29,7 +29,10 @@ import WebKit
 /// title, not "play" from the owner's computer. On iOS 18 WebKit also gives up
 /// the audio session with the last sound in the background, and the next title
 /// could not start. So a second, silent sound runs next to MusicKit (the
-/// carrier, see `carrierScript`), for as long as `readyTime` says.
+/// carrier, see `carrierScript`), for as long as `readyTime` says. It starts
+/// when the scene stops being active, before the app is in the background: a
+/// title that begins just after that, with nothing else sounding, is stopped
+/// by the system.
 @MainActor
 final class BackgroundPlayback: NSObject {
     /// What the page says it holds.
@@ -48,9 +51,9 @@ final class BackgroundPlayback: NSObject {
 
     private enum Phase {
         case inFront
-        /// Not in front: the page is asked what it holds, again and again.
+        /// Not active: the page is asked what it holds, again and again.
         case watching(Task<Void, Never>)
-        /// Not in front: all media stays suspended until the scene is back.
+        /// In the background: all media stays suspended until the scene is back.
         case suspended
     }
 
@@ -145,13 +148,17 @@ final class BackgroundPlayback: NSObject {
                 var started = carrier.play();
                 if (started && started.catch) started.catch(function () {});
             }
-        }, 500);
+        }, 200);
     })();
     """, injectionTime: .atDocumentStart, forMainFrameOnly: true, in: world)
 
     private weak var webView: WKWebView?
     private let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "CueVote", category: "BackgroundPlayback")
     private var phase = Phase.inFront
+    /// The scene is in the background, not merely inactive. Only then is a
+    /// page without Apple Music suspended: Control Center over a YouTube
+    /// channel stops nothing.
+    private var inBackground = false
     /// Held from entering the background until the first answer is in.
     private var backgroundTask = UIBackgroundTaskIdentifier.invalid
     /// When MusicKit was last busy, as far as the page was asked.
@@ -164,6 +171,7 @@ final class BackgroundPlayback: NSObject {
         self.webView = webView
         super.init()
         let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(sceneWillDeactivate), name: UIScene.willDeactivateNotification, object: nil)
         center.addObserver(self, selector: #selector(sceneDidEnterBackground), name: UIScene.didEnterBackgroundNotification, object: nil)
         center.addObserver(self, selector: #selector(sceneIsBack), name: UIScene.willEnterForegroundNotification, object: nil)
         center.addObserver(self, selector: #selector(sceneIsBack), name: UIScene.didActivateNotification, object: nil)
@@ -175,8 +183,15 @@ final class BackgroundPlayback: NSObject {
         return notification.object as AnyObject? === scene
     }
 
-    @objc private func sceneDidEnterBackground(_ notification: Notification) {
+    @objc private func sceneWillDeactivate(_ notification: Notification) {
         guard concerns(notification), case .inFront = phase else { return }
+        leftFront = Date()
+        watch()
+    }
+
+    @objc private func sceneDidEnterBackground(_ notification: Notification) {
+        guard concerns(notification), !inBackground else { return }
+        inBackground = true
         // iOS suspends an app that plays nothing within seconds. The first
         // answer has to be in before that: a page left as it is could be started
         // from the lock screen. Out of time without one, nothing plays on.
@@ -184,23 +199,31 @@ final class BackgroundPlayback: NSObject {
             self?.suspendMedia()
             self?.endBackgroundTask()
         }
-        leftFront = Date()
+        if case .inFront = phase { leftFront = Date() }
+        // Asked now, not when the watch comes round again.
+        if case .watching(let earlier) = phase { earlier.cancel() }
+        watch()
+    }
+
+    /// Asks the page once a second what it holds, and acts on the answer.
+    private func watch() {
         phase = .watching(Task { [weak self] in
-            var answered = false
             while !Task.isCancelled {
                 guard let self else { return }
                 let answer = await self.ask()
                 // Back in front, or suspended, while the page was answering.
                 guard !Task.isCancelled else { return }
-                guard answer.appleMusic else {
+                if answer.appleMusic {
+                    self.keepReady(answer)
+                    if self.inBackground, self.backgroundTask != .invalid {
+                        self.log.info("Apple Music on the page: it is left to play")
+                        self.endBackgroundTask()
+                    }
+                } else if self.inBackground {
                     self.suspendMedia()
                     return
-                }
-                self.keepReady(answer)
-                if !answered {
-                    answered = true
-                    self.log.info("Apple Music on the page: it is left to play")
-                    self.endBackgroundTask()
+                } else {
+                    self.carry(false)
                 }
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
@@ -209,12 +232,17 @@ final class BackgroundPlayback: NSObject {
 
     @objc private func sceneIsBack(_ notification: Notification) {
         guard concerns(notification) else { return }
+        inBackground = false
         switch phase {
         case .inFront:
             break
         case .watching(let watch):
+            // The carrier is not told to rest: it runs out by itself within
+            // seconds. A scene on its way to the background passes through
+            // "active" once more, and a carrier stopped there would be missing
+            // just when it is needed.
             watch.cancel()
-            carry(false)
+            keptReady = false
         case .suspended:
             // WebKit starts again what was playing when it was suspended.
             log.info("Back in front: the page's media is resumed")
