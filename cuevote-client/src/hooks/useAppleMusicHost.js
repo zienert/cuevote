@@ -4,12 +4,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLatestRef } from './useLatestRef';
 import { configureMusicKit, describeMusicKitError, fetchDeveloperToken, musicKitPlaysVideos } from '../utils/musicKit';
 import { parseTrackKey } from '../utils/trackKeys';
+import { roomPositionNow } from '../utils/roomPosition';
 
 // The Apple Music player of an Apple room. MusicKit plays on one signed-in
 // subscriber's device, so only the owner's browser plays; everyone else gets the
 // playlist view. Like the YouTube player it follows the server: the server's
-// current track, the server's position, the server's play/pause. The server
-// stays the clock and advances the queue; this only plays what it says.
+// current track, the server's play/pause, and the server advances the queue.
+//
+// The position is the other way round. Only this player knows where the music
+// is: it tells the server (with APPLE_PLAYER_STATUS), and the room's clock
+// goes by that. It jumps only when an owner moves the position by hand
+// (SEEK_TO, counted in `seeks`). A server from before that count keeps its own
+// clock, and this player is held to it as before (the drift check).
 //
 // One owner device plays the room at a time (`lease`, from the server): Apple
 // streams one account on one device, and two players cut each other off.
@@ -29,6 +35,19 @@ const START_CHECK_MS = 3000;
 // How long a start may go on loading before it counts as not started.
 const START_PATIENCE_MS = 20000;
 const STATUS_HEARTBEAT_MS = 10000;
+// A playing player says where it is this often.
+const POSITION_REPORT_MS = 5000;
+// The last moments of an item are left alone: MusicKit ends an item that is
+// sought to its end, and the room moves on from there anyway.
+const END_GUARD_S = 1.5;
+// A seek made on this device is under way in MusicKit for up to this long,
+// and comes back from the room, counted, within the second span.
+const OWN_SEEK_MS = 5000;
+const OWN_ECHO_MS = 600;
+// With a room that goes by this player's position there is nothing to
+// correct. This far from the room twice in a row, the reports are not
+// getting through, and the room's clock decides after all.
+const FAR_OFF_S = 8;
 const SONG_ASK_AGAIN_MS = 10000;
 // The host's own controls (hostPlay): how often the room is asked again until
 // it has followed, and for how long.
@@ -95,7 +114,7 @@ function trackIdOf(entry) {
 	return id || undefined;
 }
 
-export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRef, progressAtRef, sendMessage, lease, connected = true }) {
+export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRef, progressAtRef, sendMessage, lease, connected = true, seeks, waitingForHost = false }) {
 	const [music, setMusic] = useState(null);
 	const [status, setStatus] = useState('off');
 	const [problem, setProblem] = useState(null);
@@ -153,6 +172,31 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		entrySinceRef.current = Date.now();
 	}, [currentEntry]);
 
+	// The room's count of seeks made by hand: a number means the room's clock
+	// goes by this player's reports. And how many of them this player has
+	// followed; null while it holds no track at a settled position (loading,
+	// just started), when it has no position to report.
+	const seeksRef = useLatestRef(seeks);
+	const followsPlayerRef = useLatestRef(typeof seeks === 'number');
+	const followedSeeksRef = useRef(null);
+	// The load that has yet to start playing: { entry, startTime, seeks }.
+	const pendingStartRef = useRef(null);
+	// Settles where a load started playing (set further down).
+	const settleStartRef = useRef(() => {});
+	// The last seek made on this device: the room echoes it back.
+	const ownSeekRef = useRef({ target: 0, at: 0, done: null });
+	const farOffRef = useRef(0);
+	// Sends this player's state to the server now (set by the status effect).
+	const reportRef = useRef(() => {});
+	// Goes to the room's position after a seek (set further down).
+	const followSeekRef = useRef(() => {});
+	const runningRef = useLatestRef(!!isPlaying && !waitingForHost);
+	// Where the room is now, by the server's clock.
+	const roomPosition = useCallback(
+		() => roomPositionNow(progressRef, progressAtRef, runningRef.current),
+		[progressRef, progressAtRef, runningRef],
+	);
+
 	const isPlayer = lease === true;
 	const canPlay = enabled && isPlayer && !!music && (status === 'ready' || status === 'needs-start');
 	const canPlayRef = useLatestRef(canPlay);
@@ -201,6 +245,8 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		generationRef.current += 1;
 		loadedEntryRef.current = null;
 		readyEntryRef.current = null;
+		followedSeeksRef.current = null;
+		pendingStartRef.current = null;
 		if (music) {
 			try { music.stop(); } catch { /* nothing loaded */ }
 		}
@@ -248,6 +294,15 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			if (entry && readyEntryRef.current === entry && durationSentForRef.current !== entry && duration > 0 && holdsCurrentItem()) {
 				durationSentForRef.current = entry;
 				sendRef.current({ type: 'UPDATE_DURATION', payload: { duration: Math.round(duration), trackId: trackIdOf(entry) } });
+			}
+			// The room learns at once where the music is: after a load, once
+			// that is settled.
+			const pending = pendingStartRef.current;
+			if (pending && pending.entry === entry && readyEntryRef.current === entry) {
+				pendingStartRef.current = null;
+				settleStartRef.current(pending);
+			} else {
+				reportRef.current();
 			}
 		};
 		const onError = (event) => {
@@ -326,20 +381,42 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 
 	// Tell the server whether this device can play, now and every few
 	// seconds: the room holds still while no player can (Room.followApplePlayer).
+	//
+	// A playing player also says where it is, and more often: the room's clock
+	// goes by it (Room.followApplePosition). Only for the entry it holds, and
+	// with the seeks it has followed: the server takes no position from before
+	// a seek.
 	useEffect(() => {
 		if (!enabled) return undefined;
+		let lastSent = 0;
 		const report = () => {
 			let state = 'blocked';
 			if (lease === false) state = 'standby';
 			else if (status === 'ready' && music) {
 				state = music.playbackState === window.MusicKit?.PlaybackStates?.playing ? 'playing' : 'ready';
 			}
-			sendRef.current({ type: 'APPLE_PLAYER_STATUS', payload: { state } });
+			const payload = { state };
+			const entry = currentEntryRef.current;
+			const trackId = trackIdOf(entry);
+			if (state === 'playing' && trackId && readyEntryRef.current === entry && followedSeeksRef.current !== null && holdsCurrentItem()) {
+				payload.position = Math.max(0, music.currentPlaybackTime || 0);
+				payload.trackId = trackId;
+				payload.seeks = followedSeeksRef.current;
+			}
+			lastSent = Date.now();
+			sendRef.current({ type: 'APPLE_PLAYER_STATUS', payload });
 		};
+		reportRef.current = report;
 		report();
-		const timer = setInterval(report, STATUS_HEARTBEAT_MS);
-		return () => clearInterval(timer);
-	}, [enabled, lease, status, music, sendRef]);
+		const timer = setInterval(() => {
+			const playing = !!music && music.playbackState === window.MusicKit?.PlaybackStates?.playing;
+			if (playing || Date.now() - lastSent >= STATUS_HEARTBEAT_MS - 500) report();
+		}, POSITION_REPORT_MS);
+		return () => {
+			clearInterval(timer);
+			reportRef.current = () => {};
+		};
+	}, [enabled, lease, status, music, sendRef, currentEntryRef, holdsCurrentItem]);
 
 	const play = useCallback(async () => {
 		if (!music) return;
@@ -421,11 +498,17 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 				// even when the new item cannot be loaded (13.11.2026).
 				await Promise.resolve(music.stop()).catch(() => { /* nothing playing */ });
 				if (stale()) return;
-				const startTime = Math.max(0, Math.floor(progressRef.current || 0));
+				// Where the room is now, not where it was at its last report: a
+				// device that took over started up to five seconds back.
+				const seeksAtLoad = seeksRef.current;
+				const startTime = Math.max(0, Math.floor(roomPosition()));
 				await music.setQueue({ [parsed.kind]: parsed.id, startPlaying: false, startTime });
 				if (stale()) return;
 				if (!holdsCurrentItem()) throw Object.assign(new Error('MusicKit queued another item'), { errorCode: 'CONTENT_UNAVAILABLE' });
 				readyEntryRef.current = currentEntry;
+				// No position is reported until it plays and that is settled.
+				followedSeeksRef.current = null;
+				pendingStartRef.current = { entry: currentEntry, startTime, seeks: seeksAtLoad };
 				finished = true;
 				if (isPlayingRef.current) await play();
 			} catch (err) {
@@ -454,7 +537,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			// quick track change) has to be redone, not skipped as loaded.
 			if (!finished && loadedEntryRef.current === currentEntry) loadedEntryRef.current = null;
 		};
-	}, [canPlay, currentKey, currentEntry, music, play, progressRef, isPlayingRef, sendRef, reloadTick, holdsCurrentItem]);
+	}, [canPlay, currentKey, currentEntry, music, play, roomPosition, seeksRef, isPlayingRef, sendRef, reloadTick, holdsCurrentItem]);
 
 	// Follow the server's play/pause, for the item the server says is current.
 	// Play for an entry that failed to load loads it again.
@@ -505,8 +588,7 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 			}
 			if (!isPlayingRef.current) return;
 			// Where the server is now: its last report plus the time since.
-			const elapsed = progressAtRef?.current ? (Date.now() - progressAtRef.current) / 1000 : 0;
-			const expected = (progressRef.current || 0) + Math.max(0, elapsed);
+			const expected = roomPosition();
 			const known = durationRef.current.entry === entry ? durationRef.current.seconds : 0;
 			const duration = music.currentPlaybackDuration || known || roomDurationRef.current || 0;
 			const nearEnd = duration && expected > duration - 2;
@@ -540,15 +622,130 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 				return;
 			}
 			if (nearEnd) return;
+			const off = Math.abs((music.currentPlaybackTime || 0) - expected);
+			if (followsPlayerRef.current) {
+				// The room's clock goes by this player: nothing to correct, and a
+				// seek back to the clock was heard every time (18.11.2026).
+				farOffRef.current = off > FAR_OFF_S ? farOffRef.current + 1 : 0;
+				if (farOffRef.current < 2) return;
+				farOffRef.current = 0;
+			}
 			// Only within an item MusicKit has loaded: a seek while it had no
 			// length yet ended the item (16.11.2026).
 			const loaded = music.currentPlaybackDuration || 0;
-			if (loaded > 0 && expected < loaded - 1 && Math.abs((music.currentPlaybackTime || 0) - expected) > MAX_DRIFT_S) {
-				Promise.resolve(music.seekToTime(expected)).catch(() => { /* next check tries again */ });
+			if (loaded > 0 && expected < loaded - 1 && off > MAX_DRIFT_S) {
+				const count = seeksRef.current;
+				Promise.resolve(music.seekToTime(expected)).then(() => {
+					if (typeof count === 'number' && seeksRef.current === count) followedSeeksRef.current = count;
+				}).catch(() => { /* next check tries again */ });
 			}
 		}, DRIFT_CHECK_MS);
 		return () => clearInterval(timer);
-	}, [canPlay, music, status, play, progressRef, progressAtRef, isPlayingRef, currentEntryRef, currentKeyRef, sendRef, roomDurationRef, holdsCurrentItem]);
+	}, [canPlay, music, status, play, roomPosition, isPlayingRef, currentEntryRef, currentKeyRef, sendRef, roomDurationRef, holdsCurrentItem, seeksRef, followsPlayerRef]);
+
+	// Moves this device's player. The last moments of an item are left alone
+	// (END_GUARD_S): the room, which the caller tells, moves on from there.
+	const seekHere = useCallback((seconds) => {
+		if (!music) return;
+		const duration = music.currentPlaybackDuration || 0;
+		if (duration && seconds > duration - END_GUARD_S) {
+			ownSeekRef.current = { target: seconds, at: Date.now(), done: null };
+			return;
+		}
+		const done = Promise.resolve(music.seekToTime(Math.max(0, seconds))).catch(() => { /* followSeek puts it right */ });
+		ownSeekRef.current = { target: seconds, at: Date.now(), done };
+	}, [music]);
+
+	// An owner moved the room's position by hand, on this device or on another
+	// (`seeks` went up): be there at once. Before the room counted its seeks,
+	// the player noticed up to five seconds later, and only a difference of
+	// more than three seconds; from the owner's other device a seek seemed to
+	// do nothing (18.11.2026).
+	const followSeek = useCallback(async () => {
+		if (!music || typeof seeksRef.current !== 'number') return;
+		const generation = generationRef.current;
+		// A seek made here: MusicKit is still at it, and the room's answer to
+		// it may not be the last one on its way.
+		const own = ownSeekRef.current;
+		const sinceOwn = Date.now() - own.at;
+		if (sinceOwn < OWN_SEEK_MS) {
+			await Promise.resolve(own.done);
+			if (sinceOwn < OWN_ECHO_MS) await new Promise(resolve => setTimeout(resolve, OWN_ECHO_MS - sinceOwn));
+			if (generation !== generationRef.current) return;
+		}
+		const count = seeksRef.current;
+		if (followedSeeksRef.current === count) return;
+		const entry = currentEntryRef.current;
+		// Not loaded yet: the load ends with this check.
+		if (!entry || readyEntryRef.current !== entry || !holdsCurrentItem()) return;
+		const target = roomPosition();
+		const duration = music.currentPlaybackDuration || roomDurationRef.current || 0;
+		// The end of the item: the room moves on. Until then nothing is reported
+		// from the old position, which would take the seek back.
+		if (duration && target > duration - END_GUARD_S) return;
+		if (Math.abs((music.currentPlaybackTime || 0) - target) >= END_GUARD_S) {
+			await Promise.resolve(music.seekToTime(target)).catch(() => { /* the far-off check puts it right */ });
+			if (generation !== generationRef.current) return;
+		}
+		// Another seek meanwhile runs this again.
+		if (seeksRef.current !== count || currentEntryRef.current !== entry) return;
+		followedSeeksRef.current = count;
+		reportRef.current();
+	}, [music, seeksRef, currentEntryRef, holdsCurrentItem, roomPosition, roomDurationRef]);
+	useEffect(() => {
+		followSeekRef.current = followSeek;
+	}, [followSeek]);
+
+	useEffect(() => {
+		if (!canPlay || typeof seeks !== 'number') return;
+		const followed = followedSeeksRef.current;
+		// Loading or just started: the start settles on the room's position.
+		if (followed === null) return;
+		// A server that counts anew: nothing was moved by hand.
+		if (seeks < followed) {
+			followedSeeksRef.current = seeks;
+			return;
+		}
+		if (seeks > followed) followSeek();
+	}, [canPlay, seeks, followSeek]);
+
+	// A load has started to play. A new track starts at its beginning, a
+	// moment after the room said so, and the room's clock is set by it. A
+	// track taken over in the middle (another device played it, a reload, a
+	// seek while it loaded) has to be where the room is: MusicKit is told the
+	// position with the load and does not always start there (never with
+	// previews). Only then does this player report its position.
+	const settleStart = useCallback(async (pending) => {
+		if (!music) return;
+		const generation = generationRef.current;
+		const states = window.MusicKit?.PlaybackStates || {};
+		const gone = () => generation !== generationRef.current || currentEntryRef.current !== pending.entry || readyEntryRef.current !== pending.entry;
+		// MusicKit says "playing" a moment before it is.
+		for (let waited = 0; waited < 5000; waited += 250) {
+			await new Promise(resolve => setTimeout(resolve, 250));
+			if (gone()) return;
+			if (music.playbackState === states.playing) break;
+		}
+		// A server that keeps its own clock: the drift check holds this player to it.
+		const count = seeksRef.current;
+		if (typeof count !== 'number') return;
+		const target = roomPosition();
+		const duration = music.currentPlaybackDuration || roomDurationRef.current || 0;
+		const midTrack = pending.startTime > 2 || (typeof pending.seeks === 'number' && count > pending.seeks);
+		if (midTrack && Math.abs((music.currentPlaybackTime || 0) - target) > 2) {
+			// The end of the item: the room moves on.
+			if (duration && target > duration - END_GUARD_S) return;
+			await Promise.resolve(music.seekToTime(target)).catch(() => { /* the far-off check puts it right */ });
+			if (gone()) return;
+		}
+		followedSeeksRef.current = count;
+		// A seek while this settled.
+		if (seeksRef.current > count) followSeekRef.current();
+		else reportRef.current();
+	}, [music, seeksRef, currentEntryRef, roomPosition, roomDurationRef]);
+	useEffect(() => {
+		settleStartRef.current = settleStart;
+	}, [settleStart]);
 
 	// Play, pause and seek on this device's own controls: the lock screen and
 	// Control Center of a phone, a keyboard's media keys, a headset. MusicKit
@@ -597,8 +794,8 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		const target = Math.max(0, duration ? Math.min(seconds, duration) : seconds);
 		// The end of the bar moves the room on to the next track, as on the page.
 		sendRef.current({ type: 'SEEK_TO', payload: target });
-		Promise.resolve(music.seekToTime(target)).catch(() => { /* the drift check corrects it */ });
-	}, [music, sendRef, currentEntryRef]);
+		seekHere(target);
+	}, [music, sendRef, currentEntryRef, seekHere]);
 
 	// An ask stands until the room has followed. tellRoom sends it at once
 	// over an open socket; this sends it again: after a reconnect (the phone
@@ -724,12 +921,27 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		if (code) setProblem({ code: String(code).slice(0, 60) });
 	}, []);
 
+	// The owner's seek on the page, for this device's player. The page tells
+	// the room.
 	const seek = useCallback((seconds) => {
 		if (!canPlay) return;
-		Promise.resolve(music.seekToTime(seconds)).catch(() => { /* drift check corrects it */ });
-	}, [canPlay, music]);
+		seekHere(seconds);
+	}, [canPlay, seekHere]);
 
 	const getDuration = useCallback(() => (music?.currentPlaybackDuration || 0), [music]);
+
+	// Where the music is on this device, in seconds; null while this device
+	// does not hold the room's track at a settled position (standby, loading,
+	// just started). The room's clock says it then.
+	const getPosition = useCallback(() => {
+		if (!canPlayRef.current || !music || followedSeeksRef.current === null) return null;
+		const entry = currentEntryRef.current;
+		if (!entry || readyEntryRef.current !== entry || !holdsCurrentItem()) return null;
+		const states = window.MusicKit?.PlaybackStates || {};
+		const state = music.playbackState;
+		if (state !== states.playing && state !== states.paused && state !== states.seeking) return null;
+		return music.currentPlaybackTime || 0;
+	}, [music, canPlayRef, currentEntryRef, holdsCurrentItem]);
 
 	// 0..1. A new identity once MusicKit is loaded, so callers apply it again.
 	const setVolume = useCallback((level) => {
@@ -739,5 +951,5 @@ export function useAppleMusicHost({ enabled, currentTrack, isPlaying, progressRe
 		} catch { /* not ready yet */ }
 	}, [music]);
 
-	return { status, problem, connect, disconnect, start, claim, reportProblem, seek, getDuration, setVolume };
+	return { status, problem, connect, disconnect, start, claim, reportProblem, seek, getDuration, getPosition, setVolume };
 }
