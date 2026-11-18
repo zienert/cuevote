@@ -187,6 +187,9 @@ struct WebView: UIViewRepresentable {
         
         config.mediaTypesRequiringUserActionForPlayback = []
         config.allowsInlineMediaPlayback = true
+        // Picture in Picture stays off. The audio background mode would
+        // otherwise offer it for every video in the page, YouTube's included.
+        config.allowsPictureInPictureMediaPlayback = false
         config.preferences.javaScriptCanOpenWindowsAutomatically = true
         config.applicationNameForUserAgent = "CueVoteWrapper"
         
@@ -201,6 +204,8 @@ struct WebView: UIViewRepresentable {
         let scriptSource = "window.CueVoteAndroid = { isNative: function() { return true; } };"
         let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         contentController.addUserScript(script)
+        // Keeps a page that may play in the background ready while it is silent.
+        contentController.addUserScript(BackgroundPlayback.carrierScript)
 
         contentController.add(context.coordinator, name: "nativeGoogleLogin")
         contentController.add(context.coordinator, name: "toggleQRButton")
@@ -239,6 +244,9 @@ struct WebView: UIViewRepresentable {
 
         context.coordinator.observers.append(contentsOf: [tokenObserver, resumeObserver])
 
+        // Apple Music plays on when the app leaves the front; nothing else does.
+        context.coordinator.backgroundPlayback = BackgroundPlayback(webView: webView)
+
         // WKWebsiteDataStore.default().removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), modifiedSince: Date(timeIntervalSince1970: 0)) { }
 
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
@@ -261,6 +269,7 @@ struct WebView: UIViewRepresentable {
         var webAuthSession: ASWebAuthenticationSession?
         var codeVerifier: String?
         var observers: [NSObjectProtocol] = []
+        var backgroundPlayback: BackgroundPlayback?
 
         init(parent: WebView) { self.parent = parent }
 
