@@ -1311,6 +1311,12 @@ function RoomBody() {
   // set the volume (an iPhone: its buttons set it; MusicKit only sets the
   // media element's volume, 16.11.2026).
   const showVolume = !isAppleRoom || (applePlayerLease !== false && !deviceDetection.isVolumeLocked());
+  // The bar of a preview follows the same rule. Where pages cannot set the
+  // volume, its slider goes. In an Apple room its mute button goes too:
+  // MusicKit mutes by setting the volume to 0. YouTube's mute sets `muted`,
+  // which an iPhone allows (muted autoplay depends on it).
+  const showPreviewSlider = !deviceDetection.isVolumeLocked();
+  const showPreviewMute = !isAppleRoom || showPreviewSlider;
 
   // Event Handlers
 
@@ -2106,30 +2112,34 @@ function RoomBody() {
                 )}
               </div>
             </div>
-            <div className="flex flex-none items-center gap-1 text-ink-2 sm:gap-2">
-              <button
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleMuteToggle();
-                }}
-                aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
-                title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
-                className="cv-hit flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-150 hover:bg-raised hover:text-ink"
-              >
-                {isMuted ? <VolumeX size={20} aria-hidden="true" /> : <Volume2 size={20} aria-hidden="true" />}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value={volume}
-                onChange={handleVolumeChange}
-                aria-label={t('playlist.volume')}
-                className={`w-24 accent-accent ${isMuted ? "opacity-50" : ""}`}
-                onClick={(event) => event.stopPropagation()}
-              />
-            </div>
+            {showPreviewMute && (
+              <div className="flex flex-none items-center gap-1 text-ink-2 sm:gap-2">
+                <button
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleMuteToggle();
+                  }}
+                  aria-label={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                  title={isMuted ? t('playlist.unmute') : t('playlist.mute')}
+                  className="cv-hit flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-150 hover:bg-raised hover:text-ink"
+                >
+                  {isMuted ? <VolumeX size={20} aria-hidden="true" /> : <Volume2 size={20} aria-hidden="true" />}
+                </button>
+                {showPreviewSlider && (
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                    aria-label={t('playlist.volume')}
+                    className={`w-24 accent-accent ${isMuted ? "opacity-50" : ""}`}
+                    onClick={(event) => event.stopPropagation()}
+                  />
+                )}
+              </div>
+            )}
           </div>
         ) : (
           !isAnyPlaylistView && !showPendingPage && playerConsent && (
